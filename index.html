@@ -108,32 +108,50 @@
     @media(min-width:768px){ .ticket-grid{ grid-template-columns: repeat(10,1fr);} }
     @media(min-width:1024px){ .ticket-grid{ grid-template-columns: repeat(12,1fr);} }
 
-   /* Boleto con estilo moderno */
-.ticket{
-  position:relative; 
-  user-select:none; 
-  text-align:center; 
-  padding:10px 0; 
-  border:1px solid var(--border); 
-  border-radius:12px; 
-  background:#fff; 
-  font-weight:800; 
-  font-size:14px; 
-  cursor:pointer; 
-  transition:transform 0.15s ease, box-shadow 0.15s ease;
-  color:#0A4975; 
-}
-    }
-    .ticket:hover{
-  background:#f0f9ff;
-  transform:translateY(-2px); 
-  box-shadow:0 4px 10px rgba(0,0,0,0.1);
+.ticket {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1 / 1;           /* siempre cuadrado */
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  font-weight: 800;
+  font-size: clamp(12px, 2vw, 18px); /* se adapta a pantalla */
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+  color: #0A4975; /* color azul del tema */
 }
 
-    .ticket:active{
-  transform:scale(0.9); /* 👈 animación al click */
-  box-shadow:0 2px 6px rgba(0,0,0,0.2);
+.ticket:hover {
+  background: #f0f9ff;
+  transform: scale(1.05); /* animación al click/hover */
 }
+
+.ticket.selected {
+  background: #dbeafe;
+  border-color: #bfdbfe;
+  transform: scale(0.95); /* pequeña animación al seleccionar */
+}
+
+.ticket.sold {
+  color: #0b1e2a;
+  border-color: #c7e3f7;
+  background: #eaf6ff;
+  cursor: not-allowed;
+}
+.ticket.sold::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  background-image: var(--diamond-url);
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: .45;
+  border-radius: 8px;
+}
+
     .ticket.sold{color:#0b1e2a; border-color:#c7e3f7; background:#eaf6ff; cursor:not-allowed;}
     .ticket.sold::after{content:""; position:absolute; inset:2px; background-image:var(--diamond-url); background-size:contain; background-position:center; background-repeat:no-repeat; opacity:.45; border-radius:8px;}
     .ticket.selected{background:#dbeafe; border-color:#bfdbfe;}
@@ -210,6 +228,7 @@
   color: var(--ink);
 }
 
+    
     
   </style>
 </head>
