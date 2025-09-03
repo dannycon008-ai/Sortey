@@ -3,32 +3,33 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TU DIAMANTE 💎</title>
-  <!-- Tipografía Sans Serif en bold/extra-bold -->
+  <title>Rifas — Tu Diamante</title>
+
+  <!-- Fuente Sans Serif (bold/extra-bold) -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@700;800&display=swap" rel="stylesheet">
   <!-- Tel input (banderas y código de país) -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@19.5.6/build/css/intlTelInput.css" />
+
   <style>
     :root{
-      --bg:#ffffff; --ink:#111827; --muted:#6b7280; --brand:#111827; 
-      --accent:#0A4975; /* color pedido */
-      --ok:#16a34a; --warn:#ef4444; --border:#e5e7eb; --chip:#f3f4f6;
-      /* diamante para marcaje de vendidos y “Mis boletos” */
+      --bg:#ffffff; --ink:#111827; --muted:#6b7280;
+      --accent:#0A4975;             /* color pedido */
+      --border:#e5e7eb; --chip:#f3f4f6; --warn:#ef4444;
+      /* diamante translúcido para vendidos y “Mis boletos” */
       --diamond-url: url('https://www.shutterstock.com/image-vector/realistic-shining-blue-diamond-jewel-600nw-2547064909.jpg');
     }
+
     html,body{height:100%}
     body{margin:0; background:var(--bg); color:var(--ink); font-family:"Inter",system-ui,sans-serif; font-weight:800;}
 
-    /* Centrado general */
     .container{max-width:1200px; margin:0 auto; padding:16px; display:flex; flex-direction:column; align-items:center;}
 
-    /* Header: marca a la izquierda del título (según pedido) */
-    .app-title{display:flex; justify-content:center; align-items:center; gap:12px; text-align:center; width:100%;}
-    .app-title img{width:56px; height:56px; border-radius:50%;}
-    .app-title h1{margin:0; font-size:42px; letter-spacing:2px; text-transform:uppercase;}
+    /* Header SOLO logo */
+    .app-title{display:flex; justify-content:center; margin:20px 0 10px;}
+    .app-title img{width:140px; height:140px; border-radius:50%; object-fit:cover;}
 
     /* Progreso */
-    .progress-info{display:flex; flex-direction:column; align-items:center; gap:8px; margin:14px 0 20px; width:100%;}
+    .progress-info{display:flex; flex-direction:column; align-items:center; gap:8px; margin:8px 0 20px; width:100%;}
     .bar{height:14px; background:#f3f4f6; border-radius:999px; overflow:hidden; border:1px solid var(--border); width:min(640px,100%);} 
     .bar>span{display:block; height:100%; background:var(--accent); width:0%; transition:width 1s ease-in-out;}
     .progress-stats{color:var(--muted); font-size:14px; font-weight:700; text-align:center;}
@@ -37,46 +38,40 @@
     .grid-layout{display:grid; grid-template-columns:1fr; gap:16px; width:100%;}
     @media(min-width:1024px){ .grid-layout{ grid-template-columns:2fr 1fr; } }
 
-    .panel{background:#fff; border:1px solid var(--border); border-radius:16px; padding:16px; box-shadow:0 1px 2px rgba(0,0,0,.04); width:100%; text-align:center;}
-    .panel h2{margin:0 0 12px 0; font-size:36px; text-transform:uppercase;}
+    .panel{background:#fff; border:1px solid var(--border); border-radius:16px; padding:16px; width:100%; text-align:center;}
+    .panel h2{margin:0 0 12px 0; font-size:28px; text-transform:uppercase; color:var(--accent);}
     .subtle{color:var(--muted); font-size:14px;}
 
-    /* LISTA: más pequeña y centrada (pedido) */
+    /* LISTA de boletos: más pequeña y centrada */
     .tickets-panel{max-width:900px; margin:0 auto;}
-    .tickets-panel h2{color:#0A4975;} /* color pedido para el título “Lista de boletos” */
 
-    /* Toolbar lista */
     .tickets-toolbar{display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:10px; margin-bottom:10px;}
     .search{position:relative; flex:1 1 280px; max-width:420px;}
     .search input{width:100%; border:1px solid var(--border); border-radius:999px; padding:12px 40px; font-size:14px; outline:none; text-align:center; font-weight:800;}
     .search svg{position:absolute; left:12px; top:50%; transform:translateY(-50%);} 
-    .page-controls{display:flex; gap:6px; align-items:center; justify-content:center;}
-    .page-controls .btn{min-width:40px}
 
-    /* Botones */
+    .page-controls{display:flex; gap:6px; align-items:center; justify-content:center;}
     .btn{border:1px solid var(--border); background:#fff; border-radius:12px; padding:10px 14px; font-weight:800; cursor:pointer; transition:.2s;}
     .btn:hover{transform:translateY(-1px);} 
-    .btn.primary{background:var(--brand); color:#fff; border-color:var(--brand);} 
+    .btn.primary{background:var(--accent); color:#fff; border-color:var(--accent);} 
     .btn.secondary{background:#f8fafc;}
     .btn[disabled]{opacity:.6; cursor:not-allowed;}
 
-    /* Cuadro lista: más pequeño y centrado (pedido) */
-    .square-wrap{width:100%; max-width:780px; aspect-ratio:1/1; border:1px solid var(--border); border-radius:16px; overflow:hidden; display:flex; margin:0 auto;}
+    .square-wrap{width:100%; max-width:780px; aspect-ratio:1/1; border:1px solid var(--border); border-radius:16px; overflow:hidden; margin:0 auto;}
     .square-inner{flex:1; overflow:auto;}
 
-    .ticket-grid{display:grid; grid-template-columns: repeat(6, 1fr); gap:6px; padding:10px;}
-    @media(min-width:480px){ .ticket-grid{ grid-template-columns: repeat(8, 1fr);} }
-    @media(min-width:768px){ .ticket-grid{ grid-template-columns: repeat(10, 1fr);} }
-    @media(min-width:1024px){ .ticket-grid{ grid-template-columns: repeat(12, 1fr);} }
+    .ticket-grid{display:grid; grid-template-columns: repeat(6,1fr); gap:6px; padding:10px;}
+    @media(min-width:480px){ .ticket-grid{ grid-template-columns: repeat(8,1fr);} }
+    @media(min-width:768px){ .ticket-grid{ grid-template-columns: repeat(10,1fr);} }
+    @media(min-width:1024px){ .ticket-grid{ grid-template-columns: repeat(12,1fr);} }
 
     .ticket{
       position:relative; user-select:none; text-align:center; padding:8px 0; 
       border:1px solid var(--border); border-radius:10px; background:#fff; 
       font-weight:800; font-size:14px; cursor:pointer; transition:.15s;
-      color:#0A4975; /* color pedido para los números de boletos */
+      color:#0A4975; /* color de números */
     }
     .ticket:hover{background:#f9fafb;}
-    /* Visual de vendido: diamante translúcido + color */
     .ticket.sold{color:#0b1e2a; border-color:#c7e3f7; background:#eaf6ff; cursor:not-allowed;}
     .ticket.sold::after{content:""; position:absolute; inset:2px; background-image:var(--diamond-url); background-size:contain; background-position:center; background-repeat:no-repeat; opacity:.45; border-radius:8px;}
     .ticket.selected{background:#dbeafe; border-color:#bfdbfe;}
@@ -85,10 +80,9 @@
     .chip{display:inline-flex; align-items:center; gap:6px; background:var(--chip); border:1px solid var(--border); border-radius:999px; padding:6px 10px; font-weight:800;}
     .chip button{border:none; background:transparent; cursor:pointer; font-size:16px; line-height:1;}
 
-    /* Totales centrados */
     .totals{display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:center; margin-top:10px;}
-    .totals-group{display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:center;}
-    .tag{background:#eef2ff; color:#3730a3; border:1px solid #e0e7ff; font-weight:800; border-radius:999px; padding:6px 10px;}
+    .tag{background:#eef2ff; color:#3730a3; border:1px solid #e0e7ff; border-radius:999px; padding:6px 10px;}
+
     .note{margin-top:8px; font-size:14px; color:#0f172a;}
     .note.warn{color:#b91c1c;}
 
@@ -110,7 +104,7 @@
     .big-diamond{width:120px; height:120px; display:flex; align-items:center; justify-content:center; color:#0b1e2a; font-size:20px; font-weight:800; background-image:var(--diamond-url); background-size:cover; background-position:center; border-radius:16px; box-shadow:0 8px 18px rgba(0,0,0,.12);}
     .mytickets-cta{display:none; margin-top:12px; text-align:center;}
 
-    /* Footer contacto simplificado (fondo blanco) */
+    /* Footer */
     .site-footer{margin-top:22px; width:100%;}
     .contact{background:#ffffff; color:#111; border:1px solid var(--border); border-radius:16px; padding:18px; display:grid; gap:14px; justify-items:center;}
     .contact h3{margin:0; text-transform:uppercase; letter-spacing:1px; font-size:18px;}
@@ -122,10 +116,9 @@
 </head>
 <body>
   <div class="container">
-    <!-- Header con logo a la izquierda del título -->
+    <!-- Header SOLO logo centrado -->
     <header class="app-title">
-      <img src="https://qu.ax/OVJvi.png" alt="Marca redonda">
-      <h1>TU DIAMANTE 💎</h1>
+      <img src="https://qu.ax/OVJvi.png" alt="Logo redondo">
     </header>
 
     <!-- Progreso de ventas -->
@@ -135,7 +128,7 @@
     </section>
 
     <div class="grid-layout">
-      <!-- LISTA DE BOLETOS -->
+      <!-- LISTA -->
       <section class="panel tickets-panel">
         <h2>Lista de boletos</h2>
         <div class="subtle">Página 1 por defecto (0000–1999). Hay 5 páginas.</div>
@@ -156,11 +149,9 @@
           </div>
         </div>
         <div class="totals">
-          <div class="totals-group">
-            <span class="tag">Precio: <b>15 Bs</b></span>
-            <span class="tag">Seleccionados: <b id="selCount">0</b></span>
-            <span class="tag">Total: <b id="totalAmount">0 Bs</b></span>
-          </div>
+          <span class="tag">Precio: <b>15 Bs</b></span>
+          <span class="tag">Seleccionados: <b id="selCount">0</b></span>
+          <span class="tag">Total: <b id="totalAmount">0 Bs</b></span>
           <button id="btnRandom" class="btn primary" title="Generar 3 boletos a la suerte">🎲 Generar aleatorios</button>
         </div>
         <div id="minMsg" class="note warn" style="display:none;">Compra mínima 3 boletos.</div>
@@ -226,7 +217,7 @@
       <div id="verifyOut" style="margin-top:10px;"></div>
     </section>
 
-    <!-- CONTACTO & SÍGUENOS (simplificado) -->
+    <!-- CONTACTO -->
     <section class="site-footer">
       <div class="contact">
         <h3>Contacto</h3>
@@ -249,13 +240,13 @@
   <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@19.5.6/build/js/utils.js"></script>
   <script>
     /* ==========================
-       CONFIG editable (logos y enlaces)
+       CONFIG editable (logos, enlaces, pagos)
        ========================== */
-    const PRICE_PER_TICKET = 15; // Bs
-    const TOTAL_TICKETS = 10000; // 0000-9999
-    const PAGE_SIZE = TOTAL_TICKETS / 5; // 2000 por página
+    const PRICE_PER_TICKET = 15;         // Bs
+    const TOTAL_TICKETS    = 10000;      // 0000-9999
+    const PAGE_SIZE        = TOTAL_TICKETS / 5; // 2000 por página
 
-    // URLs de contacto (cámbialas por las tuyas)
+    // Enlaces de contacto (cámbialos por los tuyos)
     const WA_URL = 'https://wa.me/584120000000';
     const FB_URL = 'https://facebook.com/tu_pagina';
     const IG_URL = 'https://instagram.com/tu_pagina';
@@ -265,32 +256,46 @@
     const FB_ICON_URL = 'https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png';
     const IG_ICON_URL = 'https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png';
 
-    // Métodos de pago (logos por URL y datos)
+    // Métodos de pago (logos + datos)
     const PAYMENT_METHODS = [
-      { key: 'pago_movil_ve', name: 'Pago móvil Venezuela', logo: 'https://files.mastodon.social/accounts/avatars/001/178/677/original/1743e1395952db77.jpg', details: ['Banco: 0102', 'Teléfono: 0412-0000000', 'Cédula/RIF: V-00000000', 'Titular: Nombre Apellido'] },
-      { key: 'pago_movil_banesco', name: 'Pago móvil Banesco', logo: 'https://play-lh.googleusercontent.com/JP3qF5hwz0z7z-d2PEu21dhtdb7EBlC-5XKAuE0e2zLUAjWca-ePijvcb-nAQGAa9Ng=w480-h960-rw', details: ['Banco: 0134', 'Teléfono: 0414-0000000', 'Cédula/RIF: V-00000000', 'Titular: Nombre Apellido'] },
-      { key: 'binance', name: 'Binance', logo: 'https://upload.wikimedia.org/wikipedia/commons/5/57/Binance_Logo.png', details: ['Correo: ejemplo@binance.com', 'Nota: Adjunta el hash/ID de transacción'] }
+      {
+        key: 'pago_movil_ve',
+        name: 'Pago móvil Venezuela',
+        logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Banco_de_Venezuela_logo.svg/2560px-Banco_de_Venezuela_logo.svg.png',
+        details: ['Banco: 0102', 'Teléfono: 0412-0000000', 'Cédula/RIF: V-00000000', 'Titular: Nombre Apellido']
+      },
+      {
+        key: 'pago_movil_banesco',
+        name: 'Pago móvil Banesco',
+        logo: 'https://upload.wikimedia.org/wikipedia/commons/7/7b/Banesco_logo.png',
+        details: ['Banco: 0134', 'Teléfono: 0414-0000000', 'Cédula/RIF: V-00000000', 'Titular: Nombre Apellido']
+      },
+      {
+        key: 'binance',
+        name: 'Binance',
+        logo: 'https://upload.wikimedia.org/wikipedia/commons/5/57/Binance_Logo.png',
+        details: ['Correo: ejemplo@binance.com', 'Nota: Adjunta el hash/ID de transacción']
+      }
     ];
 
     /* ==========================
        Estado + storage
        ========================== */
-    const el = s => document.querySelector(s);
+    const el  = s => document.querySelector(s);
     const els = s => Array.from(document.querySelectorAll(s));
+    const pad4 = n => n.toString().padStart(4, '0');
 
-    const soldKey = 'rifas_soldTickets_v5';
-    const ordersKey = 'rifas_orders_v5';
+    const soldKey   = 'rifas_soldTickets_v6';
+    const ordersKey = 'rifas_orders_v6';
 
-    const getSold = () => new Set(JSON.parse(localStorage.getItem(soldKey) || '[]'));
-    const setSold = (set) => localStorage.setItem(soldKey, JSON.stringify([...set]));
+    const getSold   = () => new Set(JSON.parse(localStorage.getItem(soldKey) || '[]'));
+    const setSold   = (set) => localStorage.setItem(soldKey, JSON.stringify([...set]));
     const getOrders = () => JSON.parse(localStorage.getItem(ordersKey) || '[]');
     const setOrders = (arr) => localStorage.setItem(ordersKey, JSON.stringify(arr));
 
-    const pad4 = n => n.toString().padStart(4, '0');
-
     let selected = new Set();
     let currentPage = 1; // 1..5
-    let iti = null; // intl-tel-input
+    let iti = null;      // intl-tel-input
     let chosenPayKey = null;
 
     /* ==========================
@@ -305,18 +310,18 @@
     }
 
     /* ==========================
-       Lista + paginación
+       Paginación
        ========================== */
     function pageRange(page){
-      const start = (page-1)*PAGE_SIZE; // inclusive
-      const end = start + PAGE_SIZE - 1; // inclusive
+      const start = (page-1)*PAGE_SIZE;      // inclusive
+      const end   = start + PAGE_SIZE - 1;   // inclusive
       return [start, end];
     }
 
     function buildPagination(){
       const wrap = el('#pagination');
       wrap.innerHTML = '';
-      for(let p=1;p<=5;p++){
+      for(let p=1; p<=5; p++){
         const [a,b] = pageRange(p);
         const btn = document.createElement('button');
         btn.className = 'btn' + (p===currentPage ? ' primary' : '');
@@ -327,20 +332,20 @@
       }
     }
 
-    function isAvailable(num){
-      const sold = getSold();
-      return !sold.has(num) && !selected.has(num);
-    }
-
+    /* ==========================
+       Render de boletos
+       ========================== */
     function renderTickets(){
       const grid = el('#tickets');
       grid.innerHTML = '';
       const sold = getSold();
       const [start, end] = pageRange(currentPage);
+
       for(let n=start; n<=end; n++){
         const btn = document.createElement('button');
         btn.className = 'ticket';
         btn.textContent = pad4(n);
+
         if(sold.has(n)){
           btn.classList.add('sold');
           btn.title = 'Boleto ya ha sido vendido';
@@ -399,23 +404,15 @@
       const sold = getSold();
       const pool = [];
       for(let n=0;n<TOTAL_TICKETS;n++) if(!sold.has(n) && !selected.has(n)) pool.push(n);
-      if(pool.length === 0){
-        alert('No hay boletos disponibles.');
-        return;
-      }
+      if(pool.length === 0){ alert('No hay boletos disponibles.'); return; }
       while(selected.size < count && pool.length){
         const idx = Math.floor(Math.random()*pool.length);
         const n = pool.splice(idx,1)[0];
         selected.add(n);
       }
-      // Mueve a la página del primero seleccionado nuevo para que se vea
-      if(selected.size){
-        const first = [...selected].sort((a,b)=>a-b)[0];
-        currentPage = Math.floor(first / PAGE_SIZE) + 1;
-      }
-      buildPagination();
-      renderTickets();
-      renderSelectedChips();
+      const first = [...selected].sort((a,b)=>a-b)[0];
+      if(first!==undefined){ currentPage = Math.floor(first / PAGE_SIZE) + 1; buildPagination(); }
+      renderTickets(); renderSelectedChips();
     }
 
     // Buscar/jump por # (ENTER funciona en iOS/Android/Desktop al ser submit del form)
@@ -427,14 +424,8 @@
       const page = Math.floor(n / PAGE_SIZE) + 1;
       currentPage = page; buildPagination(); renderTickets();
       const sold = getSold();
-      if(sold.has(n)){
-        alert('Boleto ya ha sido vendido');
-        return;
-      }
-      if(selected.has(n)){
-        alert('El boleto ya está en tu selección');
-        return;
-      }
+      if(sold.has(n)){ alert('Boleto ya ha sido vendido'); return; }
+      if(selected.has(n)){ alert('El boleto ya está en tu selección'); return; }
       selectTicket(n);
     }
 
@@ -442,19 +433,17 @@
        Pagos
        ========================== */
     function renderPayMethods(){
-      const wrap = el('#payMethods');
-      wrap.innerHTML = '';
-      PAYMENT_METHODS.forEach((m,i)=>{
+      const wrap = el('#payMethods'); wrap.innerHTML = '';
+      PAYMENT_METHODS.forEach(m=>{
         const card = document.createElement('div');
         card.className = 'pm-card';
-        card.innerHTML = `<img src="${m.logo}" alt="${m.name}"><div><div style="font-weight:800;">${m.name}</div></div>`;
+        card.innerHTML = `<img src="${m.logo}" alt="${m.name}"><div style="font-weight:800;">${m.name}</div>`;
         card.addEventListener('click', ()=>selectPayMethod(m.key));
         card.dataset.key = m.key;
         wrap.appendChild(card);
       });
     }
 
-    let chosenPayKey = null;
     function selectPayMethod(key){
       chosenPayKey = key;
       els('.pm-card').forEach(c=>c.classList.toggle('active', c.dataset.key===key));
@@ -470,11 +459,7 @@
        Confirmar compra + mis boletos
        ========================== */
     async function confirmPurchase(){
-      if(selected.size < 3){
-        el('#minMsg').style.display = 'block';
-        el('#minMsg').scrollIntoView({behavior:'smooth', block:'center'});
-        return;
-      }
+      if(selected.size < 3){ el('#minMsg').style.display = 'block'; el('#minMsg').scrollIntoView({behavior:'smooth', block:'center'}); return; }
       const name = el('#name').value.trim();
       const idnum = el('#idnum').value.trim();
       const ref6 = el('#ref6').value.trim();
@@ -487,41 +472,26 @@
       if(!chosenPayKey){ alert('Selecciona un método de pago.'); return; }
       if(!proof){ alert('Sube el comprobante de pago.'); return; }
 
-      const proofDataUrl = await new Promise((res,rej)=>{
-        const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(proof);
-      });
+      const proofDataUrl = await new Promise((res,rej)=>{ const r = new FileReader(); r.onload = ()=>res(r.result); r.onerror = rej; r.readAsDataURL(proof); });
 
       const order = {
         id: 'ORD-' + Date.now(),
-        name, idnum, phone: phoneE164,
-        payMethod: chosenPayKey,
-        ref6,
-        proof: proofDataUrl,
-        tickets: [...selected].sort((a,b)=>a-b),
-        price: PRICE_PER_TICKET,
-        total: selected.size * PRICE_PER_TICKET,
+        name, idnum, phone: phoneE164, payMethod: chosenPayKey, ref6,
+        proof: proofDataUrl, tickets: [...selected].sort((a,b)=>a-b),
+        price: PRICE_PER_TICKET, total: selected.size * PRICE_PER_TICKET,
         createdAt: new Date().toISOString()
       };
       const orders = getOrders(); orders.push(order); setOrders(orders);
 
-      // Marcar boletos como vendidos
-      const sold = getSold();
-      order.tickets.forEach(n=> sold.add(n));
-      setSold(sold);
+      const sold = getSold(); order.tickets.forEach(n=>sold.add(n)); setSold(sold);
 
-      // Reset de selección y UI
-      selected.clear();
-      renderSelectedChips();
-      renderTickets();
-      updateProgress();
-      updateTotalsUI();
-      alert(`¡Compra confirmada!\nPedido: ${order.id}\nBoletos: ${order.tickets.map(pad4).join(', ')}`);
+      // Reset selección y UI
+      selected.clear(); renderSelectedChips(); renderTickets(); updateProgress(); updateTotalsUI();
 
-      // Mostrar CTA "Ver mis boletos"
-      el('#myTicketsCta').style.display = 'block';
+      // Mostrar “Mis boletos”
       showMyTickets(order);
-      // Scroll a “Mis boletos”
       el('#myTicketsPanel').scrollIntoView({behavior:'smooth'});
+      el('#myTicketsCta').style.display = 'block';
     }
 
     function showMyTickets(order){
@@ -536,14 +506,11 @@
        ========================== */
     function verify(){
       const raw = el('#verifyInput').value.trim();
-      const out = el('#verifyOut');
-      out.innerHTML = '';
+      const out = el('#verifyOut'); out.innerHTML = '';
       const orders = getOrders();
-
       let hits = [];
       if(/^\d{4}$/.test(raw)){
-        const t = parseInt(raw,10);
-        hits = orders.filter(o=>o.tickets.includes(t));
+        const t = parseInt(raw,10); hits = orders.filter(o=>o.tickets.includes(t));
       } else {
         hits = orders.filter(o=> o.phone.includes(raw));
       }
@@ -554,8 +521,8 @@
         card.style.marginTop = '10px';
         const pm = PAYMENT_METHODS.find(x=>x.key===o.payMethod);
         card.innerHTML = `<div style="font-weight:800; margin-bottom:6px;">${o.name} · CI ${o.idnum} · ${o.phone}</div>` +
-                         `<div class="subtle">Pedido ${o.id} — ${new Date(o.createdAt).toLocaleString('es-VE')}</div>` +
-                         `<div style="margin:8px 0; font-weight:800;">Método: ${pm?pm.name:o.payMethod} · Total: ${o.total} Bs</div>`;
+                          `<div class="subtle">Pedido ${o.id} — ${new Date(o.createdAt).toLocaleString('es-VE')}</div>` +
+                          `<div style="margin:8px 0; font-weight:800;">Método: ${pm?pm.name:o.payMethod} · Total: ${o.total} Bs</div>`;
         const dwrap = document.createElement('div'); dwrap.className='big-diamonds';
         o.tickets.forEach(n=>{ const d=document.createElement('div'); d.className='big-diamond'; d.textContent=pad4(n); dwrap.appendChild(d); });
         card.appendChild(dwrap); out.appendChild(card);
@@ -566,7 +533,7 @@
        Init
        ========================== */
     window.addEventListener('DOMContentLoaded', ()=>{
-      // Links e iconos de contacto (cambia URLs arriba)
+      // Contacto & logos
       el('#waLink').href = WA_URL; el('#fbLink').href = FB_URL; el('#igLink').href = IG_URL;
       el('#waIcon').src = WA_ICON_URL; el('#fbIcon').src = FB_ICON_URL; el('#igIcon').src = IG_ICON_URL;
 
@@ -579,16 +546,12 @@
         });
       }catch(err){ console.warn('intl-tel-input no pudo inicializarse:', err); }
 
-      // Paginación + lista (por defecto página 1 => 0000–1999)
-      buildPagination();
-      renderTickets();
-      updateProgress();
-      renderPayMethods();
+      // Paginación + lista (Página 1 => 0000–1999)
+      buildPagination(); renderTickets(); updateProgress(); renderPayMethods();
 
-      // Eventos UI
+      // Eventos
       el('#btnRandom').addEventListener('click', ()=>randomPick(3));
-      // ENTER en iOS/Android/desktop (submit del form)
-      el('#searchForm').addEventListener('submit', (e)=>{ e.preventDefault(); handleSearch(); });
+      el('#searchForm').addEventListener('submit', (e)=>{ e.preventDefault(); handleSearch(); }); // ENTER móvil/PC
       el('#btnConfirm').addEventListener('click', confirmPurchase);
       el('#btnVerify').addEventListener('click', verify);
       el('#btnSeeMine')?.addEventListener('click', ()=>{
