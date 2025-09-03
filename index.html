@@ -78,7 +78,19 @@
   text-align: center;  /* centrado */
   margin-bottom: 16px; /* espacio debajo del título */
 }
+/* Ajuste para tablets y pantallas medianas */
+@media (max-width: 768px) {
+  .tickets-panel h2 {
+    font-size: 26px;
+  }
+}
 
+/* Ajuste para celulares pequeños */
+@media (max-width: 480px) {
+  .tickets-panel h2 {
+    font-size: 22px;
+  }
+}
 
     .tickets-toolbar{display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:10px; margin-bottom:10px;}
     .search{position:relative; flex:1 1 280px; max-width:420px;}
