@@ -65,8 +65,20 @@
     .panel h2{margin:0 0 12px 0; font-size:28px; text-transform:uppercase; color:var(--accent);}
     .subtle{color:var(--muted); font-size:14px;}
 
-    /* LISTA de boletos: más pequeña y centrada */
-    .tickets-panel{max-width:900px; margin:0 auto;}
+/* Contenedor de la sección "Lista de boletos" */
+.tickets-panel {
+  max-width: 900px;    /* ancho máximo */
+  margin: 0 auto;      /* centrado horizontal */
+}
+
+/* Título "Lista de boletos" */
+.tickets-panel h2 {
+  font-size: 48px;     /* 👈 cambia este número para ajustar el tamaño */
+  color: #0A4975;      /* azul que ya usas en tu tema */
+  text-align: center;  /* centrado */
+  margin-bottom: 16px; /* espacio debajo del título */
+}
+
 
     .tickets-toolbar{display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:10px; margin-bottom:10px;}
     .search{position:relative; flex:1 1 280px; max-width:420px;}
@@ -345,10 +357,10 @@
        ========================== */
     const PRICE_PER_TICKET = 15;         // Bs
     const TOTAL_TICKETS    = 10000;      // 0000-9999
-    const PAGE_SIZE        = TOTAL_TICKETS / 5; // 2000 por página
+    const PAGE_SIZE = 1000;      // 1000 por página (10 páginas)
 
     // Enlaces de contacto (cámbialos por los tuyos)
-    const WA_URL = 'https://wa.me/584120000000';
+    const WA_URL = 'https://wa.me/5842489117690';
     const FB_URL = 'https://facebook.com/tu_pagina';
     const IG_URL = 'https://instagram.com/tu_pagina';
 
@@ -422,7 +434,7 @@
     function buildPagination(){
       const wrap = el('#pagination');
       wrap.innerHTML = '';
-      for(let p=1; p<=5; p++){
+      for(let p=1; p<=10; p++){
         const [a,b] = pageRange(p);
         const btn = document.createElement('button');
         btn.className = 'btn' + (p===currentPage ? ' primary' : '');
