@@ -577,30 +577,63 @@
     /* ==========================
        Verificador
        ========================== */
-    function verify(){
-      const raw = el('#verifyInput').value.trim();
-      const out = el('#verifyOut'); out.innerHTML = '';
-      const orders = getOrders();
-      let hits = [];
-      if(/^\d{4}$/.test(raw)){
-        const t = parseInt(raw,10); hits = orders.filter(o=>o.tickets.includes(t));
-      } else {
-        hits = orders.filter(o=> o.phone.includes(raw));
-      }
-      if(hits.length===0){ out.innerHTML = '<div class="subtle">No se encontraron compras.</div>'; return; }
-      hits.forEach(o=>{
-        const card = document.createElement('div');
-        card.className = 'panel';
-        card.style.marginTop = '10px';
-        const pm = PAYMENT_METHODS.find(x=>x.key===o.payMethod);
-        card.innerHTML = `<div style="font-weight:800; margin-bottom:6px;">${o.name} · CI ${o.idnum} · ${o.phone}</div>` +
-                          `<div class="subtle">Pedido ${o.id} — ${new Date(o.createdAt).toLocaleString('es-VE')}</div>` +
-                          `<div style="margin:8px 0; font-weight:800;">Método: ${pm?pm.name:o.payMethod} · Total: ${o.total} Bs</div>`;
-        const dwrap = document.createElement('div'); dwrap.className='big-diamonds';
-        o.tickets.forEach(n=>{ const d=document.createElement('div'); d.className='big-diamond'; d.textContent=pad4(n); dwrap.appendChild(d); });
-        card.appendChild(dwrap); out.appendChild(card);
-      });
-    }
+   function verify(){
+  const raw = el('#verifyInput').value.trim();
+  const out = el('#verifyOut');
+  out.innerHTML = '';
+  const orders = getOrders();
+
+  let hits = [];
+  if(/^\d{4}$/.test(raw)){
+    // 🔎 Buscar por número de boleto (0000–9999)
+    const t = parseInt(raw,10);
+    hits = orders.filter(o=>o.tickets.includes(t));
+  } else {
+    // 🔎 Buscar por teléfono
+    // Quitar todo lo que no sean dígitos (espacios, +58, etc.)
+    const cleanRaw = raw.replace(/\D/g,'');  
+
+    hits = orders.filter(o=>{
+      const cleanPhone = o.phone.replace(/\D/g,''); // guardar igual
+      return cleanPhone.endsWith(cleanRaw); // 👈 compara por el final
+    });
+  }
+
+  if(hits.length===0){ 
+    out.innerHTML = '<div class="subtle">No se encontraron compras.</div>'; 
+    return; 
+  }
+
+  hits.forEach(o=>{
+    const card = document.createElement('div');
+    card.className = 'panel';
+    card.style.marginTop = '10px';
+    card.innerHTML = `
+      <div style="font-weight:800; margin-bottom:6px;">
+        ${o.name} · CI ${o.idnum} · ${o.phone}
+      </div>
+      <div class="subtle">
+        Pedido ${o.id} — ${new Date(o.createdAt).toLocaleString('es-VE')}
+      </div>
+      <div style="margin:8px 0; font-weight:800;">
+        Total: ${o.total} Bs
+      </div>
+    `;
+
+    const dwrap = document.createElement('div'); 
+    dwrap.className='big-diamonds';
+    o.tickets.forEach(n=>{
+      const d=document.createElement('div'); 
+      d.className='big-diamond'; 
+      d.textContent=pad4(n); 
+      dwrap.appendChild(d); 
+    });
+
+    card.appendChild(dwrap); 
+    out.appendChild(card);
+  });
+}
+
 
     /* ==========================
        Init
