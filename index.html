@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Rifas - Emprendimiento</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#f4f4f9; margin:0; padding:20px; }
+    h1, h2 { text-align:center; }
+    .container { max-width: 1100px; margin: auto; }
+    
+    /* Barra progreso */
+    .progress { background:#ddd; border-radius:20px; overflow:hidden; margin:15px 0; }
+    .progress-bar { height:20px; background:linear-gradient(90deg, #28a745, #218838); width:0%; color:#fff; text-align:center; font-size:12px; }
+
+    /* Lista de boletos */
+    .tickets { display:grid; grid-template-columns: repeat(10, 1fr); gap:5px; margin:20px 0; }
+    .ticket { background:#fff; border:1px solid #ccc; padding:8px; text-align:center; cursor:pointer; border-radius:5px; }
+    .ticket.selected { background:#28a745; color:#fff; }
+
+    .pagination { text-align:center; margin:10px 0; }
+    .pagination button { margin:0 5px; padding:5px 10px; cursor:pointer; }
+
+    /* Buscador */
+    .search-box { margin:10px 0; text-align:center; }
+    .search-box input { padding:8px; width:200px; }
+
+    /* Formulario */
+    form { background:#fff; padding:15px; border-radius:10px; margin-top:20px; }
+    label { display:block; margin-top:10px; }
+    input, select { width:100%; padding:8px; margin-top:5px; border:1px solid #ccc; border-radius:5px; }
+
+    /* Botones */
+    button { padding:10px 15px; margin-top:15px; border:none; border-radius:5px; cursor:pointer; }
+    .btn-random { background:#007bff; color:#fff; }
+    .btn-confirm { background:#28a745; color:#fff; width:100%; }
+
+    /* Verificador */
+    .verificador { margin-top:30px; background:#fff; padding:15px; border-radius:10px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎟️ Sistema de Rifas</h1>
+    
+    <!-- Barra progreso -->
+    <h2>Progreso de boletos vendidos</h2>
+    <div class="progress"><div id="progress-bar" class="progress-bar">0%</div></div>
+
+    <!-- Buscador -->
+    <div class="search-box">
+      <input type="text" id="search" placeholder="🔍 Buscar boleto...">
+    </div>
+
+    <!-- Lista de boletos -->
+    <h2>Lista de boletos</h2>
+    <div id="tickets" class="tickets"></div>
+    <div class="pagination" id="pagination"></div>
+    <button class="btn-random" onclick="generateRandomTickets()">🎲 Generar 3 boletos aleatorios</button>
+    <p>Total seleccionados: <span id="total-selected">0</span></p>
+
+    <!-- Formulario -->
+    <h2>Datos personales</h2>
+    <form id="form">
+      <label>Nombre y Apellido:</label>
+      <input type="text" required>
+
+      <label>Cédula:</label>
+      <input type="text" required>
+
+      <label>Teléfono:</label>
+      <input type="tel" placeholder="+58 412..." required>
+
+      <label>Últimos 6 dígitos de la referencia de pago:</label>
+      <input type="text" maxlength="6" required>
+
+      <label>Método de pago:</label>
+      <select required>
+        <option value="bdv">Transferencia BDV</option>
+        <option value="pago-movil">Pago Móvil (Banco de Venezuela)</option>
+        <option value="binance">Binance</option>
+      </select>
+
+      <label>Subir comprobante:</label>
+      <input type="file" accept="image/*,application/pdf">
+
+      <button type="submit" class="btn-confirm">✅ Confirmar</button>
+    </form>
+
+    <!-- Verificador -->
+    <div class="verificador">
+      <h2>Verificador de boletos</h2>
+      <input type="text" id="verify-input" placeholder="Ingresa Teléfono o #Boleto">
+      <button onclick="verifyTickets()">🔎 Verificar</button>
+      <div id="verify-result"></div>
+    </div>
+  </div>
+
+  <script>
+    const TOTAL_TICKETS = 10000;
+    const PER_PAGE = 1000;
+    let currentPage = 1;
+    let tickets = Array.from({length: TOTAL_TICKETS}, (_,i)=> i.toString().padStart(4,'0'));
+    let selectedTickets = [];
+
+    function renderTickets() {
+      const start = (currentPage-1)*PER_PAGE;
+      const end = start + PER_PAGE;
+      const pageTickets = tickets.slice(start, end);
+      const container = document.getElementById('tickets');
+      container.innerHTML = '';
+      pageTickets.forEach(t => {
+        const div = document.createElement('div');
+        div.className = 'ticket';
+        div.innerText = t;
+        div.onclick = ()=>toggleTicket(t,div);
+        container.appendChild(div);
+      });
+      renderPagination();
+    }
+
+    function renderPagination() {
+      const pages = TOTAL_TICKETS / PER_PAGE;
+      const pagination = document.getElementById('pagination');
+      pagination.innerHTML = '';
+      for(let i=1;i<=pages;i++){
+        const btn = document.createElement('button');
+        btn.innerText = i;
+        btn.onclick=()=>{currentPage=i; renderTickets();};
+        pagination.appendChild(btn);
+      }
+    }
+
+    function toggleTicket(ticket, element){
+      if(selectedTickets.includes(ticket)){
+        selectedTickets = selectedTickets.filter(t=>t!==ticket);
+        element.classList.remove('selected');
+      } else {
+        selectedTickets.push(ticket);
+        element.classList.add('selected');
+      }
+      updateStats();
+    }
+
+    function updateStats(){
+      document.getElementById('total-selected').innerText = selectedTickets.length;
+      const percent = (selectedTickets.length / TOTAL_TICKETS)*100;
+      const bar = document.getElementById('progress-bar');
+      bar.style.width = percent+'%';
+      bar.innerText = percent.toFixed(1)+'%';
+    }
+
+    function generateRandomTickets(){
+      selectedTickets = [];
+      for(let i=0;i<3;i++){
+        const r = tickets[Math.floor(Math.random()*TOTAL_TICKETS)];
+        if(!selectedTickets.includes(r)) selectedTickets.push(r);
+      }
+      alert("Tus boletos aleatorios son: " + selectedTickets.join(", "));
+      updateStats();
+    }
+
+    document.getElementById('search').addEventListener('input', e=>{
+      const value = e.target.value;
+      const container = document.getElementById('tickets');
+      [...container.children].forEach(div=>{
+        div.style.display = div.innerText.includes(value)? 'block':'none';
+      });
+    });
+
+    function verifyTickets(){
+      const input = document.getElementById('verify-input').value;
+      const result = document.getElementById('verify-result');
+      if(selectedTickets.includes(input)){
+        result.innerHTML = "<p>✅ El boleto "+input+" está registrado.</p>";
+      } else {
+        result.innerHTML = "<p>❌ No se encontró registro.</p>";
+      }
+    }
+
+    renderTickets();
+  </script>
+</body>
+</html>
