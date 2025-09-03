@@ -3,256 +3,92 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Rifas 💎</title>
+  <title>Panel Admin - Rifas</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg:#ffffff; --ink:#111827; --muted:#6b7280; --accent:#0A4975;
-      --border:#e5e7eb; --chip:#f3f4f6; --warn:#ef4444;
-      --diamond-url:url('https://qu.ax/zcmdn.png'); /* diamante */
+    body {
+      margin:0; font-family:"Inter",sans-serif; background:#f9fafb; color:#111827;
+      display:flex; flex-direction:column; align-items:center; padding:20px;
     }
-    body { margin:0; background:var(--bg); color:var(--ink); font-family:"Inter",sans-serif; font-weight:700; }
-    .container { max-width:1200px; margin:0 auto; padding:16px; text-align:center; }
-
-    h1,h2,h3 { margin:0; font-weight:800; }
-
-    /* progreso */
-    .progress-info{margin:20px 0;}
-    .bar{height:14px; background:#f3f4f6; border-radius:999px; overflow:hidden;}
-    .bar span{display:block;height:100%;background:var(--accent);width:0%;transition:.5s;}
-    .progress-stats{font-size:14px;color:var(--muted);margin-top:4px;}
-
-    /* lista de boletos */
-    .tickets-panel{background:#fff;border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:20px;}
-    .tickets-panel h2{font-size:28px;color:var(--accent);}
-    .square-wrap{border:1px solid var(--border);border-radius:16px;height:400px;overflow:auto;margin:0 auto;max-width:900px;}
-    .ticket-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(60px,1fr));gap:6px;padding:10px;}
-    .ticket{padding:10px 0;border:1px solid var(--border);border-radius:10px;background:#fff;cursor:pointer;transition:.2s; font-size:14px;}
-    .ticket:hover{transform:scale(1.1);}
-    .ticket.selected{background:#dbeafe;border-color:#93c5fd;}
-    .ticket.sold{color:#555;background:#eaf6ff;cursor:not-allowed;}
-    .ticket.sold::after{content:"";position:absolute;inset:2px;background-image:var(--diamond-url);background-size:contain;background-position:center;background-repeat:no-repeat;opacity:.4;}
-
-    /* chips */
-    .chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:10px;}
-    .chip{background:var(--chip);border:1px solid var(--border);border-radius:999px;padding:6px 10px;display:flex;align-items:center;gap:6px;}
-
-    /* totales */
-    .totals{margin-top:10px;}
-    .tag{background:#eef2ff;padding:6px 10px;border-radius:999px;margin:4px;display:inline-block;}
-
-    /* formulario */
-    .panel{background:#fff;border:1px solid var(--border);border-radius:16px;padding:16px;margin-top:16px;text-align:center;}
-    .form{display:grid;gap:10px;}
-    .field input{width:100%;padding:8px;border:1px solid var(--border);border-radius:10px;text-align:center;}
-
-    /* admin */
-    .order-card {border:1px solid var(--border);border-radius:12px;padding:12px;margin-top:12px;background:#fafafa;text-align:left;}
-    .order-card h4{margin:0 0 6px;font-size:16px;}
-    .order-card img{max-width:180px;border:1px solid #ccc;margin-top:6px;border-radius:8px;}
-    .order-card button{margin-top:10px;padding:6px 10px;border:none;border-radius:8px;background:#ef4444;color:#fff;cursor:pointer;}
-    .order-card button:hover{background:#b91c1c;}
+    h1 { margin-bottom:20px; color:#0A4975; }
+    .orders { max-width:900px; width:100%; }
+    .order-card {
+      background:#fff; border:1px solid #e5e7eb; border-radius:12px;
+      padding:16px; margin-bottom:16px; box-shadow:0 1px 3px rgba(0,0,0,0.08);
+    }
+    .order-card h2 { margin:0 0 8px; font-size:18px; color:#0A4975; }
+    .order-card p { margin:4px 0; font-size:14px; }
+    .order-card img { max-width:220px; border:1px solid #ccc; border-radius:8px; margin-top:8px; }
+    .order-card button {
+      margin-top:10px; padding:8px 14px; border:none; border-radius:8px;
+      background:#ef4444; color:#fff; font-weight:700; cursor:pointer;
+    }
+    .order-card button:hover { background:#b91c1c; }
+    .empty { text-align:center; font-size:16px; color:#6b7280; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Rifas 💎</h1>
-
-    <!-- progreso -->
-    <section class="progress-info">
-      <div class="bar"><span id="soldBar"></span></div>
-      <div class="progress-stats">Vendidos: <b id="soldCount">0</b> / 10.000 — <b id="soldPct">0%</b></div>
-    </section>
-
-    <!-- lista de boletos -->
-    <section class="tickets-panel">
-      <h2>Lista de boletos</h2>
-      <div class="square-wrap">
-        <div id="tickets" class="ticket-grid"></div>
-      </div>
-      <div class="totals">
-        <span class="tag">Precio: 15 Bs</span>
-        <span class="tag">Seleccionados: <b id="selCount">0</b></span>
-        <span class="tag">Total: <b id="totalAmount">0 Bs</b></span>
-      </div>
-      <div id="selectedChips" class="chips"></div>
-    </section>
-
-    <!-- formulario -->
-    <section class="panel">
-      <h2>Datos personales</h2>
-      <form id="buyForm" class="form">
-        <div class="field"><input id="name" placeholder="Nombre y apellido" required></div>
-        <div class="field"><input id="idnum" placeholder="Cédula" required></div>
-        <div class="field"><input id="phone" placeholder="Teléfono (ej: 04241234567)" required></div>
-        <div class="field"><input id="ref6" maxlength="6" placeholder="Últimos 6 dígitos ref" required></div>
-        <div class="field"><input id="proof" type="file" accept="image/*,application/pdf" required></div>
-        <button type="button" id="btnConfirm">Confirmar compra</button>
-      </form>
-    </section>
-
-    <!-- verificador -->
-    <section class="panel">
-      <h2>Verificador de boletos</h2>
-      <input id="verifyInput" placeholder="Teléfono o número de boleto">
-      <button id="btnVerify">Verificar</button>
-      <div id="verifyOut"></div>
-    </section>
-
-    <!-- PANEL ADMIN -->
-    <section class="panel" id="adminPanel" style="display:none;">
-      <h2>Panel Administrador</h2>
-      <div id="ordersList"></div>
-    </section>
-    <div style="margin-top:12px;">
-      <button id="btnAdmin">👨‍💻 Entrar como administrador</button>
-    </div>
-  </div>
+  <h1>📋 Panel de Administración</h1>
+  <div class="orders" id="ordersList"></div>
 
 <script>
-  const PRICE = 15;
-  const TOTAL_TICKETS = 10000;
-
-  const soldKey = 'rifas_soldTickets_v1';
   const ordersKey = 'rifas_orders_v1';
-  const getSold = () => new Set(JSON.parse(localStorage.getItem(soldKey) || '[]'));
-  const setSold = s => localStorage.setItem(soldKey, JSON.stringify([...s]));
+  const soldKey = 'rifas_soldTickets_v1';
+
   const getOrders = () => JSON.parse(localStorage.getItem(ordersKey) || '[]');
   const setOrders = arr => localStorage.setItem(ordersKey, JSON.stringify(arr));
-
-  const el = s => document.querySelector(s);
+  const getSold = () => new Set(JSON.parse(localStorage.getItem(soldKey) || '[]'));
+  const setSold = s => localStorage.setItem(soldKey, JSON.stringify([...s]));
 
   function pad4(n){ return n.toString().padStart(4,'0'); }
 
-  // render boletos
-  function renderTickets(){
-    const sold = getSold();
-    const grid = el('#tickets');
-    grid.innerHTML = '';
-    for(let i=0;i<200;i++){ // demo 200 boletos
-      const num = i;
-      const b = document.createElement('div');
-      b.className='ticket';
-      b.textContent = pad4(num);
-      if(sold.has(num)) {
-        b.classList.add('sold');
-        b.onclick = ()=>alert("Boleto ya ha sido vendido");
-      } else {
-        b.onclick = ()=>selectTicket(num);
-      }
-      grid.appendChild(b);
-    }
-  }
-
-  let selected = new Set();
-  function selectTicket(n){
-    selected.add(n);
-    updateTotalsUI();
-    renderSelectedChips();
-  }
-  function updateTotalsUI(){
-    el('#selCount').textContent = selected.size;
-    el('#totalAmount').textContent = (selected.size*PRICE)+' Bs';
-  }
-  function renderSelectedChips(){
-    const box = el('#selectedChips');
-    box.innerHTML='';
-    [...selected].forEach(n=>{
-      const span = document.createElement('span');
-      span.className='chip';
-      span.textContent=pad4(n);
-      box.appendChild(span);
-    });
-  }
-
-  // confirmar compra
-  el('#btnConfirm').onclick = async ()=>{
-    if(selected.size<1){ alert("Selecciona boletos"); return; }
-    const name=el('#name').value.trim();
-    const idnum=el('#idnum').value.trim();
-    const phone=el('#phone').value.trim();
-    const ref6=el('#ref6').value.trim();
-    const proof=el('#proof').files[0];
-    if(!name||!idnum||!phone||!ref6||!proof){ alert("Faltan datos"); return; }
-    const proofData = await new Promise(res=>{
-      const r=new FileReader(); r.onload=()=>res(r.result); r.readAsDataURL(proof);
-    });
-    const order={id:"ORD-"+Date.now(),name,idnum,phone,ref6,proof:proofData,tickets:[...selected],total:selected.size*PRICE};
-    const orders=getOrders(); orders.push(order); setOrders(orders);
-    const sold=getSold(); order.tickets.forEach(n=>sold.add(n)); setSold(sold);
-    selected.clear();
-    renderTickets(); updateProgress(); renderSelectedChips(); updateTotalsUI();
-    alert("Compra registrada!");
-  }
-
-  // progreso
-  function updateProgress(){
-    const sold=getSold();
-    el('#soldCount').textContent=sold.size;
-    el('#soldPct').textContent=Math.round((sold.size/TOTAL_TICKETS)*100)+"%";
-    el('#soldBar').style.width=(sold.size/TOTAL_TICKETS*100)+"%";
-  }
-
-  // verificador
-  el('#btnVerify').onclick=()=>{
-    const raw=el('#verifyInput').value.trim();
-    const out=el('#verifyOut'); out.innerHTML='';
-    const orders=getOrders();
-    let hits=[];
-    if(/^\d{4}$/.test(raw)){
-      const n=parseInt(raw,10);
-      hits=orders.filter(o=>o.tickets.includes(n));
-    }else{
-      hits=orders.filter(o=>o.phone.includes(raw));
-    }
-    if(!hits.length){out.textContent="No se encontraron compras";return;}
-    hits.forEach(o=>{
-      const div=document.createElement('div');
-      div.innerHTML=`<b>${o.name}</b> - Tel: ${o.phone}<br>Boletos: ${o.tickets.map(pad4).join(', ')}<br>Total: ${o.total} Bs`;
-      out.appendChild(div);
-    });
-  }
-
-  // admin panel
-  el('#btnAdmin').onclick=()=>{
-    const p=el('#adminPanel');
-    p.style.display=p.style.display==='none'?'block':'none';
-    if(p.style.display==='block') renderOrders();
-  }
   function renderOrders(){
-    const wrap=el('#ordersList'); wrap.innerHTML='';
+    const wrap=document.getElementById('ordersList');
+    wrap.innerHTML='';
     const orders=getOrders();
-    if(!orders.length){wrap.textContent="No hay compras";return;}
+    if(!orders.length){
+      wrap.innerHTML='<div class="empty">No hay compras registradas</div>';
+      return;
+    }
     orders.forEach(o=>{
-      const d=document.createElement('div');
-      d.className='order-card';
-      d.innerHTML=`
-        <h4>${o.id}</h4>
-        <div><b>Nombre:</b> ${o.name}</div>
-        <div><b>Cédula:</b> ${o.idnum}</div>
-        <div><b>Teléfono:</b> ${o.phone}</div>
-        <div><b>Ref:</b> ${o.ref6}</div>
-        <div><b>Total:</b> ${o.total} Bs</div>
-        <div><b>Boletos:</b> ${o.tickets.map(pad4).join(', ')}</div>
-        <img src="${o.proof}" alt="comprobante">
-        <br><button onclick="deleteOrder('${o.id}')">❌ Eliminar compra</button>`;
-      wrap.appendChild(d);
+      const card=document.createElement('div');
+      card.className='order-card';
+      card.innerHTML=`
+        <h2>Pedido: ${o.id}</h2>
+        <p><b>Nombre:</b> ${o.name}</p>
+        <p><b>Cédula:</b> ${o.idnum}</p>
+        <p><b>Teléfono:</b> ${o.phone}</p>
+        <p><b>Referencia:</b> ${o.ref6}</p>
+        <p><b>Total:</b> ${o.total} Bs</p>
+        <p><b>Boletos:</b> ${o.tickets.map(pad4).join(', ')}</p>
+        <p><b>Fecha:</b> ${new Date(o.createdAt).toLocaleString('es-VE')}</p>
+        <div><b>Comprobante:</b><br>
+          <img src="${o.proof}" alt="comprobante de pago">
+        </div>
+        <button onclick="deleteOrder('${o.id}')">❌ Eliminar compra</button>
+      `;
+      wrap.appendChild(card);
     });
   }
+
   function deleteOrder(id){
-    if(!confirm("¿Eliminar compra?"))return;
+    if(!confirm("¿Seguro que deseas eliminar esta compra?")) return;
     let orders=getOrders();
     const order=orders.find(o=>o.id===id);
     if(order){
-      const sold=getSold(); order.tickets.forEach(n=>sold.delete(n)); setSold(sold);
-      orders=orders.filter(o=>o.id!==id); setOrders(orders);
-      renderOrders(); renderTickets(); updateProgress();
-      alert("Compra eliminada.");
+      // liberar boletos vendidos
+      const sold=getSold();
+      order.tickets.forEach(n=>sold.delete(n));
+      setSold(sold);
+      // eliminar orden
+      orders=orders.filter(o=>o.id!==id);
+      setOrders(orders);
+      renderOrders();
+      alert("Compra eliminada correctamente");
     }
   }
 
-  // init
-  renderTickets(); updateProgress();
+  renderOrders();
 </script>
 </body>
 </html>
