@@ -248,7 +248,7 @@
     const PAYMENT_METHODS = [
       { key: 'pago_movil_ve', name: 'Pago móvil Venezuela', logo: 'https://yt3.googleusercontent.com/3ME3g2bCspqXCDaWLDasexj6y-JYW4ibgTSGDRq0Eua3JCOzd6fR00G1v3qIphKbuKBflB2qbg=s900-c-k-c0x00ffffff-no-rj', details: ['Banco: 0102', 'Teléfono: 0424-8417632', 'Cédula/RIF: V-31490382', 'Titular: Angel Zabala'] },
       { key: 'pago_movil_banesco', name: 'Pago móvil Banesco', logo: 'https://play-lh.googleusercontent.com/JP3qF5hwz0z7z-d2PEu21dhtdb7EBlC-5XKAuE0e2zLUAjWca-ePijvcb-nAQGAa9Ng=w240-h480-rw', details: ['Banco: 0134', 'Teléfono: 0414-8516619', 'Cédula/RIF: V-14884043', 'Titular:Iraima Jimenez'] },
-      { key: 'binance', name: 'Binance', logo: 'https://upload.wikimedia.org/wikipedia/commons/5/57/Binance_Logo.png', details: ['Correo: angelitojavier277@gmail.com', 'Nota: Adjunta el hash/ID de transacción'] }
+      { key: 'binance', name: 'Binance', logo: 'https://upload.wikimedia.org/wikipedia/commons/5/57/Binance_Logo.png', details: ['Correo: angelitojavier277@gmail.com',  ] }
     ];
 
     /* ==========================
@@ -408,7 +408,7 @@
       d.style.display = 'block';
       d.innerHTML = `<div style="font-weight:800; margin-bottom:6px;">Datos para ${m.name}</div>` +
         '<ul style="margin:0; padding-left:18px;">' + m.details.map(x=>`<li>${x}</li>`).join('') + '</ul>' +
-        '<div class="subtle" style="margin-top:8px;">* Copia los datos y realiza el pago. Luego sube el comprobante.</div>';
+        '<div class="subtle" style="margin-top:8px;">* </div>';
     }
 
     /* ==========================
