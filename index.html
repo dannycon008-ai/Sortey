@@ -1,704 +1,616 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Rifas - Emprendimiento</title>
+  <title>Rifas | Emprendimiento</title>
+  <!-- Fuente con look "chubby" -->
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root{
-      --bg: #0f172a;          /* slate-900 */
-      --panel: #111827;       /* gray-900 */
-      --muted: #1f2937;       /* gray-800 */
-      --text: #e5e7eb;        /* gray-200 */
-      --text-dim: #94a3b8;    /* slate-400 */
-      --primary: #22c55e;     /* green-500 */
-      --primary-600: #16a34a; /* green-600 */
-      --danger: #ef4444;      /* red-500 */
-      --warning: #f59e0b;     /* amber-500 */
-      --accent: #38bdf8;      /* sky-400 */
-      --card: #0b1022;        /* custom */
-      --shadow: 0 8px 24px rgba(0,0,0,.35);
-      --radius: 18px;
+      --bg:#ffffff; /* fondo blanco solicitado */
+      --fg:#0f172a; /* texto principal */
+      --muted:#64748b; /* texto secundario */
+      --primary:#0ea5e9; /* acento profesional */
+      --primary-600:#0284c7;
+      --ring:#bae6fd;
+      --ok:#16a34a;
+      --warn:#f59e0b;
+      --danger:#ef4444;
+      --card:#f8fafc;
+      --border:#e2e8f0;
     }
-
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
-      margin:0; background:linear-gradient(180deg,#0b1022, #0a0f1e 60%, #050814);
-      color:var(--text); font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      margin:0; background:var(--bg); color:var(--fg);
+      font-family:"Fredoka", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
     }
 
-    /* Header */
+    .container{max-width:1200px; margin:0 auto; padding:24px;}
+
     header{
-      position:sticky; top:0; z-index:50; backdrop-filter: blur(8px);
-      background:rgba(10, 15, 30, .7); border-bottom:1px solid rgba(255,255,255,.06);
+      display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:16px;
     }
-    .wrap{max-width:1200px;margin:0 auto;padding:14px 16px}
-    .row{display:flex; gap:12px; align-items:center; flex-wrap:wrap}
-    .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.3px}
-    .brand svg{width:28px;height:28px}
+    .brand{display:flex; align-items:center; gap:12px}
+    .brand h1{font-weight:700; letter-spacing:.5px; margin:0;}
+    .brand .badge{font-size:12px; color:var(--primary-600); background:var(--ring); padding:4px 8px; border-radius:999px;}
 
-    .search{
-      flex:1; display:flex; align-items:center; gap:8px; background:var(--panel); border:1px solid rgba(255,255,255,.06);
-      padding:10px 12px; border-radius:999px; min-width: 220px;
-    }
-    .search input{
-      flex:1; background:transparent; outline:none; border:0; color:var(--text); font-size:15px;
-    }
-    .btn{
-      background:var(--primary); color:#062b12; border:0; padding:10px 14px; border-radius:12px; font-weight:700; cursor:pointer; box-shadow: var(--shadow);
-      transition:.2s transform ease, .2s opacity ease, .2s background ease;
-    }
-    .btn:hover{ transform: translateY(-1px); }
-    .btn.secondary{ background:var(--muted); color:var(--text); }
-    .btn.ghost{ background:transparent; border:1px solid rgba(255,255,255,.12); color:var(--text); box-shadow:none; }
-    .btn.warn{ background:var(--warning); color:#3d2a04 }
+    .tabs{display:flex; gap:6px; background:var(--card); padding:6px; border-radius:12px; border:1px solid var(--border)}
+    .tab{border:none; background:transparent; padding:10px 14px; border-radius:10px; cursor:pointer; font-weight:600; color:var(--muted)}
+    .tab.active{background:#fff; color:var(--fg); box-shadow:0 1px 0 0 rgba(15,23,42,.06);}
 
-    /* Layout */
-    main{ max-width:1200px; margin:20px auto; padding:0 16px; display:grid; grid-template-columns: 1.7fr .95fr; gap:18px; }
+    .grid{display:grid; grid-template-columns:2fr 1fr; gap:20px}
+    @media (max-width: 980px){.grid{grid-template-columns:1fr}}
 
-    @media (max-width: 980px){
-      main{ grid-template-columns: 1fr; }
-    }
+    .card{background:#fff; border:1px solid var(--border); border-radius:16px; box-shadow:0 6px 18px rgba(2,8,23,.04);}
+    .card h3{margin:0 0 8px 0}
+    .card .hd{padding:16px 18px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:12px}
+    .card .bd{padding:16px 18px}
 
-    .panel{ background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01)); border:1px solid rgba(255,255,255,.06); border-radius: var(--radius); box-shadow: var(--shadow); }
+    /* Tickets */
+    .toolbar{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+    .search{position:relative; flex:1; min-width:240px;}
+    .search input{width:100%; padding:10px 38px 10px 40px; border-radius:12px; border:1px solid var(--border); outline:none; font-weight:500}
+    .search svg{position:absolute; left:12px; top:50%; transform:translateY(-50%);}
+    .toolbar .btn{padding:10px 14px; border-radius:12px; border:1px solid var(--border); background:#fff; cursor:pointer; font-weight:600}
+    .toolbar .btn.primary{background:var(--primary); color:#fff; border-color:var(--primary)}
 
-    .tickets-panel{ padding:16px; }
-    .tickets-header{ display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; }
+    .tickets-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(70px,1fr)); gap:8px;}
+    .ticket{padding:10px 0; text-align:center; border:1px dashed var(--border); border-radius:12px; background:var(--card); cursor:pointer; font-weight:600}
+    .ticket:hover{border-color:var(--primary); box-shadow:0 0 0 3px var(--ring)}
+    .ticket[disabled]{opacity:.35; cursor:not-allowed; text-decoration:line-through}
 
-    .progress{
-      width:100%; height:12px; background:rgba(255,255,255,.08); border-radius:999px; overflow:hidden; position:relative;
-    }
-    .progress > span{ display:block; height:100%; width:0%; background:linear-gradient(90deg, var(--primary), #8bffbe); transition:width .3s ease; }
+    .pagination{display:flex; gap:6px; flex-wrap:wrap; align-items:center; justify-content:center; margin-top:14px}
+    .page-btn{border:1px solid var(--border); background:#fff; padding:8px 12px; border-radius:10px; cursor:pointer; font-weight:600}
+    .page-btn.active{background:var(--primary); border-color:var(--primary); color:#fff}
 
-    .statline{ display:flex; gap:10px; align-items:center; justify-content:space-between; color:var(--text-dim); font-size: 14px; margin-top:8px; }
+    .summary{display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap; background:var(--card); padding:12px; border-radius:12px; border:1px solid var(--border)}
 
-    .tickets-grid{
-      display:grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap:10px; margin-top:14px; min-height:320px;
-    }
+    .pill{display:inline-flex; align-items:center; gap:8px; background:#fff; border:1px solid var(--border); padding:8px 12px; border-radius:999px}
 
-    .ticket{
-      user-select:none; cursor:pointer; text-align:center; padding:10px 8px; border-radius:14px; font-weight:800; letter-spacing:1px; font-variant-numeric: tabular-nums;
-      background: radial-gradient(120px 60px at 50% 0%, rgba(56,189,248,.18), transparent 60%), linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-      border:1px solid rgba(255,255,255,.08); color:#c7f9ff;
-      transition:.18s transform ease, .18s background ease, .18s box-shadow ease, .18s border-color ease, .18s opacity ease;
-    }
-    .ticket:hover{ transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,.35); }
-    .ticket.selected{ border-color: #9ff1b9; background: linear-gradient(180deg, rgba(34,197,94,.3), rgba(34,197,94,.14)); color:#05290f; text-shadow: 0 1px 0 rgba(255,255,255,.35); }
-    .ticket.sold{ cursor:not-allowed; opacity:.45; border-style:dashed; background: linear-gradient(180deg, rgba(239,68,68,.2), rgba(239,68,68,.06)); color:#ffd6d6; }
+    .progress{height:12px; background:var(--card); border-radius:999px; overflow:hidden; border:1px solid var(--border)}
+    .bar{height:100%; background:linear-gradient(90deg,var(--primary), #22d3ee); width:0%}
 
-    .pagination{ display:flex; gap:8px; justify-content:center; align-items:center; margin-top:16px; flex-wrap:wrap; }
-    .pagination button{ background:transparent; border:1px solid rgba(255,255,255,.12); color:var(--text); padding:8px 12px; border-radius:12px; cursor:pointer; }
-    .pagination button.active{ background:var(--accent); color:#05121a; border-color:transparent; font-weight:800; }
+    .selected-wrap{display:flex; gap:8px; flex-wrap:wrap}
+    .chip{background:#fff; border:1px solid var(--border); padding:6px 8px; border-radius:999px; display:inline-flex; align-items:center; gap:6px; font-weight:600}
+    .chip button{border:none; background:transparent; cursor:pointer; font-weight:700; color:var(--danger)}
 
-    .sidebar{ padding:16px; display:flex; flex-direction:column; gap:12px; }
-    .card{ background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02)); border:1px solid rgba(255,255,255,.06); border-radius:14px; padding:12px; }
-    .card h3{ margin:0 0 8px 0; font-size:16px; letter-spacing:.2px }
+    .row{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+    @media (max-width:680px){.row{grid-template-columns:1fr}}
 
-    .selected-list{ display:flex; flex-wrap:wrap; gap:8px; max-height:128px; overflow:auto; }
-    .pill{ padding:6px 8px; background: rgba(34,197,94,.15); border:1px solid rgba(34,197,94,.35); color:#b0ffd0; border-radius:999px; font-weight:800; font-size:13px; }
+    label{display:block; font-weight:600; margin-bottom:6px}
+    input[type="text"], input[type="number"], input[type="file"], select{width:100%; padding:12px 12px; border:1px solid var(--border); border-radius:12px; outline:none; font-weight:500}
 
-    .suggestions{ display:grid; grid-template-columns: repeat(4, 1fr); gap:8px; }
-    .suggestions button{ border:1px dashed rgba(255,255,255,.18); background:rgba(255,255,255,.04); color:var(--text); border-radius:12px; padding:8px 6px; cursor:pointer; font-weight:700; }
+    .radios{display:grid; grid-template-columns:1fr; gap:10px}
+    .pay-option{display:flex; align-items:center; gap:12px; padding:10px; border:1px solid var(--border); border-radius:12px;}
+    .pay-option img{width:26px; height:26px; object-fit:contain}
 
-    .split{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
-    @media (max-width:520px){ .split{ grid-template-columns: 1fr; } }
+    .actions{display:flex; gap:10px; flex-wrap:wrap}
+    .btn{border:none; padding:12px 16px; border-radius:12px; font-weight:700; cursor:pointer}
+    .btn.primary{background:var(--primary); color:#fff}
+    .btn.secondary{background:#fff; border:1px solid var(--border)}
+    .btn.danger{background:var(--danger); color:#fff}
+    .btn:disabled{opacity:.5; cursor:not-allowed}
 
-    label{ font-size:13px; color:var(--text-dim); }
-    input, select, textarea{
-      width:100%; background: var(--panel); color:var(--text); border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:10px 10px; outline:none;
-    }
-    input:focus, select:focus, textarea:focus{ border-color: var(--accent); box-shadow:0 0 0 3px rgba(56, 189, 248, .18); }
+    .alert{display:none; margin-top:10px; background:#fff; border-left:6px solid var(--warn); padding:12px; border:1px solid var(--border); border-radius:10px}
+    .alert.show{display:block}
 
-    .phone-row{ display:grid; grid-template-columns: 140px 1fr; gap:8px; }
-    @media (max-width:520px){ .phone-row{ grid-template-columns: 1fr; } }
+    /* Verificador */
+    .verify-tabs{display:flex; gap:8px; margin-bottom:10px}
+    .verify-tabs button{border:1px solid var(--border); background:#fff; padding:8px 12px; border-radius:10px; font-weight:600; cursor:pointer}
+    .verify-tabs .active{background:var(--primary); color:#fff; border-color:var(--primary)}
 
-    .payment-methods{ display:grid; grid-template-columns: 1fr; gap:10px; }
-    .pay-option{ display:flex; align-items:center; gap:10px; padding:10px; border-radius:12px; border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.03); }
+    .result{background:var(--card); border:1px solid var(--border); border-radius:12px; padding:12px}
+    .result h4{margin:4px 0 10px}
+    .muted{color:var(--muted)}
 
-    .payment-details{ background:rgba(0,0,0,.2); border:1px dashed rgba(255,255,255,.18); padding:10px; border-radius:12px; font-size:14px; color:#dbeafe; }
-    .payment-details[contenteditable="true"]{ outline: 2px dashed var(--accent); background: rgba(56,189,248,.08); }
-
-    .file-input{ border:1px dashed rgba(255,255,255,.18); padding:12px; border-radius:12px; text-align:center; cursor:pointer; background:rgba(255,255,255,.03); }
-    .file-input input{ display:none; }
-    .file-preview{ margin-top:8px; max-height:160px; display:block; border-radius:10px; }
-
-    .error{ color:#fecaca; background: rgba(239,68,68,.12); border:1px solid rgba(239,68,68,.25); padding:8px 10px; border-radius:10px; display:none }
-    .ok{ color:#05290f; background: rgba(34,197,94,.2); border:1px solid rgba(34,197,94,.3); padding:8px 10px; border-radius:10px; display:none }
-
-    .divider{ height:1px; background:rgba(255,255,255,.08); margin:8px 0 }
-
-    /* Modal */
-    .modal{ position:fixed; inset:0; background:rgba(0,0,0,.6); display:none; align-items:center; justify-content:center; padding:20px; z-index:60; }
-    .modal .box{ width:min(880px, 96vw); max-height:88vh; overflow:auto; background:var(--card); border:1px solid rgba(255,255,255,.08); border-radius:20px; padding:16px; box-shadow: var(--shadow); }
-    .modal .head{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:10px }
-    .tabs{ display:flex; gap:8px; flex-wrap:wrap }
-    .tabs button{ background:transparent; border:1px solid rgba(255,255,255,.14); color:var(--text); padding:8px 12px; border-radius:999px; cursor:pointer; }
-    .tabs button.active{ background:var(--accent); color:#041017; border-color:transparent; font-weight:800 }
-
-    .results{ display:grid; gap:10px; }
-
-    /* Footer */
-    footer{ text-align:center; color:var(--text-dim); font-size:13px; padding:16px; }
-
+    .footnote{font-size:12px; color:var(--muted)}
   </style>
 </head>
 <body>
-  <header>
-    <div class="wrap row">
+  <div class="container">
+    <header>
       <div class="brand">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 2l2.39 4.84L20 8l-4 3.9.94 5.48L12 15.77 7.06 17.38 8 11.9 4 8l5.61-1.16L12 2z" stroke="#38bdf8" stroke-width="1.2"/></svg>
-        <span>Rifas</span>
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 7.5C3 6.11929 4.11929 5 5.5 5H18.5C19.8807 5 21 6.11929 21 7.5V16.5C21 17.8807 19.8807 19 18.5 19H5.5C4.11929 19 3 17.8807 3 16.5V7.5Z" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8.5 5V3.5M15.5 5V3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M3 9H21" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+        <h1>Rifas Pro</h1>
+        <span class="badge">0000 – 9999</span>
       </div>
-
-      <div class="search" title="Buscar un boleto (0000 - 0999)">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 21l-4.2-4.2" stroke="#9fb9d0" stroke-width="1.6" stroke-linecap="round"/><circle cx="11" cy="11" r="7" stroke="#9fb9d0" stroke-width="1.6"/></svg>
-        <input id="searchInput" type="text" inputmode="numeric" placeholder="Buscar #boleto (ej: 0075)" maxlength="4" />
-        <button class="btn ghost" id="btnBuscar">Buscar</button>
+      <div class="tabs" role="tablist">
+        <button id="tab-comprar" class="tab active" role="tab" aria-selected="true">Comprar</button>
+        <button id="tab-verificar" class="tab" role="tab" aria-selected="false">Verificador</button>
       </div>
+    </header>
 
-      <button id="btnVerificador" class="btn secondary">Verificador de boletos</button>
-    </div>
-  </header>
-
-  <main>
-    <section class="panel tickets-panel">
-      <div class="tickets-header">
-        <div style="flex:1">
-          <div class="progress" aria-label="Porcentaje vendido">
-            <span id="progressBar" style="width:0%"></span>
+    <!-- Sección COMPRAR -->
+    <section id="section-comprar" aria-labelledby="tab-comprar">
+      <div class="grid">
+        <!-- Columna izquierda: Tickets -->
+        <div class="card">
+          <div class="hd">
+            <div style="display:flex; flex-direction:column; gap:4px">
+              <h3>Lista de boletos</h3>
+              <span class="muted">Selecciona tus números o usa el generador de suerte.</span>
+            </div>
+            <div class="pill"><strong id="contador-boletos">0</strong> seleccionados</div>
           </div>
-          <div class="statline">
-            <div><strong id="soldCount">0</strong> vendidos • <strong id="availableCount">0</strong> disponibles</div>
-            <div><strong id="soldPct">0%</strong> del total</div>
+          <div class="bd">
+            <div class="toolbar">
+              <div class="search">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M21 21L16.65 16.65" stroke="#64748b" stroke-width="1.5" stroke-linecap="round"/>
+                  <circle cx="11" cy="11" r="7.25" stroke="#64748b" stroke-width="1.5"/>
+                </svg>
+                <input id="input-search" type="text" placeholder="Buscar boleto (0000-9999)" maxlength="4" inputmode="numeric" autocomplete="off"/>
+              </div>
+              <button class="btn" id="btn-limpiar">Limpiar selección</button>
+              <button class="btn primary" id="btn-aleatorio">🎲 Generar 3 al azar</button>
+            </div>
+
+            <div class="summary" style="margin:12px 0">
+              <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap">
+                <span class="muted">Avance de ventas</span>
+                <div class="progress" style="width:220px"><div id="bar" class="bar"></div></div>
+                <span id="pct" class="pill">0% vendido</span>
+              </div>
+              <div class="pill">Total: <span id="total-bs" style="font-weight:700;">Bs 0</span></div>
+            </div>
+
+            <div id="tickets" class="tickets-grid" aria-live="polite"></div>
+
+            <div class="pagination" id="pagination"></div>
+
+            <div style="margin-top:12px">
+              <div class="selected-wrap" id="selected-chips"></div>
+            </div>
+
+            <div id="alert-min" class="alert">⚠️ Compra mínima: 3 boletos.</div>
           </div>
         </div>
-        <div class="row">
-          <button id="btnSuerte" class="btn warn" title="Elegir 3 boletos al azar">🎲 A la suerte (3)</button>
+
+        <!-- Columna derecha: Formulario y pago -->
+        <div class="card">
+          <div class="hd">
+            <h3>Datos personales y pago</h3>
+          </div>
+          <div class="bd">
+            <form id="form-compra">
+              <div class="row">
+                <div>
+                  <label for="nombre">Nombre y apellido</label>
+                  <input id="nombre" type="text" placeholder="Ej: Ana Pérez" required />
+                </div>
+                <div>
+                  <label for="cedula">Cédula</label>
+                  <input id="cedula" type="text" inputmode="numeric" placeholder="Ej: 12345678" required />
+                </div>
+              </div>
+
+              <div class="row">
+                <div>
+                  <label for="pais">País (código y bandera)</label>
+                  <select id="pais" required>
+                    <!-- Puedes editar/añadir países aquí -->
+                    <option value="VE" data-code="+58">🇻🇪 Venezuela (+58)</option>
+                    <option value="CO" data-code="+57">🇨🇴 Colombia (+57)</option>
+                    <option value="US" data-code="+1">🇺🇸 Estados Unidos (+1)</option>
+                    <option value="ES" data-code="+34">🇪🇸 España (+34)</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="telefono">Teléfono</label>
+                  <input id="telefono" type="text" inputmode="numeric" placeholder="Ej: 04121234567" required />
+                  <div class="footnote" id="e164">Formato: +58 0412******</div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div>
+                  <label for="ref6">Últimos 6 dígitos de la referencia</label>
+                  <input id="ref6" type="text" inputmode="numeric" maxlength="6" placeholder="Ej: 123456" required />
+                </div>
+                <div>
+                  <label for="comprobante">Subir comprobante de pago</label>
+                  <input id="comprobante" type="file" accept="image/*,application/pdf" />
+                </div>
+              </div>
+
+              <div style="margin:10px 0 4px"><strong>Métodos de pago</strong> <span class="muted">(elige uno)</span></div>
+              <div class="radios" id="metodos-pago"></div>
+              <div class="footnote">Puedes editar los datos y logos en el objeto <code>PAYMENTS_CONFIG</code> dentro del script.</div>
+
+              <div style="margin-top:14px" class="actions">
+                <button type="button" class="btn secondary" id="btn-borrador">Guardar borrador</button>
+                <button type="submit" class="btn primary" id="btn-confirmar" disabled>Confirmar compra</button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
-
-      <div id="ticketsGrid" class="tickets-grid" aria-live="polite"></div>
-      <div class="pagination" id="pagination"></div>
     </section>
 
-    <aside class="panel sidebar">
+    <!-- Sección VERIFICADOR -->
+    <section id="section-verificar" aria-labelledby="tab-verificar" hidden>
       <div class="card">
-        <h3>Seleccionados (<span id="selectedCount">0</span>)</h3>
-        <div id="selectedList" class="selected-list" aria-live="polite"></div>
-        <div class="divider"></div>
-        <h3>Sugerencias al azar</h3>
-        <div class="suggestions" id="suggestions"></div>
-        <div style="display:flex; gap:8px; margin-top:8px">
-          <button class="btn secondary" id="btnRefrescarSug">Refrescar</button>
-          <button class="btn" id="btnAgregarSug">Agregar sugeridos</button>
+        <div class="hd">
+          <h3>Verificador de boletos</h3>
+        </div>
+        <div class="bd">
+          <div class="verify-tabs">
+            <button class="active" id="vtab-tlf">Por teléfono</button>
+            <button id="vtab-boleto">Por # boleto</button>
+          </div>
+
+          <div id="vf-telefono">
+            <div class="row">
+              <div>
+                <label for="v-pais">País</label>
+                <select id="v-pais">
+                  <option value="VE" data-code="+58">🇻🇪 Venezuela (+58)</option>
+                  <option value="CO" data-code="+57">🇨🇴 Colombia (+57)</option>
+                  <option value="US" data-code="+1">🇺🇸 Estados Unidos (+1)</option>
+                  <option value="ES" data-code="+34">🇪🇸 España (+34)</option>
+                </select>
+              </div>
+              <div>
+                <label for="v-telefono">Teléfono</label>
+                <input id="v-telefono" type="text" inputmode="numeric" placeholder="Ej: 04121234567" />
+              </div>
+            </div>
+            <div style="margin-top:10px" class="actions">
+              <button class="btn primary" id="btn-buscar-tlf">Buscar</button>
+            </div>
+          </div>
+
+          <div id="vf-boleto" hidden>
+            <label for="v-boleto"># Boleto (0000–9999)</label>
+            <input id="v-boleto" type="text" maxlength="4" inputmode="numeric" placeholder="Ej: 0042" />
+            <div style="margin-top:10px" class="actions">
+              <button class="btn primary" id="btn-buscar-boleto">Buscar</button>
+            </div>
+          </div>
+
+          <div id="resultados" style="margin-top:16px"></div>
         </div>
       </div>
-
-      <form id="purchaseForm" class="card" onsubmit="return false;">
-        <h3>Datos personales</h3>
-        <div class="split">
-          <div>
-            <label>Nombre y apellido</label>
-            <input id="inpNombre" placeholder="Ej: María Pérez" required />
-          </div>
-          <div>
-            <label>Cédula</label>
-            <input id="inpCedula" placeholder="V-12345678" required />
-          </div>
-        </div>
-
-        <div>
-          <label>Teléfono</label>
-          <div class="phone-row">
-            <select id="selPais" aria-label="Código de país">
-              <!-- Lista corta y editable -->
-            </select>
-            <input id="inpTelefono" inputmode="numeric" placeholder="4121234567" required />
-          </div>
-        </div>
-
-        <div class="split">
-          <div>
-            <label>Últimos 6 dígitos de la referencia</label>
-            <input id="inpRef6" inputmode="numeric" maxlength="6" minlength="6" placeholder="123456" required />
-          </div>
-          <div>
-            <label>Método de pago</label>
-            <select id="selMetodo" required>
-              <option value="BDV-Transferencia">Transferencia BDV</option>
-              <option value="BDV-PagoMovil">Pago Móvil (BDV)</option>
-              <option value="Binance">Binance</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="payment-methods">
-          <div class="payment-details" id="payDetails" contenteditable="false" spellcheck="false"></div>
-          <button type="button" id="btnEditarDatos" class="btn ghost">Editar datos de pago</button>
-        </div>
-
-        <div>
-          <label>Subir comprobante de pago (imagen o PDF)</label>
-          <label class="file-input" id="fileBox">
-            <input id="inpComprobante" type="file" accept="image/*,application/pdf" />
-            <span id="fileLabel">Haz clic para seleccionar archivo</span>
-          </label>
-          <img id="imgPreview" class="file-preview" alt="Vista previa" style="display:none" />
-        </div>
-
-        <div class="error" id="err"></div>
-        <div class="ok" id="ok"></div>
-
-        <button id="btnConfirmar" class="btn" type="button">Confirmar compra</button>
-      </form>
-    </aside>
-  </main>
-
-  <footer>
-    <small>⏤ Esta demo guarda los datos en <b>este navegador</b> (localStorage). Integra tu backend para uso en producción.</small>
-  </footer>
-
-  <!-- Modal Verificador -->
-  <div class="modal" id="verificadorModal" role="dialog" aria-modal="true" aria-labelledby="verificadorTitle">
-    <div class="box">
-      <div class="head">
-        <h3 id="verificadorTitle" style="margin:0">Verificador de boletos</h3>
-        <button class="btn ghost" onclick="closeVerificador()">Cerrar</button>
-      </div>
-      <div class="tabs">
-        <button id="tabTel" class="active" onclick="switchTab('tel')">Por teléfono</button>
-        <button id="tabBol" onclick="switchTab('bol')">Por #Boleto</button>
-      </div>
-      <div id="paneTel">
-        <div class="split">
-          <div>
-            <label>País</label>
-            <select id="verPais"></select>
-          </div>
-          <div>
-            <label>Teléfono</label>
-            <input id="verTel" inputmode="numeric" placeholder="4121234567" />
-          </div>
-        </div>
-        <div style="margin-top:10px; display:flex; gap:8px">
-          <button class="btn" onclick="buscarPorTelefono()">Buscar</button>
-          <button class="btn secondary" onclick="limpiarVerificador()">Limpiar</button>
-        </div>
-        <div class="divider"></div>
-        <div class="results" id="resTel"></div>
-      </div>
-      <div id="paneBol" style="display:none">
-        <div class="split">
-          <div>
-            <label># Boleto (4 dígitos)</label>
-            <input id="verBoleto" maxlength="4" inputmode="numeric" placeholder="0075" />
-          </div>
-        </div>
-        <div style="margin-top:10px; display:flex; gap:8px">
-          <button class="btn" onclick="buscarPorBoleto()">Buscar</button>
-          <button class="btn secondary" onclick="limpiarVerificador()">Limpiar</button>
-        </div>
-        <div class="divider"></div>
-        <div class="results" id="resBol"></div>
-      </div>
-    </div>
+    </section>
   </div>
 
   <script>
-    /* ==============================
-       CONFIGURACIÓN RÁPIDA
-       ————————————————
-       Cambia TOTAL_TICKETS a 10000 si quieres desde 0000 a 9999.
-       Por petición, aquí está en 1000 boletos repartidos en 5 páginas.
-    =============================== */
-    const TOTAL_TICKETS = 1000;        // ⇦ cámbialo a 10000 si deseas 0000–9999
-    const START_NUMBER  = 0;           // 0 → empezará en 0000
-    const PAGES         = 5;           // cantidad de páginas deseadas
-    const PER_PAGE      = Math.ceil(TOTAL_TICKETS / PAGES); // ≈ 200
-    const MIN_SELECTION = 3;           // mínimo exigido
+    // ==========================
+    // CONFIGURACIÓN EDITABLE
+    // ==========================
+    const PRECIO_BOLETO_BS = 15; // Precio por boleto
 
-    /* ==============================
-       Estado en memoria + localStorage
-    =============================== */
-    const LS_KEY = 'rifas_app_v1';
-    const LS_PAY = 'rifas_pay_details_v1';
-
-    const state = {
-      sold: {},           // ticketId -> purchaseId
-      purchases: {},      // purchaseId -> data
-      selected: new Set(),
-      page: 1,
-    };
-
-    function loadState(){
-      try{
-        const raw = localStorage.getItem(LS_KEY);
-        if(raw){
-          const parsed = JSON.parse(raw);
-          if(parsed && parsed.sold && parsed.purchases){
-            state.sold = parsed.sold; state.purchases = parsed.purchases;
-          }
-        }
-      }catch(e){ console.warn('No se pudo leer localStorage', e); }
-    }
-    function saveState(){
-      localStorage.setItem(LS_KEY, JSON.stringify({sold:state.sold, purchases:state.purchases}));
-    }
-
-    /* ==============================
-       Utilidades
-    =============================== */
-    function pad4(n){ return n.toString().padStart(4,'0'); }
-    function ticketAbsoluteIndex(idx){ return START_NUMBER + idx; }
-    function ticketNumberByIndex(idx){ return pad4(ticketAbsoluteIndex(idx)); }
-    function parseTicket(str){ const n = parseInt(str,10); if(Number.isNaN(n)) return null; return pad4(n).slice(-4); }
-
-    function normalizePhone(code, phone){
-      const digits = (''+phone).replace(/\D+/g,'');
-      const cc = (''+code).replace(/\D+/g,'');
-      return `+${cc}${digits}`;
-    }
-
-    function pct(n){ return Math.round(n*100)/100; }
-
-    function randomFrom(arr, k){
-      const a = [...arr];
-      const out=[]; k=Math.min(k, a.length);
-      for(let i=0;i<k;i++){
-        const j = Math.floor(Math.random()*a.length);
-        out.push(a[j]); a.splice(j,1);
-      }
-      return out;
-    }
-
-    /* ==============================
-       Países (bandera + código). Editable
-    =============================== */
-    const COUNTRIES = [
-      {flag:'🇻🇪', name:'Venezuela', code:'+58'},
-      {flag:'🇨🇴', name:'Colombia', code:'+57'},
-      {flag:'🇵🇪', name:'Perú',     code:'+51'},
-      {flag:'🇪🇨', name:'Ecuador',  code:'+593'},
-      {flag:'🇨🇱', name:'Chile',    code:'+56'},
-      {flag:'🇦🇷', name:'Argentina',code:'+54'},
-      {flag:'🇲🇽', name:'México',   code:'+52'},
-      {flag:'🇪🇸', name:'España',   code:'+34'},
-      {flag:'🇺🇸', name:'EE.UU.',   code:'+1'},
-      {flag:'🇧🇷', name:'Brasil',   code:'+55'},
+    // Edita los datos/indicaciones y logos (URL) aquí
+    const PAYMENTS_CONFIG = [
+      {
+        id: 'bdv_transfer',
+        nombre: 'Transferencia BDV',
+        logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Banco_de_Venezuela_logo.svg/512px-Banco_de_Venezuela_logo.svg.png', // Cambia por tu URL
+        detalle: `Banco de Venezuela\nTitular: TU NOMBRE O RAZÓN SOCIAL\nRIF/Cédula: V-00000000\nCuenta: 0102-0000-00-0000000000\nCorreo: tuemail@dominio.com`,
+      },
+      {
+        id: 'bdv_pm',
+        nombre: 'Pago móvil BDV (Banco de Venezuela)',
+        logoUrl: 'https://seeklogo.com/images/B/banco-de-venezuela-logo-0D0E7A6B01-seeklogo.com.png', // Cambia por tu URL
+        detalle: `Pago móvil BDV\nBanco: Banco de Venezuela\nTeléfono: 0412-0000000\nCédula/RIF: V-00000000\nNombre: TU NOMBRE`,
+      },
+      {
+        id: 'binance',
+        nombre: 'Binance',
+        logoUrl: 'https://cryptologos.cc/logos/binance-coin-bnb-logo.png', // Cambia por tu URL
+        detalle: `Binance P2P\nUsuario: TuUsuario\nRed/Moneda: USDT (TRC20/BEP20)\nNota: Indica tu nombre y # de boletos en el memo.`,
+      },
     ];
 
-    function fillCountrySelect(sel){
-      sel.innerHTML = COUNTRIES.map((c,i)=>`<option value="${c.code}">${c.flag} ${c.name} (${c.code})</option>`).join('');
+    // ==========================
+    // ESTADO DE LA APLICACIÓN
+    // ==========================
+    const TOTAL_TICKETS = 10000; // 0000 - 9999
+    const PAGES = 5;             // 5 páginas solicitadas
+    const PAGE_SIZE = TOTAL_TICKETS / PAGES; // 2000 por página
+
+    let selected = new Set();       // selección actual (en proceso de compra)
+    let sold = new Set();           // vendidos históricos (persistidos)
+    let currentPage = 0;            // 0..4
+
+    // ==========================
+    // UTILIDADES
+    // ==========================
+    const pad4 = n => n.toString().padStart(4, '0');
+    const currency = n => `Bs ${n.toLocaleString('es-VE')}`;
+
+    function loadState(){
+      const raw = localStorage.getItem('purchases');
+      if(!raw) return;
+      try{
+        const all = JSON.parse(raw) || [];
+        for(const p of all){ for(const t of (p.tickets||[])) sold.add(t); }
+      }catch(e){ console.warn('No se pudo cargar estado', e); }
     }
 
-    /* ==============================
-       Render de boletos
-    =============================== */
-    const grid = document.getElementById('ticketsGrid');
-    const pag = document.getElementById('pagination');
-
-    function totalSold(){ return Object.keys(state.sold).length; }
-    function totalAvailable(){ return TOTAL_TICKETS - totalSold(); }
-
-    function renderProgress(){
-      const sold = totalSold();
-      const pctSold = (sold / TOTAL_TICKETS) * 100;
-      document.getElementById('progressBar').style.width = pctSold + '%';
-      document.getElementById('soldCount').textContent = sold;
-      document.getElementById('availableCount').textContent = totalAvailable();
-      document.getElementById('soldPct').textContent = pct(pctSold).toFixed(2) + '%';
+    function savePurchase(purchase){
+      const raw = localStorage.getItem('purchases');
+      const arr = raw ? JSON.parse(raw) : [];
+      arr.push(purchase);
+      localStorage.setItem('purchases', JSON.stringify(arr));
     }
 
-    function ticketIndexRangeForPage(page){
-      const start = (page-1)*PER_PAGE;
-      const end   = Math.min(start + PER_PAGE, TOTAL_TICKETS);
-      return [start, end];
+    function purchasesByPhone(fullPhone){
+      const raw = localStorage.getItem('purchases');
+      const arr = raw ? JSON.parse(raw) : [];
+      return arr.filter(p=>p.fullPhone === fullPhone);
+    }
+
+    function purchaseByTicket(ticket){
+      const raw = localStorage.getItem('purchases');
+      const arr = raw ? JSON.parse(raw) : [];
+      return arr.find(p=> (p.tickets||[]).includes(ticket));
+    }
+
+    function updateProgress(){
+      const pct = Math.round((sold.size / TOTAL_TICKETS) * 100);
+      document.getElementById('bar').style.width = pct + '%';
+      document.getElementById('pct').textContent = pct + '% vendido';
+    }
+
+    function updateSummary(){
+      document.getElementById('contador-boletos').textContent = selected.size;
+      document.getElementById('total-bs').textContent = currency(selected.size * PRECIO_BOLETO_BS);
+      document.getElementById('btn-confirmar').disabled = selected.size < 3 || !document.querySelector('input[name="paymethod"]:checked');
+    }
+
+    // ==========================
+    // RENDER DE TICKETS
+    // ==========================
+    function renderPagination(){
+      const pag = document.getElementById('pagination');
+      pag.innerHTML = '';
+      for(let i=0;i<PAGES;i++){
+        const start = i*PAGE_SIZE; const end = start + PAGE_SIZE - 1;
+        const b = document.createElement('button');
+        b.className = 'page-btn' + (i===currentPage?' active':'');
+        b.textContent = `${pad4(start)}–${pad4(end)}`;
+        b.addEventListener('click', ()=>{ currentPage = i; renderTickets(); });
+        pag.appendChild(b);
+      }
     }
 
     function renderTickets(){
-      grid.innerHTML='';
-      const [start, end] = ticketIndexRangeForPage(state.page);
-      for(let i=start;i<end;i++){
-        const id = ticketAbsoluteIndex(i);
-        const num = pad4(id);
-        const div = document.createElement('button');
-        div.type='button';
-        div.className = 'ticket';
-        div.textContent = num;
-        div.setAttribute('aria-pressed', state.selected.has(id));
-        if(state.sold[id]) div.classList.add('sold');
-        if(state.selected.has(id)) div.classList.add('selected');
-        div.onclick = ()=>toggleSelect(id);
-        grid.appendChild(div);
+      const grid = document.getElementById('tickets');
+      grid.innerHTML = '';
+      const start = currentPage * PAGE_SIZE; const end = start + PAGE_SIZE;
+      for(let n=start; n<end; n++){
+        const id = pad4(n);
+        if(sold.has(id) || selected.has(id)) continue; // ocultar los ya vendidos/seleccionados
+        const btn = document.createElement('button');
+        btn.className = 'ticket';
+        btn.textContent = id;
+        btn.addEventListener('click', ()=>{
+          selected.add(id);
+          renderTickets(); // lo elimina de la lista
+          renderSelectedChips();
+          updateSummary();
+          document.getElementById('alert-min').classList.remove('show');
+        });
+        grid.appendChild(btn);
       }
+    }
+
+    function renderSelectedChips(){
+      const wrap = document.getElementById('selected-chips');
+      wrap.innerHTML = '';
+      [...selected].sort().forEach(id=>{
+        const ch = document.createElement('span');
+        ch.className='chip';
+        ch.innerHTML = `#${id} <button title="Quitar">×</button>`;
+        ch.querySelector('button').addEventListener('click', ()=>{
+          selected.delete(id);
+          renderTickets();
+          renderSelectedChips();
+          updateSummary();
+        });
+        wrap.appendChild(ch);
+      });
+    }
+
+    // ==========================
+    // BÚSQUEDA / LUPA
+    // ==========================
+    function handleSearch(){
+      const v = (document.getElementById('input-search').value || '').replace(/\D/g,'');
+      if(!v) return;
+      const id = pad4(Number(v));
+      // hallar página
+      const num = Number(id);
+      const page = Math.floor(num / PAGE_SIZE);
+      currentPage = page;
       renderPagination();
-      renderSelected();
-      renderProgress();
-    }
-
-    function renderPagination(){
-      const pages = Math.ceil(TOTAL_TICKETS / PER_PAGE);
-      pag.innerHTML = '';
-      const prev = document.createElement('button'); prev.textContent='⟨'; prev.onclick=()=>{ if(state.page>1){ state.page--; renderTickets(); } };
-      const next = document.createElement('button'); next.textContent='⟩'; next.onclick=()=>{ const max=pages; if(state.page<max){ state.page++; renderTickets(); } };
-      pag.appendChild(prev);
-      for(let p=1;p<=pages;p++){
-        const b=document.createElement('button'); b.textContent=p; if(p===state.page) b.classList.add('active'); b.onclick=()=>{ state.page=p; renderTickets(); };
-        pag.appendChild(b);
-      }
-      pag.appendChild(next);
-    }
-
-    function toggleSelect(id){
-      if(state.sold[id]) return; // no se puede
-      if(state.selected.has(id)) state.selected.delete(id); else state.selected.add(id);
-      updateSelectedUI();
-    }
-
-    function updateSelectedUI(){
-      document.getElementById('selectedCount').textContent = state.selected.size;
       renderTickets();
-      renderSuggestions();
+      // Intentar resaltar si está disponible
+      if(!(sold.has(id) || selected.has(id))){
+        // Parpadeo simple del botón
+        const btn = [...document.querySelectorAll('.ticket')].find(b => b.textContent === id);
+        if(btn){
+          btn.style.boxShadow = '0 0 0 4px ' + getComputedStyle(document.documentElement).getPropertyValue('--ring');
+          btn.scrollIntoView({behavior:'smooth', block:'center'});
+          setTimeout(()=>btn.style.boxShadow='', 1200);
+        }
+      } else {
+        // Mostrar alerta si no está disponible
+        const alert = document.getElementById('alert-min');
+        alert.textContent = `⚠️ El boleto #${id} ya no está disponible.`;
+        alert.classList.add('show');
+        setTimeout(()=>{
+          alert.classList.remove('show');
+          alert.textContent = '⚠️ Compra mínima: 3 boletos.';
+        }, 1800);
+      }
     }
 
-    function renderSelected(){
-      const list = document.getElementById('selectedList');
-      list.innerHTML='';
-      [...state.selected].sort((a,b)=>a-b).forEach(id=>{
-        const p = document.createElement('span'); p.className='pill'; p.textContent = pad4(id);
-        p.title = 'Quitar'; p.onclick=()=>toggleSelect(id);
-        list.appendChild(p);
+    // ==========================
+    // GENERADOR ALEATORIO (3)
+    // ==========================
+    function randomThree(){
+      const need = Math.max(0, 3 - selected.size);
+      if(need === 0){
+        toast('Ya tienes 3 o más seleccionados.');
+        return;
+      }
+      // Construye lista de disponibles globales (cuidado con performance: 10k ok)
+      const available = [];
+      for(let n=0;n<TOTAL_TICKETS;n++){
+        const id = pad4(n);
+        if(!sold.has(id) && !selected.has(id)) available.push(id);
+      }
+      shuffleInPlace(available);
+      for(let i=0;i<Math.min(need, available.length); i++){
+        selected.add(available[i]);
+      }
+      renderTickets(); renderSelectedChips(); updateSummary();
+    }
+
+    function shuffleInPlace(arr){
+      for(let i=arr.length-1; i>0; i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+    }
+
+    // ==========================
+    // MÉTODOS DE PAGO (render)
+    // ==========================
+    function renderPayments(){
+      const wrap = document.getElementById('metodos-pago');
+      wrap.innerHTML = '';
+      PAYMENTS_CONFIG.forEach((p,i)=>{
+        const row = document.createElement('label');
+        row.className = 'pay-option';
+        row.innerHTML = `
+          <input type="radio" name="paymethod" value="${p.id}" ${i===0?'checked':''} />
+          <img src="${p.logoUrl}" alt="${p.nombre}" onerror="this.style.display='none'" />
+          <div>
+            <div style="font-weight:700">${p.nombre}</div>
+            <pre style="margin:6px 0 0; font-family:inherit; white-space:pre-wrap; color:var(--muted)">${p.detalle}</pre>
+          </div>
+        `;
+        wrap.appendChild(row);
+      });
+      // Clic inicial para validar botón Confirmar
+      document.querySelectorAll('input[name="paymethod"]').forEach(r=>{
+        r.addEventListener('change', updateSummary)
       });
     }
 
-    function availableIds(){
-      const arr=[];
-      for(let i=0;i<TOTAL_TICKETS;i++){
-        const id = ticketAbsoluteIndex(i);
-        if(!state.sold[id] && !state.selected.has(id)) arr.push(id);
-      }
-      return arr;
+    // ==========================
+    // VALIDACIONES Y SUBMIT
+    // ==========================
+    function toast(msg){
+      const a = document.getElementById('alert-min');
+      a.textContent = msg; a.classList.add('show');
+      setTimeout(()=>{ a.classList.remove('show'); a.textContent = '⚠️ Compra mínima: 3 boletos.'; }, 2000);
     }
 
-    function randomPick(count=3){
-      const pool = availableIds();
-      const picks = randomFrom(pool, count);
-      picks.forEach(id=> state.selected.add(id));
-      updateSelectedUI();
+    function validate(){
+      const name = document.getElementById('nombre').value.trim();
+      const cedula = document.getElementById('cedula').value.trim();
+      const pais = document.getElementById('pais');
+      const code = pais.options[pais.selectedIndex].dataset.code;
+      const telefono = document.getElementById('telefono').value.trim();
+      const ref6 = document.getElementById('ref6').value.trim();
+      const pm = document.querySelector('input[name="paymethod"]:checked');
+
+      if(selected.size < 3){ toast('⚠️ Compra mínima: 3 boletos.'); return null; }
+      if(!name || !cedula || !telefono || !ref6 || !pm){ toast('Completa todos los campos requeridos.'); return null; }
+      if(!/^\d{6}$/.test(ref6)){ toast('La referencia debe tener 6 dígitos.'); return null; }
+      if(!/^\d{5,}$/.test(telefono)){ toast('Teléfono inválido.'); return null; }
+
+      return { name, cedula, country: pais.value, code, telefono, ref6, payId: pm.value };
     }
 
-    /* ==============================
-       Sugerencias al azar (panel)
-    =============================== */
-    function renderSuggestions(){
-      const sug = document.getElementById('suggestions');
-      const pool = availableIds();
-      const picks = randomFrom(pool, 8).sort((a,b)=>a-b);
-      sug.innerHTML = picks.map(id=>`<button type="button" data-id="${id}">${pad4(id)}</button>`).join('');
-      sug.querySelectorAll('button').forEach(b=>{
-        b.onclick=()=>{ const id = parseInt(b.dataset.id,10); state.selected.add(id); updateSelectedUI(); };
+    async function fileToDataURL(file){
+      if(!file) return null;
+      return new Promise(res=>{
+        const r = new FileReader();
+        r.onload = () => res(r.result);
+        r.readAsDataURL(file);
       });
     }
 
-    /* ==============================
-       Búsqueda (lupa): saltar a la página del boleto
-    =============================== */
-    const searchInput = document.getElementById('searchInput');
-    document.getElementById('btnBuscar').onclick = ()=>{
-      const val = searchInput.value.trim();
-      const parsed = parseTicket(val);
-      if(parsed===null){ alert('Ingresa un número de 4 dígitos'); return; }
-      const n = parseInt(parsed,10);
-      if(n < START_NUMBER || n >= START_NUMBER + TOTAL_TICKETS){ alert('Fuera de rango'); return; }
-      const idx = n - START_NUMBER;
-      const page = Math.floor(idx / PER_PAGE) + 1;
-      state.page = page; renderTickets();
-      // resaltar
-      [...grid.children].forEach(el=>{ if(el.textContent===parsed){ el.scrollIntoView({block:'center'}); el.style.transform='scale(1.07)'; setTimeout(()=>el.style.transform='';}, 400); } });
-    };
+    async function onSubmit(e){
+      e.preventDefault();
+      const v = validate();
+      if(!v) return;
 
-    /* ==============================
-       Métodos de pago (editable y persistente)
-    =============================== */
-    const DEFAULT_PAY = `
-<strong>Transferencia BDV</strong><br>
-Titular: <em>Tu Nombre</em><br>
-CI/RIF: <em>V-00000000</em><br>
-Cuenta: <em>0102-0000-00-0000000000</em><br>
+      // Preparar compra
+      const tickets = [...selected].sort();
+      const amount = tickets.length * PRECIO_BOLETO_BS;
+      const method = PAYMENTS_CONFIG.find(p=>p.id===v.payId);
 
-<br><strong>Pago Móvil (BDV)</strong><br>
-Banco: <em>Banco de Venezuela</em><br>
-Teléfono: <em>0412-0000000</em><br>
-CI/RIF: <em>V-00000000</em><br>
+      const file = document.getElementById('comprobante').files[0];
+      const fileDataURL = await fileToDataURL(file); // se almacena localmente para demo
 
-<br><strong>Binance</strong><br>
-Usuario: <em>@tuusuario</em><br>
-Red: <em>USDT (TRC20)</em><br>
-Etiqueta/Nota: <em>TuNegocio</em>`;
-
-    function loadPayDetails(){
-      const saved = localStorage.getItem(LS_PAY);
-      const el = document.getElementById('payDetails');
-      el.innerHTML = saved || DEFAULT_PAY;
-    }
-    function savePayDetails(){ localStorage.setItem(LS_PAY, document.getElementById('payDetails').innerHTML); }
-
-    document.getElementById('btnEditarDatos').onclick = ()=>{
-      const el = document.getElementById('payDetails');
-      const editing = el.getAttribute('contenteditable') === 'true';
-      if(editing){ el.setAttribute('contenteditable','false'); savePayDetails(); document.getElementById('btnEditarDatos').textContent='Editar datos de pago'; }
-      else { el.setAttribute('contenteditable','true'); el.focus(); document.getElementById('btnEditarDatos').textContent='Guardar datos de pago'; }
-    };
-
-    /* ==============================
-       Carga de comprobante (preview si es imagen)
-    =============================== */
-    const inpComp = document.getElementById('inpComprobante');
-    inpComp.addEventListener('change', (e)=>{
-      const file = e.target.files[0];
-      const label = document.getElementById('fileLabel');
-      const prev = document.getElementById('imgPreview');
-      if(!file){ label.textContent='Haz clic para seleccionar archivo'; prev.style.display='none'; prev.src=''; return; }
-      label.textContent = file.name;
-      const isImg = file.type.startsWith('image/');
-      if(isImg){
-        const reader = new FileReader(); reader.onload = ev=>{ prev.src = ev.target.result; prev.style.display='block'; };
-        reader.readAsDataURL(file);
-      } else { prev.style.display='none'; prev.src=''; }
-    });
-
-    /* ==============================
-       Confirmación de compra
-    =============================== */
-    document.getElementById('btnConfirmar').onclick = confirmarCompra;
-
-    function confirmarCompra(){
-      const err = document.getElementById('err');
-      const ok  = document.getElementById('ok');
-      err.style.display='none'; ok.style.display='none';
-
-      if(state.selected.size < MIN_SELECTION){
-        err.textContent = `Debes seleccionar al menos ${MIN_SELECTION} boletos.`; err.style.display='block'; return;
-      }
-
-      // Datos
-      const nombre = document.getElementById('inpNombre').value.trim();
-      const cedula = document.getElementById('inpCedula').value.trim();
-      const codPais = document.getElementById('selPais').value;
-      const tel     = document.getElementById('inpTelefono').value.trim();
-      const ref6    = document.getElementById('inpRef6').value.trim();
-      const metodo  = document.getElementById('selMetodo').value;
-
-      if(!nombre || !cedula || !tel || ref6.length!==6){
-        err.textContent = 'Completa todos los campos y verifica la referencia (6 dígitos).'; err.style.display='block'; return;
-      }
-
-      const normPhone = normalizePhone(codPais, tel);
-      // Comprobante (opcional). Si imagen, guardamos dataURL (ojo con tamaño en localStorage)
-      let compData = null;
-      const file = inpComp.files && inpComp.files[0];
-      if(file && file.size > 1200000){ // ~1.2MB límite para localStorage
-        err.textContent = 'El comprobante es muy pesado (>1.2MB). Sube una imagen más liviana.'; err.style.display='block'; return;
-      }
-      if(file && file.type.startsWith('image/')){
-        // ya se leyó al preview; lo volvemos a leer para guardar
-        compData = document.getElementById('imgPreview').src || null;
-      }
-
-      // crear purchase
-      const id = 'P' + Date.now().toString(36);
-      const tickets = [...state.selected].sort((a,b)=>a-b);
-      state.purchases[id] = {
-        id, nombre, cedula, telefono: normPhone, ref6, metodo, compData,
-        tickets, fecha: new Date().toISOString()
+      const purchase = {
+        name: v.name,
+        cedula: v.cedula,
+        country: v.country,
+        code: v.code,
+        phone: v.telefono,
+        fullPhone: `${v.code} ${v.telefono}`,
+        refLast6: v.ref6,
+        paymentMethod: method?.nombre || v.payId,
+        tickets,
+        amountBs: amount,
+        receipt: fileDataURL ? { name: file?.name, dataUrl: fileDataURL } : null,
+        dateISO: new Date().toISOString(),
       };
-      // marcar vendidos
-      tickets.forEach(t=> state.sold[t] = id);
-      saveState();
 
-      ok.innerHTML = `¡Listo! Compra registrada. #Compra: <b>${id}</b>. Boletos: <b>${tickets.map(pad4).join(', ')}</b>`; ok.style.display='block';
-      state.selected.clear(); updateSelectedUI(); renderProgress();
-      // limpiar formulario (mantenemos datos por si compran más)
-      document.getElementById('inpRef6').value='';
-      inpComp.value=''; document.getElementById('imgPreview').src=''; document.getElementById('imgPreview').style.display='none'; document.getElementById('fileLabel').textContent='Haz clic para seleccionar archivo';
+      // Persistir y bloquear números
+      savePurchase(purchase);
+      tickets.forEach(t=>sold.add(t));
+      selected.clear();
+
+      // UI updates
+      renderSelectedChips();
+      renderTickets();
+      updateSummary();
+      updateProgress();
+
+      // Confirmación
+      alert(`¡Compra confirmada!\nBoletos: ${purchase.tickets.join(', ')}\nTotal: ${currency(purchase.amountBs)}\nTitular: ${purchase.name}`);
     }
 
-    /* ==============================
-       Verificador (por teléfono o por boleto)
-    =============================== */
-    function openVerificador(){ document.getElementById('verificadorModal').style.display='flex'; }
-    function closeVerificador(){ document.getElementById('verificadorModal').style.display='none'; }
-
-    function switchTab(which){
-      document.getElementById('tabTel').classList.toggle('active', which==='tel');
-      document.getElementById('tabBol').classList.toggle('active', which==='bol');
-      document.getElementById('paneTel').style.display = which==='tel'? 'block':'none';
-      document.getElementById('paneBol').style.display = which==='bol'? 'block':'none';
+    // ==========================
+    // VERIFICADOR
+    // ==========================
+    function switchVerifyTab(which){
+      document.getElementById('vtab-tlf').classList.toggle('active', which==='tlf');
+      document.getElementById('vtab-boleto').classList.toggle('active', which==='boleto');
+      document.getElementById('vf-telefono').hidden = !(which==='tlf');
+      document.getElementById('vf-boleto').hidden = !(which==='boleto');
+      document.getElementById('resultados').innerHTML = '';
     }
 
-    function buscarPorTelefono(){
-      const code = document.getElementById('verPais').value;
-      const tel  = document.getElementById('verTel').value;
-      const norm = normalizePhone(code, tel);
-      const res  = document.getElementById('resTel');
-      res.innerHTML='';
-      const compras = Object.values(state.purchases).filter(p=>p.telefono===norm);
-      if(compras.length===0){ res.innerHTML = '<div class="error" style="display:block">No se encontraron compras para ese teléfono.</div>'; return; }
-      compras.forEach(p=>{
-        const div = document.createElement('div'); div.className='card';
-        div.innerHTML = `<strong>${p.nombre}</strong> • ${p.telefono}<br>Cédula: ${p.cedula} • Método: ${p.metodo} • Ref(6): ${p.ref6}<br>Boletos: <b>${p.tickets.map(pad4).join(', ')}</b><br><small>${new Date(p.fecha).toLocaleString()}</small>`;
-        res.appendChild(div);
-      });
+    function renderResultsForPhone(fullPhone){
+      const out = document.getElementById('resultados');
+      const records = purchasesByPhone(fullPhone);
+      if(records.length===0){ out.innerHTML = `<div class="result">No se encontraron compras para <strong>${fullPhone}</strong>.</div>`; return; }
+      const blocks = records.map(p=>{
+        return `
+          <div class="result">
+            <h4>Cliente: ${p.name} — C.I.: ${p.cedula}</h4>
+            <div class="muted">Tel: ${p.fullPhone} · Ref: ${p.refLast6} · Método: ${p.paymentMethod} · Fecha: ${new Date(p.dateISO).toLocaleString()}</div>
+            <div style="margin-top:8px">Boletos: <strong>${p.tickets.join(', ')}</strong></div>
+            <div>Total: <strong>${currency(p.amountBs)}</strong></div>
+          </div>
+        `;
+      }).join('\n');
+      out.innerHTML = blocks;
     }
 
-    function buscarPorBoleto(){
-      const val = document.getElementById('verBoleto').value.trim();
-      const parsed = parseTicket(val);
-      const res = document.getElementById('resBol'); res.innerHTML='';
-      if(parsed===null){ res.innerHTML='<div class="error" style="display:block">Ingresa 4 dígitos.</div>'; return; }
-      const n = parseInt(parsed,10);
-      const id = n;
-      const pid = state.sold[id];
-      if(!pid){ res.innerHTML='<div class="ok" style="display:block">Disponible ✅</div>'; return; }
-      const p = state.purchases[pid];
-      if(!p){ res.innerHTML='<div class="error" style="display:block">Registro inconsistente.</div>'; return; }
-      const div = document.createElement('div'); div.className='card';
-      div.innerHTML = `<b>VENDIDO</b> • Compra <b>#${p.id}</b><br><strong>${p.nombre}</strong> • ${p.telefono}<br>Cédula: ${p.cedula} • Método: ${p.metodo} • Ref(6): ${p.ref6}<br>Boletos de la compra: <b>${p.tickets.map(pad4).join(', ')}</b><br><small>${new Date(p.fecha).toLocaleString()}</small>`;
-      res.appendChild(div);
-    }
-
-    function limpiarVerificador(){ document.getElementById('resTel').innerHTML=''; document.getElementById('resBol').innerHTML=''; document.getElementById('verTel').value=''; document.getElementById('verBoleto').value=''; }
-
-    /* ==============================
-       Eventos iniciales
-    =============================== */
-    document.getElementById('btnSuerte').onclick = ()=> randomPick(MIN_SELECTION);
-    document.getElementById('btnRefrescarSug').onclick = renderSuggestions;
-    document.getElementById('btnAgregarSug').onclick = ()=>{
-      document.querySelectorAll('#suggestions button').forEach(b=>{ const id=parseInt(b.dataset.id,10); state.selected.add(id); }); updateSelectedUI();
-    };
-
-    document.getElementById('btnVerificador').onclick = openVerificador;
-
-    // Países (formularios)
-    fillCountrySelect(document.getElementById('selPais'));
-    fillCountrySelect(document.getElementById('verPais'));
-    // preseleccionar Venezuela
-    document.getElementById('selPais').value = '+58';
-    document.getElementById('verPais').value = '+58';
-
-    // Cargar estado y pagos
-    loadState();
-    loadPayDetails();
-
-    // Render inicial
-    renderTickets();
-    renderSuggestions();
-
-    // Acceso rápido desde Enter en buscador
-    searchInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); document.getElementById('btnBuscar').click(); }});
-
-  </script>
-</body>
-</html>
+    function renderResultsForTicket(tic
