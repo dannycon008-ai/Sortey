@@ -4,42 +4,50 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>TU DIAMANTE 💎</title>
-  <!-- Fuente Sans Serif (bold/extra-bold) -->
+  <!-- Tipografía Sans Serif en bold/extra-bold -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@700;800&display=swap" rel="stylesheet">
   <!-- Tel input (banderas y código de país) -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@19.5.6/build/css/intlTelInput.css" />
   <style>
     :root{
       --bg:#ffffff; --ink:#111827; --muted:#6b7280; --brand:#111827; --accent:#0ea5e9; --ok:#16a34a; --warn:#ef4444; --border:#e5e7eb; --chip:#f3f4f6;
+      /* cambia aquí si quieres otra imagen de diamante */
+      --diamond-url: url('https://www.shutterstock.com/image-vector/realistic-shining-blue-diamond-jewel-600nw-2547064909.jpg');
     }
     html,body{height:100%}
     body{margin:0; background:var(--bg); color:var(--ink); font-family:"Inter",system-ui,sans-serif; font-weight:800;}
-    .container{max-width:1200px; margin:0 auto; padding:16px;}
+
+    /* Centrado general */
+    .container{max-width:1200px; margin:0 auto; padding:16px; display:flex; flex-direction:column; align-items:center;}
+
+    /* Marca de agua izquierda */
+    .watermark-left{position:fixed; left:8px; top:50%; transform:translateY(-50%); width:min(22vw,140px); opacity:.08; pointer-events:none; filter:grayscale(1); z-index:0;}
 
     /* Header */
-    .app-title{display:flex; justify-content:center; align-items:center; text-align:center;}
+    .app-title{display:flex; justify-content:center; align-items:center; text-align:center; width:100%;}
     .app-title h1{margin:0; font-size:42px; letter-spacing:2px; text-transform:uppercase;}
 
     /* Progreso */
-    .progress-info{display:flex; flex-direction:column; align-items:center; gap:8px; margin:14px 0 20px;}
+    .progress-info{display:flex; flex-direction:column; align-items:center; gap:8px; margin:14px 0 20px; width:100%;}
     .bar{height:14px; background:#f3f4f6; border-radius:999px; overflow:hidden; border:1px solid var(--border); width:min(640px,100%);} 
     .bar>span{display:block; height:100%; background:linear-gradient(90deg,var(--accent),#22c55e); width:0%; transition:width 1s ease-in-out;}
-    .progress-stats{color:var(--muted); font-size:14px; font-weight:700;}
+    .progress-stats{color:var(--muted); font-size:14px; font-weight:700; text-align:center;}
 
     /* Layout */
-    .grid-layout{display:grid; grid-template-columns:1fr; gap:16px;}
+    .grid-layout{display:grid; grid-template-columns:1fr; gap:16px; width:100%;}
     @media(min-width:1024px){ .grid-layout{ grid-template-columns:2fr 1fr; } }
 
-    .panel{background:#fff; border:1px solid var(--border); border-radius:16px; padding:16px; box-shadow:0 1px 2px rgba(0,0,0,.04);} 
-    .panel h2{text-align:center; margin:0 0 12px 0; font-size:36px; text-transform:uppercase;}
+    .panel{background:#fff; border:1px solid var(--border); border-radius:16px; padding:16px; box-shadow:0 1px 2px rgba(0,0,0,.04); width:100%; text-align:center;}
+    .panel h2{margin:0 0 12px 0; font-size:36px; text-transform:uppercase;}
     .subtle{color:var(--muted); font-size:14px;}
 
     /* Toolbar lista */
-    .tickets-toolbar{display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-bottom:10px;}
-    .search{position:relative; flex:1 1 220px;}
-    .search input{width:100%; border:1px solid var(--border); border-radius:999px; padding:10px 36px 10px 40px; font-size:14px; outline:none;}
+    .tickets-toolbar{display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:10px; margin-bottom:10px;}
+    .search{position:relative; flex:1 1 280px; max-width:480px;}
+    .search input{width:100%; border:1px solid var(--border); border-radius:999px; padding:12px 40px; font-size:14px; outline:none; text-align:center; font-weight:800;}
     .search svg{position:absolute; left:12px; top:50%; transform:translateY(-50%);} 
-    .page-controls{display:flex; gap:6px; align-items:center;}
+    .page-controls{display:flex; gap:6px; align-items:center; justify-content:center;}
+    .page-controls .btn{min-width:40px}
 
     /* Botones */
     .btn{border:1px solid var(--border); background:#fff; border-radius:12px; padding:10px 14px; font-weight:800; cursor:pointer; transition:.2s;}
@@ -48,7 +56,7 @@
     .btn.secondary{background:#f8fafc;}
     .btn[disabled]{opacity:.6; cursor:not-allowed;}
 
-    /* Cuadrado lista */
+    /* Cuadro lista */
     .square-wrap{width:100%; aspect-ratio:1/1; border:1px solid var(--border); border-radius:16px; overflow:hidden; display:flex;}
     .square-inner{flex:1; overflow:auto;}
 
@@ -58,18 +66,20 @@
     @media(min-width:1024px){ .ticket-grid{ grid-template-columns: repeat(12, 1fr);} }
     @media(min-width:1280px){ .ticket-grid{ grid-template-columns: repeat(14, 1fr);} }
 
-    .ticket{user-select:none; text-align:center; padding:8px 0; border:1px solid var(--border); border-radius:10px; background:#fff; font-weight:800; font-size:14px; cursor:pointer; transition:.15s;}
+    .ticket{position:relative; user-select:none; text-align:center; padding:8px 0; border:1px solid var(--border); border-radius:10px; background:#fff; font-weight:800; font-size:14px; cursor:pointer; transition:.15s;}
     .ticket:hover{background:#f9fafb;}
-    .ticket.sold{background:#fee2e2; color:#991b1b; border-color:#fecaca; cursor:not-allowed;}
+    /* Visual de vendido: diamante translúcido + color */
+    .ticket.sold{color:#0b1e2a; border-color:#c7e3f7; background:#eaf6ff; cursor:not-allowed;}
+    .ticket.sold::after{content:""; position:absolute; inset:2px; background-image:var(--diamond-url); background-size:contain; background-position:center; background-repeat:no-repeat; opacity:.45; border-radius:8px;}
     .ticket.selected{background:#dbeafe; border-color:#bfdbfe;}
 
-    .chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:8px;}
+    .chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; justify-content:center;}
     .chip{display:inline-flex; align-items:center; gap:6px; background:var(--chip); border:1px solid var(--border); border-radius:999px; padding:6px 10px; font-weight:800;}
     .chip button{border:none; background:transparent; cursor:pointer; font-size:16px; line-height:1;}
 
-    /* Total compacto y sin amontonarse */
-    .totals{display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between; margin-top:10px;}
-    .totals-group{display:flex; flex-wrap:wrap; gap:8px; align-items:center;}
+    /* Totales centrados */
+    .totals{display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:center; margin-top:10px;}
+    .totals-group{display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:center;}
     .tag{background:#eef2ff; color:#3730a3; border:1px solid #e0e7ff; font-weight:800; border-radius:999px; padding:6px 10px;}
     .note{margin-top:8px; font-size:14px; color:#0f172a;}
     .note.warn{color:#b91c1c;}
@@ -77,34 +87,35 @@
     /* Formulario */
     .form{display:grid; gap:10px; grid-template-columns:1fr;}
     @media(min-width:640px){ .form{ grid-template-columns:1fr 1fr; } }
-    .field{display:flex; flex-direction:column; gap:6px;}
+    .field{display:flex; flex-direction:column; gap:6px; align-items:center;}
     .field label{font-weight:800;}
-    .field input, .field select{border:1px solid var(--border); border-radius:12px; padding:10px 12px; font-size:14px; outline:none; font-weight:700;}
+    .field input, .field select{width:100%; max-width:480px; border:1px solid var(--border); border-radius:12px; padding:10px 12px; font-size:14px; outline:none; font-weight:700; text-align:center;}
 
-    .pay-methods{display:flex; gap:10px; flex-wrap:wrap;}
-    .pm-card{flex:1 1 160px; min-width:160px; border:1px solid var(--border); border-radius:14px; padding:12px; cursor:pointer; display:flex; align-items:center; gap:10px;}
+    .pay-methods{display:flex; gap:10px; flex-wrap:wrap; justify-content:center;}
+    .pm-card{flex:1 1 200px; max-width:320px; border:1px solid var(--border); border-radius:14px; padding:12px; cursor:pointer; display:flex; align-items:center; gap:10px; justify-content:center;}
     .pm-card.active{outline:2px solid var(--accent);} 
     .pm-card img{width:28px; height:28px; object-fit:contain;}
     .pm-details{background:#f8fafc; border:1px dashed var(--border); border-radius:12px; padding:12px;}
 
-    /* Diamantes */
-    .diamonds{display:flex; flex-wrap:wrap; gap:14px;}
-    .diamond{width:90px; height:90px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:18px; font-weight:800; background:linear-gradient(135deg,#0ea5e9,#111827); clip-path:polygon(50% 0%, 90% 35%, 100% 65%, 50% 100%, 0% 65%, 10% 35%); box-shadow:0 6px 16px rgba(0,0,0,.15);}
+    /* Diamantes (mis boletos) */
+    .big-diamonds{display:flex; flex-wrap:wrap; gap:18px; justify-content:center;}
+    .big-diamond{width:120px; height:120px; display:flex; align-items:center; justify-content:center; color:#0b1e2a; font-size:20px; font-weight:800; background-image:var(--diamond-url); background-size:cover; background-position:center; border-radius:16px; box-shadow:0 8px 18px rgba(0,0,0,.12);}
+    .mytickets-cta{display:none; margin-top:12px; text-align:center;}
 
-    /* CTA ver boletos */
-    .mytickets-cta{display:none; margin-top:12px; text-align:right;}
-
-    /* Footer contacto */
-    .site-footer{margin-top:22px; border-top:1px solid var(--border);}
-    .contact{background:#0ea5e9; color:#fff; border-radius:16px; padding:18px; display:grid; gap:14px;}
+    /* Footer contacto simplificado (fondo blanco) */
+    .site-footer{margin-top:22px; width:100%;}
+    .contact{background:#ffffff; color:#111; border:1px solid var(--border); border-radius:16px; padding:18px; display:grid; gap:14px; justify-items:center;}
     .contact h3{margin:0; text-transform:uppercase; letter-spacing:1px; font-size:18px;}
-    .row{display:flex; flex-wrap:wrap; gap:12px; align-items:center;}
-    .row a{display:inline-flex; align-items:center; gap:8px; text-decoration:none; color:#fff; font-weight:800; border:1px solid rgba(255,255,255,.3); padding:8px 12px; border-radius:999px;}
-    .row a:hover{background:rgba(255,255,255,.1);} 
-    .icon{width:18px; height:18px; display:inline-block;}
+    .row{display:flex; flex-wrap:wrap; gap:14px; align-items:center; justify-content:center;}
+    .row a{display:inline-flex; align-items:center; gap:8px; text-decoration:none; color:#111; font-weight:800; border:1px solid var(--border); padding:10px 14px; border-radius:999px;}
+    .row a:hover{background:#f9fafb;} 
+    .row img{width:20px; height:20px; object-fit:contain;}
   </style>
 </head>
 <body>
+  <!-- Marca de agua izquierda -->
+  <img class="watermark-left" src="https://qu.ax/OVJvi.png" alt="Marca de agua" />
+
   <div class="container">
     <header class="app-title">
       <h1>TU DIAMANTE 💎</h1>
@@ -120,12 +131,13 @@
       <!-- LISTA -->
       <section class="panel">
         <h2>Lista de boletos</h2>
-        <div class="subtle"></div>
+        <div class="subtle">Página 1 por defecto (0000–1999). Hay 5 páginas.</div>
         <div class="tickets-toolbar">
-          <div class="search">
+          <!-- Buscar con Enter (móvil/PC) -->
+          <form id="searchForm" class="search" autocomplete="off">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            <input id="searchInput" type="text" inputmode="numeric" maxlength="4" placeholder=" escribe número " />
-          </div>
+            <input id="searchInput" type="search" inputmode="numeric" pattern="\d*" enterkeyhint="search" maxlength="4" placeholder="escribe número y ENTER" />
+          </form>
           <div class="page-controls">
             <span class="subtle">Página:</span>
             <div id="pagination"></div>
@@ -182,7 +194,7 @@
           </div>
           <div id="payDetails" class="pm-details" style="display:none;"></div>
 
-          <div style="grid-column:1 / -1; display:flex; gap:10px; align-items:center; justify-content:flex-end;">
+          <div style="grid-column:1 / -1; display:flex; gap:10px; align-items:center; justify-content:center;">
             <button type="button" id="btnConfirm" class="btn primary">Confirmar compra</button>
           </div>
         </form>
@@ -193,35 +205,33 @@
     <section class="panel" id="myTicketsPanel" style="display:none; margin-top:16px;">
       <h2>Mis boletos</h2>
       <div id="myTicketsInfo" class="subtle" style="margin-bottom:8px;"></div>
-      <div id="myDiamonds" class="diamonds"></div>
+      <div id="myDiamonds" class="big-diamonds"></div>
     </section>
 
     <!-- Verificador -->
     <section class="panel" style="margin-top:16px;">
       <h2>Verificador de boletos</h2>
-      <div style="display:flex; gap:8px; flex-wrap:wrap;">
-        <input id="verifyInput" style="flex:1 1 260px; border:1px solid var(--border); border-radius:12px; padding:10px 12px; font-weight:700;" placeholder="Teléfono o # de boleto (0000–9999)" />
+      <div class="subtle" style="margin-bottom:8px;">Busca por teléfono (con código) o por boleto (0000–9999).</div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center;">
+        <input id="verifyInput" style="flex:1 1 260px; max-width:480px; border:1px solid var(--border); border-radius:12px; padding:10px 12px; font-weight:700; text-align:center;" placeholder="Teléfono o número de boleto" />
         <button id="btnVerify" class="btn secondary" type="button">🔎 Verificar</button>
       </div>
       <div id="verifyOut" style="margin-top:10px;"></div>
     </section>
 
-    <!-- CONTACTO & SÍGUENOS -->
+    <!-- CONTACTO & SÍGUENOS (simplificado) -->
     <section class="site-footer">
       <div class="contact">
         <h3>Contacto</h3>
         <div class="row">
           <a id="waLink" href="#" target="_blank" rel="noopener">
-            <span class="icon">📱</span> WhatsApp
-          </a>
-          <a id="mapLink" href="#" target="_blank" rel="noopener">
-            <span class="icon">📍</span> El tigre EDO Anzoategui 
+            <img id="waIcon" alt="WhatsApp" /> WhatsApp
           </a>
         </div>
         <h3>Síguenos</h3>
         <div class="row">
-          <a id="fbLink" href="#" target="_blank" rel="noopener">📘 Facebook</a>
-          <a id="igLink" href="#" target="_blank" rel="noopener">📸 Instagram</a>
+          <a id="fbLink" href="#" target="_blank" rel="noopener"><img id="fbIcon" alt="Facebook" /> Facebook</a>
+          <a id="igLink" href="#" target="_blank" rel="noopener"><img id="igIcon" alt="Instagram" /> Instagram</a>
         </div>
       </div>
     </section>
@@ -239,16 +249,20 @@
     const PAGE_SIZE = TOTAL_TICKETS / 5; // 2000 por página
 
     // URLs de contacto (cámbialas por las tuyas)
-    const WA_URL = 'https://wa.me/584248911769';
-    const MAPS_URL = 'https://maps.google.com/?q=Maracay+Aragua+Venezuela';
+    const WA_URL = 'https://wa.me/584120000000';
     const FB_URL = 'https://facebook.com/tu_pagina';
     const IG_URL = 'https://instagram.com/tu_pagina';
 
+    // Logos por URL (personalizables)
+    const WA_ICON_URL = 'https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg';
+    const FB_ICON_URL = 'https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png';
+    const IG_ICON_URL = 'https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png';
+
     // Métodos de pago (logos por URL y datos)
     const PAYMENT_METHODS = [
-      { key: 'pago_movil_ve', name: 'Pago móvil Venezuela', logo: 'https://yt3.googleusercontent.com/3ME3g2bCspqXCDaWLDasexj6y-JYW4ibgTSGDRq0Eua3JCOzd6fR00G1v3qIphKbuKBflB2qbg=s900-c-k-c0x00ffffff-no-rj', details: ['Banco: 0102', 'Teléfono: 0424-8417632', 'Cédula/RIF: V-31490382', 'Titular: Angel Zabala'] },
-      { key: 'pago_movil_banesco', name: 'Pago móvil Banesco', logo: 'https://play-lh.googleusercontent.com/JP3qF5hwz0z7z-d2PEu21dhtdb7EBlC-5XKAuE0e2zLUAjWca-ePijvcb-nAQGAa9Ng=w240-h480-rw', details: ['Banco: 0134', 'Teléfono: 0414-8516619', 'Cédula/RIF: V-14884043', 'Titular:Iraima Jimenez'] },
-      { key: 'binance', name: 'Binance', logo: 'https://upload.wikimedia.org/wikipedia/commons/5/57/Binance_Logo.png', details: ['Correo: angelitojavier277@gmail.com',  ] }
+      { key: 'pago_movil_ve', name: 'Pago móvil Venezuela', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Banco_de_Venezuela_logo.svg/2560px-Banco_de_Venezuela_logo.svg.png', details: ['Banco: 0102', 'Teléfono: 0412-0000000', 'Cédula/RIF: V-00000000', 'Titular: Nombre Apellido'] },
+      { key: 'pago_movil_banesco', name: 'Pago móvil Banesco', logo: 'https://upload.wikimedia.org/wikipedia/commons/7/7b/Banesco_logo.png', details: ['Banco: 0134', 'Teléfono: 0414-0000000', 'Cédula/RIF: V-00000000', 'Titular: Nombre Apellido'] },
+      { key: 'binance', name: 'Binance', logo: 'https://upload.wikimedia.org/wikipedia/commons/5/57/Binance_Logo.png', details: ['Correo: ejemplo@binance.com', 'Nota: Adjunta el hash/ID de transacción'] }
     ];
 
     /* ==========================
@@ -257,8 +271,8 @@
     const el = s => document.querySelector(s);
     const els = s => Array.from(document.querySelectorAll(s));
 
-    const soldKey = 'rifas_soldTickets_v2';
-    const ordersKey = 'rifas_orders_v2';
+    const soldKey = 'rifas_soldTickets_v4';
+    const ordersKey = 'rifas_orders_v4';
 
     const getSold = () => new Set(JSON.parse(localStorage.getItem(soldKey) || '[]'));
     const setSold = (set) => localStorage.setItem(soldKey, JSON.stringify([...set]));
@@ -317,8 +331,8 @@
         btn.textContent = pad4(n);
         if(sold.has(n)){
           btn.classList.add('sold');
-          btn.disabled = true;
-          btn.title = 'Vendido';
+          btn.title = 'Boleto ya ha sido vendido';
+          btn.addEventListener('click', ()=> alert('Boleto ya ha sido vendido'));
         }else if(selected.has(n)){
           btn.classList.add('selected');
           btn.disabled = true;
@@ -331,7 +345,11 @@
       updateTotalsUI();
     }
 
-    function selectTicket(n){ selected.add(n); renderTickets(); renderSelectedChips(); }
+    function selectTicket(n){
+      const sold = getSold();
+      if(sold.has(n)) { alert('Boleto ya ha sido vendido'); return; }
+      selected.add(n); renderTickets(); renderSelectedChips();
+    }
     function deselectTicket(n){ selected.delete(n); renderTickets(); renderSelectedChips(); }
 
     function renderSelectedChips(){
@@ -380,8 +398,8 @@
       const page = Math.floor(n / PAGE_SIZE) + 1;
       currentPage = page; buildPagination(); renderTickets();
       const sold = getSold();
-      if(sold.has(n)){ alert(`El boleto ${pad4(n)} ya está vendido.`); return; }
-      if(selected.has(n)){ alert(`El boleto ${pad4(n)} ya está en tu selección.`); return; }
+      if(sold.has(n)){ alert('Boleto ya ha sido vendido'); return; }
+      if(selected.has(n)){ alert('El boleto ya está en tu selección'); return; }
       selectTicket(n);
     }
 
@@ -408,7 +426,7 @@
       d.style.display = 'block';
       d.innerHTML = `<div style="font-weight:800; margin-bottom:6px;">Datos para ${m.name}</div>` +
         '<ul style="margin:0; padding-left:18px;">' + m.details.map(x=>`<li>${x}</li>`).join('') + '</ul>' +
-        '<div class="subtle" style="margin-top:8px;">* </div>';
+        '<div class="subtle" style="margin-top:8px;">* Copia los datos y realiza el pago. Luego sube el comprobante.</div>';
     }
 
     /* ==========================
@@ -441,7 +459,7 @@
 
       const sold = getSold(); order.tickets.forEach(n=>sold.add(n)); setSold(sold);
 
-      // Reset selección
+      // Reset selección y UI
       selected.clear(); renderSelectedChips(); renderTickets(); updateProgress(); updateTotalsUI();
 
       // Mostrar CTA "Ver mis boletos" y panel de diamantes
@@ -452,9 +470,9 @@
 
     function showMyTickets(order){
       const panel = el('#myTicketsPanel'); panel.style.display = 'block';
-      el('#myTicketsInfo').textContent = `${order.name} — Tel: ${order.phone} — Ref: ${order.ref6}`;
+      el('#myTicketsInfo').textContent = `${order.name} — Tel: ${order.phone}`;
       const wrap = el('#myDiamonds'); wrap.innerHTML='';
-      order.tickets.forEach(n=>{ const d=document.createElement('div'); d.className='diamond'; d.textContent=pad4(n); wrap.appendChild(d); });
+      order.tickets.forEach(n=>{ const d=document.createElement('div'); d.className='big-diamond'; d.textContent=pad4(n); wrap.appendChild(d); });
     }
 
     /* ==========================
@@ -478,8 +496,8 @@
         card.innerHTML = `<div style="font-weight:800; margin-bottom:6px;">${o.name} · CI ${o.idnum} · ${o.phone}</div>` +
                           `<div class="subtle">Pedido ${o.id} — ${new Date(o.createdAt).toLocaleString('es-VE')}</div>` +
                           `<div style="margin:8px 0; font-weight:800;">Total: ${o.total} Bs</div>`;
-        const dwrap = document.createElement('div'); dwrap.className='diamonds';
-        o.tickets.forEach(n=>{ const d=document.createElement('div'); d.className='diamond'; d.textContent=pad4(n); dwrap.appendChild(d); });
+        const dwrap = document.createElement('div'); dwrap.className='big-diamonds';
+        o.tickets.forEach(n=>{ const d=document.createElement('div'); d.className='big-diamond'; d.textContent=pad4(n); dwrap.appendChild(d); });
         card.appendChild(dwrap); out.appendChild(card);
       });
     }
@@ -488,18 +506,25 @@
        Init
        ========================== */
     window.addEventListener('DOMContentLoaded', ()=>{
-      // Links de contacto
-      el('#waLink').href = WA_URL; el('#mapLink').href = MAPS_URL; el('#fbLink').href = FB_URL; el('#igLink').href = IG_URL;
+      // Links e iconos de contacto (cambia URLs arriba)
+      el('#waLink').href = WA_URL; el('#fbLink').href = FB_URL; el('#igLink').href = IG_URL;
+      el('#waIcon').src = WA_ICON_URL; el('#fbIcon').src = FB_ICON_URL; el('#igIcon').src = IG_ICON_URL;
 
       // Teléfono con bandera
-      try{ iti = window.intlTelInput(el('#phone'), { initialCountry:'ve', separateDialCode:true, utilsScript:'https://cdn.jsdelivr.net/npm/intl-tel-input@19.5.6/build/js/utils.js' }); }catch{}
+      try{
+        window.iti = window.intlTelInput(el('#phone'), {
+          initialCountry:'ve',
+          separateDialCode:true,
+          utilsScript:'https://cdn.jsdelivr.net/npm/intl-tel-input@19.5.6/build/js/utils.js'
+        });
+      }catch{}
 
       // Paginación + lista (Página 1 => 0000–1999)
       buildPagination(); renderTickets(); updateProgress(); renderPayMethods();
 
       // Eventos
       el('#btnRandom').addEventListener('click', ()=>randomPick(3));
-      el('#searchInput').addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); handleSearch(); }});
+      el('#searchForm').addEventListener('submit', (e)=>{ e.preventDefault(); handleSearch(); });
       el('#btnConfirm').addEventListener('click', confirmPurchase);
       el('#btnVerify').addEventListener('click', verify);
       el('#btnSeeMine')?.addEventListener('click', ()=>{
