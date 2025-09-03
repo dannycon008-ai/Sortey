@@ -80,21 +80,49 @@
     .btn.secondary{background:#f8fafc;}
     .btn[disabled]{opacity:.6; cursor:not-allowed;}
 
-    .square-wrap{width:100%; max-width:780px; aspect-ratio:1/1; border:1px solid var(--border); border-radius:16px; overflow:hidden; margin:0 auto;}
-    .square-inner{flex:1; overflow:auto;}
-
+   /* Mejor scroll y apariencia del cuadrado */
+.square-wrap{
+  width:100%; 
+  max-width:780px; 
+  aspect-ratio:1/1; 
+  border:2px solid var(--border); 
+  border-radius:20px; 
+  overflow:hidden; 
+  display:flex; 
+  margin:0 auto; 
+  box-shadow:0 4px 15px rgba(0,0,0,0.08);
+}
     .ticket-grid{display:grid; grid-template-columns: repeat(6,1fr); gap:6px; padding:10px;}
     @media(min-width:480px){ .ticket-grid{ grid-template-columns: repeat(8,1fr);} }
     @media(min-width:768px){ .ticket-grid{ grid-template-columns: repeat(10,1fr);} }
     @media(min-width:1024px){ .ticket-grid{ grid-template-columns: repeat(12,1fr);} }
 
-    .ticket{
-      position:relative; user-select:none; text-align:center; padding:8px 0; 
-      border:1px solid var(--border); border-radius:10px; background:#fff; 
-      font-weight:800; font-size:14px; cursor:pointer; transition:.15s;
-      color:#0A4975; /* color de números */
+   /* Boleto con estilo moderno */
+.ticket{
+  position:relative; 
+  user-select:none; 
+  text-align:center; 
+  padding:10px 0; 
+  border:1px solid var(--border); 
+  border-radius:12px; 
+  background:#fff; 
+  font-weight:800; 
+  font-size:14px; 
+  cursor:pointer; 
+  transition:transform 0.15s ease, box-shadow 0.15s ease;
+  color:#0A4975; 
+}
     }
-    .ticket:hover{background:#f9fafb;}
+    .ticket:hover{
+  background:#f0f9ff;
+  transform:translateY(-2px); 
+  box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+    .ticket:active{
+  transform:scale(0.9); /* 👈 animación al click */
+  box-shadow:0 2px 6px rgba(0,0,0,0.2);
+}
     .ticket.sold{color:#0b1e2a; border-color:#c7e3f7; background:#eaf6ff; cursor:not-allowed;}
     .ticket.sold::after{content:""; position:absolute; inset:2px; background-image:var(--diamond-url); background-size:contain; background-position:center; background-repeat:no-repeat; opacity:.45; border-radius:8px;}
     .ticket.selected{background:#dbeafe; border-color:#bfdbfe;}
@@ -405,35 +433,44 @@
       }
     }
 
-    /* ==========================
-       Render de boletos
-       ========================== */
     function renderTickets(){
-      const grid = el('#tickets');
-      grid.innerHTML = '';
-      const sold = getSold();
-      const [start, end] = pageRange(currentPage);
+  const grid = el('#tickets');
+  grid.innerHTML = '';
+  const sold = getSold();
+  const [start, end] = pageRange(currentPage);
 
-      for(let n=start; n<=end; n++){
-        const btn = document.createElement('button');
-        btn.className = 'ticket';
-        btn.textContent = pad4(n);
+  // Crear array de números de esta página
+  const nums = [];
+  for(let n=start; n<=end; n++){ nums.push(n); }
 
-        if(sold.has(n)){
-          btn.classList.add('sold');
-          btn.title = 'Boleto ya ha sido vendido';
-          btn.addEventListener('click', ()=> alert('Boleto ya ha sido vendido'));
-        }else if(selected.has(n)){
-          btn.classList.add('selected');
-          btn.disabled = true;
-          btn.title = 'Ya seleccionado';
-        }else{
-          btn.addEventListener('click', ()=>selectTicket(n));
-        }
-        grid.appendChild(btn);
-      }
-      updateTotalsUI();
+  // Mezclar array (Fisher-Yates shuffle)
+  for (let i = nums.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [nums[i], nums[j]] = [nums[j], nums[i]];
+  }
+
+  // Render con orden mezclado
+  nums.forEach(n=>{
+    const btn = document.createElement('button');
+    btn.className = 'ticket';
+    btn.textContent = pad4(n);
+    if(sold.has(n)){
+      btn.classList.add('sold');
+      btn.title = 'Boleto ya ha sido vendido';
+      btn.addEventListener('click', ()=> alert('Boleto ya ha sido vendido'));
+    }else if(selected.has(n)){
+      btn.classList.add('selected');
+      btn.disabled = true;
+      btn.title = 'Ya seleccionado';
+    }else{
+      btn.addEventListener('click', ()=>selectTicket(n));
     }
+    grid.appendChild(btn);
+  });
+
+  updateTotalsUI();
+}
+
 
     function selectTicket(n){
       const sold = getSold();
