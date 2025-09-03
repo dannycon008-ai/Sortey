@@ -8,85 +8,52 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@19.5.6/build/css/intlTelInput.css" />
   <style>
+    /* ==== ESTILOS ==== */
     :root{
-      --bg:#ffffff;
-      --ink:#1c1e21;
-      --muted:#6b7280;
-      --brand:#111827;
-      --brand-2:#0ea5e9;
-      --ok:#16a34a; --warn:#ef4444; --border:#e5e7eb; --chip:#f3f4f6;
+      --bg:#ffffff; --ink:#1c1e21; --muted:#6b7280; --brand:#111827;
+      --brand-2:#0ea5e9; --ok:#16a34a; --warn:#ef4444; --border:#e5e7eb; --chip:#f3f4f6;
     }
-    html,body{height:100%;}
-    body{
-      margin:0; background:var(--bg); color:var(--ink);
-      font-family:"Inter", sans-serif;
-      font-weight:800;
-    }
+    body{margin:0; background:var(--bg); color:var(--ink); font-family:"Inter", sans-serif; font-weight:800;}
     .container{max-width:1200px; margin:0 auto; padding:16px;}
-    .app-title{display:flex; justify-content:center; align-items:center; text-align:center;}
-    .app-title h1{font-size:42px; margin:0; font-weight:800; letter-spacing:2px; text-transform:uppercase;}
-
+    .app-title{text-align:center;} .app-title h1{font-size:42px; margin:0; font-weight:800; text-transform:uppercase;}
     .bar{height:14px; background:#f3f4f6; border-radius:999px; overflow:hidden; border:1px solid var(--border); margin:12px auto; max-width:600px;}
     .bar>span{display:block; height:100%; background:linear-gradient(90deg,var(--brand-2),#22c55e); width:0%; transition:width 1s ease-in-out;}
-
     .progress-info{text-align:center; margin-bottom:12px;}
-
-    .grid-layout{display:grid; grid-template-columns: 1fr; gap:16px; margin-top:12px;}
-    @media(min-width:1024px){ .grid-layout{ grid-template-columns: 2fr 1fr; } }
-
-    .panel{background:#fff; border:1px solid var(--border); border-radius:16px; padding:16px; box-shadow:0 1px 2px rgba(0,0,0,.04);} 
-    .panel h2{text-align:center; margin:0 0 12px 0; font-size:42px; text-transform:uppercase; font-weight:800;}
-    .subtle{color:var(--muted); font-size:14px;}
-
+    .grid-layout{display:grid; grid-template-columns:1fr; gap:16px; margin-top:12px;}
+    @media(min-width:1024px){.grid-layout{grid-template-columns:2fr 1fr;}}
+    .panel{background:#fff; border:1px solid var(--border); border-radius:16px; padding:16px; box-shadow:0 1px 2px rgba(0,0,0,.04);}
+    .panel h2{text-align:center; margin:0 0 12px 0; font-size:36px; text-transform:uppercase; font-weight:800;}
     .tickets-toolbar{display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-bottom:10px;}
     .search{position:relative; flex:1 1 220px;}
-    .search input{width:100%; border:1px solid var(--border); border-radius:999px; padding:10px 36px 10px 40px; font-size:14px; outline:none;}
-    .search svg{position:absolute; left:12px; top:50%; transform:translateY(-50%);} 
-
-    .page-controls{display:flex; gap:6px; align-items:center;}
-    .btn{border:1px solid var(--border); background:#fff; border-radius:12px; padding:8px 12px; font-weight:700; cursor:pointer; transition:.2s;}
-    .btn:hover{transform:translateY(-1px);} 
-    .btn.primary{background:var(--brand); color:#fff; border-color:var(--brand);} 
-    .btn.secondary{background:#f8fafc;}
-    .btn[disabled]{opacity:.6; cursor:not-allowed;}
-
+    .search input{width:100%; border:1px solid var(--border); border-radius:999px; padding:10px 36px 10px 40px; font-size:14px;}
+    .search svg{position:absolute; left:12px; top:50%; transform:translateY(-50%);}
+    .btn{border:1px solid var(--border); background:#fff; border-radius:12px; padding:8px 12px; font-weight:700; cursor:pointer;}
+    .btn.primary{background:var(--brand); color:#fff;} .btn.secondary{background:#f8fafc;}
     .square-wrap{width:100%; aspect-ratio:1/1; border:1px solid var(--border); border-radius:16px; overflow:hidden; display:flex;}
     .square-inner{flex:1; overflow:auto;}
-
-    .ticket-grid{display:grid; grid-template-columns: repeat(6, 1fr); gap:6px; padding:10px;}
-    @media(min-width:480px){ .ticket-grid{ grid-template-columns: repeat(8, 1fr);} }
-    @media(min-width:768px){ .ticket-grid{ grid-template-columns: repeat(10, 1fr);} }
-    @media(min-width:1024px){ .ticket-grid{ grid-template-columns: repeat(12, 1fr);} }
-    @media(min-width:1280px){ .ticket-grid{ grid-template-columns: repeat(14, 1fr);} }
-
-    .ticket{user-select:none; text-align:center; padding:8px 0; border:1px solid var(--border); border-radius:10px; background:#fff; font-weight:700; font-size:14px; cursor:pointer; transition:.15s;}
-    .ticket:hover{background:#f9fafb;}
-    .ticket.sold{background:#fee2e2; color:#991b1b; border-color:#fecaca; cursor:not-allowed;}
-    .ticket.selected{background:#dbeafe; border-color:#bfdbfe;}
-
+    .ticket-grid{display:grid; grid-template-columns:repeat(6,1fr); gap:6px; padding:10px;}
+    .ticket{padding:8px 0; border:1px solid var(--border); border-radius:10px; background:#fff; font-size:14px; cursor:pointer;}
+    .ticket.sold{background:#fee2e2; color:#991b1b; cursor:not-allowed;}
+    .ticket.selected{background:#dbeafe;}
     .chips{display:flex; flex-wrap:wrap; gap:8px;}
-    .chip{display:inline-flex; align-items:center; gap:6px; background:var(--chip); border:1px solid var(--border); border-radius:999px; padding:6px 10px; font-weight:700;}
-    .chip button{border:none; background:transparent; cursor:pointer; font-size:16px; line-height:1;}
-
-    .totals{display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-top:8px; justify-content:space-between;}
-    .tag{background:#eef2ff; color:#3730a3; border:1px solid #e0e7ff; font-weight:800; border-radius:999px; padding:6px 10px;}
-    .note{margin-top:8px; font-size:14px; color:#0f172a;}
-    .note.warn{color:#b91c1c;}
-
-    footer{margin:28px 0 10px; text-align:center; color:var(--muted); font-size:13px;}
+    .chip{display:inline-flex; align-items:center; gap:6px; background:var(--chip); border:1px solid var(--border); border-radius:999px; padding:6px 10px;}
+    .totals{display:flex; justify-content:space-between; margin-top:8px; flex-wrap:wrap; gap:10px;}
+    .tag{background:#eef2ff; color:#3730a3; border:1px solid #e0e7ff; border-radius:999px; padding:6px 10px;}
+    .form{display:grid; gap:10px;} .field{display:flex; flex-direction:column; gap:6px;}
+    .field input{border:1px solid var(--border); border-radius:12px; padding:10px;}
+    .pay-methods{display:flex; gap:10px; flex-wrap:wrap;}
+    .pm-card{flex:1 1 160px; border:1px solid var(--border); border-radius:14px; padding:12px; cursor:pointer; display:flex; align-items:center; gap:10px;}
+    .pm-card.active{outline:2px solid var(--brand-2);} .pm-details{background:#f8fafc; border:1px dashed var(--border); border-radius:12px; padding:12px;}
+    footer{text-align:center; color:var(--muted); margin-top:20px;}
   </style>
 </head>
 <body>
   <div class="container">
-    <header class="app-title">
-      <h1>TU DIAMANTE 💎</h1>
-    </header>
+    <header class="app-title"><h1>TU DIAMANTE 💎</h1></header>
 
     <section class="progress-info">
       <div class="bar"><span id="soldBar"></span></div>
-      <div class="subtle">
-        Vendidos: <b id="soldCount">0</b> / 10.000 — <b id="soldPct">0%</b>
-      </div>
+      <div>Vendidos: <b id="soldCount">0</b> / 10.000 — <b id="soldPct">0%</b></div>
     </section>
 
     <div class="grid-layout">
@@ -94,129 +61,107 @@
         <h2>LISTA DE BOLETOS</h2>
         <div class="tickets-toolbar">
           <div class="search">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            <input id="searchInput" type="text" inputmode="numeric" maxlength="4" placeholder="Lupa: escribe número de boleto" />
+            <input id="searchInput" type="text" placeholder="Buscar boleto" maxlength="4"/>
           </div>
-          <div class="page-controls">
-            <span class="subtle">Página:</span>
-            <div id="pagination"></div>
-          </div>
+          <div class="page-controls"><span>Página:</span><div id="pagination"></div></div>
         </div>
-        <div class="square-wrap">
-          <div class="square-inner">
-            <div id="tickets" class="ticket-grid" aria-live="polite"></div>
-          </div>
-        </div>
+        <div class="square-wrap"><div class="square-inner"><div id="tickets" class="ticket-grid"></div></div></div>
         <div class="totals">
-          <div>
-            <span class="tag">Precio: <b>15 Bs</b></span>
-            <span class="tag">Seleccionados: <b id="selCount">0</b></span>
-            <span class="tag">Total: <b id="totalAmount">0 Bs</b></span>
-          </div>
+          <div><span class="tag">Precio: 15 Bs</span><span class="tag">Seleccionados: <b id="selCount">0</b></span><span class="tag">Total: <b id="totalAmount">0 Bs</b></span></div>
           <button id="btnRandom" class="btn primary">🎲 Generar aleatorios</button>
         </div>
+        <div id="selectedChips" class="chips"></div>
         <div id="minMsg" class="note warn" style="display:none;">Compra mínima 3 boletos.</div>
-        <div style="margin-top:10px;">
-          <div class="subtle">Tus boletos seleccionados</div>
-          <div id="selectedChips" class="chips"></div>
-        </div>
+      </section>
+
+      <section class="panel">
+        <h2>DATOS PERSONALES & PAGO</h2>
+        <form id="buyForm" class="form">
+          <div class="field"><label>Nombre y apellido</label><input id="name" required></div>
+          <div class="field"><label>Cédula</label><input id="idnum" required></div>
+          <div class="field"><label>Teléfono</label><input id="phone" type="tel" required></div>
+          <div class="field"><label>Últimos 6 dígitos de referencia</label><input id="ref6" maxlength="6" required></div>
+          <div class="field"><label>Comprobante</label><input id="proof" type="file" required></div>
+          <div class="field"><label>Método de pago</label><div id="payMethods" class="pay-methods"></div></div>
+          <div id="payDetails" class="pm-details" style="display:none;"></div>
+          <button type="button" id="btnConfirm" class="btn primary">Confirmar compra</button>
+        </form>
       </section>
     </div>
 
     <div class="panel" style="margin-top:16px;">
       <h2>VERIFICADOR DE BOLETOS</h2>
-      <div class="verif">
-        <div class="radio">
-          <label><input type="radio" name="vmode" value="phone" checked> Por teléfono</label>
-          <label><input type="radio" name="vmode" value="ticket"> Por boleto</label>
-        </div>
-        <div style="display:flex; gap:8px; flex-wrap:wrap;">
-          <input id="verifyInput" style="flex:1 1 240px; border:1px solid var(--border); border-radius:12px; padding:10px 12px;" placeholder="Teléfono o número de boleto" />
-          <button id="btnVerify" class="btn secondary" type="button">🔎 Verificar</button>
-        </div>
-        <div id="verifyOut"></div>
-      </div>
+      <input id="verifyInput" placeholder="Teléfono o boleto"/>
+      <button id="btnVerify" class="btn secondary">Verificar</button>
+      <div id="verifyOut"></div>
     </div>
 
-    <footer>
-      &copy; <span id="year"></span> TU DIAMANTE 💎. Todos los derechos reservados.
-    </footer>
+    <footer>&copy; <span id="year"></span> TU DIAMANTE 💎</footer>
   </div>
-
   <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@19.5.6/build/js/intlTelInput.min.js"></script>
   <script>
-    const PRICE_PER_TICKET = 15;
-    const TOTAL_TICKETS = 10000;
-    const PAGE_SIZE = TOTAL_TICKETS / 5;
+    const PRICE_PER_TICKET = 15, TOTAL_TICKETS = 10000, PAGE_SIZE = TOTAL_TICKETS/5;
+    const soldKey='rifas_sold', ordersKey='rifas_orders';
+    const getSold=()=>new Set(JSON.parse(localStorage.getItem(soldKey)||'[]'));
+    const setSold=s=>localStorage.setItem(soldKey,JSON.stringify([...s]));
+    const getOrders=()=>JSON.parse(localStorage.getItem(ordersKey)||'[]');
+    const setOrders=a=>localStorage.setItem(ordersKey,JSON.stringify(a));
+    const pad4=n=>n.toString().padStart(4,'0');
+    let selected=new Set(), currentPage=1, iti=null, chosenPayKey=null;
 
-    const el = s => document.querySelector(s);
-    const soldKey = 'rifas_soldTickets_v1';
-    const ordersKey = 'rifas_orders_v1';
-    const pad4 = n => n.toString().padStart(4, '0');
+    const PAYMENT_METHODS=[
+      {key:'pago_movil_ve',name:'Pago móvil Venezuela',logo:'https://...',details:['Banco:0102','Teléfono:0412-0000000']},
+      {key:'pago_movil_banesco',name:'Pago móvil Banesco',logo:'https://...',details:['Banco:0134','Teléfono:0414-0000000']},
+      {key:'binance',name:'Binance',logo:'https://...',details:['Correo: ejemplo@binance.com']}
+    ];
 
-    const getSold = () => new Set(JSON.parse(localStorage.getItem(soldKey) || '[]'));
-    const setSold = (set) => localStorage.setItem(soldKey, JSON.stringify([...set]));
-    const getOrders = () => JSON.parse(localStorage.getItem(ordersKey) || '[]');
-    const setOrders = (arr) => localStorage.setItem(ordersKey, JSON.stringify(arr));
+    function updateProgress(){const sold=getSold();let pct=Math.round((sold.size/TOTAL_TICKETS)*100);
+      document.querySelector('#soldBar').style.width=pct+'%';
+      document.querySelector('#soldCount').textContent=sold.size;
+      document.querySelector('#soldPct').textContent=pct+'%';}
 
-    let selected = new Set();
-    let currentPage = 1;
+    function renderTickets(){const grid=document.querySelector('#tickets');grid.innerHTML='';
+      const [start,end]=[(currentPage-1)*PAGE_SIZE,currentPage*PAGE_SIZE-1];
+      const sold=getSold();
+      for(let n=start;n<=end;n++){let b=document.createElement('button');b.className='ticket';b.textContent=pad4(n);
+        if(sold.has(n))b.classList.add('sold'); else if(selected.has(n))b.classList.add('selected');
+        else b.onclick=()=>{selected.add(n);renderUI();};grid.appendChild(b);} }
 
-    function updateProgress(){
-      const sold = getSold();
-      const pct = Math.round((sold.size / TOTAL_TICKETS) * 100);
-      el('#soldBar').style.width = pct + '%';
-      el('#soldCount').textContent = sold.size;
-      el('#soldPct').textContent = pct + '%';
-    }
+    function renderUI(){document.querySelector('#selCount').textContent=selected.size;
+      document.querySelector('#totalAmount').textContent=(selected.size*PRICE_PER_TICKET)+' Bs';
+      const chips=document.querySelector('#selectedChips');chips.innerHTML='';
+      [...selected].forEach(n=>{let c=document.createElement('span');c.className='chip';c.textContent=pad4(n);
+        let x=document.createElement('button');x.textContent='×';x.onclick=()=>{selected.delete(n);renderUI();renderTickets();};c.appendChild(x);chips.appendChild(c);});
+      renderTickets();updateProgress();}
 
-    function renderSelectedChips(){
-      const box = el('#selectedChips');
-      box.innerHTML = '';
-      [...selected].sort((a,b)=>a-b).forEach(n=>{
-        const chip = document.createElement('span');
-        chip.className = 'chip';
-        chip.innerHTML = `<span>${pad4(n)}</span>`;
-        const x = document.createElement('button');
-        x.textContent = '×';
-        x.addEventListener('click', ()=>{selected.delete(n); renderSelectedChips();});
-        chip.appendChild(x);
-        box.appendChild(chip);
-      });
-    }
+    function randomPick(c=3){const sold=getSold();let pool=[];for(let n=0;n<TOTAL_TICKETS;n++)if(!sold.has(n)&&!selected.has(n))pool.push(n);
+      while(selected.size<c&&pool.length){let n=pool.splice(Math.floor(Math.random()*pool.length),1)[0];selected.add(n);}renderUI();}
 
-    function randomPick(count=3){
-      const sold = getSold();
-      const pool = [];
-      for(let n=0;n<TOTAL_TICKETS;n++) if(!sold.has(n) && !selected.has(n)) pool.push(n);
-      while(selected.size < count && pool.length){
-        const idx = Math.floor(Math.random()*pool.length);
-        selected.add(pool.splice(idx,1)[0]);
-      }
-      renderSelectedChips();
-      updateProgress();
-    }
+    function renderPayMethods(){const wrap=document.querySelector('#payMethods');wrap.innerHTML='';
+      PAYMENT_METHODS.forEach(m=>{let card=document.createElement('div');card.className='pm-card';card.innerHTML=`<img src=\"${m.logo}\" width=\"24\"> ${m.name}`;
+        card.onclick=()=>{chosenPayKey=m.key;document.querySelectorAll('.pm-card').forEach(c=>c.classList.remove('active'));card.classList.add('active');
+          document.querySelector('#payDetails').style.display='block';document.querySelector('#payDetails').innerHTML=m.details.join('<br>');};
+        wrap.appendChild(card);});}
 
-    function verify(){
-      const raw = el('#verifyInput').value.trim();
-      const out = el('#verifyOut');
-      out.innerHTML = '';
-      const orders = getOrders();
-      const hits = orders.filter(o=>o.phone.includes(raw) || o.tickets.includes(parseInt(raw)));
-      if(hits.length===0){ out.innerHTML = '<div>No se encontraron compras.</div>'; return; }
-      hits.forEach(o=>{
-        const div = document.createElement('div');
-        div.textContent = `Boletos: ${o.tickets.map(pad4).join(', ')}`;
-        out.appendChild(div);
-      });
-    }
+    function confirmPurchase(){if(selected.size<3){document.querySelector('#minMsg').style.display='block';return;}
+      const name=document.querySelector('#name').value.trim(),idnum=document.querySelector('#idnum').value.trim(),phone=iti.getNumber(),ref6=document.querySelector('#ref6').value.trim();
+      if(!name||!idnum||!phone||ref6.length!=6||!chosenPayKey){alert('Completa todos los datos');return;}
+      const order={id:'ORD-'+Date.now(),name,idnum,phone,ref6,pay:chosenPayKey,tickets:[...selected],total:selected.size*PRICE_PER_TICKET};
+      const orders=getOrders();orders.push(order);setOrders(orders);
+      const sold=getSold();order.tickets.forEach(n=>sold.add(n));setSold(sold);
+      selected.clear();renderUI();alert('Compra confirmada!');}
 
-    window.addEventListener('DOMContentLoaded', ()=>{
-      el('#year').textContent = new Date().getFullYear();
-      updateProgress();
-      el('#btnRandom').addEventListener('click', ()=>randomPick(3));
-      el('#btnVerify').addEventListener('click', verify);
-    });
+    function verify(){const raw=document.querySelector('#verifyInput').value.trim();const out=document.querySelector('#verifyOut');out.innerHTML='';
+      const orders=getOrders();let hits=[];
+      if(/\\d{4}/.test(raw))hits=orders.filter(o=>o.tickets.includes(parseInt(raw)));
+      else hits=orders.filter(o=>o.phone.includes(raw));
+      if(!hits.length){out.textContent='No se encontraron compras';return;}
+      hits.forEach(o=>{let d=document.createElement('div');d.innerHTML=`<b>${o.name}</b> | CI:${o.idnum} | Tel:${o.phone}<br>Boletos: ${o.tickets.map(pad4).join(', ')}<br>Total:${o.total} Bs`;out.appendChild(d);});}
+
+    window.onload=()=>{document.querySelector('#year').textContent=new Date().getFullYear();
+      iti=window.intlTelInput(document.querySelector('#phone'),{initialCountry:'ve',separateDialCode:true});
+      renderPayMethods();renderUI();document.querySelector('#btnRandom').onclick=()=>randomPick();
+      document.querySelector('#btnConfirm').onclick=confirmPurchase;document.querySelector('#btnVerify').onclick=verify;}
   </script>
 </body>
 </html>
