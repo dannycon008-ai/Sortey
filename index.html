@@ -120,11 +120,11 @@
       <!-- LISTA -->
       <section class="panel">
         <h2>Lista de boletos</h2>
-        <div class="subtle">Página 1 por defecto (0000–1999). Hay 5 páginas.</div>
+        <div class="subtle"></div>
         <div class="tickets-toolbar">
           <div class="search">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            <input id="searchInput" type="text" inputmode="numeric" maxlength="4" placeholder="Lupa: escribe número (0000–9999) y Enter" />
+            <input id="searchInput" type="text" inputmode="numeric" maxlength="4" placeholder=" escribe número " />
           </div>
           <div class="page-controls">
             <span class="subtle">Página:</span>
@@ -215,7 +215,7 @@
             <span class="icon">📱</span> WhatsApp
           </a>
           <a id="mapLink" href="#" target="_blank" rel="noopener">
-            <span class="icon">📍</span> Ubicación
+            <span class="icon">📍</span> El tigre EDO Anzoategui 
           </a>
         </div>
         <h3>Síguenos</h3>
@@ -239,16 +239,16 @@
     const PAGE_SIZE = TOTAL_TICKETS / 5; // 2000 por página
 
     // URLs de contacto (cámbialas por las tuyas)
-    const WA_URL = 'https://wa.me/584120000000';
+    const WA_URL = 'https://wa.me/584248911769';
     const MAPS_URL = 'https://maps.google.com/?q=Maracay+Aragua+Venezuela';
     const FB_URL = 'https://facebook.com/tu_pagina';
     const IG_URL = 'https://instagram.com/tu_pagina';
 
     // Métodos de pago (logos por URL y datos)
     const PAYMENT_METHODS = [
-      { key: 'pago_movil_ve', name: 'Pago móvil Venezuela', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Banco_de_Venezuela_logo.svg/2560px-Banco_de_Venezuela_logo.svg.png', details: ['Banco: 0102', 'Teléfono: 0412-0000000', 'Cédula/RIF: V-00000000', 'Titular: Nombre Apellido'] },
-      { key: 'pago_movil_banesco', name: 'Pago móvil Banesco', logo: 'https://upload.wikimedia.org/wikipedia/commons/7/7b/Banesco_logo.png', details: ['Banco: 0134', 'Teléfono: 0414-0000000', 'Cédula/RIF: V-00000000', 'Titular: Nombre Apellido'] },
-      { key: 'binance', name: 'Binance', logo: 'https://upload.wikimedia.org/wikipedia/commons/5/57/Binance_Logo.png', details: ['Correo: ejemplo@binance.com', 'Nota: Adjunta el hash/ID de transacción'] }
+      { key: 'pago_movil_ve', name: 'Pago móvil Venezuela', logo: 'https://yt3.googleusercontent.com/3ME3g2bCspqXCDaWLDasexj6y-JYW4ibgTSGDRq0Eua3JCOzd6fR00G1v3qIphKbuKBflB2qbg=s900-c-k-c0x00ffffff-no-rj', details: ['Banco: 0102', 'Teléfono: 0424-8417632', 'Cédula/RIF: V-31490382', 'Titular: Angel Zabala'] },
+      { key: 'pago_movil_banesco', name: 'Pago móvil Banesco', logo: 'https://play-lh.googleusercontent.com/JP3qF5hwz0z7z-d2PEu21dhtdb7EBlC-5XKAuE0e2zLUAjWca-ePijvcb-nAQGAa9Ng=w240-h480-rw', details: ['Banco: 0134', 'Teléfono: 0414-8516619', 'Cédula/RIF: V-14884043', 'Titular:Iraima Jimenez'] },
+      { key: 'binance', name: 'Binance', logo: 'https://upload.wikimedia.org/wikipedia/commons/5/57/Binance_Logo.png', details: ['Correo: angelitojavier277@gmail.com', 'Nota: Adjunta el hash/ID de transacción'] }
     ];
 
     /* ==========================
