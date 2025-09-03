@@ -23,6 +23,35 @@
     /* diamante translúcido para vendidos y “Mis boletos” */
     --diamond-url: url('https://qu.ax/zcmdn.png');
   }
+.pagination-bottom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.page-btn {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: #0A4975;
+  color: #fff;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.page-btn:hover {
+  background: #07324e;
+}
+
+#pageInfo {
+  font-weight: bold;
+  color: #111827;
+}
 
   .big-diamond {
     width:120px;
@@ -140,17 +169,36 @@
   background: #eaf6ff;
   cursor: not-allowed;
 }
+/* SOLO boletos vendidos */
 .ticket.sold::after {
-  content: "";
-  position: absolute;
-  inset: 2px;
-  background-image: var(--diamond-url);
+  content:"";
+  position:absolute;
+  inset:2px;
+  background-image: var(--diamond-url); /* usa el diamante */
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
-  opacity: .45;
+  opacity: .45;   /* transparente para no tapar el número */
   border-radius: 8px;
 }
+
+/* Mis boletos (vista del usuario en diamante) */
+.big-diamond {
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;              /* 👈 números en blanco */
+  font-size: 20px;
+  font-weight: 800;
+  background-image: var(--diamond-url); /* diamante como fondo */
+  background-size: cover;
+  background-position: center;
+  border-radius: 16px;
+  box-shadow: 0 8px 18px rgba(0,0,0,.12);
+}
+
 
     .ticket.sold{color:#0b1e2a; border-color:#c7e3f7; background:#eaf6ff; cursor:not-allowed;}
     .ticket.sold::after{content:""; position:absolute; inset:2px; background-image:var(--diamond-url); background-size:contain; background-position:center; background-repeat:no-repeat; opacity:.45; border-radius:8px;}
@@ -278,6 +326,14 @@
           <div class="square-inner">
             <div id="tickets" class="ticket-grid" aria-live="polite"></div>
           </div>
+<!-- PAGINACIÓN ABAJO -->
+<div class="pagination-bottom">
+  <button class="page-btn" id="prevPage" title="Página anterior">«</button>
+  <span id="pageInfo">Pag: 1/10</span>
+  <button class="page-btn" id="nextPage" title="Página siguiente">»</button>
+</div>
+
+          
         </div>
         <div class="totals">
           <span class="tag">Precio: <b>15 Bs</b></span>
@@ -554,7 +610,29 @@
       if(first!==undefined){ currentPage = Math.floor(first / PAGE_SIZE) + 1; buildPagination(); }
       renderTickets(); renderSelectedChips();
     }
+function updatePageInfo() {
+  const totalPages = 10; // ahora son 10 páginas de 1000 boletos
+  document.getElementById("pageInfo").textContent = `Pag: ${currentPage}/${totalPages}`;
+}
 
+document.getElementById("prevPage").addEventListener("click", () => {
+  if (currentPage > 1) {
+    currentPage--;
+    buildPagination();
+    renderTickets();
+    updatePageInfo();
+  }
+});
+
+document.getElementById("nextPage").addEventListener("click", () => {
+  if (currentPage < 10) {
+    currentPage++;
+    buildPagination();
+    renderTickets();
+    updatePageInfo();
+  }
+});
+updatePageInfo();
     // Buscar/jump por # (ENTER funciona en iOS/Android/Desktop al ser submit del form)
     function handleSearch(){
       const raw = el('#searchInput').value.trim();
