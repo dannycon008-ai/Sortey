@@ -7,37 +7,149 @@
 
   <!-- Bootstrap 4 -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-  <!-- Materialize -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
   <!-- Fuente Poppins -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
-    body { font-family: 'Poppins', sans-serif; color: #0a4975; margin: 0; padding: 0; background: #fff; }
-    .navbar { background: #005899; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
-    .navbar a { color: #fff !important; font-weight: 600; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #fff;
+      color: #0a4975;
+    }
+
+    /* Navbar */
+    .navbar {
+      background: #005899;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .navbar a {
+      color: #fff !important;
+      font-weight: 600;
+    }
 
     section { padding: 60px 0; }
     h2 { font-weight: 800; color: #005899; }
 
-    .premio-card { background: #fff; border-radius: 15px; padding: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); text-align: center; }
-    .premio-card p { font-weight: 700; font-size: 1.2rem; }
+    /* Premios */
+    .premio-card {
+      background: #fff;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .premio-card img {
+      width: 40px;
+      margin-right: 8px;
+    }
+    .premio-card h4 {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-weight: 700;
+      font-size: 1.3rem;
+    }
+    .premio-card p {
+      font-weight: 700;
+      font-size: 1.2rem;
+      margin-top: 10px;
+    }
 
-    .boletos-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 8px; }
-    .chip { background: #fff; border: 2px solid #005899; color: #0a4975; font-weight: 600; padding: 8px; border-radius: 15px; text-align: center; }
-    .chip.vendido { background: url("https://qu.ax/zcmdn.png") no-repeat center/contain; color: transparent; pointer-events: none; }
+    /* Boletos */
+    .tickets-container {
+      border: 2px solid #005899;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 1200px;
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .tickets-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+      gap: 10px;
+    }
+    .ticket {
+      border: 2px solid #005899;
+      border-radius: 20px;
+      padding: 8px;
+      font-weight: 600;
+      color: #005899;
+      text-align: center;
+      background: #fff;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+    }
+    .ticket:hover {
+      background: #5d8aa6;
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    .ticket.vendido {
+      background: #f8f8f8;
+      border-color: #ccc;
+      cursor: not-allowed;
+      position: relative;
+    }
+    .ticket.vendido::after {
+      content: url("https://qu.ax/zcmdn.png");
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      width: 18px;
+      height: 18px;
+    }
 
-    .progress-total { background: #eee; border-radius: 20px; height: 25px; overflow: hidden; margin-bottom: 15px; }
-    .progress-actual { background: linear-gradient(90deg, #005899, #0a4975); height: 100%; width: 0; transition: width 1.5s ease-in-out; }
+    /* Barra progreso */
+    .progress-total {
+      background: #eee;
+      border-radius: 20px;
+      height: 25px;
+      overflow: hidden;
+      margin-bottom: 15px;
+    }
+    .progress-actual {
+      background: linear-gradient(90deg, #005899, #0a4975);
+      height: 100%;
+      width: 0;
+      transition: width 1.5s ease-in-out;
+    }
     .progress-percent { font-weight: 600; }
 
-    .form-card { background: #fff; border-radius: 15px; padding: 25px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    /* Formulario */
+    .form-card {
+      background: #fff;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
     .form-card label { font-weight: 600; color: #005899; }
     .form-card input, .form-card select { margin-bottom: 15px; border-radius: 8px; }
-    .metodo-pago { display: flex; align-items: center; margin-bottom: 10px; cursor: pointer; }
+    .metodo-pago {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
     .metodo-pago img { width: 40px; margin-right: 10px; }
-    .instrucciones { background: #f1f9ff; border: 1px solid #005899; border-radius: 10px; padding: 15px; margin-top: 15px; display: none; }
-    .footer-section { background: #005899; color: #fff; padding: 20px; }
+    .instrucciones {
+      background: #f1f9ff;
+      border: 1px solid #005899;
+      border-radius: 10px;
+      padding: 15px;
+      margin-top: 15px;
+      display: none;
+    }
+
+    /* Footer */
+    .footer-section {
+      background: #005899;
+      color: #fff;
+      padding: 20px;
+    }
   </style>
 </head>
 <body>
@@ -53,9 +165,24 @@
   <section id="premios" class="container mt-5 pt-5">
     <h2 class="text-center mb-4">🎁 PREMIOS</h2>
     <div class="row">
-      <div class="col-md-4"><div class="premio-card"><h4>Premio 1</h4><p>10.000 Bs</p></div></div>
-      <div class="col-md-4"><div class="premio-card"><h4>Premio 2</h4><p>20.000 Bs</p></div></div>
-      <div class="col-md-4"><div class="premio-card"><h4>Premio 3</h4><p>30.000 Bs</p></div></div>
+      <div class="col-md-4">
+        <div class="premio-card">
+          <h4><img src="https://via.placeholder.com/40" alt="logo">Premio 1</h4>
+          <p>10.000 Bs</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="premio-card">
+          <h4><img src="https://via.placeholder.com/40" alt="logo">Premio 2</h4>
+          <p>20.000 Bs</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="premio-card">
+          <h4><img src="https://via.placeholder.com/40" alt="logo">Premio 3</h4>
+          <p>30.000 Bs</p>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -64,7 +191,11 @@
     <h2 class="text-center mb-3">🎟️ Lista de Boletos</h2>
     <div class="progress-total"><div class="progress-actual" id="progress-bar"></div></div>
     <p class="progress-percent text-center" id="progress-text">0% Vendidos</p>
-    <div id="boletos-list" class="boletos-container"></div>
+
+    <div class="tickets-container">
+      <div id="boletos-list" class="tickets-grid"></div>
+    </div>
+
     <div class="text-center mt-4">
       <button class="btn btn-primary" onclick="prevPage()">⬅️ Anterior</button>
       <span id="page-info" class="mx-3">Página 1 de 5</span>
@@ -135,6 +266,7 @@
         boletos.push({ numero, vendido });
       }
     }
+
     function mostrarBoletos() {
       const contenedor = document.getElementById('boletos-list');
       contenedor.innerHTML = "";
@@ -142,7 +274,7 @@
       let fin = inicio + POR_PAGINA;
       boletos.slice(inicio, fin).forEach(boleto => {
         let div = document.createElement('div');
-        div.className = "chip" + (boleto.vendido ? " vendido" : "");
+        div.className = "ticket" + (boleto.vendido ? " vendido" : "");
         div.textContent = boleto.numero;
         contenedor.appendChild(div);
       });
@@ -150,15 +282,26 @@
         `Página ${paginaActual} de ${Math.ceil(TOTAL_BOLETOS / POR_PAGINA)}`;
       actualizarProgreso();
     }
+
     function actualizarProgreso() {
       let vendidos = boletos.filter(b => b.vendido).length;
       let porcentaje = Math.round((vendidos / TOTAL_BOLETOS) * 100);
       document.getElementById('progress-bar').style.width = porcentaje + "%";
       document.getElementById('progress-text').textContent = porcentaje + "% Vendidos";
     }
-    function nextPage() { if (paginaActual < TOTAL_BOLETOS / POR_PAGINA) { paginaActual++; mostrarBoletos(); } }
-    function prevPage() { if (paginaActual > 1) { paginaActual--; mostrarBoletos(); } }
-    generarBoletos(); mostrarBoletos();
+
+    function nextPage() {
+      if (paginaActual < TOTAL_BOLETOS / POR_PAGINA) {
+        paginaActual++;
+        mostrarBoletos();
+      }
+    }
+    function prevPage() {
+      if (paginaActual > 1) {
+        paginaActual--;
+        mostrarBoletos();
+      }
+    }
 
     // Instrucciones dinámicas
     function mostrarInstrucciones(metodo) {
@@ -172,6 +315,9 @@
         box.innerHTML = "<h5>💰 Binance</h5><p><b>Wallet:</b> 0xABC123DEF456<br><b>Red:</b> BNB Smart Chain (BEP20)</p>";
       }
     }
+
+    generarBoletos();
+    mostrarBoletos();
   </script>
 </body>
 </html>
