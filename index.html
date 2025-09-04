@@ -105,6 +105,11 @@
       background-size: cover;
       background-repeat: no-repeat;
     }
+    .ticket.seleccionado {
+      background: #005899 !important;
+      color: #fff !important;
+      border-color: #003f66 !important;
+    }
 
     /* Barra progreso */
     .progress-total {
@@ -204,13 +209,15 @@
       <span id="page-info" class="mx-3">Página 1 de 5</span>
       <button class="btn btn-primary" onclick="nextPage()">Siguiente ➡️</button>
     </div>
+
+    <div id="total-seleccionados" class="text-center mt-3"></div>
   </section>
 
   <!-- FORMULARIO -->
   <section id="formulario" class="container mt-5">
     <div class="form-card">
       <h2 class="text-center mb-4">📝 Datos Personales</h2>
-      <form>
+      <form onsubmit="return confirmarCompra(event)">
         <label>Nombre y Apellido</label>
         <input type="text" class="form-control" required>
         <label>Cédula</label>
@@ -245,7 +252,7 @@
         <!-- Instrucciones dinámicas -->
         <div id="instrucciones" class="instrucciones"></div>
 
-        <button class="btn btn-success btn-block mt-3">Confirmar Compra</button>
+        <button class="btn btn-success btn-block mt-3" type="submit">Confirmar Compra</button>
       </form>
     </div>
   </section>
@@ -271,12 +278,14 @@
     <p>© 2025 Tu Diamante - Todos los derechos reservados.</p>
   </footer>
 
-  <!-- JS Boletos -->
+  <!-- JS -->
   <script>
     const TOTAL_BOLETOS = 10000;
     const POR_PAGINA = 2000;
     let paginaActual = 1;
     let boletos = [];
+    let boletosSeleccionados = [];
+    const PRECIO_BOLETO = 15;
 
     function generarBoletos() {
       for (let i = 0; i < TOTAL_BOLETOS; i++) {
@@ -286,19 +295,53 @@
       }
     }
 
+    function toggleSeleccion(boleto) {
+      if (boleto.vendido) return;
+
+      const index = boletosSeleccionados.indexOf(boleto.numero);
+      if (index === -1) {
+        boletosSeleccionados.push(boleto.numero);
+      } else {
+        boletosSeleccionados.splice(index, 1);
+      }
+      mostrarBoletos();
+      actualizarTotalSeleccionados();
+    }
+
+    function actualizarTotalSeleccionados() {
+      const totalDiv = document.getElementById("total-seleccionados");
+      const cantidad = boletosSeleccionados.length;
+      const total = cantidad * PRECIO_BOLETO;
+
+      if (cantidad > 0) {
+        totalDiv.innerHTML = `
+          <p><b>Boletos seleccionados:</b> ${cantidad}</p>
+          <p><b>Total a pagar:</b> ${total} Bs</p>
+        `;
+      } else {
+        totalDiv.innerHTML = "";
+      }
+    }
+
     function mostrarBoletos() {
       const contenedor = document.getElementById('boletos-list');
       contenedor.innerHTML = "";
       let inicio = (paginaActual - 1) * POR_PAGINA;
       let fin = inicio + POR_PAGINA;
+
       boletos.slice(inicio, fin).forEach(boleto => {
         let div = document.createElement('div');
-        div.className = "ticket" + (boleto.vendido ? " vendido" : "");
+        div.className = "ticket"
+          + (boleto.vendido ? " vendido" : "")
+          + (boletosSeleccionados.includes(boleto.numero) ? " seleccionado" : "");
         div.textContent = boleto.numero;
+        div.onclick = () => toggleSeleccion(boleto);
         contenedor.appendChild(div);
       });
+
       document.getElementById('page-info').textContent =
         `Página ${paginaActual} de ${Math.ceil(TOTAL_BOLETOS / POR_PAGINA)}`;
+
       actualizarProgreso();
     }
 
@@ -322,6 +365,17 @@
       }
     }
 
+    // Validar compra mínima
+    function confirmarCompra(event) {
+      event.preventDefault();
+      if (boletosSeleccionados.length < 3) {
+        alert("⚠️ La compra mínima es de 3 boletos.");
+        return false;
+      }
+      alert("✅ Compra confirmada con " + boletosSeleccionados.length + " boletos. Total: " + (boletosSeleccionados.length * PRECIO_BOLETO) + " Bs.");
+      return true;
+    }
+
     // Instrucciones dinámicas
     function mostrarInstrucciones(metodo) {
       const box = document.getElementById("instrucciones");
@@ -335,26 +389,11 @@
       }
     }
 
-    // Datos simulados de compras
+    // Datos simulados para verificador
     let comprasSimuladas = [
-      { 
-        nombre: "Juan Pérez", 
-        cedula: "V-12345678", 
-        telefono: "04128417632", 
-        boletos: ["0001", "0002", "0005"] 
-      },
-      { 
-        nombre: "Iraima Jimenez", 
-        cedula: "V-87654321", 
-        telefono: "04125556677", 
-        boletos: ["0100", "0101", "0102", "0103"] 
-      },
-      { 
-        nombre: "Angel Zabala", 
-        cedula: "V-31490382", 
-        telefono: "04129998877", 
-        boletos: ["0500"] 
-      }
+      { nombre: "Juan Pérez", cedula: "V-12345678", telefono: "04128417632", boletos: ["0001", "0002", "0005"] },
+      { nombre: "Iraima Jimenez", cedula: "V-87654321", telefono: "04125556677", boletos: ["0100", "0101", "0102", "0103"] },
+      { nombre: "Angel Zabala", cedula: "V-31490382", telefono: "04129998877", boletos: ["0500"] }
     ];
 
     function verificarBoletos(event) {
@@ -364,11 +403,7 @@
       const detalleDiv = document.getElementById("detalleBoletos");
 
       let compra = null;
-
-      // Buscar por teléfono
       compra = comprasSimuladas.find(c => c.telefono === valor);
-
-      // Buscar por número de boleto
       if (!compra) {
         comprasSimuladas.forEach(c => {
           if (c.boletos.includes(valor)) {
@@ -386,7 +421,7 @@
           <div class="d-flex flex-wrap gap-2">
             ${compra.boletos.map(num => `<div class="ticket">${num}</div>`).join("")}
           </div>
-          <p class="mt-3"><b>Total Pagado:</b> ${compra.boletos.length * 15} Bs</p>
+          <p class="mt-3"><b>Total Pagado:</b> ${compra.boletos.length * PRECIO_BOLETO} Bs</p>
         `;
       } else {
         detalleDiv.innerHTML = `<p class="text-danger">❌ No se encontraron boletos asociados.</p>`;
