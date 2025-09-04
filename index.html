@@ -407,7 +407,9 @@
           <b>Titular:</b> Angel Zabala</p>`;
       }else if(metodoPagoSeleccionado==='banesco'){
         box.innerHTML = `<h5>🏦 Banesco</h5>
-          <p><b>Cuenta:</b> 0134-xxxx-xxxx-xxxxxxx<br>
+          <p><b>Banco:</b> 0134<br>
+           <b>Teléfono:</b> 0414-8516619 <br>
+            <b>Cédula:</b>  V-14884043 <br>
           <b>Titular:</b> Iraima Jimenez</p>`;
       }else if(metodoPagoSeleccionado==='binance'){
         box.innerHTML = `<h5>💰 Binance</h5>
@@ -430,8 +432,8 @@
     function confirmarCompra(ev){
       ev.preventDefault();
 
-      if(boletosSeleccionados.length < 3){
-        alert("⚠️ La compra mínima es de 3 boletos.");
+      if(boletosSeleccionados.length < 4){
+        alert("⚠️ La compra mínima es de 4 boletos.");
         return false;
       }
       if(!metodoPagoSeleccionado){
