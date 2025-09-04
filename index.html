@@ -94,14 +94,18 @@
       cursor: not-allowed;
       position: relative;
     }
-    .ticket.vendido::after {
-      content: url("https://qu.ax/zcmdn.png");
-      position: absolute;
-      top: -5px;
-      right: -5px;
-      width: 18px;
-      height: 18px;
-    }
+  .ticket.vendido::after {
+  content: "";
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 20px;
+  height: 20px;
+  background-image: url("https://qu.ax/zcmdn.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
 
     /* Barra progreso */
     .progress-total {
