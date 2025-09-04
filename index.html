@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Rifa Premium | Tu Diamante</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <!-- Bootstrap 4 -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
   <!-- Fuente Poppins -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 
   <style>
     body { font-family: 'Poppins', sans-serif; background: #fff; color: #0a4975; padding-top: 100px; }
@@ -21,10 +21,7 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
     .navbar img {
-      height: 100px;
-      width: 100px;
-      border-radius: 50%;
-      object-fit: cover;
+      height: 100px; width: 100px; border-radius: 50%; object-fit: cover;
     }
 
     section { padding: 60px 0; scroll-margin-top: 110px; }
@@ -46,6 +43,7 @@
     .ticket {
       border: 2px solid #005899; border-radius: 20px; padding: 6px; font-weight: 600;
       text-align: center; cursor: pointer; transition: all 0.2s ease-in-out; position: relative;
+      color: #005899; background: #fff;
     }
     .ticket:hover { background: #5d8aa6; color: #fff; transform: translateY(-2px); }
     .ticket.vendido { background: #f8f8f8; border-color: #ccc; cursor: not-allowed; }
@@ -59,7 +57,7 @@
     .progress-total { background: #eee; border-radius: 20px; height: 25px; margin-bottom: 15px; overflow: hidden; }
     .progress-actual { background: linear-gradient(90deg, #005899, #0a4975); height: 100%; width: 0; transition: width 1.5s ease-in-out; }
 
-    /* Totales */
+    /* Totales + seleccionados */
     #total-seleccionados p { font-size: 25px; font-weight: 700; }
     #boletos-elegidos { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 10px; }
 
@@ -67,8 +65,13 @@
     .form-card { background: #fff; border-radius: 15px; padding: 25px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
     .form-card label { font-weight: 600; color: #005899; }
     .metodo-pago-container { display: flex; gap: 20px; justify-content: center; }
-    .metodo-pago { border: 2px solid #005899; border-radius: 10px; padding: 10px; text-align: center; cursor: pointer; }
+    .metodo-pago { border: 2px solid #005899; border-radius: 10px; padding: 10px; text-align: center; cursor: pointer; transition: background 0.2s;}
+    .metodo-pago:hover{ background:#f1f9ff; }
     .metodo-pago img { width: 50px; margin-bottom: 5px; }
+    .instrucciones { background:#f1f9ff; border:1px solid #005899; border-radius:10px; padding:15px; display:none; }
+
+    /* Botones */
+    .btn-primary, .btn-success { background:#005899 !important; border:none !important; }
 
     /* Footer */
     .footer-section { background: #005899; color: #fff; padding: 20px; }
@@ -79,7 +82,7 @@
   <!-- NAVBAR -->
   <nav class="navbar fixed-top">
     <div class="container">
-      <a class="navbar-brand" href="#"><img src="https://qu.ax/eMtjy.png" alt="Tu Diamante"></a>
+      <a class="navbar-brand" href="#"><img src="https://qu.ax/eMtjy.png" alt="Tu Diamante" /></a>
     </div>
   </nav>
 
@@ -101,7 +104,7 @@
 
     <!-- 🔎 Buscador -->
     <div class="input-group mb-3">
-      <input type="text" id="buscar-boleto" class="form-control" placeholder="Número de boleto (ej: 0045)">
+      <input type="text" id="buscar-boleto" class="form-control" placeholder="Número de boleto (ej: 0045)"/>
       <div class="input-group-append"><button class="btn btn-primary" type="button" onclick="buscarBoleto()">🔎 Buscar</button></div>
     </div>
     <div id="mensaje-busqueda" class="text-center mb-3 font-weight-bold"></div>
@@ -128,32 +131,65 @@
   <section id="formulario" class="container mt-5">
     <div class="form-card">
       <h2>📝 Datos Personales</h2>
-      <form>
-        <label>Nombre y Apellido</label>
-        <input type="text" class="form-control" required>
-        <label>Cédula</label>
-        <input type="text" class="form-control" required>
+      <form id="frmCompra" onsubmit="return confirmarCompra(event)">
+        <label for="nombre">Nombre y Apellido</label>
+        <input id="nombre" type="text" class="form-control" required>
+
+        <label for="cedula">Cédula</label>
+        <input id="cedula" type="text" class="form-control" required>
+
         <label>Teléfono</label>
         <div class="input-group">
-          <select class="form-control" style="max-width:90px;">
-            <option value="+58" selected>🇻🇪 +58</option>
-            <option value="+57">🇨🇴 +57</option>
+          <select id="country_code" class="form-control" style="max-width:110px;">
+            <option value="+1">🇩🇴 +1</option>
             <option value="+1">🇺🇸 +1</option>
+            <option value="+1">🇵🇷 +1</option>
             <option value="+34">🇪🇸 +34</option>
+            <option value="+502">🇬🇹 +502</option>
+            <option value="+503">🇸🇻 +503</option>
+            <option value="+504">🇭🇳 +504</option>
+            <option value="+505">🇳🇮 +505</option>
+            <option value="+506">🇨🇷 +506</option>
+            <option value="+507">🇵🇦 +507</option>
+            <option value="+51">🇵🇪 +51</option>
+            <option value="+52">🇲🇽 +52</option>
+            <option value="+53">🇨🇺 +53</option>
+            <option value="+54">🇦🇷 +54</option>
+            <option value="+56">🇨🇱 +56</option>
+            <option value="+57">🇨🇴 +57</option>
+            <option value="+58" selected>🇻🇪 +58</option>
+            <option value="+591">🇧🇴 +591</option>
+            <option value="+593">🇪🇨 +593</option>
+            <option value="+595">🇵🇾 +595</option>
+            <option value="+598">🇺🇾 +598</option>
           </select>
-          <input type="tel" class="form-control" placeholder="Número de teléfono" required>
+          <input id="telefono" type="tel" class="form-control" placeholder="Número de teléfono" required>
         </div>
-        <label>Comprobante de pago</label>
-        <input type="file" class="form-control" required>
+
+        <label for="comprobante">Comprobante de pago</label>
+        <input id="comprobante" type="file" class="form-control" required>
 
         <label>Método de Pago</label>
         <div class="metodo-pago-container">
-          <div class="metodo-pago" onclick="mostrarInstrucciones('pago-movil')"><img src="https://play-lh.googleusercontent.com/1p1Y0PT24TZ9y6oYD0dkcqgg6BCGimhhH4XJ4lOUMj8m-VJ6FYEZbcMAHkYLhG7NDaY=w480-h960-rw"><span>Pago Móvil</span></div>
-          <div class="metodo-pago" onclick="mostrarInstrucciones('banesco')"><img src="https://play-lh.googleusercontent.com/JP3qF5hwz0z7z-d2PEu21dhtdb7EBlC-5XKAuE0e2zLUAjWca-ePijvcb-nAQGAa9Ng=w480-h960-rw"><span>Banesco</span></div>
-          <div class="metodo-pago" onclick="mostrarInstrucciones('binance')"><img src="https://upload.wikimedia.org/wikipedia/commons/5/57/Binance_Logo.png"><span>Binance</span></div>
+          <div class="metodo-pago" onclick="mostrarInstrucciones('pago-movil')">
+            <img src="https://play-lh.googleusercontent.com/1p1Y0PT24TZ9y6oYD0dkcqgg6BCGimhhH4XJ4lOUMj8m-VJ6FYEZbcMAHkYLhG7NDaY=w480-h960-rw" alt="Pago Móvil">
+            <span>Pago Móvil</span>
+          </div>
+          <div class="metodo-pago" onclick="mostrarInstrucciones('banesco')">
+            <img src="https://play-lh.googleusercontent.com/JP3qF5hwz0z7z-d2PEu21dhtdb7EBlC-5XKAuE0e2zLUAjWca-ePijvcb-nAQGAa9Ng=w480-h960-rw" alt="Banesco">
+            <span>Banesco</span>
+          </div>
+          <div class="metodo-pago" onclick="mostrarInstrucciones('binance')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/57/Binance_Logo.png" alt="Binance">
+            <span>Binance</span>
+          </div>
         </div>
+
         <div id="instrucciones" class="instrucciones mt-3"></div>
-        <button class="btn btn-success btn-block mt-3">Confirmar Compra</button>
+
+        <button class="btn btn-success btn-block mt-3" type="submit">Confirmar Compra</button>
+        <div id="mensaje-compra" class="mt-3"></div>
+        <button id="btnVerMisBoletos" class="btn btn-primary btn-block mt-2" type="button" style="display:none" onclick="irAVerMisBoletos()">Ver mis Boletos</button>
       </form>
     </div>
   </section>
@@ -175,34 +211,230 @@
   </section>
 
   <!-- FOOTER -->
-  <footer class="footer-section text-center mt-5"><p>© 2025 Tu Diamante - Todos los derechos reservados.</p></footer>
+  <footer class="footer-section text-center mt-5">
+    <p>© 2025 Tu Diamante - Todos los derechos reservados.</p>
+  </footer>
 
   <!-- JS -->
   <script>
     const TOTAL_BOLETOS = 10000, POR_PAGINA = 2000, PRECIO_BOLETO = 15;
     let paginaActual = 1, boletos = [], boletosSeleccionados = [];
+    let metodoPagoSeleccionado = null;
+    let ultimoTelefonoCompra = "";
 
-    function generarBoletos(){for(let i=0;i<TOTAL_BOLETOS;i++){let numero=i.toString().padStart(4,'0');let vendido=Math.random()<0.1;boletos.push({numero,vendido});}}
-    function mostrarBoletos(){const cont=document.getElementById('boletos-list');cont.innerHTML="";let ini=(paginaActual-1)*POR_PAGINA,fin=ini+POR_PAGINA;
-      boletos.slice(ini,fin).forEach(b=>{let div=document.createElement('div');div.className="ticket"+(b.vendido?" vendido":"")+(boletosSeleccionados.includes(b.numero)?" seleccionado":"");div.textContent=b.numero;div.onclick=()=>toggleSeleccion(b);cont.appendChild(div);});
-      document.getElementById('page-info').textContent=`Página ${paginaActual} de ${Math.ceil(TOTAL_BOLETOS/POR_PAGINA)}`;actualizarProgreso();}
-    function toggleSeleccion(b){if(b.vendido)return;const i=boletosSeleccionados.indexOf(b.numero);i===-1?boletosSeleccionados.push(b.numero):boletosSeleccionados.splice(i,1);mostrarBoletos();actualizarTotal();}
-    function actualizarProgreso(){let v=boletos.filter(b=>b.vendido).length,p=Math.round((v/TOTAL_BOLETOS)*100);document.getElementById('progress-bar').style.width=p+"%";document.getElementById('progress-text').textContent=p+"% Vendidos";}
-    function nextPage(){if(paginaActual<TOTAL_BOLETOS/POR_PAGINA){paginaActual++;mostrarBoletos();}}
-    function prevPage(){if(paginaActual>1){paginaActual--;mostrarBoletos();}}
-    function actualizarTotal(){const t=document.getElementById("total-seleccionados"),d=document.getElementById("boletos-elegidos");let c=boletosSeleccionados.length,total=c*PRECIO_BOLETO;if(c>0){t.innerHTML=`<p>Boletos seleccionados: ${c}</p><p>Total a pagar: ${total} Bs</p>`;d.innerHTML=boletosSeleccionados.map(num=>`<div class="ticket seleccionado">${num}</div>`).join("");}else{t.innerHTML="";d.innerHTML="";}}
+    /* ---- Generar listado ---- */
+    function generarBoletos(){
+      for(let i=0;i<TOTAL_BOLETOS;i++){
+        const numero = i.toString().padStart(4,'0');
+        const vendido = Math.random() < 0.1; // simulación
+        boletos.push({ numero, vendido });
+      }
+    }
 
-    function buscarBoleto(){const v=document.getElementById("buscar-boleto").value.trim(),m=document.getElementById("mensaje-busqueda");if(!v)return;const i=boletos.findIndex(b=>b.numero===v);if(i===-1){m.innerHTML=`<span class="text-danger">❌ Ese boleto no existe</span>`;return;}const b=boletos[i];if(b.vendido){m.innerHTML=`<span class="text-danger">❌ Boleto comprado por otra persona</span>`;}else{paginaActual=Math.floor(i/POR_PAGINA)+1;if(!boletosSeleccionados.includes(b.numero)){boletosSeleccionados.push(b.numero);}mostrarBoletos();actualizarTotal();m.innerHTML=`<span class="text-success">✅ Boleto ${b.numero} seleccionado</span>`;}}
+    function mostrarBoletos(){
+      const cont = document.getElementById('boletos-list');
+      cont.innerHTML = "";
+      const ini = (paginaActual-1)*POR_PAGINA, fin = ini + POR_PAGINA;
 
-    function elegirSuerte(){boletosSeleccionados=[];const d=boletos.filter(b=>!b.vendido);let e=[];for(let i=0;i<4&&d.length>0;i++){const r=Math.floor(Math.random()*d.length);const n=d[r].numero;boletosSeleccionados.push(n);e.push(n);d.splice(r,1);}mostrarBoletos();actualizarTotal();document.getElementById("resultado-suerte").innerHTML="🎟️ Boletos elegidos a la suerte: "+e.join(", ");}
+      boletos.slice(ini,fin).forEach(b=>{
+        const div = document.createElement('div');
+        div.className = "ticket" + (b.vendido?" vendido":"") + (boletosSeleccionados.includes(b.numero)?" seleccionado":"");
+        div.textContent = b.numero;
+        div.onclick = ()=>toggleSeleccion(b);
+        cont.appendChild(div);
+      });
 
-    function mostrarInstrucciones(m){const b=document.getElementById("instrucciones");b.style.display="block";if(m==="pago-movil"){b.innerHTML="<h5>📱 Pago Móvil Venezuela</h5><p><b>Banco:</b> 0102<br><b>Teléfono:</b> 0424-8417632<br><b>Cédula:</b> V-31490382<br><b>Titular:</b> Angel Zabala</p>";}else if(m==="banesco"){b.innerHTML="<h5>🏦 Banesco</h5><p><b>Cuenta:</b> 0134<br><b>Titular:</b> Iraima Jimenez</p>";}else if(m==="binance"){b.innerHTML="<h5>💰 Binance</h5><p><b>Wallet:</b> angelitojavier277@gmail.com</p>";}}
+      document.getElementById('page-info').textContent = `Página ${paginaActual} de ${Math.ceil(TOTAL_BOLETOS/POR_PAGINA)}`;
+      actualizarProgreso();
+      actualizarTotal();
+    }
 
-    let comprasSimuladas=[{nombre:"Juan Pérez",cedula:"V-12345678",telefono:"04128417632",boletos:["0001","0002","0005"]}];
-    function verificarBoletos(e){e.preventDefault();const v=document.getElementById("inputVerificador").value.trim();const res=document.getElementById("resultadoVerificador"),det=document.getElementById("detalleBoletos");let c=comprasSimuladas.find(x=>x.telefono===v);if(!c){comprasSimuladas.forEach(x=>{if(x.boletos.includes(v))c=x;});}
-      if(c){det.innerHTML=`<p><b>Nombre:</b> ${c.nombre}</p><p><b>Cédula:</b> ${c.cedula}</p><p><b>Teléfono:</b> ${c.telefono}</p><p><b>Boletos comprados:</b></p><div>${c.boletos.map(num=>`<div class='ticket'>${num}</div>`).join("")}</div><p><b>Total Pagado:</b> ${c.boletos.length*PRECIO_BOLETO} Bs</p>`;}else{det.innerHTML=`<p class="text-danger">❌ No se encontraron boletos asociados.</p>`;}res.style.display="block";}
+    function toggleSeleccion(b){
+      if(b.vendido) return;
+      const i = boletosSeleccionados.indexOf(b.numero);
+      i === -1 ? boletosSeleccionados.push(b.numero) : boletosSeleccionados.splice(i,1);
+      mostrarBoletos();
+    }
 
-    generarBoletos();mostrarBoletos();
+    function actualizarProgreso(){
+      const vendidos = boletos.filter(b=>b.vendido).length;
+      const p = Math.round((vendidos/TOTAL_BOLETOS)*100);
+      document.getElementById('progress-bar').style.width = p + "%";
+      document.getElementById('progress-text').textContent = p + "% Vendidos";
+    }
+
+    function nextPage(){ if(paginaActual < TOTAL_BOLETOS/POR_PAGINA){ paginaActual++; mostrarBoletos(); } }
+    function prevPage(){ if(paginaActual > 1){ paginaActual--; mostrarBoletos(); } }
+
+    /* ---- Buscador ---- */
+    function buscarBoleto(){
+      const v = document.getElementById("buscar-boleto").value.trim();
+      const m = document.getElementById("mensaje-busqueda");
+      if(!v){ m.innerHTML=""; return; }
+
+      const idx = boletos.findIndex(b=>b.numero === v);
+      if(idx === -1){ m.innerHTML = `<span class="text-danger">❌ Ese boleto no existe</span>`; return; }
+
+      const b = boletos[idx];
+      if(b.vendido){
+        m.innerHTML = `<span class="text-danger">❌ Boleto comprado por otra persona</span>`;
+      }else{
+        paginaActual = Math.floor(idx/POR_PAGINA) + 1;
+        if(!boletosSeleccionados.includes(b.numero)) boletosSeleccionados.push(b.numero);
+        mostrarBoletos();
+        m.innerHTML = `<span class="text-success">✅ Boleto ${b.numero} seleccionado</span>`;
+        setTimeout(()=>{
+          const cont = document.getElementById("boletos-list");
+          const el = [...cont.children].find(e=>e.textContent===b.numero);
+          if(el){
+            el.scrollIntoView({behavior:"smooth", block:"center"});
+            el.style.boxShadow="0 0 10px 3px gold";
+            setTimeout(()=>el.style.boxShadow="",1500);
+          }
+        },200);
+      }
+    }
+
+    /* ---- Aleatorio 4 ---- */
+    function elegirSuerte(){
+      boletosSeleccionados = [];
+      const disponibles = boletos.filter(b=>!b.vendido);
+      let elegidos = [];
+      for(let i=0;i<4 && disponibles.length>0;i++){
+        const r = Math.floor(Math.random()*disponibles.length);
+        const n = disponibles[r].numero;
+        boletosSeleccionados.push(n);
+        elegidos.push(n);
+        disponibles.splice(r,1);
+      }
+      mostrarBoletos();
+      document.getElementById("resultado-suerte").innerHTML = "🎟️ Boletos elegidos a la suerte: " + elegidos.join(", ");
+    }
+
+    /* ---- Formulario: instrucciones de pago ---- */
+    function mostrarInstrucciones(m){
+      metodoPagoSeleccionado = m;
+      const box = document.getElementById("instrucciones");
+      box.style.display = "block";
+      if(m==="pago-movil"){
+        box.innerHTML = "<h5>📱 Pago Móvil Venezuela</h5><p><b>Banco:</b> 0102<br><b>Teléfono:</b> 0424-8417632<br><b>Cédula:</b> V-31490382<br><b>Titular:</b> Angel Zabala</p>";
+      }else if(m==="banesco"){
+        box.innerHTML = "<h5>🏦 Banesco</h5><p><b>Cuenta:</b> 0134<br><b>Titular:</b> Iraima Jimenez</p>";
+      }else if(m==="binance"){
+        box.innerHTML = "<h5>💰 Binance</h5><p><b>Wallet:</b> angelitojavier277@gmail.com</p>";
+      }
+    }
+
+    /* ---- Confirmar compra ---- */
+    const comprasSimuladas = [
+      { nombre:"Juan Pérez", cedula:"V-12345678", telefono:"04128417632", boletos:["0001","0002","0005"] }
+    ];
+
+    function confirmarCompra(e){
+      e.preventDefault(); // ✅ no recarga ni sube
+
+      if(boletosSeleccionados.length < 3){
+        alert("⚠️ La compra mínima es de 3 boletos.");
+        return false;
+      }
+
+      const nombre   = document.getElementById("nombre").value.trim();
+      const cedula   = document.getElementById("cedula").value.trim();
+      const cc       = document.getElementById("country_code").value;
+      const tel      = document.getElementById("telefono").value.trim();
+      const telefonoCompleto = cc + " " + tel;
+
+      // Marca como vendidos
+      boletosSeleccionados.forEach(num=>{
+        const i = boletos.findIndex(b=>b.numero===num);
+        if(i>-1) boletos[i].vendido = true;
+      });
+
+      // Guarda en verificador
+      comprasSimuladas.push({
+        nombre, cedula, telefono: telefonoCompleto, boletos:[...boletosSeleccionados]
+      });
+
+      // Mensaje de éxito + botón "Ver mis Boletos"
+      ultimoTelefonoCompra = telefonoCompleto;
+      const monto = boletosSeleccionados.length * PRECIO_BOLETO;
+      document.getElementById("mensaje-compra").innerHTML =
+        `<div class="alert alert-success">
+          ✅ Compra confirmada: <b>${boletosSeleccionados.length}</b> boletos. <b>Total:</b> ${monto} Bs.
+        </div>`;
+      document.getElementById("btnVerMisBoletos").style.display = "block";
+
+      // Refresca UI
+      actualizarProgreso();
+      mostrarBoletos();
+      actualizarTotal();
+
+      // (opcional) limpiar selección:
+      // boletosSeleccionados = []; mostrarBoletos(); actualizarTotal();
+
+      return false;
+    }
+
+    function irAVerMisBoletos(){
+      // Lleva al verificador y lo prellena con el teléfono de la última compra
+      document.getElementById("verificador").scrollIntoView({behavior:"smooth"});
+      if(ultimoTelefonoCompra){
+        document.getElementById("inputVerificador").value = ultimoTelefonoCompra;
+        setTimeout(()=>verificarConValor(ultimoTelefonoCompra), 300);
+      }
+    }
+
+    /* ---- Verificador ---- */
+    function verificarBoletos(e){
+      e.preventDefault();
+      const valor = document.getElementById("inputVerificador").value.trim();
+      verificarConValor(valor);
+      return false;
+    }
+
+    function verificarConValor(valor){
+      const res = document.getElementById("resultadoVerificador");
+      const det = document.getElementById("detalleBoletos");
+
+      let compra = comprasSimuladas.find(c => c.telefono === valor);
+      if(!compra){
+        comprasSimuladas.forEach(c => { if(c.boletos.includes(valor)) compra = c; });
+      }
+
+      if(compra){
+        det.innerHTML = `
+          <p><b>Nombre:</b> ${compra.nombre}</p>
+          <p><b>Cédula:</b> ${compra.cedula}</p>
+          <p><b>Teléfono:</b> ${compra.telefono}</p>
+          <p><b>Boletos comprados:</b></p>
+          <div class="d-flex flex-wrap">${compra.boletos.map(num=>`<div class="ticket">${num}</div>`).join("")}</div>
+          <p class="mt-3"><b>Total Pagado:</b> ${compra.boletos.length * PRECIO_BOLETO} Bs</p>
+        `;
+      }else{
+        det.innerHTML = `<p class="text-danger">❌ No se encontraron boletos asociados.</p>`;
+      }
+      res.style.display = "block";
+    }
+
+    /* ---- Total seleccionado ---- */
+    function actualizarTotal(){
+      const box = document.getElementById("total-seleccionados");
+      const list = document.getElementById("boletos-elegidos");
+      const c = boletosSeleccionados.length;
+      const total = c * PRECIO_BOLETO;
+
+      if(c>0){
+        box.innerHTML = `<p>Boletos seleccionados: ${c}</p><p>Total a pagar: ${total} Bs</p>`;
+        list.innerHTML = boletosSeleccionados.map(n => `<div class="ticket seleccionado">${n}</div>`).join("");
+      }else{
+        box.innerHTML = "";
+        list.innerHTML = "";
+      }
+    }
+
+    /* Init */
+    generarBoletos();
+    mostrarBoletos();
   </script>
 </body>
 </html>
