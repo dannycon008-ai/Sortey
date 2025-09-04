@@ -7,10 +7,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #0a4975;
+      --primary: #005899;
       --secondary: #5d8aa6;
+      --accent: #0a4975;
       --price: 15;
-      --diamond-url: url('https://qu.ax/zcmdn.png');
     }
     body {
       font-family: 'Poppins', sans-serif;
@@ -22,16 +22,16 @@
       background: #fff;
       padding: 20px;
       text-align: center;
-      border-bottom: 4px solid var(--primary);
+      border-bottom: 8px solid var(--primary);
     }
     header img {
-      max-height: 120px;
+      max-height: 130px;
       display: block;
       margin: 0 auto 10px auto;
     }
     header h1 {
       font-size: 2.5rem;
-      color: var(--primary);
+      color: var(--accent);
       margin: 0;
     }
     .awards {
@@ -45,16 +45,15 @@
     }
     .awards h2 {
       text-align: center;
-      color: var(--primary);
+      color: var(--accent);
       margin-bottom: 20px;
     }
     .award-item {
       display: flex;
       align-items: center;
-      justify-content: flex-start;
       margin-bottom: 10px;
       font-size: 1.2rem;
-      color: var(--primary);
+      color: var(--accent);
     }
     .award-item img {
       width: 40px;
@@ -73,7 +72,7 @@
     .tickets-section h2 {
       text-align: center;
       font-size: 2rem;
-      color: var(--primary);
+      color: var(--accent);
       margin-bottom: 20px;
     }
     .progress {
@@ -86,7 +85,7 @@
     }
     .progress-bar {
       height: 100%;
-      background: var(--primary);
+      background: var(--accent);
       width: 0;
       transition: width 2s ease;
     }
@@ -95,10 +94,10 @@
       grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
       gap: 5px;
       margin-bottom: 20px;
-      color: var(--primary);
+      color: var(--accent);
     }
     .ticket {
-      border: 1px solid var(--primary);
+      border: 1px solid var(--accent);
       padding: 5px;
       border-radius: 6px;
       text-align: center;
@@ -121,7 +120,7 @@
       right: 2px;
       width: 16px;
       height: 16px;
-      background-image: var(--diamond-url);
+      background: url('https://qu.ax/zcmdn.png');
       background-size: cover;
     }
     .pagination {
@@ -136,6 +135,25 @@
       color: #fff;
       border-radius: 5px;
       cursor: pointer;
+    }
+    .actions {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .actions button {
+      background: var(--primary);
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    .total {
+      text-align: center;
+      font-size: 1.2rem;
+      margin-top: 10px;
+      color: var(--accent);
     }
   </style>
 </head>
@@ -159,16 +177,21 @@
     </div>
     <div class="tickets-grid" id="ticketsGrid"></div>
     <div class="pagination" id="pagination"></div>
+    <div class="actions">
+      <button onclick="pickRandomTickets()">🎲 Generar 3 boletos a la suerte</button>
+    </div>
+    <div class="total" id="totalDisplay">Total: 0 Bs</div>
   </section>
 
   <script>
     const TOTAL_TICKETS = 10000;
     const PAGE_SIZE = 2000;
     const TOTAL_PAGES = TOTAL_TICKETS / PAGE_SIZE;
+    const PRICE = 15;
 
     let tickets = [];
     for (let i = 0; i < TOTAL_TICKETS; i++) {
-      tickets.push(String(i).padStart(4,'0'));
+      tickets.push({num: String(i).padStart(4,'0'), sold: false, selected: false});
     }
     tickets = tickets.sort(() => Math.random() - 0.5);
 
@@ -180,10 +203,13 @@
       const end = start + PAGE_SIZE;
       const grid = document.getElementById('ticketsGrid');
       grid.innerHTML = '';
-      tickets.slice(start, end).forEach(num => {
+      tickets.slice(start, end).forEach((t, idx) => {
         const div = document.createElement('div');
         div.className = 'ticket';
-        div.innerText = num;
+        if (t.sold) div.classList.add('sold');
+        if (t.selected) div.classList.add('selected');
+        div.innerText = t.num;
+        div.onclick = () => toggleSelect(start + idx);
         grid.appendChild(div);
       });
       renderPagination();
@@ -201,8 +227,37 @@
       }
     }
 
+    function toggleSelect(index) {
+      if (tickets[index].sold) return;
+      tickets[index].selected = !tickets[index].selected;
+      const selectedCount = tickets.filter(t => t.selected).length;
+      if (selectedCount < 3) {
+        alert('Compra mínima 3 boletos.');
+        tickets[index].selected = false;
+      }
+      updateTotal();
+      renderTickets(currentPage);
+    }
+
+    function updateTotal() {
+      const selectedCount = tickets.filter(t => t.selected).length;
+      document.getElementById('totalDisplay').innerText = 'Total: ' + (selectedCount * PRICE) + ' Bs';
+    }
+
+    function pickRandomTickets() {
+      let available = tickets.filter(t => !t.sold && !t.selected);
+      if (available.length < 3) return;
+      for (let i = 0; i < 3; i++) {
+        const rnd = Math.floor(Math.random() * available.length);
+        available[rnd].selected = true;
+        available.splice(rnd,1);
+      }
+      updateTotal();
+      renderTickets(currentPage);
+    }
+
     function animateProgress() {
-      const sold = Math.floor(Math.random() * TOTAL_TICKETS); // demo
+      const sold = tickets.filter(t => t.sold).length;
       const percent = (sold / TOTAL_TICKETS) * 100;
       document.getElementById('progressBar').style.width = percent + '%';
     }
