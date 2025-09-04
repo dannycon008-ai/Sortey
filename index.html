@@ -19,6 +19,7 @@
 
     /* Navbar con degradado */
     .navbar {
+      background: -webkit-linear-gradient(left, #005899, white, #005899); /* iOS fix */
       background: linear-gradient(to right, #005899, white, #005899);
       box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
@@ -73,6 +74,7 @@
       overflow-y: auto;
       background: #fff;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      -webkit-overflow-scrolling: touch; /* iOS scroll suave */
     }
     .tickets-grid {
       display: grid;
@@ -90,11 +92,15 @@
       cursor: pointer;
       transition: all 0.2s ease-in-out;
       position: relative;
+      will-change: transform;   /* optimización iOS */
+      transform: translateZ(0); /* fuerza GPU */
     }
     .ticket:hover {
       background: #5d8aa6;
       color: #fff;
+      -webkit-transform: translateY(-2px); /* Safari */
       transform: translateY(-2px);
+      -webkit-box-shadow: 0 4px 10px rgba(0,0,0,0.2);
       box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
     .ticket.vendido {
@@ -350,14 +356,22 @@
       contenedor.innerHTML = "";
       let inicio = (paginaActual - 1) * POR_PAGINA;
       let fin = inicio + POR_PAGINA;
-      boletos.slice(inicio, fin).forEach(boleto => {
-        let div = document.createElement('div');
-        div.className = "ticket" + (boleto.vendido ? " vendido" : "") + (boletosSeleccionados.includes(boleto.numero) ? " seleccionado" : "");
-        div.textContent = boleto.numero;
-        div.onclick = () => toggleSeleccion(boleto);
-        contenedor.appendChild(div);
+      let fragment = document.createDocumentFragment();
+
+      boletos.slice(inicio, fin).forEach((boleto, i) => {
+        requestAnimationFrame(() => {
+          let div = document.createElement('div');
+          div.className = "ticket" + (boleto.vendido ? " vendido" : "") +
+            (boletosSeleccionados.includes(boleto.numero) ? " seleccionado" : "");
+          div.textContent = boleto.numero;
+          div.onclick = () => toggleSeleccion(boleto);
+          fragment.appendChild(div);
+          if (i === (fin - inicio - 1)) contenedor.appendChild(fragment);
+        });
       });
-      document.getElementById('page-info').textContent = `Página ${paginaActual} de ${Math.ceil(TOTAL_BOLETOS / POR_PAGINA)}`;
+
+      document.getElementById('page-info').textContent =
+        `Página ${paginaActual} de ${Math.ceil(TOTAL_BOLETOS / POR_PAGINA)}`;
       actualizarProgreso();
     }
 
@@ -368,8 +382,18 @@
       document.getElementById('progress-text').textContent = porcentaje + "% Vendidos";
     }
 
-    function nextPage() { if (paginaActual < TOTAL_BOLETOS / POR_PAGINA) { paginaActual++; mostrarBoletos(); } }
-    function prevPage() { if (paginaActual > 1) { paginaActual--; mostrarBoletos(); } }
+    function nextPage() {
+      if (paginaActual < TOTAL_BOLETOS / POR_PAGINA) {
+        paginaActual++;
+        mostrarBoletos();
+      }
+    }
+    function prevPage() {
+      if (paginaActual > 1) {
+        paginaActual--;
+        mostrarBoletos();
+      }
+    }
 
     function confirmarCompra(event) {
       event.preventDefault();
@@ -405,7 +429,11 @@
       const resultadoDiv = document.getElementById("resultadoVerificador");
       const detalleDiv = document.getElementById("detalleBoletos");
       let compra = comprasSimuladas.find(c => c.telefono === valor);
-      if (!compra) { comprasSimuladas.forEach(c => { if (c.boletos.includes(valor)) compra = c; }); }
+      if (!compra) {
+        comprasSimuladas.forEach(c => {
+          if (c.boletos.includes(valor)) compra = c;
+        });
+      }
       if (compra) {
         detalleDiv.innerHTML = `<p><b>Nombre:</b> ${compra.nombre}</p><p><b>Cédula:</b> ${compra.cedula}</p><p><b>Teléfono:</b> ${compra.telefono}</p><p><b>Boletos comprados:</b></p><div class="d-flex flex-wrap gap-2">${compra.boletos.map(num => `<div class="ticket">${num}</div>`).join("")}</div><p class="mt-3"><b>Total Pagado:</b> ${compra.boletos.length * PRECIO_BOLETO} Bs</p>`;
       } else {
