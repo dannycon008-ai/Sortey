@@ -17,9 +17,9 @@
       color: #0a4975;
     }
 
-    /* Navbar con degradado */
+    /* Navbar */
     .navbar {
-      background: linear-gradient(to right, #005899, white, #005899);
+      background: #000f35 !important; /* CAMBIO */
       box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
     .navbar a {
@@ -27,10 +27,10 @@
       font-weight: 600;
     }
     .navbar img {
-      height: 70px;
-      width: 70px;
-      border-radius: 50%;
-      object-fit: cover;
+      height: 100px !important; /* CAMBIO */
+      width: auto !important;
+      border-radius: 10px;
+      object-fit: contain;
     }
 
     section { padding: 60px 0; }
@@ -44,22 +44,13 @@
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       text-align: center;
     }
-    .premio-card img {
-      width: 40px;
-      margin-right: 8px;
-    }
+    .premio-card img { width: 40px; margin-right: 8px; }
     .premio-card h4 {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      font-weight: 700;
-      font-size: 1.3rem;
+      display: flex; align-items: center; justify-content: center;
+      gap: 6px; font-weight: 700; font-size: 1.3rem;
     }
     .premio-card p {
-      font-weight: 700;
-      font-size: 20px;
-      margin-top: 10px;
+      font-weight: 700; font-size: 20px; margin-top: 10px;
     }
 
     /* Boletos */
@@ -142,22 +133,15 @@
       padding: 25px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
-    .form-card h2 img {
-      width: 40px;
-    }
+    .form-card h2 img { width: 40px; }
     .form-card label { font-weight: 600; color: #005899; }
     .form-card input, .form-card select { margin-bottom: 15px; border-radius: 8px; }
     .metodo-pago-container {
-      display: flex;
-      gap: 20px;
-      justify-content: center;
+      display: flex; gap: 20px; justify-content: center;
     }
     .metodo-pago {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      cursor: pointer;
-      padding: 10px;
+      display: flex; flex-direction: column; align-items: center;
+      cursor: pointer; padding: 10px;
       border: 2px solid #005899;
       border-radius: 10px;
       transition: all 0.3s ease;
@@ -250,7 +234,7 @@
   <section id="formulario" class="container mt-5">
     <div class="form-card">
       <h2><img src="https://qu.ax/rGfpx.png" alt="Logo Datos">Datos Personales</h2>
-      <form onsubmit="return confirmarCompra(event)">
+      <form id="compraForm" onsubmit="return confirmarCompra(event)">
         <label>Nombre y Apellido</label>
         <input type="text" class="form-control" required>
         <label>Cédula</label>
@@ -284,7 +268,7 @@
         <div id="instrucciones" class="instrucciones"></div>
 
         <button class="btn btn-success btn-block mt-3" type="submit">Confirmar Compra</button>
-        <button class="btn btn-primary btn-block mt-3" type="button">Ver mis Boletos</button>
+        <button id="btn-ver-boletos" class="btn btn-primary btn-block mt-3" type="button" style="display:none;">Ver mis Boletos</button>
       </form>
     </div>
   </section>
@@ -373,11 +357,19 @@
 
     function confirmarCompra(event) {
       event.preventDefault();
-      if (boletosSeleccionados.length < 3) {
-        alert("⚠️ La compra mínima es de 3 boletos.");
+      if (boletosSeleccionados.length < 4) { // CAMBIO
+        alert("⚠️ La compra mínima es de 4 boletos.");
         return false;
       }
-      alert("✅ Compra confirmada con " + boletosSeleccionados.length + " boletos. Total: " + (boletosSeleccionados.length * PRECIO_BOLETO) + " Bs.");
+
+      alert("✅ Boletos comprados con éxito. Cantidad: " + boletosSeleccionados.length);
+
+      // Mostrar botón "Ver mis boletos"
+      document.getElementById("btn-ver-boletos").style.display = "block";
+
+      // Borrar datos del formulario
+      document.getElementById("compraForm").reset();
+
       return true;
     }
 
@@ -391,27 +383,6 @@
       } else if (metodo === "binance") {
         box.innerHTML = "<h5>💰 Binance</h5><p><b>Wallet:</b> angelitojavier277@gmail.com</p>";
       }
-    }
-
-    let comprasSimuladas = [
-      { nombre: "Juan Pérez", cedula: "V-12345678", telefono: "04128417632", boletos: ["0001", "0002", "0005"] },
-      { nombre: "Iraima Jimenez", cedula: "V-87654321", telefono: "04125556677", boletos: ["0100", "0101", "0102", "0103"] },
-      { nombre: "Angel Zabala", cedula: "V-31490382", telefono: "04129998877", boletos: ["0500"] }
-    ];
-
-    function verificarBoletos(event) {
-      event.preventDefault();
-      const valor = document.getElementById("inputVerificador").value.trim();
-      const resultadoDiv = document.getElementById("resultadoVerificador");
-      const detalleDiv = document.getElementById("detalleBoletos");
-      let compra = comprasSimuladas.find(c => c.telefono === valor);
-      if (!compra) { comprasSimuladas.forEach(c => { if (c.boletos.includes(valor)) compra = c; }); }
-      if (compra) {
-        detalleDiv.innerHTML = `<p><b>Nombre:</b> ${compra.nombre}</p><p><b>Cédula:</b> ${compra.cedula}</p><p><b>Teléfono:</b> ${compra.telefono}</p><p><b>Boletos comprados:</b></p><div class="d-flex flex-wrap gap-2">${compra.boletos.map(num => `<div class="ticket">${num}</div>`).join("")}</div><p class="mt-3"><b>Total Pagado:</b> ${compra.boletos.length * PRECIO_BOLETO} Bs</p>`;
-      } else {
-        detalleDiv.innerHTML = `<p class="text-danger">❌ No se encontraron boletos asociados.</p>`;
-      }
-      resultadoDiv.style.display = "block";
     }
 
     generarBoletos();
