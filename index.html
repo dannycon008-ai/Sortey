@@ -27,11 +27,21 @@
     section { padding: 60px 0; scroll-margin-top: 110px; }
     h2 { font-weight: 800; color: #005899; text-align: center; margin-bottom: 30px; }
 
+    /* Títulos con icono */
+    .title-with-icon {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .title-with-icon img { width: 40px; height: 40px; object-fit: contain; }
+
     /* Premios */
     .premio-card {
       background: #fff; border-radius: 15px; padding: 20px; text-align: center;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
+    .premio-title {
+      display:flex; align-items:center; justify-content:center; gap:8px; font-weight:700; margin:0;
+    }
+    .premio-title img { width: 40px; height: 40px; object-fit: contain; }
     .premio-card p { font-size: 20px; font-weight: 700; margin-top: 10px; }
 
     /* Boletos */
@@ -90,47 +100,76 @@
   <section id="premios" class="container">
     <h2>🎁 PREMIOS</h2>
     <div class="row mt-4">
-      <div class="col-md-4"><div class="premio-card"><h4>Premio 1</h4><p>10.000 Bs</p></div></div>
-      <div class="col-md-4"><div class="premio-card"><h4>Premio 2</h4><p>15.000 Bs</p></div></div>
-      <div class="col-md-4"><div class="premio-card"><h4>Premio 3</h4><p>30.000 Bs</p></div></div>
+      <div class="col-md-4">
+        <div class="premio-card">
+          <h4 class="premio-title"><img src="https://qu.ax/guAKy.png" alt="Premio 1">Premio 1</h4>
+          <p>10.000 Bs</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="premio-card">
+          <h4 class="premio-title"><img src="https://qu.ax/LVLbo.png" alt="Premio 2">Premio 2</h4>
+          <p>15.000 Bs</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="premio-card">
+          <h4 class="premio-title"><img src="https://qu.ax/DygfK.png" alt="Premio 3">Premio 3</h4>
+          <p>30.000 Bs</p>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- BOLETOS -->
-  <section id="boletos" class="container mt-5">
-    <h2>🎟️ Lista de Boletos</h2>
-    <div class="progress-total"><div class="progress-actual" id="progress-bar"></div></div>
-    <p class="progress-percent text-center" id="progress-text">0% Vendidos</p>
+<!-- BOLETOS -->
+<section id="boletos" class="container mt-5">
+  <h2 class="title-with-icon">
+    <img src="https://qu.ax/XXXX.png" alt="Logo Lista Boletos" style="width:40px; height:40px; margin-right:10px;">
+    Lista de Boletos
+  </h2>
 
-    <!-- 🔎 Buscador -->
-    <div class="input-group mb-3">
-      <input type="text" id="buscar-boleto" class="form-control" placeholder="Número de boleto (ej: 0045)"/>
-      <div class="input-group-append"><button class="btn btn-primary" type="button" onclick="buscarBoleto()">🔎 Buscar</button></div>
+  <div class="progress-total">
+    <div class="progress-actual" id="progress-bar"></div>
+  </div>
+  <p class="progress-percent text-center" id="progress-text">0% Vendidos</p>
+
+  <!-- 🔎 Buscador -->
+  <div class="input-group mb-3">
+    <input type="text" id="buscar-boleto" class="form-control" placeholder="Número de boleto (ej: 0045)">
+    <div class="input-group-append">
+      <button class="btn btn-primary" type="button" onclick="buscarBoleto()">🔎 Buscar</button>
     </div>
-    <div id="mensaje-busqueda" class="text-center mb-3 font-weight-bold"></div>
+  </div>
+  <div id="mensaje-busqueda" class="text-center mb-3" style="font-weight:600;"></div>
 
-    <div class="tickets-container"><div id="boletos-list" class="tickets-grid"></div></div>
+  <div class="tickets-container">
+    <div id="boletos-list" class="tickets-grid"></div>
+  </div>
 
-    <div class="text-center mt-4">
-      <button class="btn btn-primary" onclick="prevPage()">⬅️ Anterior</button>
-      <span id="page-info" class="mx-3">Página 1 de 5</span>
-      <button class="btn btn-primary" onclick="nextPage()">Siguiente ➡️</button>
-    </div>
+  <div class="text-center mt-4">
+    <button class="btn btn-primary" onclick="prevPage()">⬅️ Anterior</button>
+    <span id="page-info" class="mx-3">Página 1 de 5</span>
+    <button class="btn btn-primary" onclick="nextPage()">Siguiente ➡️</button>
+  </div>
 
-    <div id="total-seleccionados" class="text-center mt-3"></div>
-    <div id="boletos-elegidos" class="text-center"></div>
+  <div id="total-seleccionados" class="text-center mt-3"></div>
+  <div id="boletos-elegidos" class="text-center"></div>
 
-    <!-- 🎲 Aleatorio -->
-    <div class="text-center mt-3">
-      <button class="btn btn-success" onclick="elegirSuerte()">🎲 Elegir boletos aleatorios (4)</button>
-    </div>
-    <div id="resultado-suerte" class="text-center mt-3 font-weight-bold text-primary"></div>
-  </section>
+  <!-- 🎲 Aleatorio -->
+  <div class="text-center mt-3">
+    <button class="btn btn-success" onclick="elegirSuerte()">🎲 Elegir boletos aleatorios (4)</button>
+  </div>
+  <div id="resultado-suerte" class="text-center mt-3" style="font-size:20px; font-weight:600; color:#005899;"></div>
+</section>
+
 
   <!-- FORMULARIO -->
   <section id="formulario" class="container mt-5">
     <div class="form-card">
-      <h2>📝 Datos Personales</h2>
+      <h2 class="title-with-icon">
+        <img src="https://qu.ax/rGfpx.png" alt="Logo Datos" />
+        Datos Personales
+      </h2>
       <form id="frmCompra" onsubmit="return confirmarCompra(event)">
         <label for="nombre">Nombre y Apellido</label>
         <input id="nombre" type="text" class="form-control" required>
@@ -331,7 +370,7 @@
     ];
 
     function confirmarCompra(e){
-      e.preventDefault(); // ✅ no recarga ni sube
+      e.preventDefault(); // no recarga ni sube
 
       if(boletosSeleccionados.length < 3){
         alert("⚠️ La compra mínima es de 3 boletos.");
@@ -369,14 +408,10 @@
       mostrarBoletos();
       actualizarTotal();
 
-      // (opcional) limpiar selección:
-      // boletosSeleccionados = []; mostrarBoletos(); actualizarTotal();
-
       return false;
     }
 
     function irAVerMisBoletos(){
-      // Lleva al verificador y lo prellena con el teléfono de la última compra
       document.getElementById("verificador").scrollIntoView({behavior:"smooth"});
       if(ultimoTelefonoCompra){
         document.getElementById("inputVerificador").value = ultimoTelefonoCompra;
