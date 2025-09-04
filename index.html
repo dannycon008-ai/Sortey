@@ -1,243 +1,209 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Rifas — Tu Diamante</title>
+  <meta charset="UTF-8">
+  <title>🎟️ Rifa Premium 1.0 | Tu Marca</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Fuente -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@700;800&display=swap" rel="stylesheet">
-  <!-- Tel input -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@19.5.6/build/css/intlTelInput.css" />
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+  <!-- Estilos personalizados -->
   <style>
-  :root{
-    --bg:#ffffff; 
-    --ink:#111827; 
-    --muted:#6b7280; 
-    --accent:#0A4975;     
-    --border:#e5e7eb; 
-    --chip:#f3f4f6; 
-    --warn:#ef4444;
-    --diamond-url: url('https://qu.ax/zcmdn.png');
-  }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f7f9fc;
+    }
 
-  body{margin:0; background:var(--bg); color:var(--ink); font-family:"Inter",sans-serif; font-weight:800;}
-  .container{max-width:1200px; margin:0 auto; padding:16px; display:flex; flex-direction:column; align-items:center;}
+    /* Navbar */
+    .navbar {
+      background: #005899;
+      box-shadow: 0 3px 10px rgba(0,0,0,.15);
+    }
+    .navbar a {
+      color: #fff !important;
+      font-weight: 600;
+    }
+    .navbar a:hover {
+      color: #5d8aa6 !important;
+    }
 
-  /* Header */
-  .app-title{display:flex; justify-content:center; margin:20px 0 10px;}
-  .app-title img{width:140px; height:140px; border-radius:50%; object-fit:cover;}
+    /* Header */
+    .header {
+      background: linear-gradient(to right, #005899, #0a4975);
+      color: #fff;
+      padding: 80px 0;
+    }
+    .header h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+    }
 
-  /* Progreso */
-  .progress-info{display:flex; flex-direction:column; align-items:center; gap:8px; margin:8px 0 20px; width:100%;}
-  .bar{height:14px; background:#f3f4f6; border-radius:999px; overflow:hidden; border:1px solid var(--border); width:min(640px,100%);} 
-  .bar>span{display:block; height:100%; background:var(--accent); width:0%; transition:width 1s ease-in-out;}
-  .progress-stats{color:var(--muted); font-size:14px; font-weight:700; text-align:center;}
+    /* Cards */
+    .card-custom {
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,.1);
+      transition: transform .3s;
+    }
+    .card-custom:hover {
+      transform: translateY(-5px);
+    }
 
-  /* Panel */
-  .panel{background:#fff; border:1px solid var(--border); border-radius:16px; padding:16px; width:100%; text-align:center; margin-bottom:16px;}
-  .panel h2{margin:0 0 12px 0; font-size:28px; text-transform:uppercase; color:var(--accent);}
-  .subtle{color:var(--muted); font-size:14px;}
+    /* Botones */
+    .btn-main {
+      background: #005899;
+      color: #fff;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+    .btn-main:hover {
+      background: #5d8aa6;
+    }
 
-  /* Lista de boletos */
-  .square-wrap{
-    width:100%; max-width:780px; aspect-ratio:1/1; border:2px solid var(--border);
-    border-radius:20px; overflow:hidden; display:flex; margin:0 auto; 
-    box-shadow:0 4px 15px rgba(0,0,0,0.08);
-  }
-  .ticket-grid{display:grid; grid-template-columns: repeat(6,1fr); gap:6px; padding:10px;}
-  @media(min-width:480px){ .ticket-grid{ grid-template-columns: repeat(8,1fr);} }
-  @media(min-width:768px){ .ticket-grid{ grid-template-columns: repeat(10,1fr);} }
-  @media(min-width:1024px){ .ticket-grid{ grid-template-columns: repeat(12,1fr);} }
-
-  .ticket {
-    display:flex; align-items:center; justify-content:center;
-    aspect-ratio:1/1;
-    border:1px solid var(--border);
-    border-radius:10px;
-    background:#fff;
-    font-weight:800;
-    font-size: clamp(12px, 2vw, 18px);
-    cursor:pointer;
-    transition: transform 0.2s ease, background 0.2s ease;
-    color:#0A4975;
-  }
-  .ticket:hover{background:#f0f9ff; transform:scale(1.05);}
-  .ticket.selected{background:#dbeafe; border-color:#bfdbfe; transform:scale(0.95);}
-  .ticket.sold {
-    position: relative;
-    background: #e5e7eb;
-    color: transparent;
-    border: 1px solid #cbd5e1;
-    cursor: not-allowed;
-  }
-  .ticket.sold::after {
-    content:"";
-    position:absolute;
-    inset:0;
-    background-image: var(--diamond-url);
-    background-size: 70%;
-    background-position:center;
-    background-repeat:no-repeat;
-    opacity:1;
-  }
-
-  /* Chips seleccionados */
-  .chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; justify-content:center;}
-  .chip{display:inline-flex; align-items:center; gap:6px; background:var(--chip); border:1px solid var(--border); border-radius:999px; padding:6px 10px; font-weight:800;}
-  .chip button{border:none; background:transparent; cursor:pointer; font-size:16px;}
-
-  .totals{display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:center; margin-top:10px;}
-  .tag{background:#eef2ff; color:#3730a3; border:1px solid #e0e7ff; border-radius:999px; padding:6px 10px;}
-
-  /* Flechas */
-  .pagination-bottom {display:flex; justify-content:center; gap:12px; margin-top:12px;}
-  .page-btn {width:40px; height:40px; border:none; border-radius:50%; background:#0A4975; color:#fff; font-size:20px; font-weight:bold; cursor:pointer;}
-  #pageInfo { font-weight:bold; }
-
-  /* Mis boletos */
-  .big-diamonds{display:flex; flex-wrap:wrap; gap:18px; justify-content:center;}
-  .big-diamond{width:120px; height:120px; display:flex; align-items:center; justify-content:center;
-    color:#fff; font-size:20px; font-weight:800;
-    background-image:var(--diamond-url); background-size:cover; background-position:center;
-    border-radius:16px; box-shadow:0 8px 18px rgba(0,0,0,.12);
-  }
-
-  /* Footer */
-  .contact{background:#ffffff; color:#111; border:1px solid var(--border); border-radius:16px; padding:18px; display:grid; gap:14px; justify-items:center;}
-  .row{display:flex; gap:14px; justify-content:center;}
-  .row a{display:inline-flex; align-items:center; gap:8px; text-decoration:none; color:#111; font-weight:800; border:1px solid var(--border); padding:10px 14px; border-radius:999px;}
-  .row img{width:20px; height:20px;}
+    /* Footer */
+    .footer {
+      background: #0a4975;
+      color: #fff;
+      padding: 20px 0;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header class="app-title">
-      <img src="https://qu.ax/OVJvi.png" alt="Logo redondo">
-    </header>
 
-    <!-- Progreso -->
-    <section class="progress-info">
-      <div class="bar"><span id="soldBar"></span></div>
-      <div class="progress-stats">Vendidos: <b id="soldCount">0</b> / 10.000 — <b id="soldPct">0%</b></div>
-    </section>
-
-    <!-- Lista -->
-    <section class="panel">
-      <h2>Lista de boletos</h2>
-      <div class="square-wrap"><div id="tickets" class="ticket-grid"></div></div>
-      <div class="pagination-bottom">
-        <button class="page-btn" id="prevPage">«</button>
-        <span id="pageInfo">Pag: 1/10</span>
-        <button class="page-btn" id="nextPage">»</button>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg fixed-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-white" href="#">🎟️ MiRifa</a>
+      <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <i class="fa fa-bars"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="#premios">Premios</a></li>
+          <li class="nav-item"><a class="nav-link" href="#boletos">Boletos</a></li>
+          <li class="nav-item"><a class="nav-link" href="#faq">Preguntas</a></li>
+          <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
+        </ul>
       </div>
-      <div class="totals">
-        <span class="tag">Precio: <b>15 Bs</b></span>
-        <span class="tag">Seleccionados: <b id="selCount">0</b></span>
-        <span class="tag">Total: <b id="totalAmount">0 Bs</b></span>
-        <button id="btnRandom" class="page-btn" title="Generar 3 boletos">🎲</button>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <section class="header text-center">
+    <div class="container">
+      <h1>Rifa Premium 1.0</h1>
+      <p class="lead">Compra tu boleto y participa por premios increíbles 🎁</p>
+      <a href="#boletos" class="btn btn-main btn-lg mt-3">Ver Boletos</a>
+    </div>
+  </section>
+
+  <!-- Premios -->
+  <section id="premios" class="py-5">
+    <div class="container text-center">
+      <h2 class="mb-4">🎁 Premios</h2>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="card card-custom p-3">
+            <img src="https://via.placeholder.com/300x200" class="card-img-top rounded" alt="Premio">
+            <div class="card-body">
+              <h5 class="card-title">Auto Toyota</h5>
+              <p class="card-text">Un Toyota Corolla 2022 + $500 en efectivo</p>
+            </div>
+          </div>
+        </div>
+        <!-- Puedes duplicar más premios aquí -->
       </div>
-      <div id="minMsg" class="subtle" style="color:red; display:none;">Compra mínima 3 boletos.</div>
-      <div id="selectedChips" class="chips"></div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Mis boletos -->
-    <section class="panel" id="myTicketsPanel" style="display:none;">
-      <h2>Mis boletos</h2>
-      <div id="myDiamonds" class="big-diamonds"></div>
-    </section>
-
-    <!-- Verificador -->
-    <section class="panel">
-      <h2>Verificador de boletos</h2>
-      <input id="verifyInput" placeholder="Teléfono o boleto">
-      <button id="btnVerify">Verificar</button>
-      <div id="verifyOut"></div>
-    </section>
-
-    <!-- Contacto -->
-    <section class="contact">
-      <h3>Contacto</h3>
-      <div class="row">
-        <a id="waLink" href="#"><img id="waIcon"> WhatsApp</a>
-        <a id="fbLink" href="#"><img id="fbIcon"> Facebook</a>
-        <a id="igLink" href="#"><img id="igIcon"> Instagram</a>
+  <!-- Boletos -->
+  <section id="boletos" class="py-5 bg-light">
+    <div class="container text-center">
+      <h2 class="mb-4">🎟️ Comprar Boletos</h2>
+      <p>Selecciona cuántos boletos quieres</p>
+      <div class="input-group w-50 mx-auto">
+        <button class="btn btn-main" id="btnMinus">-</button>
+        <input type="number" class="form-control text-center" id="ticketQty" value="1" min="1" max="100">
+        <button class="btn btn-main" id="btnPlus">+</button>
       </div>
-    </section>
-  </div>
+      <h3 class="mt-3">Total: <span id="montoTotal">$5</span></h3>
+      <button class="btn btn-main btn-lg mt-3">Confirmar Compra</button>
+    </div>
+  </section>
 
-<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@19.5.6/build/js/intlTelInput.min.js"></script>
-<script>
-const PRICE = 15, TOTAL=10000, PAGE=1000;
-let currentPage=1, selected=new Set();
-const soldKey="sold_tickets";
+  <!-- FAQ -->
+  <section id="faq" class="py-5">
+    <div class="container">
+      <h2 class="text-center mb-4">❓ Preguntas Frecuentes</h2>
+      <div class="accordion" id="faqAccordion">
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#faq1">
+              ¿Cómo compro un boleto?
+            </button>
+          </h2>
+          <div id="faq1" class="accordion-collapse collapse show">
+            <div class="accordion-body">
+              Selecciona la cantidad de boletos, completa tus datos y sube el comprobante de pago.
+            </div>
+          </div>
+        </div>
+        <!-- Puedes agregar más preguntas -->
+      </div>
+    </div>
+  </section>
 
-const el=s=>document.querySelector(s);
-const pad=n=>n.toString().padStart(4,'0');
-const getSold=()=>new Set(JSON.parse(localStorage.getItem(soldKey)||'[]'));
-const setSold=s=>localStorage.setItem(soldKey,JSON.stringify([...s]));
+  <!-- Contacto -->
+  <section id="contacto" class="py-5 bg-light">
+    <div class="container text-center">
+      <h2>📞 Contacto</h2>
+      <p>Escríbenos por WhatsApp</p>
+      <a href="https://wa.me/584121234567" target="_blank" class="btn btn-main">
+        <i class="fab fa-whatsapp"></i> WhatsApp
+      </a>
+    </div>
+  </section>
 
-function updateProgress(){
-  const s=getSold(), pct=Math.round(s.size/TOTAL*100);
-  el('#soldBar').style.width=pct+'%';
-  el('#soldCount').textContent=s.size;
-  el('#soldPct').textContent=pct+'%';
-}
+  <!-- Footer -->
+  <footer class="footer">
+    <p>© 2025 Mi Rifa - Todos los derechos reservados</p>
+  </footer>
 
-function pageRange(p){return[(p-1)*PAGE,p*PAGE-1];}
+  <!-- JS Bootstrap -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-function renderTickets(){
-  const grid=el('#tickets'); grid.innerHTML='';
-  const [st,en]=pageRange(currentPage), s=getSold();
-  let nums=[]; for(let i=st;i<=en;i++) nums.push(i);
-  // mezclar aleatoriamente
-  for(let i=nums.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[nums[i],nums[j]]=[nums[j],nums[i]];}
-  nums.forEach(n=>{
-    const b=document.createElement('div'); b.className='ticket'; b.textContent=pad(n);
-    if(s.has(n)){b.classList.add('sold');}
-    else if(selected.has(n)){b.classList.add('selected');}
-    else{b.onclick=()=>{selected.add(n);renderTickets();renderChips();updateTotals();}}
-    grid.appendChild(b);
-  });
-  el('#pageInfo').textContent=`Pag: ${currentPage}/10`; updateTotals();
-}
+  <!-- Script boletos -->
+  <script>
+    const btnMinus = document.getElementById("btnMinus");
+    const btnPlus = document.getElementById("btnPlus");
+    const ticketQty = document.getElementById("ticketQty");
+    const montoTotal = document.getElementById("montoTotal");
+    const precio = 5; // precio por boleto
 
-function renderChips(){
-  const box=el('#selectedChips'); box.innerHTML='';
-  [...selected].forEach(n=>{
-    const c=document.createElement('span'); c.className='chip'; c.textContent=pad(n);
-    const x=document.createElement('button'); x.textContent='×'; x.onclick=()=>{selected.delete(n);renderTickets();renderChips();updateTotals();}
-    c.appendChild(x); box.appendChild(c);
-  });
-}
+    function updateTotal() {
+      const cantidad = parseInt(ticketQty.value) || 1;
+      montoTotal.textContent = "$" + (cantidad * precio);
+    }
 
-function updateTotals(){
-  el('#selCount').textContent=selected.size;
-  el('#totalAmount').textContent=selected.size*PRICE+' Bs';
-}
+    btnMinus.addEventListener("click", () => {
+      if (ticketQty.value > 1) ticketQty.value--;
+      updateTotal();
+    });
 
-function randomPick(c=3){
-  const s=getSold(); while(selected.size<c){
-    let n=Math.floor(Math.random()*TOTAL); if(!s.has(n)) selected.add(n);
-  } renderTickets(); renderChips(); updateTotals();
-}
+    btnPlus.addEventListener("click", () => {
+      if (ticketQty.value < 100) ticketQty.value++;
+      updateTotal();
+    });
 
-function verify(){
-  const raw=el('#verifyInput').value.trim(),s=getSold(),out=el('#verifyOut'); out.innerHTML='';
-  if(/^\d{4}$/.test(raw)){
-    if(s.has(+raw)) out.textContent="Boleto vendido";
-    else out.textContent="Boleto disponible";
-  }
-}
-
-window.onload=()=>{
-  renderTickets(); updateProgress();
-  el('#prevPage').onclick=()=>{if(currentPage>1){currentPage--;renderTickets();}};
-  el('#nextPage').onclick=()=>{if(currentPage<10){currentPage++;renderTickets();}};
-  el('#btnRandom').onclick=()=>randomPick(3);
-  el('#btnVerify').onclick=verify;
-};
-</script>
+    ticketQty.addEventListener("input", updateTotal);
+  </script>
 </body>
 </html>
