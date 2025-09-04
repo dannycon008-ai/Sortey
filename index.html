@@ -17,37 +17,24 @@
       color: #0a4975;
     }
 
-    /* Navbar */
+    /* Navbar con degradado */
     .navbar {
-      background: #000f35 !important;
+      background: linear-gradient(to right, #005899, white, #005899);
       box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
-    .navbar a { color: #fff !important; font-weight: 600; }
+    .navbar a {
+      color: #fff !important;
+      font-weight: 600;
+    }
     .navbar img {
-      height: 100px !important;
-      width: auto !important;
-      border-radius: 10px;
-      object-fit: contain;
+      height: 70px;
+      width: 70px;
+      border-radius: 50%;
+      object-fit: cover;
     }
 
     section { padding: 60px 0; }
     h2 { font-weight: 800; color: #005899; display: flex; align-items: center; justify-content: center; gap: 10px; }
-
-    /* Logo marca de agua sección PREMIOS */
-    .logo-premios-bg {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      width: 100px;
-      opacity: 0.15;
-      z-index: 0;
-      pointer-events: none;
-    }
-    #premios h2,
-    #premios .row {
-      position: relative;
-      z-index: 1;
-    }
 
     /* Premios */
     .premio-card {
@@ -57,12 +44,23 @@
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       text-align: center;
     }
-    .premio-card img { width: 40px; margin-right: 8px; }
-    .premio-card h4 {
-      display: flex; align-items: center; justify-content: center;
-      gap: 6px; font-weight: 700; font-size: 1.3rem;
+    .premio-card img {
+      width: 40px;
+      margin-right: 8px;
     }
-    .premio-card p { font-weight: 700; font-size: 20px; margin-top: 10px; }
+    .premio-card h4 {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-weight: 700;
+      font-size: 1.3rem;
+    }
+    .premio-card p {
+      font-weight: 700;
+      font-size: 20px;
+      margin-top: 10px;
+    }
 
     /* Boletos */
     .tickets-container {
@@ -144,15 +142,22 @@
       padding: 25px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
-    .form-card h2 img { width: 40px; }
+    .form-card h2 img {
+      width: 40px;
+    }
     .form-card label { font-weight: 600; color: #005899; }
     .form-card input, .form-card select { margin-bottom: 15px; border-radius: 8px; }
     .metodo-pago-container {
-      display: flex; gap: 20px; justify-content: center;
+      display: flex;
+      gap: 20px;
+      justify-content: center;
     }
     .metodo-pago {
-      display: flex; flex-direction: column; align-items: center;
-      cursor: pointer; padding: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      padding: 10px;
       border: 2px solid #005899;
       border-radius: 10px;
       transition: all 0.3s ease;
@@ -198,10 +203,7 @@
   </nav>
 
   <!-- PREMIOS -->
-  <section id="premios" class="container mt-5 pt-5 position-relative">
-    <!-- Logo arriba izquierda como marca de agua -->
-    <img src="https://qu.ax/OVJvi.png" alt="Logo Marca de Agua" class="logo-premios-bg">
-
+  <section id="premios" class="container mt-5 pt-5">
     <h2>🎁 PREMIOS</h2>
     <div class="row mt-4">
       <div class="col-md-4">
@@ -225,10 +227,195 @@
     </div>
   </section>
 
+  <!-- BOLETOS -->
+  <section id="boletos" class="container mt-5">
+    <h2>🎟️ Lista de Boletos</h2>
+    <div class="progress-total"><div class="progress-actual" id="progress-bar"></div></div>
+    <p class="progress-percent text-center" id="progress-text">0% Vendidos</p>
+
+    <div class="tickets-container">
+      <div id="boletos-list" class="tickets-grid"></div>
+    </div>
+
+    <div class="text-center mt-4">
+      <button class="btn btn-primary" onclick="prevPage()"><img src="https://qu.ax/TaLQg.png"> Anterior</button>
+      <span id="page-info" class="mx-3">Página 1 de 5</span>
+      <button class="btn btn-primary" onclick="nextPage()"><img src="https://qu.ax/ymYjd.png"> Siguiente</button>
+    </div>
+
+    <div id="total-seleccionados" class="text-center mt-3"></div>
+  </section>
+
+  <!-- FORMULARIO -->
+  <section id="formulario" class="container mt-5">
+    <div class="form-card">
+      <h2><img src="https://qu.ax/rGfpx.png" alt="Logo Datos">Datos Personales</h2>
+      <form onsubmit="return confirmarCompra(event)">
+        <label>Nombre y Apellido</label>
+        <input type="text" class="form-control" required>
+        <label>Cédula</label>
+        <input type="text" class="form-control" required>
+        <label>Teléfono</label>
+        <div class="input-group">
+          <select class="form-control" style="max-width:90px;">
+            <option value="+58">🇻🇪 +58</option>
+            <option value="+57">🇨🇴 +57</option>
+            <option value="+1">🇺🇸 +1</option>
+          </select>
+          <input type="tel" class="form-control" placeholder="Número de teléfono" required>
+        </div>
+
+        <label>Método de Pago</label>
+        <div class="metodo-pago-container">
+          <div class="metodo-pago" onclick="mostrarInstrucciones('pago-movil')">
+            <img src="https://play-lh.googleusercontent.com/1p1Y0PT24TZ9y6oYD0dkcqgg6BCGimhhH4XJ4lOUMj8m-VJ6FYEZbcMAHkYLhG7NDaY=w480-h960-rw" alt="Pago Móvil">
+            <span>Pago Móvil</span>
+          </div>
+          <div class="metodo-pago" onclick="mostrarInstrucciones('banesco')">
+            <img src="https://play-lh.googleusercontent.com/JP3qF5hwz0z7z-d2PEu21dhtdb7EBlC-5XKAuE0e2zLUAjWca-ePijvcb-nAQGAa9Ng=w480-h960-rw" alt="Banesco">
+            <span>Banesco</span>
+          </div>
+          <div class="metodo-pago" onclick="mostrarInstrucciones('binance')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/57/Binance_Logo.png" alt="Binance">
+            <span>Binance</span>
+          </div>
+        </div>
+
+        <div id="instrucciones" class="instrucciones"></div>
+
+        <button class="btn btn-success btn-block mt-3" type="submit">Confirmar Compra</button>
+        <button class="btn btn-primary btn-block mt-3" type="button">Ver mis Boletos</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- VERIFICADOR -->
+  <section id="verificador" class="container mt-5">
+    <div class="form-card">
+      <h2>🔎 Verificador de Boletos</h2>
+      <form onsubmit="verificarBoletos(event)">
+        <label>Ingresa tu número de teléfono o # de boleto</label>
+        <input type="text" id="inputVerificador" class="form-control" required>
+        <button class="btn btn-primary btn-block mt-3" type="submit">Verificar</button>
+      </form>
+      <div id="resultadoVerificador" class="mt-4" style="display:none;">
+        <h5>📋 Resultados:</h5>
+        <div id="detalleBoletos"></div>
+      </div>
+    </div>
+  </section>
+
   <!-- FOOTER -->
   <footer class="footer-section text-center mt-5">
     <p>© 2025 Tu Diamante - Todos los derechos reservados.</p>
   </footer>
 
+  <!-- JS -->
+  <script>
+    const TOTAL_BOLETOS = 10000;
+    const POR_PAGINA = 2000;
+    let paginaActual = 1;
+    let boletos = [];
+    let boletosSeleccionados = [];
+    const PRECIO_BOLETO = 15;
+
+    function generarBoletos() {
+      for (let i = 0; i < TOTAL_BOLETOS; i++) {
+        let numero = i.toString().padStart(4, '0');
+        let vendido = Math.random() < 0.1;
+        boletos.push({ numero, vendido });
+      }
+    }
+
+    function toggleSeleccion(boleto) {
+      if (boleto.vendido) return;
+      const index = boletosSeleccionados.indexOf(boleto.numero);
+      if (index === -1) boletosSeleccionados.push(boleto.numero);
+      else boletosSeleccionados.splice(index, 1);
+      mostrarBoletos();
+      actualizarTotalSeleccionados();
+    }
+
+    function actualizarTotalSeleccionados() {
+      const totalDiv = document.getElementById("total-seleccionados");
+      const cantidad = boletosSeleccionados.length;
+      const total = cantidad * PRECIO_BOLETO;
+      if (cantidad > 0) {
+        totalDiv.innerHTML = `<p>Boletos seleccionados: ${cantidad}</p><p>Total a pagar: ${total} Bs</p>`;
+      } else totalDiv.innerHTML = "";
+    }
+
+    function mostrarBoletos() {
+      const contenedor = document.getElementById('boletos-list');
+      contenedor.innerHTML = "";
+      let inicio = (paginaActual - 1) * POR_PAGINA;
+      let fin = inicio + POR_PAGINA;
+      boletos.slice(inicio, fin).forEach(boleto => {
+        let div = document.createElement('div');
+        div.className = "ticket" + (boleto.vendido ? " vendido" : "") + (boletosSeleccionados.includes(boleto.numero) ? " seleccionado" : "");
+        div.textContent = boleto.numero;
+        div.onclick = () => toggleSeleccion(boleto);
+        contenedor.appendChild(div);
+      });
+      document.getElementById('page-info').textContent = `Página ${paginaActual} de ${Math.ceil(TOTAL_BOLETOS / POR_PAGINA)}`;
+      actualizarProgreso();
+    }
+
+    function actualizarProgreso() {
+      let vendidos = boletos.filter(b => b.vendido).length;
+      let porcentaje = Math.round((vendidos / TOTAL_BOLETOS) * 100);
+      document.getElementById('progress-bar').style.width = porcentaje + "%";
+      document.getElementById('progress-text').textContent = porcentaje + "% Vendidos";
+    }
+
+    function nextPage() { if (paginaActual < TOTAL_BOLETOS / POR_PAGINA) { paginaActual++; mostrarBoletos(); } }
+    function prevPage() { if (paginaActual > 1) { paginaActual--; mostrarBoletos(); } }
+
+    function confirmarCompra(event) {
+      event.preventDefault();
+      if (boletosSeleccionados.length < 3) {
+        alert("⚠️ La compra mínima es de 3 boletos.");
+        return false;
+      }
+      alert("✅ Compra confirmada con " + boletosSeleccionados.length + " boletos. Total: " + (boletosSeleccionados.length * PRECIO_BOLETO) + " Bs.");
+      return true;
+    }
+
+    function mostrarInstrucciones(metodo) {
+      const box = document.getElementById("instrucciones");
+      box.style.display = "block";
+      if (metodo === "pago-movil") {
+        box.innerHTML = "<h5>📱 Pago Móvil Venezuela</h5><p><b>Banco:</b> 0102<br><b>Teléfono:</b> 0424-8417632<br><b>Cédula:</b> V-31490382<br><b>Titular:</b> Angel Zabala</p>";
+      } else if (metodo === "banesco") {
+        box.innerHTML = "<h5>🏦 Banesco</h5><p><b>Cuenta:</b> 0134<br><b>Titular:</b> Iraima Jimenez</p>";
+      } else if (metodo === "binance") {
+        box.innerHTML = "<h5>💰 Binance</h5><p><b>Wallet:</b> angelitojavier277@gmail.com</p>";
+      }
+    }
+
+    let comprasSimuladas = [
+      { nombre: "Juan Pérez", cedula: "V-12345678", telefono: "04128417632", boletos: ["0001", "0002", "0005"] },
+      { nombre: "Iraima Jimenez", cedula: "V-87654321", telefono: "04125556677", boletos: ["0100", "0101", "0102", "0103"] },
+      { nombre: "Angel Zabala", cedula: "V-31490382", telefono: "04129998877", boletos: ["0500"] }
+    ];
+
+    function verificarBoletos(event) {
+      event.preventDefault();
+      const valor = document.getElementById("inputVerificador").value.trim();
+      const resultadoDiv = document.getElementById("resultadoVerificador");
+      const detalleDiv = document.getElementById("detalleBoletos");
+      let compra = comprasSimuladas.find(c => c.telefono === valor);
+      if (!compra) { comprasSimuladas.forEach(c => { if (c.boletos.includes(valor)) compra = c; }); }
+      if (compra) {
+        detalleDiv.innerHTML = `<p><b>Nombre:</b> ${compra.nombre}</p><p><b>Cédula:</b> ${compra.cedula}</p><p><b>Teléfono:</b> ${compra.telefono}</p><p><b>Boletos comprados:</b></p><div class="d-flex flex-wrap gap-2">${compra.boletos.map(num => `<div class="ticket">${num}</div>`).join("")}</div><p class="mt-3"><b>Total Pagado:</b> ${compra.boletos.length * PRECIO_BOLETO} Bs</p>`;
+      } else {
+        detalleDiv.innerHTML = `<p class="text-danger">❌ No se encontraron boletos asociados.</p>`;
+      }
+      resultadoDiv.style.display = "block";
+    }
+
+    generarBoletos();
+    mostrarBoletos();
+  </script>
 </body>
 </html>
