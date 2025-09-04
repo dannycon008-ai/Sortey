@@ -178,6 +178,22 @@
     </div>
   </section>
 
+  <!-- VERIFICADOR -->
+  <section id="verificador" class="container mt-5">
+    <div class="form-card">
+      <h2>🔎 Verificador de Boletos</h2>
+      <form onsubmit="verificarBoletos(event)">
+        <label>Ingresa tu número de teléfono o # de boleto</label>
+        <input type="text" id="inputVerificador" class="form-control" required>
+        <button class="btn btn-primary btn-block mt-3" type="submit">Verificar</button>
+      </form>
+      <div id="resultadoVerificador" class="mt-4" style="display:none;">
+        <h5>📋 Resultados:</h5>
+        <div id="detalleBoletos"></div>
+      </div>
+    </div>
+  </section>
+
   <!-- JS -->
   <script>
     const TOTAL_BOLETOS = 10000;
@@ -280,6 +296,37 @@
       }
       mostrarBoletos();
       actualizarTotalSeleccionados();
+    }
+
+    // Compras simuladas para el verificador
+    let comprasSimuladas = [
+      { nombre: "Juan Pérez", cedula: "V-12345678", telefono: "04128417632", boletos: ["0001", "0002", "0005"] },
+      { nombre: "Iraima Jimenez", cedula: "V-87654321", telefono: "04125556677", boletos: ["0100", "0101", "0102", "0103"] },
+      { nombre: "Angel Zabala", cedula: "V-31490382", telefono: "04129998877", boletos: ["0500"] }
+    ];
+
+    function verificarBoletos(event) {
+      event.preventDefault();
+      const valor = document.getElementById("inputVerificador").value.trim();
+      const resultadoDiv = document.getElementById("resultadoVerificador");
+      const detalleDiv = document.getElementById("detalleBoletos");
+      let compra = comprasSimuladas.find(c => c.telefono === valor);
+      if (!compra) {
+        comprasSimuladas.forEach(c => {
+          if (c.boletos.includes(valor)) compra = c;
+        });
+      }
+      if (compra) {
+        detalleDiv.innerHTML = `<p><b>Nombre:</b> ${compra.nombre}</p>
+                                <p><b>Cédula:</b> ${compra.cedula}</p>
+                                <p><b>Teléfono:</b> ${compra.telefono}</p>
+                                <p><b>Boletos comprados:</b></p>
+                                <div class="d-flex flex-wrap gap-2">${compra.boletos.map(num => `<div class="ticket">${num}</div>`).join("")}</div>
+                                <p class="mt-3"><b>Total Pagado:</b> ${compra.boletos.length * PRECIO_BOLETO} Bs</p>`;
+      } else {
+        detalleDiv.innerHTML = `<p class="text-danger">❌ No se encontraron boletos asociados.</p>`;
+      }
+      resultadoDiv.style.display = "block";
     }
 
     generarBoletos();
