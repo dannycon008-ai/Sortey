@@ -13,15 +13,32 @@
   <style>
     body { font-family: 'Poppins', sans-serif; background: #fff; color: #0a4975; }
 
-    /* Navbar */
-    .navbar {
-      background: linear-gradient(to right, #000f35, white, #000f35);
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-      min-height: 70px;
-    }
-    .navbar img { height: 100px; width: 100px; border-radius: 50%; object-fit: cover; margin: 5px 0; }
+    /* Evita que el contenido quede oculto por la barra fija */
+  padding-top: 85px;   /* para navbar de ~60–70px */
+}
+
+
+   /* NAVBAR más delgada */
+.navbar{
+  background: linear-gradient(to right, #000f35, #ffffff, #000f35);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  min-height: 60px;     /* más baja */
+  padding: 6px 0;       /* compacta */
+  align-items: center;  /* centra verticalmente */
+}
+
+/* Logo dentro de la navbar */
+.navbar img{
+  height: 100px;        /* antes lo tenías + grande */
+  width: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+}
 
     section { padding: 60px 0; }
+  scroll-margin-top: 90px;  /* ajusta si cambias el alto de la barra */
+}
+    
     h2 { font-weight: 800; color: #005899; display: flex; align-items: center; justify-content: center; gap: 10px; }
 
     /* Premios */
