@@ -1,537 +1,213 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Tu Diamante 💎</title>
-
-  <!-- Bootstrap 5 -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet" />
-  <!-- FontAwesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-
+  <meta charset="UTF-8">
+  <title>Rifa Premium - Tu Diamante</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
-    :root{
-      --primary:#005899;  /* azul principal */
-      --primary-2:#0a4975; /* azul oscuro */
-      --accent:#5d8aa6;   /* azul suave */
-      --bg:#f7f9fc;
-      --price:15;         /* Bs por boleto */
+    :root {
+      --primary: #0a4975;
+      --secondary: #5d8aa6;
+      --price: 15;
       --diamond-url: url('https://qu.ax/zcmdn.png');
     }
-    body{ font-family:'Poppins',sans-serif; background:var(--bg); }
-
-    /* Navbar */
-    .navbar{ background:var(--primary); box-shadow:0 3px 10px rgba(0,0,0,.15); }
-    .navbar .nav-link, .navbar-brand{ color:#fff !important; font-weight:600; }
-    .navbar .nav-link:hover{ color:var(--accent) !important; }
-    .brand-img{ height:36px; width:auto; }
-
-    /* Header */
-    .hero{ background:linear-gradient(90deg, var(--primary) 0%, var(--primary-2) 100%); color:#fff; padding:90px 0 70px; }
-    .hero h1{ font-weight:800; }
-    .hero .lead{ opacity:.95; }
-
-    /* Cards */
-    .card-custom{ border:none; border-radius:14px; box-shadow:0 6px 18px rgba(0,0,0,.08); }
-
-    /* Boletos */
-    .ticket-grid{ min-height:240px; border:1px solid #e9ecef; background:#fff; border-radius:12px; padding:12px; }
-    .ticket{ display:inline-block; user-select:none; margin:4px; padding:6px 10px; border-radius:8px; font-weight:700; font-size:.95rem; color:#fff; background:var(--primary); position:relative; transition:transform .08s ease-in; }
-    .ticket:hover{ background:var(--accent); cursor:pointer; }
-    .ticket.selected{ background:#1a8753; }       /* verde selección */
-    .ticket.sold{ background:#9aa4ad; pointer-events:none; }
-    .ticket.sold::after{ content:""; position:absolute; right:-6px; top:-6px; width:22px; height:22px; background-image:var(--diamond-url); background-size:cover; background-repeat:no-repeat; filter:drop-shadow(0 1px 2px rgba(0,0,0,.25)); }
-
-    .tickets-toolbar{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
-    .tickets-toolbar .btn{ border-radius:10px; font-weight:600; }
-
-    .pagination .page-link{ color:var(--primary); font-weight:600; }
-    .pagination .page-item.active .page-link{ background:var(--primary); border-color:var(--primary); }
-
-    /* Progress Sold */
-    .progress{ height:16px; border-radius:999px; background:#e9eef3; }
-    .progress-bar{ background:linear-gradient(90deg,#0072b4,#0a4975); font-weight:700; }
-
-    /* Forms */
-    .form-section label{ font-weight:600; }
-    .flag-option{ font-weight:600; }
-
-    /* Verificador */
-    .badge-ticket{ background:var(--primary); }
-
-    /* Voucher preview */
-    .voucher-preview{ max-width:100%; height:auto; border:1px dashed #cbd5e1; border-radius:10px; padding:6px; }
-
-    /* Sticky subtotal */
-    .sticky-subtotal{ position:sticky; bottom:0; background:#ffffffcc; backdrop-filter:blur(6px); border-top:1px solid #e9ecef; padding:10px; border-radius:0 0 12px 12px; }
-
-    @media (max-width: 576px){
-      .ticket{ margin:3px; padding:5px 8px; font-size:.9rem; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      background: #f9f9f9;
+      color: #333;
+    }
+    header {
+      background: #fff;
+      padding: 20px;
+      text-align: center;
+      border-bottom: 4px solid var(--primary);
+    }
+    header img {
+      max-height: 120px;
+      display: block;
+      margin: 0 auto 10px auto;
+    }
+    header h1 {
+      font-size: 2.5rem;
+      color: var(--primary);
+      margin: 0;
+    }
+    .awards {
+      margin: 20px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 1000px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .awards h2 {
+      text-align: center;
+      color: var(--primary);
+      margin-bottom: 20px;
+    }
+    .award-item {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      margin-bottom: 10px;
+      font-size: 1.2rem;
+      color: var(--primary);
+    }
+    .award-item img {
+      width: 40px;
+      height: 40px;
+      margin-right: 10px;
+    }
+    .tickets-section {
+      width: 90%;
+      max-width: 1200px;
+      margin: 20px auto;
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .tickets-section h2 {
+      text-align: center;
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 20px;
+    }
+    .progress {
+      width: 100%;
+      height: 20px;
+      background: #eee;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .progress-bar {
+      height: 100%;
+      background: var(--primary);
+      width: 0;
+      transition: width 2s ease;
+    }
+    .tickets-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+      gap: 5px;
+      margin-bottom: 20px;
+      color: var(--primary);
+    }
+    .ticket {
+      border: 1px solid var(--primary);
+      padding: 5px;
+      border-radius: 6px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 0.9rem;
+      background: #fff;
+    }
+    .ticket.selected {
+      background: var(--secondary);
+      color: #fff;
+    }
+    .ticket.sold {
+      background: #eee;
+      position: relative;
+    }
+    .ticket.sold::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      width: 16px;
+      height: 16px;
+      background-image: var(--diamond-url);
+      background-size: cover;
+    }
+    .pagination {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .pagination button {
+      padding: 8px 14px;
+      margin: 0 5px;
+      border: none;
+      background: var(--primary);
+      color: #fff;
+      border-radius: 5px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <!-- NAVBAR -->
-  <nav class="navbar navbar-expand-lg fixed-top">
-    <div class="container">
-      <a class="navbar-brand d-flex align-items-center gap-2" href="#">
-        <img class="brand-img" src="https://qu.ax/OVJvi.png" alt="Rifa Premium" />
-        <span class="d-none d-md-inline">Rifa Premium</span>
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
-        <span class="navbar-toggler-icon" style="filter: invert(1)"></span>
-      </button>
-      <div id="nav" class="collapse navbar-collapse">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="#boletos">Boletos</a></li>
-          <li class="nav-item"><a class="nav-link" href="#pagos">Pagos</a></li>
-          <li class="nav-item"><a class="nav-link" href="#datos">Datos</a></li>
-          <li class="nav-item"><a class="nav-link" href="#verificador">Verificador</a></li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+  <header>
+    <img src="https://qu.ax/OVJvi.png" alt="Tu Diamante Logo">
+    <h1>Rifa Premium - Tu Diamante</h1>
+  </header>
 
-  <!-- HERO -->
-  <section class="hero text-center">
-    <div class="container">
-      <h1 class="display-5">Participa y gana 🎁</h1>
-      <p class="lead">Elige tus números, sube tu comprobante y confirma tu compra en segundos.</p>
-      <a href="#boletos" class="btn btn-light btn-lg fw-bold mt-2"><i class="fa-solid fa-ticket"></i> Ver Boletos</a>
-    </div>
+  <section class="awards">
+    <h2>🎁 PREMIOS</h2>
+    <div class="award-item"><img src="https://qu.ax/OVJvi.png"> Premio 1: 10.000 Bs</div>
+    <div class="award-item"><img src="https://qu.ax/OVJvi.png"> Premio 2: 10.000 Bs</div>
+    <div class="award-item"><img src="https://qu.ax/OVJvi.png"> Premio 3: 30.000 Bs</div>
   </section>
 
-  <!-- BOLETOS -->
-  <section id="boletos" class="py-5">
-    <div class="container">
-      <div class="row g-4">
-        <div class="col-lg-8">
-          <div class="card card-custom">
-            <div class="card-body">
-              <div class="d-flex align-items-center justify-content-between mb-3">
-                <h3 class="m-0">🎟️ Lista de boletos</h3>
-                <small class="text-muted">10,000 números (0000–9999) / 5 páginas</small>
-              </div>
-
-              <!-- Herramientas -->
-              <div class="tickets-toolbar mb-3">
-                <button id="btnShuffle3" class="btn btn-success"><i class="fa-solid fa-magic-wand-sparkles"></i> Suerte (3)</button>
-                <button id="btnClearSel" class="btn btn-outline-secondary">Limpiar selección</button>
-                <div class="ms-auto">
-                  <span class="fw-bold">Seleccionados: <span id="selCount">0</span></span>
-                </div>
-              </div>
-
-              <div id="ticketsContainer" class="ticket-grid"></div>
-
-              <div class="sticky-subtotal d-flex align-items-center justify-content-between mt-2">
-                <div class="fw-bold">Total: <span id="totalBs">0</span> Bs</div>
-                <nav>
-                  <ul id="pagination" class="pagination pagination-sm m-0"></ul>
-                </nav>
-              </div>
-            </div>
-          </div>
-
-          <!-- Progreso de vendidos -->
-          <div class="card card-custom mt-3">
-            <div class="card-body">
-              <div class="d-flex justify-content-between align-items-center mb-1">
-                <h6 class="m-0">Progreso de ventas</h6>
-                <small><span id="soldCount">0</span>/10000 vendidos (<span id="soldPct">0</span>%)</small>
-              </div>
-              <div class="progress">
-                <div id="soldBar" class="progress-bar" role="progressbar" style="width:0%">0%</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- PAGO + DATOS -->
-        <div class="col-lg-4">
-          <div id="pagos" class="card card-custom mb-3">
-            <div class="card-body">
-              <h4 class="mb-3">💳 Métodos de pago</h4>
-              <div class="vstack gap-3">
-                <div class="p-3 border rounded">
-                  <h6 class="mb-1">Pago Móvil (Mercantil)</h6>
-                  <div><strong>Teléfono:</strong> 0426-1234567</div>
-                  <div><strong>Cédula:</strong> 12.345.678</div>
-                  <div><strong>Banco:</strong> Mercantil</div>
-                </div>
-                <div class="p-3 border rounded">
-                  <h6 class="mb-1">Transferencia (Banco de Venezuela)</h6>
-                  <div><strong>Cuenta:</strong> 0102-0123-1234567890</div>
-                  <div><strong>Titular:</strong> Juan Pérez</div>
-                </div>
-                <div class="p-3 border rounded">
-                  <h6 class="mb-1">Binance</h6>
-                  <div><strong>Correo:</strong> ejemplo@gmail.com</div>
-                  <div><strong>Red:</strong> USDT (BEP20)</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div id="datos" class="card card-custom form-section">
-            <div class="card-body">
-              <h4 class="mb-3">🧾 Datos personales</h4>
-              <form id="buyerForm" novalidate>
-                <div class="mb-2">
-                  <label class="form-label">Nombre y apellido *</label>
-                  <input type="text" class="form-control" id="nombre" minlength="3" required />
-                </div>
-                <div class="mb-2">
-                  <label class="form-label">Cédula *</label>
-                  <input type="text" class="form-control" id="cedula" minlength="5" required />
-                </div>
-                <div class="mb-2">
-                  <label class="form-label">Teléfono *</label>
-                  <div class="input-group">
-                    <select class="form-select" id="countryCode" style="max-width:170px">
-                      <option value="+58" selected>🇻🇪 +58</option>
-                      <option value="+57">🇨🇴 +57</option>
-                      <option value="+56">🇨🇱 +56</option>
-                      <option value="+51">🇵🇪 +51</option>
-                      <option value="+52">🇲🇽 +52</option>
-                      <option value="+34">🇪🇸 +34</option>
-                      <option value="+1">🇺🇸 +1</option>
-                    </select>
-                    <input type="tel" class="form-control" id="telefono" placeholder="Ej: 4121234567" minlength="7" maxlength="12" required />
-                  </div>
-                </div>
-                <div class="mb-2">
-                  <label class="form-label">Últimos 6 dígitos de la referencia *</label>
-                  <input type="text" class="form-control" id="ref6" placeholder="000000" minlength="6" maxlength="6" pattern="\\d{6}" required />
-                </div>
-                <div class="mb-3">
-                  <label class="form-label">Comprobante de pago (imagen)</label>
-                  <input type="file" class="form-control" id="voucher" accept="image/*" />
-                  <img id="voucherPreview" class="voucher-preview mt-2 d-none" alt="Voucher" />
-                </div>
-                <button id="btnConfirm" type="button" class="btn btn-primary w-100 fw-bold">
-                  <i class="fa-solid fa-check"></i> Confirmar compra
-                </button>
-                <div class="form-text mt-2">* Compra mínima <strong>3 boletos</strong>.</div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
+  <section class="tickets-section">
+    <h2>Lista de Boletos</h2>
+    <div class="progress">
+      <div class="progress-bar" id="progressBar"></div>
     </div>
+    <div class="tickets-grid" id="ticketsGrid"></div>
+    <div class="pagination" id="pagination"></div>
   </section>
 
-  <!-- VERIFICADOR -->
-  <section id="verificador" class="py-5 bg-light">
-    <div class="container">
-      <div class="row justify-content-center">
-        <div class="col-lg-8">
-          <div class="card card-custom">
-            <div class="card-body">
-              <h3 class="mb-3">🔎 Verificador de boletos</h3>
-              <p class="text-muted">Busca por <strong>Número de teléfono</strong> (incluye código de país) o por <strong>#Boleto</strong> (ej: 0423).</p>
-              <div class="input-group mb-3">
-                <input id="queryVerificador" type="text" class="form-control" placeholder="Ej: +584121234567 ó 0423" />
-                <button id="btnBuscar" class="btn btn-outline-primary">Buscar</button>
-              </div>
-              <div id="verifResultado" class="d-none">
-                <div class="border rounded p-3 mb-3">
-                  <h5 class="mb-1">Datos del comprador</h5>
-                  <div><strong>Nombre:</strong> <span id="vNombre"></span></div>
-                  <div><strong>Cédula:</strong> <span id="vCedula"></span></div>
-                  <div><strong>Teléfono:</strong> <span id="vTelefono"></span></div>
-                </div>
-                <div>
-                  <h6 class="mb-2">Boletos:</h6>
-                  <div id="vTickets" class="d-flex flex-wrap gap-2"></div>
-                </div>
-              </div>
-              <div id="verifVacio" class="text-center text-muted">Sin resultados todavía.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <footer class="py-4 text-center" style="background:var(--primary-2); color:#fff">
-    © 2025 Rifa Premium — Todos los derechos reservados
-  </footer>
-
-  <!-- SCRIPTS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // ======= Estado (localStorage para demo) =======
-    const TOTAL_TICKETS = 10000; // 0000..9999
-    const PAGES = 5;            // 5 páginas
-    const PER_PAGE = TOTAL_TICKETS / PAGES; // 2000
-    const PRICE = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--price')) || 15;
+    const TOTAL_TICKETS = 10000;
+    const PAGE_SIZE = 2000;
+    const TOTAL_PAGES = TOTAL_TICKETS / PAGE_SIZE;
 
-    const LS_PURCHASES = 'rp_purchases_v1';
-    const LS_SOLD = 'rp_sold_v1';
+    let tickets = [];
+    for (let i = 0; i < TOTAL_TICKETS; i++) {
+      tickets.push(String(i).padStart(4,'0'));
+    }
+    tickets = tickets.sort(() => Math.random() - 0.5);
 
-    const elTickets = document.getElementById('ticketsContainer');
-    const elPagination = document.getElementById('pagination');
-    const elSelCount = document.getElementById('selCount');
-    const elTotalBs = document.getElementById('totalBs');
-    const elSoldCount = document.getElementById('soldCount');
-    const elSoldPct = document.getElementById('soldPct');
-    const elSoldBar = document.getElementById('soldBar');
-
-    const btnShuffle3 = document.getElementById('btnShuffle3');
-    const btnClearSel = document.getElementById('btnClearSel');
-    const btnConfirm = document.getElementById('btnConfirm');
-
-    const inputNombre = document.getElementById('nombre');
-    const inputCedula = document.getElementById('cedula');
-    const inputCountry = document.getElementById('countryCode');
-    const inputTelefono = document.getElementById('telefono');
-    const inputRef6 = document.getElementById('ref6');
-    const inputVoucher = document.getElementById('voucher');
-    const imgVoucher = document.getElementById('voucherPreview');
-
-    const qVerificador = document.getElementById('queryVerificador');
-    const btnBuscar = document.getElementById('btnBuscar');
-    const boxResultado = document.getElementById('verifResultado');
-    const boxVacio = document.getElementById('verifVacio');
-    const vNombre = document.getElementById('vNombre');
-    const vCedula = document.getElementById('vCedula');
-    const vTelefono = document.getElementById('vTelefono');
-    const vTickets = document.getElementById('vTickets');
-
-    let shuffled = [];
-    let selected = new Set();
     let currentPage = 1;
 
-    function loadLS(key){
-      try{ return JSON.parse(localStorage.getItem(key) || '[]'); }catch{ return []; }
-    }
-    function saveLS(key,val){ localStorage.setItem(key, JSON.stringify(val)); }
-
-    function getSoldSet(){ return new Set(loadLS(LS_SOLD)); }
-
-    // Generar y mezclar boletos
-    function buildShuffled(){
-      const arr = Array.from({length: TOTAL_TICKETS}, (_,i) => String(i).padStart(4,'0'));
-      // Mezcla aleatoria (Fisher–Yates)
-      for(let i=arr.length-1;i>0;i--){
-        const j = Math.floor(Math.random()*(i+1));
-        [arr[i],arr[j]] = [arr[j],arr[i]];
-      }
-      shuffled = arr;
-    }
-
-    function updateTotals(){
-      const total = selected.size * PRICE;
-      elSelCount.textContent = selected.size;
-      elTotalBs.textContent = total.toFixed(2);
-    }
-
-    function updateProgress(){
-      const sold = loadLS(LS_SOLD).length;
-      const pct = Math.round((sold / TOTAL_TICKETS) * 100);
-      elSoldCount.textContent = sold;
-      elSoldPct.textContent = pct;
-      elSoldBar.style.width = pct + '%';
-      elSoldBar.textContent = pct + '%';
-    }
-
-    function ticketNode(num, soldSet){
-      const span = document.createElement('span');
-      span.className = 'ticket' + (soldSet.has(num) ? ' sold' : '');
-      span.textContent = num;
-      span.dataset.num = num;
-      span.addEventListener('click', () => {
-        if(span.classList.contains('sold')) return;
-        const n = span.dataset.num;
-        if(selected.has(n)){
-          selected.delete(n);
-          span.classList.remove('selected');
-        }else{
-          selected.add(n);
-          span.classList.add('selected');
-        }
-        updateTotals();
-      });
-      return span;
-    }
-
-    function renderPage(page=1){
+    function renderTickets(page) {
       currentPage = page;
-      const start = (page-1)*PER_PAGE;
-      const end = start + PER_PAGE;
-      const slice = shuffled.slice(start,end);
-      const soldSet = getSoldSet();
-
-      elTickets.innerHTML = '';
-      const frag = document.createDocumentFragment();
-      slice.forEach(n => frag.appendChild(ticketNode(n, soldSet)));
-      elTickets.appendChild(frag);
-
-      // Paginación
-      renderPagination(page);
-    }
-
-    function renderPagination(active){
-      elPagination.innerHTML = '';
-      const make = (label, page, disabled=false, active=false) => {
-        const li = document.createElement('li');
-        li.className = 'page-item' + (disabled?' disabled':'') + (active?' active':'');
-        const a = document.createElement('a');
-        a.className = 'page-link';
-        a.href = '#boletos';
-        a.textContent = label;
-        a.addEventListener('click', (e)=>{ e.preventDefault(); if(!disabled) renderPage(page); });
-        li.appendChild(a);
-        return li;
-      };
-      const prevDisabled = active===1;
-      elPagination.appendChild(make('«', Math.max(1, active-1), prevDisabled, false));
-      for(let i=1;i<=PAGES;i++){
-        elPagination.appendChild(make(String(i), i, false, i===active));
-      }
-      const nextDisabled = active===PAGES;
-      elPagination.appendChild(make('»', Math.min(PAGES, active+1), nextDisabled, false));
-    }
-
-    // Generar 3 aleatorios disponibles
-    function pickRandomAvailable(k=3){
-      const sold = getSoldSet();
-      const chosen = new Set();
-      let attempts = 0;
-      while(chosen.size < k && attempts < 20000){
-        const n = shuffled[Math.floor(Math.random()*shuffled.length)];
-        if(!sold.has(n) && !selected.has(n)) chosen.add(n);
-        attempts++;
-      }
-      // marcar seleccionados
-      chosen.forEach(n => selected.add(n));
-      // reflejar visualmente (si están en la página actual)
-      document.querySelectorAll('.ticket').forEach(el=>{
-        const n = el.dataset.num; if(selected.has(n) && !el.classList.contains('sold')) el.classList.add('selected');
+      const start = (page-1) * PAGE_SIZE;
+      const end = start + PAGE_SIZE;
+      const grid = document.getElementById('ticketsGrid');
+      grid.innerHTML = '';
+      tickets.slice(start, end).forEach(num => {
+        const div = document.createElement('div');
+        div.className = 'ticket';
+        div.innerText = num;
+        grid.appendChild(div);
       });
-      updateTotals();
+      renderPagination();
+      animateProgress();
     }
 
-    // Limpiar selección
-    function clearSelection(){
-      selected.clear();
-      document.querySelectorAll('.ticket.selected').forEach(el=> el.classList.remove('selected'));
-      updateTotals();
-    }
-
-    // Subir voucher preview
-    inputVoucher.addEventListener('change', (e)=>{
-      const file = e.target.files && e.target.files[0];
-      if(!file) return (imgVoucher.classList.add('d-none'));
-      const reader = new FileReader();
-      reader.onload = () => { imgVoucher.src = reader.result; imgVoucher.classList.remove('d-none'); };
-      reader.readAsDataURL(file);
-    });
-
-    // Confirmar compra
-    btnConfirm.addEventListener('click', ()=>{
-      // Validaciones
-      if(selected.size < 3){
-        alert('Compra mínima 3 boletos.');
-        return;
-      }
-      if(!inputNombre.value.trim() || !inputCedula.value.trim() || !inputTelefono.value.trim() || !/^\d{6}$/.test(inputRef6.value.trim())){
-        alert('Completa los datos personales y la referencia (6 dígitos).');
-        return;
-      }
-
-      const sold = getSoldSet();
-      // Verificar que ninguno esté ya vendido
-      for(const n of selected){ if(sold.has(n)){ alert('El boleto '+n+' ya fue vendido. Actualiza la página e intenta nuevamente.'); return; } }
-
-      // Guardar compra
-      const fullPhone = inputCountry.value + inputTelefono.value.replace(/\D+/g,'');
-      const purchases = loadLS(LS_PURCHASES);
-
-      // Guardar voucher (data URL, demo)
-      let voucherData = '';
-      const file = inputVoucher.files && inputVoucher.files[0];
-      if(file){
-        // Nota: en producción sube al servidor; aquí guardamos DataURL (puede ser pesado)
-        // Para evitar saturar localStorage, limitamos a ~300KB aprox (opcional)
-      }
-
-      const buyer = {
-        nombre: inputNombre.value.trim(),
-        cedula: inputCedula.value.trim(),
-        telefono: fullPhone,
-        ref6: inputRef6.value.trim(),
-        tickets: Array.from(selected),
-        ts: Date.now()
-      };
-      purchases.push(buyer);
-      saveLS(LS_PURCHASES, purchases);
-
-      // Marcar vendidos
-      const soldArr = loadLS(LS_SOLD);
-      soldArr.push(...buyer.tickets);
-      saveLS(LS_SOLD, Array.from(new Set(soldArr)));
-
-      // UI feedback
-      alert('¡Boletos registrados correctamente!');
-      clearSelection();
-      updateProgress();
-      renderPage(currentPage); // re-render para mostrar diamantes
-
-      // Rellenar verificador automáticamente
-      qVerificador.value = fullPhone;
-      runVerificador();
-    });
-
-    // Verificador
-    function runVerificador(){
-      const q = qVerificador.value.trim();
-      const purchases = loadLS(LS_PURCHASES);
-      let found = null;
-
-      if(/^\+?\d{6,}$/.test(q)){
-        // Buscar por teléfono exacto
-        found = purchases.find(p => p.telefono === q || ('+'+p.telefono) === q);
-      } else if(/^\d{4}$/.test(q)){
-        // Buscar por #boleto
-        const t = q;
-        found = purchases.find(p => p.tickets.includes(t));
-      }
-
-      if(found){
-        vNombre.textContent = found.nombre;
-        vCedula.textContent = found.cedula;
-        vTelefono.textContent = found.telefono;
-        vTickets.innerHTML = '';
-        found.tickets.forEach(t=>{
-          const b = document.createElement('span');
-          b.className = 'badge rounded-pill badge-ticket';
-          b.textContent = t;
-          vTickets.appendChild(b);
-        });
-        boxResultado.classList.remove('d-none');
-        boxVacio.classList.add('d-none');
-      } else {
-        boxResultado.classList.add('d-none');
-        boxVacio.classList.remove('d-none');
-        boxVacio.textContent = 'No se encontraron resultados.';
+    function renderPagination() {
+      const container = document.getElementById('pagination');
+      container.innerHTML = '';
+      for (let i = 1; i <= TOTAL_PAGES; i++) {
+        const btn = document.createElement('button');
+        btn.innerText = i;
+        btn.onclick = () => renderTickets(i);
+        container.appendChild(btn);
       }
     }
-    btnBuscar.addEventListener('click', runVerificador);
 
-    // Botones barra herramientas
-    btnShuffle3.addEventListener('click', ()=> pickRandomAvailable(3));
-    btnClearSel.addEventListener('click', clearSelection);
+    function animateProgress() {
+      const sold = Math.floor(Math.random() * TOTAL_TICKETS); // demo
+      const percent = (sold / TOTAL_TICKETS) * 100;
+      document.getElementById('progressBar').style.width = percent + '%';
+    }
 
-    // INIT
-    buildShuffled();
-    updateProgress();
-    renderPage(1);
-    updateTotals();
+    renderTickets(1);
   </script>
 </body>
 </html>
