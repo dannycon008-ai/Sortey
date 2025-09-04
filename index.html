@@ -17,18 +17,24 @@
       color: #0a4975;
     }
 
-    /* Navbar */
+    /* Navbar con degradado */
     .navbar {
-      background: #005899;
+      background: linear-gradient(to right, #005899, white, #005899);
       box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
     .navbar a {
       color: #fff !important;
       font-weight: 600;
     }
+    .navbar img {
+      height: 70px;
+      width: 70px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
 
     section { padding: 60px 0; }
-    h2 { font-weight: 800; color: #005899; }
+    h2 { font-weight: 800; color: #005899; display: flex; align-items: center; justify-content: center; gap: 10px; }
 
     /* Premios */
     .premio-card {
@@ -52,7 +58,7 @@
     }
     .premio-card p {
       font-weight: 700;
-      font-size: 1.2rem;
+      font-size: 20px;
       margin-top: 10px;
     }
 
@@ -63,6 +69,8 @@
       padding: 20px;
       margin: 20px auto;
       max-width: 1200px;
+      max-height: 600px;
+      overflow-y: auto;
       background: #fff;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
@@ -134,15 +142,30 @@
       padding: 25px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
+    .form-card h2 img {
+      width: 40px;
+    }
     .form-card label { font-weight: 600; color: #005899; }
     .form-card input, .form-card select { margin-bottom: 15px; border-radius: 8px; }
+    .metodo-pago-container {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+    }
     .metodo-pago {
       display: flex;
+      flex-direction: column;
       align-items: center;
-      margin-bottom: 10px;
       cursor: pointer;
+      padding: 10px;
+      border: 2px solid #005899;
+      border-radius: 10px;
+      transition: all 0.3s ease;
     }
-    .metodo-pago img { width: 40px; margin-right: 10px; }
+    .metodo-pago img { width: 50px; margin-bottom: 5px; }
+    .metodo-pago input { display: none; }
+    .metodo-pago:hover { background: #f1f9ff; }
+
     .instrucciones {
       background: #f1f9ff;
       border: 1px solid #005899;
@@ -151,6 +174,16 @@
       margin-top: 15px;
       display: none;
     }
+
+    /* Totales */
+    #total-seleccionados p { font-size: 25px; font-weight: 700; }
+
+    /* Botones */
+    .btn-primary, .btn-success {
+      background: #005899 !important;
+      border: none !important;
+    }
+    .btn-primary img { width: 20px; margin-right: 5px; }
 
     /* Footer */
     .footer-section {
@@ -165,14 +198,14 @@
   <!-- NAVBAR -->
   <nav class="navbar fixed-top navbar-expand-lg">
     <div class="container">
-      <a class="navbar-brand" href="#"><img src="https://qu.ax/OVJvi.png" alt="Tu Diamante" height="50"></a>
+      <a class="navbar-brand" href="#"><img src="https://qu.ax/OVJvi.png" alt="Tu Diamante"></a>
     </div>
   </nav>
 
   <!-- PREMIOS -->
   <section id="premios" class="container mt-5 pt-5">
-    <h2 class="text-center mb-4">🎁 PREMIOS</h2>
-    <div class="row">
+    <h2><img src="https://qu.ax/ABC123.png" alt="Logo Premios"> 🎁 PREMIOS</h2>
+    <div class="row mt-4">
       <div class="col-md-4">
         <div class="premio-card">
           <h4><img src="https://qu.ax/guAKy.png" alt="logo">Premio 1</h4>
@@ -196,7 +229,7 @@
 
   <!-- BOLETOS -->
   <section id="boletos" class="container mt-5">
-    <h2 class="text-center mb-3">🎟️ Lista de Boletos</h2>
+    <h2><img src="https://qu.ax/XYZ789.png" alt="Logo Lista"> 🎟️ Lista de Boletos</h2>
     <div class="progress-total"><div class="progress-actual" id="progress-bar"></div></div>
     <p class="progress-percent text-center" id="progress-text">0% Vendidos</p>
 
@@ -205,9 +238,9 @@
     </div>
 
     <div class="text-center mt-4">
-      <button class="btn btn-primary" onclick="prevPage()">⬅️ Anterior</button>
+      <button class="btn btn-primary" onclick="prevPage()"><img src="https://qu.ax/PREV.png"> Anterior</button>
       <span id="page-info" class="mx-3">Página 1 de 5</span>
-      <button class="btn btn-primary" onclick="nextPage()">Siguiente ➡️</button>
+      <button class="btn btn-primary" onclick="nextPage()"><img src="https://qu.ax/NEXT.png"> Siguiente</button>
     </div>
 
     <div id="total-seleccionados" class="text-center mt-3"></div>
@@ -216,7 +249,7 @@
   <!-- FORMULARIO -->
   <section id="formulario" class="container mt-5">
     <div class="form-card">
-      <h2 class="text-center mb-4">📝 Datos Personales</h2>
+      <h2><img src="https://qu.ax/DATOS.png" alt="Logo Datos"> 📝 Datos Personales</h2>
       <form onsubmit="return confirmarCompra(event)">
         <label>Nombre y Apellido</label>
         <input type="text" class="form-control" required>
@@ -233,26 +266,25 @@
         </div>
 
         <label>Método de Pago</label>
-        <div class="metodo-pago">
-          <input type="radio" name="pago" value="pago-movil" onclick="mostrarInstrucciones(this.value)">
-          <img src="https://play-lh.googleusercontent.com/1p1Y0PT24TZ9y6oYD0dkcqgg6BCGimhhH4XJ4lOUMj8m-VJ6FYEZbcMAHkYLhG7NDaY=w480-h960-rw" alt="Pago Móvil">
-          <span>Pago Móvil Venezuela</span>
-        </div>
-        <div class="metodo-pago">
-          <input type="radio" name="pago" value="banesco" onclick="mostrarInstrucciones(this.value)">
-          <img src="https://play-lh.googleusercontent.com/JP3qF5hwz0z7z-d2PEu21dhtdb7EBlC-5XKAuE0e2zLUAjWca-ePijvcb-nAQGAa9Ng=w480-h960-rw" alt="Banesco">
-          <span>Banesco</span>
-        </div>
-        <div class="metodo-pago">
-          <input type="radio" name="pago" value="binance" onclick="mostrarInstrucciones(this.value)">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/5/57/Binance_Logo.png" alt="Binance">
-          <span>Binance</span>
+        <div class="metodo-pago-container">
+          <div class="metodo-pago" onclick="mostrarInstrucciones('pago-movil')">
+            <img src="https://qu.ax/PM.png" alt="Pago Móvil">
+            <span>Pago Móvil</span>
+          </div>
+          <div class="metodo-pago" onclick="mostrarInstrucciones('banesco')">
+            <img src="https://qu.ax/BAN.png" alt="Banesco">
+            <span>Banesco</span>
+          </div>
+          <div class="metodo-pago" onclick="mostrarInstrucciones('binance')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/57/Binance_Logo.png" alt="Binance">
+            <span>Binance</span>
+          </div>
         </div>
 
-        <!-- Instrucciones dinámicas -->
         <div id="instrucciones" class="instrucciones"></div>
 
         <button class="btn btn-success btn-block mt-3" type="submit">Confirmar Compra</button>
+        <button class="btn btn-primary btn-block mt-3" type="button">Ver mis Boletos</button>
       </form>
     </div>
   </section>
@@ -260,10 +292,10 @@
   <!-- VERIFICADOR -->
   <section id="verificador" class="container mt-5">
     <div class="form-card">
-      <h2 class="text-center mb-4">🔎 Verificador de Boletos</h2>
+      <h2>🔎 Verificador de Boletos</h2>
       <form onsubmit="verificarBoletos(event)">
         <label>Ingresa tu número de teléfono o # de boleto</label>
-        <input type="text" id="inputVerificador" class="form-control" placeholder="Ej: 04128417632 o 0005" required>
+        <input type="text" id="inputVerificador" class="form-control" required>
         <button class="btn btn-primary btn-block mt-3" type="submit">Verificar</button>
       </form>
       <div id="resultadoVerificador" class="mt-4" style="display:none;">
@@ -297,13 +329,9 @@
 
     function toggleSeleccion(boleto) {
       if (boleto.vendido) return;
-
       const index = boletosSeleccionados.indexOf(boleto.numero);
-      if (index === -1) {
-        boletosSeleccionados.push(boleto.numero);
-      } else {
-        boletosSeleccionados.splice(index, 1);
-      }
+      if (index === -1) boletosSeleccionados.push(boleto.numero);
+      else boletosSeleccionados.splice(index, 1);
       mostrarBoletos();
       actualizarTotalSeleccionados();
     }
@@ -312,15 +340,9 @@
       const totalDiv = document.getElementById("total-seleccionados");
       const cantidad = boletosSeleccionados.length;
       const total = cantidad * PRECIO_BOLETO;
-
       if (cantidad > 0) {
-        totalDiv.innerHTML = `
-          <p><b>Boletos seleccionados:</b> ${cantidad}</p>
-          <p><b>Total a pagar:</b> ${total} Bs</p>
-        `;
-      } else {
-        totalDiv.innerHTML = "";
-      }
+        totalDiv.innerHTML = `<p>Boletos seleccionados: ${cantidad}</p><p>Total a pagar: ${total} Bs</p>`;
+      } else totalDiv.innerHTML = "";
     }
 
     function mostrarBoletos() {
@@ -328,20 +350,14 @@
       contenedor.innerHTML = "";
       let inicio = (paginaActual - 1) * POR_PAGINA;
       let fin = inicio + POR_PAGINA;
-
       boletos.slice(inicio, fin).forEach(boleto => {
         let div = document.createElement('div');
-        div.className = "ticket"
-          + (boleto.vendido ? " vendido" : "")
-          + (boletosSeleccionados.includes(boleto.numero) ? " seleccionado" : "");
+        div.className = "ticket" + (boleto.vendido ? " vendido" : "") + (boletosSeleccionados.includes(boleto.numero) ? " seleccionado" : "");
         div.textContent = boleto.numero;
         div.onclick = () => toggleSeleccion(boleto);
         contenedor.appendChild(div);
       });
-
-      document.getElementById('page-info').textContent =
-        `Página ${paginaActual} de ${Math.ceil(TOTAL_BOLETOS / POR_PAGINA)}`;
-
+      document.getElementById('page-info').textContent = `Página ${paginaActual} de ${Math.ceil(TOTAL_BOLETOS / POR_PAGINA)}`;
       actualizarProgreso();
     }
 
@@ -352,20 +368,9 @@
       document.getElementById('progress-text').textContent = porcentaje + "% Vendidos";
     }
 
-    function nextPage() {
-      if (paginaActual < TOTAL_BOLETOS / POR_PAGINA) {
-        paginaActual++;
-        mostrarBoletos();
-      }
-    }
-    function prevPage() {
-      if (paginaActual > 1) {
-        paginaActual--;
-        mostrarBoletos();
-      }
-    }
+    function nextPage() { if (paginaActual < TOTAL_BOLETOS / POR_PAGINA) { paginaActual++; mostrarBoletos(); } }
+    function prevPage() { if (paginaActual > 1) { paginaActual--; mostrarBoletos(); } }
 
-    // Validar compra mínima
     function confirmarCompra(event) {
       event.preventDefault();
       if (boletosSeleccionados.length < 3) {
@@ -376,7 +381,6 @@
       return true;
     }
 
-    // Instrucciones dinámicas
     function mostrarInstrucciones(metodo) {
       const box = document.getElementById("instrucciones");
       box.style.display = "block";
@@ -389,7 +393,6 @@
       }
     }
 
-    // Datos simulados para verificador
     let comprasSimuladas = [
       { nombre: "Juan Pérez", cedula: "V-12345678", telefono: "04128417632", boletos: ["0001", "0002", "0005"] },
       { nombre: "Iraima Jimenez", cedula: "V-87654321", telefono: "04125556677", boletos: ["0100", "0101", "0102", "0103"] },
@@ -401,32 +404,13 @@
       const valor = document.getElementById("inputVerificador").value.trim();
       const resultadoDiv = document.getElementById("resultadoVerificador");
       const detalleDiv = document.getElementById("detalleBoletos");
-
-      let compra = null;
-      compra = comprasSimuladas.find(c => c.telefono === valor);
-      if (!compra) {
-        comprasSimuladas.forEach(c => {
-          if (c.boletos.includes(valor)) {
-            compra = c;
-          }
-        });
-      }
-
+      let compra = comprasSimuladas.find(c => c.telefono === valor);
+      if (!compra) { comprasSimuladas.forEach(c => { if (c.boletos.includes(valor)) compra = c; }); }
       if (compra) {
-        detalleDiv.innerHTML = `
-          <p><b>Nombre:</b> ${compra.nombre}</p>
-          <p><b>Cédula:</b> ${compra.cedula}</p>
-          <p><b>Teléfono:</b> ${compra.telefono}</p>
-          <p><b>Boletos comprados:</b></p>
-          <div class="d-flex flex-wrap gap-2">
-            ${compra.boletos.map(num => `<div class="ticket">${num}</div>`).join("")}
-          </div>
-          <p class="mt-3"><b>Total Pagado:</b> ${compra.boletos.length * PRECIO_BOLETO} Bs</p>
-        `;
+        detalleDiv.innerHTML = `<p><b>Nombre:</b> ${compra.nombre}</p><p><b>Cédula:</b> ${compra.cedula}</p><p><b>Teléfono:</b> ${compra.telefono}</p><p><b>Boletos comprados:</b></p><div class="d-flex flex-wrap gap-2">${compra.boletos.map(num => `<div class="ticket">${num}</div>`).join("")}</div><p class="mt-3"><b>Total Pagado:</b> ${compra.boletos.length * PRECIO_BOLETO} Bs</p>`;
       } else {
         detalleDiv.innerHTML = `<p class="text-danger">❌ No se encontraron boletos asociados.</p>`;
       }
-
       resultadoDiv.style.display = "block";
     }
 
