@@ -14,11 +14,7 @@
   <!-- Fuente Poppins -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-  <!-- FontAwesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
   <style>
-    /* ========= ESTILO MINIMALISTA ========= */
     body {
       font-family: 'Poppins', sans-serif;
       background: #fff;
@@ -36,18 +32,10 @@
       color: #fff !important;
       font-weight: 600;
     }
-    .navbar a:hover {
-      color: #5d8aa6 !important;
-    }
 
     /* Secciones */
-    section {
-      padding: 60px 0;
-    }
-    h2 {
-      font-weight: 800;
-      color: #005899;
-    }
+    section { padding: 60px 0; }
+    h2 { font-weight: 800; color: #005899; }
 
     /* Premios */
     .premio-card {
@@ -62,26 +50,28 @@
       transform: translateY(-5px);
       box-shadow: 0 8px 16px rgba(0,0,0,0.2);
     }
-    .premio-card img {
-      width: 80px;
-      margin-bottom: 10px;
+    .premio-card img { width: 80px; margin-bottom: 10px; }
+    .premio-card p {
+      font-weight: 700;
+      font-size: 1.2rem;
+      margin-top: 10px;
     }
 
     /* Boletos */
     .boletos-container {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
       gap: 8px;
-      justify-content: center;
     }
     .chip {
       background: #fff;
       border: 2px solid #005899;
       color: #0a4975;
       font-weight: 600;
-      padding: 10px 15px;
-      border-radius: 20px;
+      padding: 8px;
+      border-radius: 15px;
       cursor: pointer;
+      text-align: center;
       transition: all 0.3s;
     }
     .chip:hover {
@@ -109,21 +99,29 @@
       width: 0;
       transition: width 1.5s ease-in-out;
     }
-    .progress-percent {
-      font-weight: 600;
-    }
+    .progress-percent { font-weight: 600; }
 
-    /* Verificador */
-    .verificador-card {
+    /* Formulario */
+    .form-card {
       background: #fff;
       border-radius: 15px;
       padding: 25px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
-    .comprobante-miniatura {
-      width: 100px;
+    .form-card label { font-weight: 600; color: #005899; }
+    .form-card input, .form-card select {
+      margin-bottom: 15px;
       border-radius: 8px;
-      margin-top: 10px;
+    }
+    .metodo-pago {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+    .metodo-pago img {
+      width: 40px;
+      margin-right: 10px;
     }
 
     /* Footer */
@@ -142,16 +140,6 @@
       <a class="navbar-brand" href="#">
         <img src="https://qu.ax/OVJvi.png" alt="Tu Diamante" height="50">
       </a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
-        <span class="fa fa-bars"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item"><a href="#premios" class="nav-link">Premios</a></li>
-          <li class="nav-item"><a href="#boletos" class="nav-link">Boletos</a></li>
-          <li class="nav-item"><a href="#verificador" class="nav-link">Verificador</a></li>
-        </ul>
-      </div>
     </div>
   </nav>
 
@@ -170,7 +158,7 @@
         <div class="premio-card">
           <img src="https://via.placeholder.com/80" alt="Premio 2">
           <h4>Premio 2</h4>
-          <p>10.000 Bs</p>
+          <p>20.000 Bs</p>
         </div>
       </div>
       <div class="col-md-4">
@@ -186,63 +174,78 @@
   <!-- BOLETOS -->
   <section id="boletos" class="container mt-5">
     <h2 class="text-center mb-3">🎟️ Lista de Boletos</h2>
-
-    <div class="progress-total">
-      <div class="progress-actual" id="progress-bar"></div>
-    </div>
+    <div class="progress-total"><div class="progress-actual" id="progress-bar"></div></div>
     <p class="progress-percent text-center" id="progress-text">0% Vendidos</p>
-
     <div id="boletos-list" class="boletos-container"></div>
-
-    <!-- Paginación -->
     <div class="text-center mt-4">
-      <button class="btn-large" onclick="prevPage()">⬅️ Anterior</button>
+      <button class="btn btn-primary" onclick="prevPage()">⬅️ Anterior</button>
       <span id="page-info" class="mx-3">Página 1 de 5</span>
-      <button class="btn-large" onclick="nextPage()">Siguiente ➡️</button>
+      <button class="btn btn-primary" onclick="nextPage()">Siguiente ➡️</button>
     </div>
   </section>
 
-  <!-- VERIFICADOR -->
-  <section id="verificador" class="container mt-5">
-    <div class="verificador-card text-center">
-      <h2>🔎 Verificador de Boletos</h2>
-      <p>Ingresa tu teléfono o número de boleto:</p>
-      <input type="text" class="form-control mb-3" placeholder="Ej: 0412xxxxxxx o #Boleto">
-      <button class="btn-large">Buscar</button>
+  <!-- FORMULARIO -->
+  <section id="formulario" class="container mt-5">
+    <div class="form-card">
+      <h2 class="text-center mb-4">📝 Datos Personales</h2>
+      <form>
+        <label>Nombre y Apellido</label>
+        <input type="text" class="form-control" required>
 
-      <div class="mt-4">
-        <h5>Tus Boletos</h5>
-        <div class="chip">0001</div>
-        <div class="chip">0002</div>
-        <h6 class="mt-3">Total Pagado: <strong>30 Bs</strong></h6>
-        <p>Comprobante:</p>
-        <img class="comprobante-miniatura" src="https://via.placeholder.com/100" alt="Comprobante">
-      </div>
+        <label>Cédula</label>
+        <input type="text" class="form-control" required>
+
+        <label>Teléfono</label>
+        <div class="input-group">
+          <select class="form-control" style="max-width:90px;">
+            <option value="+58">🇻🇪 +58</option>
+            <option value="+57">🇨🇴 +57</option>
+            <option value="+1">🇺🇸 +1</option>
+          </select>
+          <input type="tel" class="form-control" placeholder="Número de teléfono" required>
+        </div>
+
+        <label>Método de Pago</label>
+        <div class="metodo-pago">
+          <input type="radio" name="pago" value="pago-movil" required>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/1/16/Mobile_Banking_Icon.png" alt="Pago Móvil">
+          <span>Pago Móvil Venezuela</span>
+        </div>
+        <div class="metodo-pago">
+          <input type="radio" name="pago" value="banesco">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/0/0c/Banesco_logo.png" alt="Banesco">
+          <span>Banesco</span>
+        </div>
+        <div class="metodo-pago">
+          <input type="radio" name="pago" value="binance">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/5/57/Binance_Logo.png" alt="Binance">
+          <span>Binance</span>
+        </div>
+
+        <button class="btn btn-success btn-block mt-3">Confirmar Compra</button>
+      </form>
     </div>
   </section>
 
   <!-- FOOTER -->
-  <footer class="footer-section text-center">
+  <footer class="footer-section text-center mt-5">
     <p>© 2025 Tu Diamante - Todos los derechos reservados.</p>
   </footer>
 
-  <!-- Scripts -->
   <script>
     const TOTAL_BOLETOS = 10000;
     const POR_PAGINA = 2000;
     let paginaActual = 1;
     let boletos = [];
 
-    // Generar boletos
     function generarBoletos() {
       for (let i = 0; i < TOTAL_BOLETOS; i++) {
         let numero = i.toString().padStart(4, '0');
-        let vendido = Math.random() < 0.1; // 10% simulados como vendidos
+        let vendido = Math.random() < 0.1;
         boletos.push({ numero, vendido });
       }
     }
 
-    // Mostrar boletos de la página actual
     function mostrarBoletos() {
       const contenedor = document.getElementById('boletos-list');
       contenedor.innerHTML = "";
@@ -258,13 +261,12 @@
         contenedor.appendChild(div);
       });
 
-      document.getElementById('page-info').textContent =
+      document.getElementById('page-info').textContent = 
         `Página ${paginaActual} de ${Math.ceil(TOTAL_BOLETOS / POR_PAGINA)}`;
 
       actualizarProgreso();
     }
 
-    // Progreso
     function actualizarProgreso() {
       let vendidos = boletos.filter(b => b.vendido).length;
       let porcentaje = Math.round((vendidos / TOTAL_BOLETOS) * 100);
@@ -272,7 +274,6 @@
       document.getElementById('progress-text').textContent = porcentaje + "% Vendidos";
     }
 
-    // Navegación
     function nextPage() {
       if (paginaActual < TOTAL_BOLETOS / POR_PAGINA) {
         paginaActual++;
@@ -286,14 +287,8 @@
       }
     }
 
-    // Inicializar
     generarBoletos();
     mostrarBoletos();
   </script>
-
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </body>
 </html>
