@@ -7,10 +7,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #005899;
+      --primary: #0a4975;
       --secondary: #5d8aa6;
-      --accent: #0a4975;
       --price: 15;
+      --diamond-url: url('https://qu.ax/zcmdn.png');
     }
     body {
       font-family: 'Poppins', sans-serif;
@@ -22,16 +22,16 @@
       background: #fff;
       padding: 20px;
       text-align: center;
-      border-bottom: 8px solid var(--primary);
+      border-bottom: 4px solid var(--primary);
     }
     header img {
-      max-height: 130px;
+      max-height: 120px;
       display: block;
       margin: 0 auto 10px auto;
     }
     header h1 {
       font-size: 2.5rem;
-      color: var(--accent);
+      color: var(--primary);
       margin: 0;
     }
     .awards {
@@ -45,22 +45,23 @@
     }
     .awards h2 {
       text-align: center;
-      color: var(--accent);
+      color: var(--primary);
       margin-bottom: 20px;
     }
     .award-item {
       display: flex;
       align-items: center;
+      justify-content: flex-start;
       margin-bottom: 10px;
       font-size: 1.2rem;
-      color: var(--accent);
+      color: var(--primary);
     }
     .award-item img {
       width: 40px;
       height: 40px;
       margin-right: 10px;
     }
-    .tickets-section {
+    .tickets-section, .form-section, .verifier-section {
       width: 90%;
       max-width: 1200px;
       margin: 20px auto;
@@ -69,10 +70,10 @@
       padding: 20px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
-    .tickets-section h2 {
+    .tickets-section h2, .form-section h2, .verifier-section h2 {
       text-align: center;
       font-size: 2rem;
-      color: var(--accent);
+      color: var(--primary);
       margin-bottom: 20px;
     }
     .progress {
@@ -85,7 +86,7 @@
     }
     .progress-bar {
       height: 100%;
-      background: var(--accent);
+      background: var(--primary);
       width: 0;
       transition: width 2s ease;
     }
@@ -94,10 +95,10 @@
       grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
       gap: 5px;
       margin-bottom: 20px;
-      color: var(--accent);
+      color: var(--primary);
     }
     .ticket {
-      border: 1px solid var(--accent);
+      border: 1px solid var(--primary);
       padding: 5px;
       border-radius: 6px;
       text-align: center;
@@ -120,7 +121,7 @@
       right: 2px;
       width: 16px;
       height: 16px;
-      background: url('https://qu.ax/zcmdn.png');
+      background-image: var(--diamond-url);
       background-size: cover;
     }
     .pagination {
@@ -136,24 +137,32 @@
       border-radius: 5px;
       cursor: pointer;
     }
-    .actions {
-      text-align: center;
-      margin-top: 20px;
+    form label {
+      display: block;
+      margin: 10px 0 5px;
+      color: var(--primary);
     }
-    .actions button {
+    form input, form select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    form button {
       background: var(--primary);
       color: #fff;
-      padding: 10px 20px;
       border: none;
+      padding: 12px;
       border-radius: 5px;
       cursor: pointer;
-      margin: 5px;
     }
-    .total {
-      text-align: center;
-      font-size: 1.2rem;
-      margin-top: 10px;
-      color: var(--accent);
+    .result-box {
+      background: #f1f1f1;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 15px;
+      display: none;
     }
   </style>
 </head>
@@ -175,23 +184,52 @@
     <div class="progress">
       <div class="progress-bar" id="progressBar"></div>
     </div>
+    <button onclick="pickRandomTickets()">🎲 Generar 3 boletos aleatorios</button>
     <div class="tickets-grid" id="ticketsGrid"></div>
     <div class="pagination" id="pagination"></div>
-    <div class="actions">
-      <button onclick="pickRandomTickets()">🎲 Generar 3 boletos a la suerte</button>
-    </div>
-    <div class="total" id="totalDisplay">Total: 0 Bs</div>
+    <p><strong>Total seleccionado: <span id="totalSelected">0</span> boletos | Monto: <span id="totalAmount">0</span> Bs</strong></p>
+  </section>
+
+  <section class="form-section">
+    <h2>Datos Personales</h2>
+    <form id="buyerForm">
+      <label>Nombre y Apellido</label>
+      <input type="text" id="nombre" required>
+      <label>Cédula</label>
+      <input type="text" id="cedula" required>
+      <label>Teléfono</label>
+      <select id="codigo">
+        <option value="+58">🇻🇪 +58</option>
+        <option value="+57">🇨🇴 +57</option>
+        <option value="+1">🇺🇸 +1</option>
+      </select>
+      <input type="tel" id="telefono" required>
+      <label>Últimos 6 dígitos de referencia de pago</label>
+      <input type="text" id="referencia" maxlength="6" required>
+      <label>Subir comprobante</label>
+      <input type="file" id="voucher" accept="image/*">
+      <button type="button" onclick="confirmPurchase()">Confirmar</button>
+    </form>
+  </section>
+
+  <section class="verifier-section">
+    <h2>Verificador de Boletos</h2>
+    <label>Teléfono o #Boleto</label>
+    <input type="text" id="verifierInput">
+    <button onclick="verifyTickets()">Buscar</button>
+    <div class="result-box" id="resultBox"></div>
   </section>
 
   <script>
     const TOTAL_TICKETS = 10000;
     const PAGE_SIZE = 2000;
     const TOTAL_PAGES = TOTAL_TICKETS / PAGE_SIZE;
-    const PRICE = 15;
-
     let tickets = [];
+    let selectedTickets = [];
+    let buyers = {};
+
     for (let i = 0; i < TOTAL_TICKETS; i++) {
-      tickets.push({num: String(i).padStart(4,'0'), sold: false, selected: false});
+      tickets.push(String(i).padStart(4,'0'));
     }
     tickets = tickets.sort(() => Math.random() - 0.5);
 
@@ -203,17 +241,31 @@
       const end = start + PAGE_SIZE;
       const grid = document.getElementById('ticketsGrid');
       grid.innerHTML = '';
-      tickets.slice(start, end).forEach((t, idx) => {
+      tickets.slice(start, end).forEach(num => {
         const div = document.createElement('div');
         div.className = 'ticket';
-        if (t.sold) div.classList.add('sold');
-        if (t.selected) div.classList.add('selected');
-        div.innerText = t.num;
-        div.onclick = () => toggleSelect(start + idx);
+        div.innerText = num;
+        div.onclick = () => toggleTicket(num, div);
         grid.appendChild(div);
       });
       renderPagination();
       animateProgress();
+    }
+
+    function toggleTicket(num, element) {
+      if (selectedTickets.includes(num)) {
+        selectedTickets = selectedTickets.filter(t => t !== num);
+        element.classList.remove('selected');
+      } else {
+        selectedTickets.push(num);
+        element.classList.add('selected');
+      }
+      updateTotal();
+    }
+
+    function updateTotal() {
+      document.getElementById('totalSelected').innerText = selectedTickets.length;
+      document.getElementById('totalAmount').innerText = selectedTickets.length * 15;
     }
 
     function renderPagination() {
@@ -227,39 +279,73 @@
       }
     }
 
-    function toggleSelect(index) {
-      if (tickets[index].sold) return;
-      tickets[index].selected = !tickets[index].selected;
-      const selectedCount = tickets.filter(t => t.selected).length;
-      if (selectedCount < 3) {
-        alert('Compra mínima 3 boletos.');
-        tickets[index].selected = false;
-      }
-      updateTotal();
-      renderTickets(currentPage);
-    }
-
-    function updateTotal() {
-      const selectedCount = tickets.filter(t => t.selected).length;
-      document.getElementById('totalDisplay').innerText = 'Total: ' + (selectedCount * PRICE) + ' Bs';
+    function animateProgress() {
+      const sold = Math.floor(Math.random() * TOTAL_TICKETS);
+      const percent = (sold / TOTAL_TICKETS) * 100;
+      document.getElementById('progressBar').style.width = percent + '%';
     }
 
     function pickRandomTickets() {
-      let available = tickets.filter(t => !t.sold && !t.selected);
-      if (available.length < 3) return;
-      for (let i = 0; i < 3; i++) {
-        const rnd = Math.floor(Math.random() * available.length);
-        available[rnd].selected = true;
-        available.splice(rnd,1);
+      if (selectedTickets.length < 3) {
+        selectedTickets = [];
       }
+      while (selectedTickets.length < 3) {
+        const random = tickets[Math.floor(Math.random() * tickets.length)];
+        if (!selectedTickets.includes(random)) {
+          selectedTickets.push(random);
+        }
+      }
+      updateTotal();
+      alert("Se seleccionaron 3 boletos aleatorios: " + selectedTickets.join(", "));
+    }
+
+    function confirmPurchase() {
+      if (selectedTickets.length < 3) {
+        alert("Compra mínima 3 boletos");
+        return;
+      }
+      const nombre = document.getElementById('nombre').value;
+      const cedula = document.getElementById('cedula').value;
+      const codigo = document.getElementById('codigo').value;
+      const telefono = document.getElementById('telefono').value;
+      const referencia = document.getElementById('referencia').value;
+      if (!nombre || !cedula || !telefono || !referencia) {
+        alert("Por favor completa todos los campos");
+        return;
+      }
+      buyers[codigo+telefono] = {
+        nombre, cedula, telefono: codigo+telefono, referencia, tickets: [...selectedTickets]
+      };
+      alert("Compra confirmada para " + nombre + " con boletos: " + selectedTickets.join(", "));
+      selectedTickets = [];
       updateTotal();
       renderTickets(currentPage);
     }
 
-    function animateProgress() {
-      const sold = tickets.filter(t => t.sold).length;
-      const percent = (sold / TOTAL_TICKETS) * 100;
-      document.getElementById('progressBar').style.width = percent + '%';
+    function verifyTickets() {
+      const input = document.getElementById('verifierInput').value;
+      let result = null;
+      if (buyers[input]) {
+        result = buyers[input];
+      } else {
+        for (let key in buyers) {
+          if (buyers[key].tickets.includes(input)) {
+            result = buyers[key];
+            break;
+          }
+        }
+      }
+      const box = document.getElementById('resultBox');
+      if (result) {
+        box.style.display = 'block';
+        box.innerHTML = `<strong>Nombre:</strong> ${result.nombre}<br>
+                         <strong>Cédula:</strong> ${result.cedula}<br>
+                         <strong>Teléfono:</strong> ${result.telefono}<br>
+                         <strong>Boletos:</strong> ${result.tickets.join(", ")}`;
+      } else {
+        box.style.display = 'block';
+        box.innerHTML = 'No se encontraron boletos para esa búsqueda';
+      }
     }
 
     renderTickets(1);
