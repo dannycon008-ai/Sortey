@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>🎟️ Rifa Premium 1.0 | Tu Marca</title>
+  <title>🎟️ Rifa Premium 2.0 | Tu Marca</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Bootstrap 5 -->
@@ -16,64 +16,27 @@
 
   <!-- Estilos personalizados -->
   <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: #f7f9fc;
-    }
+    body { font-family: 'Poppins', sans-serif; background: #f7f9fc; }
 
-    /* Navbar */
-    .navbar {
-      background: #005899;
-      box-shadow: 0 3px 10px rgba(0,0,0,.15);
-    }
-    .navbar a {
-      color: #fff !important;
-      font-weight: 600;
-    }
-    .navbar a:hover {
-      color: #5d8aa6 !important;
-    }
+    .navbar { background: #005899; box-shadow: 0 3px 10px rgba(0,0,0,.15); }
+    .navbar a { color: #fff !important; font-weight: 600; }
+    .navbar a:hover { color: #5d8aa6 !important; }
 
-    /* Header */
-    .header {
-      background: linear-gradient(to right, #005899, #0a4975);
-      color: #fff;
-      padding: 80px 0;
-    }
-    .header h1 {
-      font-size: 2.5rem;
-      font-weight: 800;
-    }
+    .header { background: linear-gradient(to right, #005899, #0a4975); color: #fff; padding: 80px 0; }
+    .header h1 { font-size: 2.5rem; font-weight: 800; }
 
-    /* Cards */
-    .card-custom {
-      border: none;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,.1);
-      transition: transform .3s;
-    }
-    .card-custom:hover {
-      transform: translateY(-5px);
-    }
+    .card-custom { border: none; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,.1); transition: transform .3s; }
+    .card-custom:hover { transform: translateY(-5px); }
 
-    /* Botones */
-    .btn-main {
-      background: #005899;
-      color: #fff;
-      border-radius: 8px;
-      font-weight: 600;
-    }
-    .btn-main:hover {
-      background: #5d8aa6;
-    }
+    .btn-main { background: #005899; color: #fff; border-radius: 8px; font-weight: 600; }
+    .btn-main:hover { background: #5d8aa6; }
 
-    /* Footer */
-    .footer {
-      background: #0a4975;
-      color: #fff;
-      padding: 20px 0;
-      text-align: center;
-    }
+    .footer { background: #0a4975; color: #fff; padding: 20px 0; text-align: center; }
+
+    /* Boletos */
+    #boletosLista { max-height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; border-radius: 8px; background: #fff; }
+    #boletosLista span { display: inline-block; margin: 4px; padding: 5px 10px; border-radius: 6px; background: #005899; color: #fff; font-weight: 600; }
+    #boletosLista span:hover { background: #5d8aa6; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -89,7 +52,7 @@
         <ul class="navbar-nav ms-auto">
           <li class="nav-item"><a class="nav-link" href="#premios">Premios</a></li>
           <li class="nav-item"><a class="nav-link" href="#boletos">Boletos</a></li>
-          <li class="nav-item"><a class="nav-link" href="#faq">Preguntas</a></li>
+          <li class="nav-item"><a class="nav-link" href="#pagos">Pagos</a></li>
           <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
         </ul>
       </div>
@@ -99,9 +62,9 @@
   <!-- Header -->
   <section class="header text-center">
     <div class="container">
-      <h1>Rifa Premium 1.0</h1>
-      <p class="lead">Compra tu boleto y participa por premios increíbles 🎁</p>
-      <a href="#boletos" class="btn btn-main btn-lg mt-3">Ver Boletos</a>
+      <h1>Rifa Premium 2.0</h1>
+      <p class="lead">Participa con tu boleto y gana premios increíbles 🎁</p>
+      <a href="#boletos" class="btn btn-main btn-lg mt-3">Comprar Boletos</a>
     </div>
   </section>
 
@@ -119,7 +82,7 @@
             </div>
           </div>
         </div>
-        <!-- Puedes duplicar más premios aquí -->
+        <!-- Más premios -->
       </div>
     </div>
   </section>
@@ -128,35 +91,57 @@
   <section id="boletos" class="py-5 bg-light">
     <div class="container text-center">
       <h2 class="mb-4">🎟️ Comprar Boletos</h2>
-      <p>Selecciona cuántos boletos quieres</p>
+      
+      <!-- Selector de cantidad -->
       <div class="input-group w-50 mx-auto">
         <button class="btn btn-main" id="btnMinus">-</button>
         <input type="number" class="form-control text-center" id="ticketQty" value="1" min="1" max="100">
         <button class="btn btn-main" id="btnPlus">+</button>
       </div>
       <h3 class="mt-3">Total: <span id="montoTotal">$5</span></h3>
+
+      <!-- Lista de boletos -->
+      <div class="mt-4">
+        <h4>Lista de boletos disponibles</h4>
+        <div id="boletosLista"></div>
+      </div>
+
       <button class="btn btn-main btn-lg mt-3">Confirmar Compra</button>
     </div>
   </section>
 
-  <!-- FAQ -->
-  <section id="faq" class="py-5">
-    <div class="container">
-      <h2 class="text-center mb-4">❓ Preguntas Frecuentes</h2>
-      <div class="accordion" id="faqAccordion">
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#faq1">
-              ¿Cómo compro un boleto?
-            </button>
-          </h2>
-          <div id="faq1" class="accordion-collapse collapse show">
-            <div class="accordion-body">
-              Selecciona la cantidad de boletos, completa tus datos y sube el comprobante de pago.
-            </div>
+  <!-- Pagos -->
+  <section id="pagos" class="py-5">
+    <div class="container text-center">
+      <h2 class="mb-4">💳 Métodos de Pago</h2>
+      <div class="row g-4">
+        
+        <div class="col-md-4">
+          <div class="card card-custom p-3">
+            <h5>Pago Móvil</h5>
+            <p><b>Banco:</b> Mercantil</p>
+            <p><b>Teléfono:</b> 0426-1234567</p>
+            <p><b>Cédula:</b> 12.345.678</p>
           </div>
         </div>
-        <!-- Puedes agregar más preguntas -->
+        
+        <div class="col-md-4">
+          <div class="card card-custom p-3">
+            <h5>Transferencia</h5>
+            <p><b>Banco:</b> Venezuela</p>
+            <p><b>Cuenta:</b> 0102-0123-1234567890</p>
+            <p><b>Titular:</b> Juan Pérez</p>
+          </div>
+        </div>
+        
+        <div class="col-md-4">
+          <div class="card card-custom p-3">
+            <h5>Binance</h5>
+            <p><b>Correo:</b> ejemplo@gmail.com</p>
+            <p><b>Red:</b> USDT (BEP20)</p>
+          </div>
+        </div>
+
       </div>
     </div>
   </section>
@@ -186,8 +171,10 @@
     const btnPlus = document.getElementById("btnPlus");
     const ticketQty = document.getElementById("ticketQty");
     const montoTotal = document.getElementById("montoTotal");
+    const boletosLista = document.getElementById("boletosLista");
     const precio = 5; // precio por boleto
 
+    // Actualizar total
     function updateTotal() {
       const cantidad = parseInt(ticketQty.value) || 1;
       montoTotal.textContent = "$" + (cantidad * precio);
@@ -204,6 +191,26 @@
     });
 
     ticketQty.addEventListener("input", updateTotal);
+
+    // Generar lista de boletos en orden aleatorio
+    function generarBoletos() {
+      let boletos = [];
+      for (let i = 0; i <= 9999; i++) {
+        boletos.push(i.toString().padStart(4, "0"));
+      }
+      // Mezclar aleatoriamente
+      boletos.sort(() => Math.random() - 0.5);
+
+      // Mostrar en el cuadro
+      boletosLista.innerHTML = "";
+      boletos.forEach(boleto => {
+        const span = document.createElement("span");
+        span.textContent = boleto;
+        boletosLista.appendChild(span);
+      });
+    }
+
+    generarBoletos();
   </script>
 </body>
 </html>
