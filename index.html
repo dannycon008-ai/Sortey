@@ -11,201 +11,70 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: #fff;
-      color: #0a4975;
-    }
+    body { font-family: 'Poppins', sans-serif; background: #fff; color: #0a4975; }
 
-    /* Navbar con franja superior finita (#000f35 -> blanco -> #000f35) */
+    /* Navbar */
     .navbar {
-      /* fondo base blanco para que el texto "Premios" respire debajo */
       background-color: #ffffff;
-
-      /* franja finita arriba con el degradado solicitado */
       background-image: linear-gradient(to right, #000f35, #ffffff, #000f35);
       background-repeat: no-repeat;
-      background-size: 100% 24px;   /* más finito */
+      background-size: 100% 24px;
       background-position: top center;
-
       box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
-    .navbar a {
-      color: #fff !important; /* (no hay texto en la navbar, solo el logo; se respeta tu regla) */
-      font-weight: 600;
-    }
     .navbar img {
-      height: 100px;          /* <-- pedido: 100px */
-      width: 100px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin: 10px 0;         /* margen para que no choque ni empuje el contenido */
-      display: block;
+      height: 100px; width: 100px; border-radius: 50%; object-fit: cover;
+      margin: 10px 0; display: block;
     }
 
     section { padding: 60px 0; }
     h2 { font-weight: 800; color: #005899; display: flex; align-items: center; justify-content: center; gap: 10px; }
 
-    /* Premios */
-    .premio-card {
-      background: #fff;
-      border-radius: 15px;
-      padding: 20px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      text-align: center;
-    }
-    .premio-card img {
-      width: 40px;
-      margin-right: 8px;
-    }
-    .premio-card h4 {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      font-weight: 700;
-      font-size: 1.3rem;
-    }
-    .premio-card p {
-      font-weight: 700;
-      font-size: 20px;
-      margin-top: 10px;
-    }
-
     /* Boletos */
     .tickets-container {
-      border: 2px solid #005899;
-      border-radius: 12px;
-      padding: 20px;
-      margin: 20px auto;
-      max-width: 1200px;
-      max-height: 600px;
-      overflow-y: auto;
-      background: #fff;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      -webkit-overflow-scrolling: touch; /* iOS scroll suave */
+      border: 2px solid #005899; border-radius: 12px; padding: 20px;
+      margin: 20px auto; max-width: 1200px; max-height: 600px;
+      overflow-y: auto; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
     .tickets-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-      gap: 10px;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 10px;
     }
     .ticket {
-      border: 2px solid #005899;
-      border-radius: 20px;
-      padding: 8px;
-      font-weight: 600;
-      color: #005899;
-      text-align: center;
-      background: #fff;
-      cursor: pointer;
-      transition: all 0.2s ease-in-out;
-      position: relative;
-      will-change: transform;   /* optimización iOS */
-      transform: translateZ(0); /* fuerza GPU */
+      border: 2px solid #005899; border-radius: 20px; padding: 8px;
+      font-weight: 600; color: #005899; text-align: center; background: #fff;
+      cursor: pointer; transition: all 0.2s ease-in-out; position: relative;
     }
-    .ticket:hover {
-      background: #5d8aa6;
-      color: #fff;
-      -webkit-transform: translateY(-2px); /* Safari */
-      transform: translateY(-2px);
-      -webkit-box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    }
-    .ticket.vendido {
-      background: #f8f8f8;
-      border-color: #ccc;
-      cursor: not-allowed;
-    }
+    .ticket:hover { background: #5d8aa6; color: #fff; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+    .ticket.vendido { background: #f8f8f8; border-color: #ccc; cursor: not-allowed; }
     .ticket.vendido::after {
-      content: "";
-      position: absolute;
-      top: -5px;
-      right: -5px;
-      width: 20px;
-      height: 20px;
-      background-image: url("https://qu.ax/zcmdn.png");
-      background-size: cover;
-      background-repeat: no-repeat;
+      content: ""; position: absolute; top: -5px; right: -5px;
+      width: 20px; height: 20px; background-image: url("https://qu.ax/zcmdn.png");
+      background-size: cover; background-repeat: no-repeat;
     }
-    .ticket.seleccionado {
-      background: #005899 !important;
-      color: #fff !important;
-      border-color: #003f66 !important;
-    }
+    .ticket.seleccionado { background: #005899 !important; color: #fff !important; }
 
     /* Barra progreso */
-    .progress-total {
-      background: #eee;
-      border-radius: 20px;
-      height: 25px;
-      overflow: hidden;
-      margin-bottom: 15px;
-    }
-    .progress-actual {
-      background: linear-gradient(90deg, #005899, #0a4975);
-      height: 100%;
-      width: 0;
-      transition: width 1.5s ease-in-out;
-    }
+    .progress-total { background: #eee; border-radius: 20px; height: 25px; overflow: hidden; margin-bottom: 15px; }
+    .progress-actual { background: linear-gradient(90deg, #005899, #0a4975); height: 100%; width: 0; transition: width 1.5s ease-in-out; }
     .progress-percent { font-weight: 600; }
 
+    /* Buscador */
+    #buscador-boletos { max-width: 400px; margin: 15px auto; display: flex; align-items: center; }
+    #buscador-boletos input { flex: 1; border-radius: 8px 0 0 8px; }
+    #buscador-boletos button { border-radius: 0 8px 8px 0; }
+
     /* Formulario */
-    .form-card {
-      background: #fff;
-      border-radius: 15px;
-      padding: 25px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-    .form-card h2 img {
-      width: 40px;
-    }
+    .form-card { background: #fff; border-radius: 15px; padding: 25px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
     .form-card label { font-weight: 600; color: #005899; }
     .form-card input, .form-card select { margin-bottom: 15px; border-radius: 8px; }
-    .metodo-pago-container {
-      display: flex;
-      gap: 20px;
-      justify-content: center;
-    }
-    .metodo-pago {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      cursor: pointer;
-      padding: 10px;
-      border: 2px solid #005899;
-      border-radius: 10px;
-      transition: all 0.3s ease;
-    }
+    .metodo-pago-container { display: flex; gap: 20px; justify-content: center; }
+    .metodo-pago { display: flex; flex-direction: column; align-items: center; cursor: pointer; padding: 10px; border: 2px solid #005899; border-radius: 10px; transition: all 0.3s ease; }
     .metodo-pago img { width: 50px; margin-bottom: 5px; }
-    .metodo-pago input { display: none; }
     .metodo-pago:hover { background: #f1f9ff; }
+    .instrucciones { background: #f1f9ff; border: 1px solid #005899; border-radius: 10px; padding: 15px; margin-top: 15px; display: none; }
 
-    .instrucciones {
-      background: #f1f9ff;
-      border: 1px solid #005899;
-      border-radius: 10px;
-      padding: 15px;
-      margin-top: 15px;
-      display: none;
-    }
-
-    /* Totales */
     #total-seleccionados p { font-size: 25px; font-weight: 700; }
-
-    /* Botones */
-    .btn-primary, .btn-success {
-      background: #005899 !important;
-      border: none !important;
-    }
-    .btn-primary img { width: 20px; margin-right: 5px; }
-
-    /* Footer */
-    .footer-section {
-      background: #005899;
-      color: #fff;
-      padding: 20px;
-    }
+    .btn-primary, .btn-success { background: #005899 !important; border: none !important; }
   </style>
 </head>
 <body>
@@ -217,54 +86,39 @@
     </div>
   </nav>
 
-  <!-- PREMIOS -->
-  <section id="premios" class="container mt-5 pt-5">
-    <h2>🎁 PREMIOS</h2>
-    <div class="row mt-4">
-      <div class="col-md-4">
-        <div class="premio-card">
-          <h4><img src="https://qu.ax/guAKy.png" alt="logo">Premio 1</h4>
-          <p>10.000 Bs</p>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="premio-card">
-          <h4><img src="https://qu.ax/LVLbo.png" alt="logo">Premio 2</h4>
-          <p>15.000 Bs</p>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="premio-card">
-          <h4><img src="https://qu.ax/DygfK.png" alt="logo">Premio 3</h4>
-          <p>30.000 Bs</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- BOLETOS -->
-  <section id="boletos" class="container mt-5">
+  <section id="boletos" class="container mt-5 pt-5">
     <h2>🎟️ Lista de Boletos</h2>
     <div class="progress-total"><div class="progress-actual" id="progress-bar"></div></div>
     <p class="progress-percent text-center" id="progress-text">0% Vendidos</p>
+
+    <!-- Buscador -->
+    <div id="buscador-boletos">
+      <input type="text" id="inputBuscarBoleto" class="form-control" placeholder="Buscar boleto...">
+      <button class="btn btn-primary" onclick="buscarBoleto()">🔍</button>
+    </div>
 
     <div class="tickets-container">
       <div id="boletos-list" class="tickets-grid"></div>
     </div>
 
     <div class="text-center mt-4">
-      <button class="btn btn-primary" onclick="prevPage()"><img src="https://qu.ax/TaLQg.png"> Anterior</button>
+      <button class="btn btn-primary" onclick="prevPage()">⬅️ Anterior</button>
       <span id="page-info" class="mx-3">Página 1 de 5</span>
-      <button class="btn btn-primary" onclick="nextPage()"><img src="https://qu.ax/ymYjd.png"> Siguiente</button>
+      <button class="btn btn-primary" onclick="nextPage()">Siguiente ➡️</button>
     </div>
 
     <div id="total-seleccionados" class="text-center mt-3"></div>
+
+    <div class="text-center mt-3">
+      <button class="btn btn-success" onclick="elegirSuerte()">🎲 Elegir a la suerte (4 boletos)</button>
+    </div>
   </section>
 
   <!-- FORMULARIO -->
   <section id="formulario" class="container mt-5">
     <div class="form-card">
-      <h2><img src="https://qu.ax/rGfpx.png" alt="Logo Datos">Datos Personales</h2>
+      <h2>📝 Datos Personales</h2>
       <form onsubmit="return confirmarCompra(event)">
         <label>Nombre y Apellido</label>
         <input type="text" class="form-control" required>
@@ -272,10 +126,28 @@
         <input type="text" class="form-control" required>
         <label>Teléfono</label>
         <div class="input-group">
-          <select class="form-control" style="max-width:90px;">
-            <option value="+58">🇻🇪 +58</option>
-            <option value="+57">🇨🇴 +57</option>
+          <select class="form-control" style="max-width:120px;">
+            <option value="+1">🇩🇴 +1</option>
             <option value="+1">🇺🇸 +1</option>
+            <option value="+1">🇵🇷 +1</option>
+            <option value="+34">🇪🇸 +34</option>
+            <option value="+502">🇬🇹 +502</option>
+            <option value="+503">🇸🇻 +503</option>
+            <option value="+504">🇭🇳 +504</option>
+            <option value="+505">🇳🇮 +505</option>
+            <option value="+506">🇨🇷 +506</option>
+            <option value="+507">🇵🇦 +507</option>
+            <option value="+51">🇵🇪 +51</option>
+            <option value="+52">🇲🇽 +52</option>
+            <option value="+53">🇨🇺 +53</option>
+            <option value="+54">🇦🇷 +54</option>
+            <option value="+56">🇨🇱 +56</option>
+            <option value="+57">🇨🇴 +57</option>
+            <option value="+58" selected>🇻🇪 +58</option>
+            <option value="+591">🇧🇴 +591</option>
+            <option value="+593">🇪🇨 +593</option>
+            <option value="+595">🇵🇾 +595</option>
+            <option value="+598">🇺🇾 +598</option>
           </select>
           <input type="tel" class="form-control" placeholder="Número de teléfono" required>
         </div>
@@ -298,41 +170,22 @@
 
         <div id="instrucciones" class="instrucciones"></div>
 
+        <label>Subir comprobante de pago</label>
+        <input type="file" class="form-control-file" required>
+
         <button class="btn btn-success btn-block mt-3" type="submit">Confirmar Compra</button>
-        <button class="btn btn-primary btn-block mt-3" type="button">Ver mis Boletos</button>
       </form>
     </div>
   </section>
-
-  <!-- VERIFICADOR -->
-  <section id="verificador" class="container mt-5">
-    <div class="form-card">
-      <h2>🔎 Verificador de Boletos</h2>
-      <form onsubmit="verificarBoletos(event)">
-        <label>Ingresa tu número de teléfono o # de boleto</label>
-        <input type="text" id="inputVerificador" class="form-control" required>
-        <button class="btn btn-primary btn-block mt-3" type="submit">Verificar</button>
-      </form>
-      <div id="resultadoVerificador" class="mt-4" style="display:none;">
-        <h5>📋 Resultados:</h5>
-        <div id="detalleBoletos"></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer class="footer-section text-center mt-5">
-    <p>© 2025 Tu Diamante - Todos los derechos reservados.</p>
-  </footer>
 
   <!-- JS -->
   <script>
     const TOTAL_BOLETOS = 10000;
     const POR_PAGINA = 2000;
+    const PRECIO_BOLETO = 15;
     let paginaActual = 1;
     let boletos = [];
     let boletosSeleccionados = [];
-    const PRECIO_BOLETO = 15;
 
     function generarBoletos() {
       for (let i = 0; i < TOTAL_BOLETOS; i++) {
@@ -365,22 +218,14 @@
       contenedor.innerHTML = "";
       let inicio = (paginaActual - 1) * POR_PAGINA;
       let fin = inicio + POR_PAGINA;
-      let fragment = document.createDocumentFragment();
-
-      boletos.slice(inicio, fin).forEach((boleto, i) => {
-        requestAnimationFrame(() => {
-          let div = document.createElement('div');
-          div.className = "ticket" + (boleto.vendido ? " vendido" : "") +
-            (boletosSeleccionados.includes(boleto.numero) ? " seleccionado" : "");
-          div.textContent = boleto.numero;
-          div.onclick = () => toggleSeleccion(boleto);
-          fragment.appendChild(div);
-          if (i === (fin - inicio - 1)) contenedor.appendChild(fragment);
-        });
+      boletos.slice(inicio, fin).forEach(boleto => {
+        let div = document.createElement('div');
+        div.className = "ticket" + (boleto.vendido ? " vendido" : "") + (boletosSeleccionados.includes(boleto.numero) ? " seleccionado" : "");
+        div.textContent = boleto.numero;
+        div.onclick = () => toggleSeleccion(boleto);
+        contenedor.appendChild(div);
       });
-
-      document.getElementById('page-info').textContent =
-        `Página ${paginaActual} de ${Math.ceil(TOTAL_BOLETOS / POR_PAGINA)}`;
+      document.getElementById('page-info').textContent = `Página ${paginaActual} de ${Math.ceil(TOTAL_BOLETOS / POR_PAGINA)}`;
       actualizarProgreso();
     }
 
@@ -391,18 +236,8 @@
       document.getElementById('progress-text').textContent = porcentaje + "% Vendidos";
     }
 
-    function nextPage() {
-      if (paginaActual < TOTAL_BOLETOS / POR_PAGINA) {
-        paginaActual++;
-        mostrarBoletos();
-      }
-    }
-    function prevPage() {
-      if (paginaActual > 1) {
-        paginaActual--;
-        mostrarBoletos();
-      }
-    }
+    function nextPage() { if (paginaActual < TOTAL_BOLETOS / POR_PAGINA) { paginaActual++; mostrarBoletos(); } }
+    function prevPage() { if (paginaActual > 1) { paginaActual--; mostrarBoletos(); } }
 
     function confirmarCompra(event) {
       event.preventDefault();
@@ -417,38 +252,34 @@
     function mostrarInstrucciones(metodo) {
       const box = document.getElementById("instrucciones");
       box.style.display = "block";
-      if (metodo === "pago-movil") {
-        box.innerHTML = "<h5>📱 Pago Móvil Venezuela</h5><p><b>Banco:</b> 0102<br><b>Teléfono:</b> 0424-8417632<br><b>Cédula:</b> V-31490382<br><b>Titular:</b> Angel Zabala</p>";
-      } else if (metodo === "banesco") {
-        box.innerHTML = "<h5>🏦 Banesco</h5><p><b>Cuenta:</b> 0134<br><b>Titular:</b> Iraima Jimenez</p>";
-      } else if (metodo === "binance") {
-        box.innerHTML = "<h5>💰 Binance</h5><p><b>Wallet:</b> angelitojavier277@gmail.com</p>";
+      if (metodo === "pago-movil") box.innerHTML = "<h5>📱 Pago Móvil Venezuela</h5><p><b>Banco:</b> 0102<br><b>Teléfono:</b> 0424-8417632<br><b>Cédula:</b> V-31490382<br><b>Titular:</b> Angel Zabala</p>";
+      else if (metodo === "banesco") box.innerHTML = "<h5>🏦 Banesco</h5><p><b>Cuenta:</b> 0134<br><b>Titular:</b> Iraima Jimenez</p>";
+      else if (metodo === "binance") box.innerHTML = "<h5>💰 Binance</h5><p><b>Wallet:</b> angelitojavier277@gmail.com</p>";
+    }
+
+    function buscarBoleto() {
+      const valor = document.getElementById("inputBuscarBoleto").value.trim();
+      if (!valor) return;
+      const encontrado = boletos.find(b => b.numero === valor);
+      if (encontrado) {
+        paginaActual = Math.floor(parseInt(encontrado.numero) / POR_PAGINA) + 1;
+        mostrarBoletos();
+        alert("✅ Boleto " + valor + " encontrado en la página " + paginaActual);
+      } else {
+        alert("❌ Boleto no encontrado");
       }
     }
 
-    let comprasSimuladas = [
-      { nombre: "Juan Pérez", cedula: "V-12345678", telefono: "04128417632", boletos: ["0001", "0002", "0005"] },
-      { nombre: "Iraima Jimenez", cedula: "V-87654321", telefono: "04125556677", boletos: ["0100", "0101", "0102", "0103"] },
-      { nombre: "Angel Zabala", cedula: "V-31490382", telefono: "04129998877", boletos: ["0500"] }
-    ];
-
-    function verificarBoletos(event) {
-      event.preventDefault();
-      const valor = document.getElementById("inputVerificador").value.trim();
-      const resultadoDiv = document.getElementById("resultadoVerificador");
-      const detalleDiv = document.getElementById("detalleBoletos");
-      let compra = comprasSimuladas.find(c => c.telefono === valor);
-      if (!compra) {
-        comprasSimuladas.forEach(c => {
-          if (c.boletos.includes(valor)) compra = c;
-        });
+    function elegirSuerte() {
+      boletosSeleccionados = [];
+      const disponibles = boletos.filter(b => !b.vendido);
+      for (let i = 0; i < 4 && disponibles.length > 0; i++) {
+        const randomIndex = Math.floor(Math.random() * disponibles.length);
+        boletosSeleccionados.push(disponibles[randomIndex].numero);
+        disponibles.splice(randomIndex, 1);
       }
-      if (compra) {
-        detalleDiv.innerHTML = `<p><b>Nombre:</b> ${compra.nombre}</p><p><b>Cédula:</b> ${compra.cedula}</p><p><b>Teléfono:</b> ${compra.telefono}</p><p><b>Boletos comprados:</b></p><div class="d-flex flex-wrap gap-2">${compra.boletos.map(num => `<div class="ticket">${num}</div>`).join("")}</div><p class="mt-3"><b>Total Pagado:</b> ${compra.boletos.length * PRECIO_BOLETO} Bs</p>`;
-      } else {
-        detalleDiv.innerHTML = `<p class="text-danger">❌ No se encontraron boletos asociados.</p>`;
-      }
-      resultadoDiv.style.display = "block";
+      mostrarBoletos();
+      actualizarTotalSeleccionados();
     }
 
     generarBoletos();
