@@ -85,6 +85,33 @@
 
     /* Footer */
     .footer-section { background: #005899; color: #fff; padding: 20px; }
+
+    #boletos-elegidos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 10px;
+}
+#boletos-elegidos .ticket {
+  min-width: 60px;
+  padding: 8px 22px 8px 8px;
+  position: relative;
+}
+#boletos-elegidos .remove-btn {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: red;
+  color: white;
+  border-radius: 50%;
+  border: none;
+  font-size: 12px;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
   </style>
 </head>
 <body>
@@ -480,21 +507,33 @@
       res.style.display = "block";
     }
 
-    /* ---- Total seleccionado ---- */
-    function actualizarTotal(){
-      const box = document.getElementById("total-seleccionados");
-      const list = document.getElementById("boletos-elegidos");
-      const c = boletosSeleccionados.length;
-      const total = c * PRECIO_BOLETO;
+   function actualizarTotalSeleccionados() {
+  const t = document.getElementById("total-seleccionados");
+  const d = document.getElementById("boletos-elegidos");
+  const c = boletosSeleccionados.length;
+  const total = c * PRECIO_BOLETO;
 
-      if(c>0){
-        box.innerHTML = `<p>Boletos seleccionados: ${c}</p><p>Total a pagar: ${total} Bs</p>`;
-        list.innerHTML = boletosSeleccionados.map(n => `<div class="ticket seleccionado">${n}</div>`).join("");
-      }else{
-        box.innerHTML = "";
-        list.innerHTML = "";
-      }
-    }
+  if (c > 0) {
+    t.innerHTML = `<p>Boletos seleccionados: ${c}</p>
+                   <p>Total a pagar: ${total} Bs</p>`;
+    d.innerHTML = boletosSeleccionados.map(num =>
+      `<div class="ticket seleccionado">
+         ${num}
+         <button class="remove-btn" onclick="quitarBoleto('${num}')">✖</button>
+       </div>`
+    ).join("");
+  } else {
+    t.innerHTML = "";
+    d.innerHTML = "";
+  }
+}
+function quitarBoleto(num) {
+  const i = boletosSeleccionados.indexOf(num);
+  if (i !== -1) boletosSeleccionados.splice(i, 1);
+  mostrarBoletos();
+  actualizarTotalSeleccionados();
+}
+
 
     /* Init */
     generarBoletos();
