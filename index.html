@@ -36,7 +36,7 @@
   .progress-stats{color:var(--muted); font-size:14px; font-weight:700; text-align:center;}
 
   /* Panel */
-  .panel{background:#fff; border:1px solid var(--border); border-radius:16px; padding:16px; width:100%; text-align:center;}
+  .panel{background:#fff; border:1px solid var(--border); border-radius:16px; padding:16px; width:100%; text-align:center; margin-bottom:16px;}
   .panel h2{margin:0 0 12px 0; font-size:28px; text-transform:uppercase; color:var(--accent);}
   .subtle{color:var(--muted); font-size:14px;}
 
@@ -142,21 +142,6 @@
       <div id="selectedChips" class="chips"></div>
     </section>
 
-    <!-- Formulario -->
-    <section class="panel">
-      <h2>Datos personales & Pago</h2>
-      <form id="buyForm">
-        <input id="name" placeholder="Nombre y apellido" required><br>
-        <input id="idnum" placeholder="Cédula" required><br>
-        <input id="phone" type="tel" placeholder="Teléfono" required><br>
-        <input id="ref6" maxlength="6" placeholder="Últimos 6 dígitos ref" required><br>
-        <input id="proof" type="file" accept="image/*" required><br>
-        <div id="payMethods"></div>
-        <div id="payDetails" class="subtle"></div><br>
-        <button type="button" id="btnConfirm">Confirmar compra</button>
-      </form>
-    </section>
-
     <!-- Mis boletos -->
     <section class="panel" id="myTicketsPanel" style="display:none;">
       <h2>Mis boletos</h2>
@@ -185,15 +170,13 @@
 <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@19.5.6/build/js/intlTelInput.min.js"></script>
 <script>
 const PRICE = 15, TOTAL=10000, PAGE=1000;
-let currentPage=1, selected=new Set(), iti, chosenPay=null;
-const soldKey="sold_tickets", ordersKey="orders";
+let currentPage=1, selected=new Set();
+const soldKey="sold_tickets";
 
 const el=s=>document.querySelector(s);
 const pad=n=>n.toString().padStart(4,'0');
 const getSold=()=>new Set(JSON.parse(localStorage.getItem(soldKey)||'[]'));
 const setSold=s=>localStorage.setItem(soldKey,JSON.stringify([...s]));
-const getOrders=()=>JSON.parse(localStorage.getItem(ordersKey)||'[]');
-const setOrders=a=>localStorage.setItem(ordersKey,JSON.stringify(a));
 
 function updateProgress(){
   const s=getSold(), pct=Math.round(s.size/TOTAL*100);
@@ -208,6 +191,7 @@ function renderTickets(){
   const grid=el('#tickets'); grid.innerHTML='';
   const [st,en]=pageRange(currentPage), s=getSold();
   let nums=[]; for(let i=st;i<=en;i++) nums.push(i);
+  // mezclar aleatoriamente
   for(let i=nums.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[nums[i],nums[j]]=[nums[j],nums[i]];}
   nums.forEach(n=>{
     const b=document.createElement('div'); b.className='ticket'; b.textContent=pad(n);
@@ -239,41 +223,19 @@ function randomPick(c=3){
   } renderTickets(); renderChips(); updateTotals();
 }
 
-function confirm(){
-  if(selected.size<3){el('#minMsg').style.display='block';return;}
-  const name=el('#name').value,id=el('#idnum').value,ph=iti.getNumber(),ref=el('#ref6').value,pr=el('#proof').files[0];
-  if(!name||!id||!ph||!ref||!pr||!chosenPay) return alert("Completa todos los campos");
-  const r=new FileReader(); r.onload=()=>{
-    const order={id:"ORD-"+Date.now(),name,idnum:id,phone:ph,ref,proof:r.result,pay:chosenPay,
-      tickets:[...selected],total:selected.size*PRICE,created:new Date().toISOString()};
-    const os=getOrders(); os.push(order); setOrders(os);
-    const s=getSold(); order.tickets.forEach(t=>s.add(t)); setSold(s);
-    selected.clear(); renderTickets(); renderChips(); updateProgress(); updateTotals(); showMine(order);
-  }; r.readAsDataURL(pr);
-}
-
-function showMine(o){
-  el('#myTicketsPanel').style.display='block';
-  const d=el('#myDiamonds'); d.innerHTML=''; o.tickets.forEach(n=>{
-    const div=document.createElement('div'); div.className='big-diamond'; div.textContent=pad(n); d.appendChild(div);
-  });
-}
-
 function verify(){
-  const raw=el('#verifyInput').value.trim(),os=getOrders(),out=el('#verifyOut'); out.innerHTML='';
-  let hits=[]; if(/^\d{4}$/.test(raw)){hits=os.filter(o=>o.tickets.includes(+raw));}
-  else{const clean=raw.replace(/\D/g,''); hits=os.filter(o=>o.phone.replace(/\D/g,'').endsWith(clean));}
-  if(!hits.length)return out.textContent="No encontrado";
-  hits.forEach(o=>{const div=document.createElement('div');div.textContent=`${o.name} - ${o.phone} (${o.tickets.map(pad).join(',')})`;out.appendChild(div);});
+  const raw=el('#verifyInput').value.trim(),s=getSold(),out=el('#verifyOut'); out.innerHTML='';
+  if(/^\d{4}$/.test(raw)){
+    if(s.has(+raw)) out.textContent="Boleto vendido";
+    else out.textContent="Boleto disponible";
+  }
 }
 
 window.onload=()=>{
-  iti=window.intlTelInput(el('#phone'),{initialCountry:'ve',separateDialCode:true});
   renderTickets(); updateProgress();
   el('#prevPage').onclick=()=>{if(currentPage>1){currentPage--;renderTickets();}};
   el('#nextPage').onclick=()=>{if(currentPage<10){currentPage++;renderTickets();}};
   el('#btnRandom').onclick=()=>randomPick(3);
-  el('#btnConfirm').onclick=confirm;
   el('#btnVerify').onclick=verify;
 };
 </script>
