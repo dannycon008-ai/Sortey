@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Rifas — Tu Diamante</title>
 
+  <!-- Fuente -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@700;800&display=swap" rel="stylesheet">
+  <!-- Tel input -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@19.5.6/build/css/intlTelInput.css" />
 
   <style>
@@ -20,29 +22,6 @@
     --diamond-url: url('https://qu.ax/zcmdn.png');
   }
 
-  /* Flechas de paginación */
-  .pagination-bottom {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 12px;
-    margin-top: 12px;
-  }
-  .page-btn {
-    width: 40px;
-    height: 40px;
-    border: none;
-    border-radius: 50%;
-    background: #0A4975;
-    color: #fff;
-    font-size: 20px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.2s ease;
-  }
-  .page-btn:hover { background: #07324e; }
-  #pageInfo { font-weight: bold; color: #111827; }
-
   body{margin:0; background:var(--bg); color:var(--ink); font-family:"Inter",sans-serif; font-weight:800;}
   .container{max-width:1200px; margin:0 auto; padding:16px; display:flex; flex-direction:column; align-items:center;}
 
@@ -56,7 +35,7 @@
   .bar>span{display:block; height:100%; background:var(--accent); width:0%; transition:width 1s ease-in-out;}
   .progress-stats{color:var(--muted); font-size:14px; font-weight:700; text-align:center;}
 
-  /* Paneles */
+  /* Panel */
   .panel{background:#fff; border:1px solid var(--border); border-radius:16px; padding:16px; width:100%; text-align:center;}
   .panel h2{margin:0 0 12px 0; font-size:28px; text-transform:uppercase; color:var(--accent);}
   .subtle{color:var(--muted); font-size:14px;}
@@ -106,13 +85,48 @@
     opacity:1;
   }
 
-  /* Diamantes de "Mis boletos" */
+  /* Chips seleccionados */
+  .chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; justify-content:center;}
+  .chip{display:inline-flex; align-items:center; gap:6px; background:var(--chip); border:1px solid var(--border); border-radius:999px; padding:6px 10px; font-weight:800;}
+  .chip button{border:none; background:transparent; cursor:pointer; font-size:16px;}
+
+  .totals{display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:center; margin-top:10px;}
+  .tag{background:#eef2ff; color:#3730a3; border:1px solid #e0e7ff; border-radius:999px; padding:6px 10px;}
+
+  /* Flechas de paginación */
+  .pagination-bottom {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .page-btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background: #0A4975;
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  #pageInfo { font-weight: bold; color: #111827; }
+
+  /* Mis boletos */
   .big-diamonds{display:flex; flex-wrap:wrap; gap:18px; justify-content:center;}
   .big-diamond{width:120px; height:120px; display:flex; align-items:center; justify-content:center;
     color:#fff; font-size:20px; font-weight:800;
     background-image:var(--diamond-url); background-size:cover; background-position:center;
     border-radius:16px; box-shadow:0 8px 18px rgba(0,0,0,.12);
   }
+
+  /* Footer */
+  .contact{background:#ffffff; color:#111; border:1px solid var(--border); border-radius:16px; padding:18px; display:grid; gap:14px; justify-items:center;}
+  .row{display:flex; gap:14px; justify-content:center;}
+  .row a{display:inline-flex; align-items:center; gap:8px; text-decoration:none; color:#111; font-weight:800; border:1px solid var(--border); padding:10px 14px; border-radius:999px;}
+  .row img{width:20px; height:20px;}
   </style>
 </head>
 <body>
@@ -121,6 +135,7 @@
       <img src="https://qu.ax/OVJvi.png" alt="Logo redondo">
     </header>
 
+    <!-- Progreso -->
     <section class="progress-info">
       <div class="bar"><span id="soldBar"></span></div>
       <div class="progress-stats">Vendidos: <b id="soldCount">0</b> / 10.000 — <b id="soldPct">0%</b></div>
@@ -134,12 +149,20 @@
           <div id="tickets" class="ticket-grid" aria-live="polite"></div>
         </div>
       </div>
-      <!-- Flechas abajo -->
+      <!-- Flechas -->
       <div class="pagination-bottom">
         <button class="page-btn" id="prevPage">«</button>
         <span id="pageInfo">Pag: 1/10</span>
         <button class="page-btn" id="nextPage">»</button>
       </div>
+      <div class="totals">
+        <span class="tag">Precio: <b>15 Bs</b></span>
+        <span class="tag">Seleccionados: <b id="selCount">0</b></span>
+        <span class="tag">Total: <b id="totalAmount">0 Bs</b></span>
+        <button id="btnRandom" class="page-btn" title="Generar 3 boletos">🎲</button>
+      </div>
+      <div id="minMsg" class="subtle" style="color:red; display:none;">Compra mínima 3 boletos.</div>
+      <div id="selectedChips" class="chips"></div>
     </section>
 
     <!-- Mis boletos -->
@@ -147,11 +170,31 @@
       <h2>Mis boletos</h2>
       <div id="myDiamonds" class="big-diamonds"></div>
     </section>
+
+    <!-- Verificador -->
+    <section class="panel" style="margin-top:16px;">
+      <h2>Verificador de boletos</h2>
+      <input id="verifyInput" placeholder="Teléfono o número de boleto" />
+      <button id="btnVerify">Verificar</button>
+      <div id="verifyOut"></div>
+    </section>
+
+    <!-- Contacto -->
+    <section class="contact">
+      <h3>Contacto</h3>
+      <div class="row">
+        <a id="waLink" href="#"><img id="waIcon" alt="WhatsApp" /> WhatsApp</a>
+        <a id="fbLink" href="#"><img id="fbIcon" alt="Facebook" /> Facebook</a>
+        <a id="igLink" href="#"><img id="igIcon" alt="Instagram" /> Instagram</a>
+      </div>
+    </section>
   </div>
 
 <script>
+  const PRICE_PER_TICKET = 15;
   const TOTAL_TICKETS = 10000;
   const PAGE_SIZE = 1000;
+
   let currentPage = 1;
   let selected = new Set();
   const sold = new Set();
@@ -162,7 +205,7 @@
   function updateProgress(){
     const pct = Math.round((sold.size / TOTAL_TICKETS) * 100);
     el('#soldBar').style.width = pct + '%';
-    el('#soldCount').textContent = sold.size.toLocaleString();
+    el('#soldCount').textContent = sold.size;
     el('#soldPct').textContent = pct + '%';
   }
 
@@ -176,34 +219,82 @@
     const grid = el('#tickets');
     grid.innerHTML='';
     const [start, end] = pageRange(currentPage);
-    for(let n=start;n<=end;n++){
+
+    let nums=[];
+    for(let n=start;n<=end;n++) nums.push(n);
+
+    // Shuffle aleatorio
+    for(let i=nums.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [nums[i],nums[j]]=[nums[j],nums[i]];
+    }
+
+    nums.forEach(n=>{
       const btn=document.createElement('div');
       btn.className='ticket';
       btn.textContent=pad4(n);
       if(sold.has(n)){
         btn.classList.add('sold');
-        btn.title="Boleto ya ha sido vendido";
-      } else if(selected.has(n)){
+      }else if(selected.has(n)){
         btn.classList.add('selected');
-      } else {
-        btn.addEventListener('click', ()=>{ selected.add(n); renderTickets(); });
+      }else{
+        btn.addEventListener('click',()=>selectTicket(n));
       }
       grid.appendChild(btn);
-    }
+    });
+
     el('#pageInfo').textContent=`Pag: ${currentPage}/10`;
+    updateTotalsUI();
+  }
+
+  function selectTicket(n){
+    if(sold.has(n)) return alert('Boleto ya vendido');
+    selected.add(n);
+    renderTickets(); renderSelectedChips();
+  }
+
+  function deselectTicket(n){
+    selected.delete(n);
+    renderTickets(); renderSelectedChips();
+  }
+
+  function renderSelectedChips(){
+    const box=el('#selectedChips'); box.innerHTML='';
+    [...selected].forEach(n=>{
+      const chip=document.createElement('span');
+      chip.className='chip';
+      chip.innerHTML=`<span>${pad4(n)}</span>`;
+      const x=document.createElement('button'); x.textContent='×';
+      x.addEventListener('click',()=>deselectTicket(n));
+      chip.appendChild(x);
+      box.appendChild(chip);
+    });
+  }
+
+  function updateTotalsUI(){
+    el('#selCount').textContent = selected.size;
+    el('#totalAmount').textContent = (selected.size*PRICE_PER_TICKET)+' Bs';
+  }
+
+  function randomPick(count=3){
+    while(selected.size<count){
+      const n=Math.floor(Math.random()*TOTAL_TICKETS);
+      if(!sold.has(n)) selected.add(n);
+    }
+    renderTickets(); renderSelectedChips();
   }
 
   function changePage(dir){
-    if(dir==='prev' && currentPage>1) currentPage--;
-    if(dir==='next' && currentPage<10) currentPage++;
+    if(dir==='prev'&&currentPage>1) currentPage--;
+    if(dir==='next'&&currentPage<10) currentPage++;
     renderTickets();
   }
 
-  window.addEventListener('DOMContentLoaded', ()=>{
-    updateProgress();
-    renderTickets();
-    el('#prevPage').addEventListener('click', ()=>changePage('prev'));
-    el('#nextPage').addEventListener('click', ()=>changePage('next'));
+  window.addEventListener('DOMContentLoaded',()=>{
+    updateProgress(); renderTickets();
+    el('#prevPage').addEventListener('click',()=>changePage('prev'));
+    el('#nextPage').addEventListener('click',()=>changePage('next'));
+    el('#btnRandom').addEventListener('click',()=>randomPick(3));
   });
 </script>
 </body>
