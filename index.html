@@ -7,129 +7,37 @@
 
   <!-- Bootstrap 4 -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-
   <!-- Materialize -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-
   <!-- Fuente Poppins -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: #fff;
-      color: #0a4975;
-      margin: 0;
-      padding: 0;
-    }
+    body { font-family: 'Poppins', sans-serif; color: #0a4975; margin: 0; padding: 0; background: #fff; }
+    .navbar { background: #005899; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+    .navbar a { color: #fff !important; font-weight: 600; }
 
-    /* Navbar */
-    .navbar {
-      background: #005899;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-    }
-    .navbar a {
-      color: #fff !important;
-      font-weight: 600;
-    }
-
-    /* Secciones */
     section { padding: 60px 0; }
     h2 { font-weight: 800; color: #005899; }
 
-    /* Premios */
-    .premio-card {
-      background: #fff;
-      border-radius: 15px;
-      padding: 20px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      text-align: center;
-      transition: transform 0.3s, box-shadow 0.3s;
-    }
-    .premio-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-    }
-    .premio-card img { width: 80px; margin-bottom: 10px; }
-    .premio-card p {
-      font-weight: 700;
-      font-size: 1.2rem;
-      margin-top: 10px;
-    }
+    .premio-card { background: #fff; border-radius: 15px; padding: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); text-align: center; }
+    .premio-card p { font-weight: 700; font-size: 1.2rem; }
 
-    /* Boletos */
-    .boletos-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-      gap: 8px;
-    }
-    .chip {
-      background: #fff;
-      border: 2px solid #005899;
-      color: #0a4975;
-      font-weight: 600;
-      padding: 8px;
-      border-radius: 15px;
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.3s;
-    }
-    .chip:hover {
-      background: #5d8aa6;
-      color: #fff;
-      box-shadow: 0 0 10px rgba(93,138,166,0.6);
-    }
-    .chip.vendido {
-      background: url("https://qu.ax/zcmdn.png") no-repeat center/contain;
-      color: transparent;
-      pointer-events: none;
-    }
+    .boletos-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 8px; }
+    .chip { background: #fff; border: 2px solid #005899; color: #0a4975; font-weight: 600; padding: 8px; border-radius: 15px; text-align: center; }
+    .chip.vendido { background: url("https://qu.ax/zcmdn.png") no-repeat center/contain; color: transparent; pointer-events: none; }
 
-    /* Barra progreso */
-    .progress-total {
-      background: #eee;
-      border-radius: 20px;
-      height: 25px;
-      overflow: hidden;
-      margin-bottom: 15px;
-    }
-    .progress-actual {
-      background: linear-gradient(90deg, #005899, #0a4975);
-      height: 100%;
-      width: 0;
-      transition: width 1.5s ease-in-out;
-    }
+    .progress-total { background: #eee; border-radius: 20px; height: 25px; overflow: hidden; margin-bottom: 15px; }
+    .progress-actual { background: linear-gradient(90deg, #005899, #0a4975); height: 100%; width: 0; transition: width 1.5s ease-in-out; }
     .progress-percent { font-weight: 600; }
 
-    /* Formulario */
-    .form-card {
-      background: #fff;
-      border-radius: 15px;
-      padding: 25px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
+    .form-card { background: #fff; border-radius: 15px; padding: 25px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
     .form-card label { font-weight: 600; color: #005899; }
-    .form-card input, .form-card select {
-      margin-bottom: 15px;
-      border-radius: 8px;
-    }
-    .metodo-pago {
-      display: flex;
-      align-items: center;
-      margin-bottom: 10px;
-      cursor: pointer;
-    }
-    .metodo-pago img {
-      width: 40px;
-      margin-right: 10px;
-    }
-
-    /* Footer */
-    .footer-section {
-      background: #005899;
-      color: #fff;
-      padding: 20px;
-    }
+    .form-card input, .form-card select { margin-bottom: 15px; border-radius: 8px; }
+    .metodo-pago { display: flex; align-items: center; margin-bottom: 10px; cursor: pointer; }
+    .metodo-pago img { width: 40px; margin-right: 10px; }
+    .instrucciones { background: #f1f9ff; border: 1px solid #005899; border-radius: 10px; padding: 15px; margin-top: 15px; display: none; }
+    .footer-section { background: #005899; color: #fff; padding: 20px; }
   </style>
 </head>
 <body>
@@ -137,9 +45,7 @@
   <!-- NAVBAR -->
   <nav class="navbar fixed-top navbar-expand-lg">
     <div class="container">
-      <a class="navbar-brand" href="#">
-        <img src="https://qu.ax/OVJvi.png" alt="Tu Diamante" height="50">
-      </a>
+      <a class="navbar-brand" href="#"><img src="https://qu.ax/OVJvi.png" alt="Tu Diamante" height="50"></a>
     </div>
   </nav>
 
@@ -147,27 +53,9 @@
   <section id="premios" class="container mt-5 pt-5">
     <h2 class="text-center mb-4">🎁 PREMIOS</h2>
     <div class="row">
-      <div class="col-md-4">
-        <div class="premio-card">
-          <img src="https://via.placeholder.com/80" alt="Premio 1">
-          <h4>Premio 1</h4>
-          <p>10.000 Bs</p>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="premio-card">
-          <img src="https://via.placeholder.com/80" alt="Premio 2">
-          <h4>Premio 2</h4>
-          <p>20.000 Bs</p>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="premio-card">
-          <img src="https://via.placeholder.com/80" alt="Premio 3">
-          <h4>Premio 3</h4>
-          <p>30.000 Bs</p>
-        </div>
-      </div>
+      <div class="col-md-4"><div class="premio-card"><h4>Premio 1</h4><p>10.000 Bs</p></div></div>
+      <div class="col-md-4"><div class="premio-card"><h4>Premio 2</h4><p>20.000 Bs</p></div></div>
+      <div class="col-md-4"><div class="premio-card"><h4>Premio 3</h4><p>30.000 Bs</p></div></div>
     </div>
   </section>
 
@@ -191,10 +79,8 @@
       <form>
         <label>Nombre y Apellido</label>
         <input type="text" class="form-control" required>
-
         <label>Cédula</label>
         <input type="text" class="form-control" required>
-
         <label>Teléfono</label>
         <div class="input-group">
           <select class="form-control" style="max-width:90px;">
@@ -207,20 +93,23 @@
 
         <label>Método de Pago</label>
         <div class="metodo-pago">
-          <input type="radio" name="pago" value="pago-movil" required>
+          <input type="radio" name="pago" value="pago-movil" onclick="mostrarInstrucciones(this.value)">
           <img src="https://upload.wikimedia.org/wikipedia/commons/1/16/Mobile_Banking_Icon.png" alt="Pago Móvil">
           <span>Pago Móvil Venezuela</span>
         </div>
         <div class="metodo-pago">
-          <input type="radio" name="pago" value="banesco">
+          <input type="radio" name="pago" value="banesco" onclick="mostrarInstrucciones(this.value)">
           <img src="https://upload.wikimedia.org/wikipedia/commons/0/0c/Banesco_logo.png" alt="Banesco">
           <span>Banesco</span>
         </div>
         <div class="metodo-pago">
-          <input type="radio" name="pago" value="binance">
+          <input type="radio" name="pago" value="binance" onclick="mostrarInstrucciones(this.value)">
           <img src="https://upload.wikimedia.org/wikipedia/commons/5/57/Binance_Logo.png" alt="Binance">
           <span>Binance</span>
         </div>
+
+        <!-- Instrucciones dinámicas -->
+        <div id="instrucciones" class="instrucciones"></div>
 
         <button class="btn btn-success btn-block mt-3">Confirmar Compra</button>
       </form>
@@ -232,6 +121,7 @@
     <p>© 2025 Tu Diamante - Todos los derechos reservados.</p>
   </footer>
 
+  <!-- JS Boletos -->
   <script>
     const TOTAL_BOLETOS = 10000;
     const POR_PAGINA = 2000;
@@ -245,50 +135,43 @@
         boletos.push({ numero, vendido });
       }
     }
-
     function mostrarBoletos() {
       const contenedor = document.getElementById('boletos-list');
       contenedor.innerHTML = "";
-
       let inicio = (paginaActual - 1) * POR_PAGINA;
       let fin = inicio + POR_PAGINA;
-      let subset = boletos.slice(inicio, fin);
-
-      subset.forEach(boleto => {
+      boletos.slice(inicio, fin).forEach(boleto => {
         let div = document.createElement('div');
         div.className = "chip" + (boleto.vendido ? " vendido" : "");
         div.textContent = boleto.numero;
         contenedor.appendChild(div);
       });
-
-      document.getElementById('page-info').textContent = 
+      document.getElementById('page-info').textContent =
         `Página ${paginaActual} de ${Math.ceil(TOTAL_BOLETOS / POR_PAGINA)}`;
-
       actualizarProgreso();
     }
-
     function actualizarProgreso() {
       let vendidos = boletos.filter(b => b.vendido).length;
       let porcentaje = Math.round((vendidos / TOTAL_BOLETOS) * 100);
       document.getElementById('progress-bar').style.width = porcentaje + "%";
       document.getElementById('progress-text').textContent = porcentaje + "% Vendidos";
     }
+    function nextPage() { if (paginaActual < TOTAL_BOLETOS / POR_PAGINA) { paginaActual++; mostrarBoletos(); } }
+    function prevPage() { if (paginaActual > 1) { paginaActual--; mostrarBoletos(); } }
+    generarBoletos(); mostrarBoletos();
 
-    function nextPage() {
-      if (paginaActual < TOTAL_BOLETOS / POR_PAGINA) {
-        paginaActual++;
-        mostrarBoletos();
+    // Instrucciones dinámicas
+    function mostrarInstrucciones(metodo) {
+      const box = document.getElementById("instrucciones");
+      box.style.display = "block";
+      if (metodo === "pago-movil") {
+        box.innerHTML = "<h5>📱 Pago Móvil Venezuela</h5><p><b>Banco:</b> BOD<br><b>Teléfono:</b> 0412-1234567<br><b>Cédula:</b> V-12345678</p>";
+      } else if (metodo === "banesco") {
+        box.innerHTML = "<h5>🏦 Banesco</h5><p><b>Cuenta:</b> 0134-0123-12-1234567890<br><b>Titular:</b> Juan Pérez</p>";
+      } else if (metodo === "binance") {
+        box.innerHTML = "<h5>💰 Binance</h5><p><b>Wallet:</b> 0xABC123DEF456<br><b>Red:</b> BNB Smart Chain (BEP20)</p>";
       }
     }
-    function prevPage() {
-      if (paginaActual > 1) {
-        paginaActual--;
-        mostrarBoletos();
-      }
-    }
-
-    generarBoletos();
-    mostrarBoletos();
   </script>
 </body>
 </html>
