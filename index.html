@@ -92,7 +92,6 @@ radial-gradient(700px 320px at -10% 110%, #00d6ff22, transparent 60%),#0b1220}
       <button class="btn btn-ghost" data-go="auth">Auth</button>
       <button class="btn btn-ghost" data-go="chat">Chat</button>
       <button class="btn btn-ghost" data-go="profile">Perfil</button>
-      <button class="btn btn-ghost" data-go="admin">Admin</button>
       <button id="btnGlobalLogout" class="btn btn-danger">Salir</button>
     </nav>
   </div>
@@ -142,7 +141,6 @@ radial-gradient(700px 320px at -10% 110%, #00d6ff22, transparent 60%),#0b1220}
       <div class="swipe-actions">
         <button class="btn btn-secondary" id="btnNope">✖</button>
         <button class="btn btn-primary" id="btnLike">❤</button>
-        <button class="btn btn-ghost" id="btnGoAdmin" title="Solo admin">⚙</button>
       </div>
     </div>
 
@@ -237,35 +235,6 @@ radial-gradient(700px 320px at -10% 110%, #00d6ff22, transparent 60%),#0b1220}
     </div>
   </section>
 
-  <!-- ====== VIEW: ADMIN ====== -->
-  <section id="view-admin" class="view">
-    <div class="card">
-      <h3 style="margin-top:0">Agregar modelo</h3>
-      <div class="field"><label>Nombre</label><input class="input" id="mName"/></div>
-      <div class="field"><label>Descripción</label><input class="input" id="mDesc"/></div>
-      <div class="field"><label>URL Foto</label><input class="input" id="mImg" placeholder="https://..."/></div>
-      <button class="btn btn-primary" id="btnAddModel">Agregar</button>
-    </div>
-
-    <div class="card" style="margin-top:14px">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <h3 style="margin:0">Modelos</h3>
-        <button class="btn btn-ghost" id="btnSeed">Cargar ejemplos</button>
-      </div>
-      <table class="table" id="modelsTable">
-        <thead><tr><th>Foto</th><th>Nombre</th><th>Descripción</th><th>Estado</th><th>Acciones</th></tr></thead>
-        <tbody></tbody>
-      </table>
-    </div>
-
-    <div class="card" style="margin-top:14px">
-      <h3 style="margin-top:0">Respuestas automáticas (flujo)</h3>
-      <p class="small">Ejemplo JSON: <code>[{"q":"¿Juegas?","yes":"Chat o voz?","no":"Ok, aquí te espero 😘"}]</code></p>
-      <div class="field"><textarea class="input" rows="6" id="flowJson" placeholder='[{"q":"..."}]'></textarea></div>
-      <button class="btn btn-primary" id="btnSaveFlow">Guardar flujo</button>
-    </div>
-  </section>
-
 </main>
 
 <!-- Modal recarga -->
@@ -321,7 +290,6 @@ function go(view){
   document.getElementById(views[view]).classList.add('active');
   history.replaceState({},'',`#${view}`);
   if(view==='chat') renderChatLists(), renderSwipe();
-  if(view==='admin') renderModelsTable(), loadFlowToTextarea();
   if(view==='profile') loadProfile();
 }
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',e=>go(e.currentTarget.dataset.go)));
@@ -622,8 +590,6 @@ function matchWith(mid){
   openConversation(mid);
   alert('¡Match! Se abrió el chat 💬');
 }
-document.getElementById('btnGoAdmin').onclick=()=>{ if(isAdmin()) go('admin'); else alert('Solo admin') };
-
 /* -------- Admin -------- */
 function renderModelsTable(){
   if(!requireAuth()) return;
