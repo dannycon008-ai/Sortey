@@ -1,543 +1,684 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>Rifa Premium | Tu Diamante</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>TuChat — Demo One-File</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ====== ESTILOS (inline CSS) ====== */
+*{box-sizing:border-box}html,body{height:100%}body{margin:0;font-family:Poppins,system-ui,Segoe UI,Roboto,sans-serif;background:#0b1220;color:#e9f6ff}
+a{color:inherit;text-decoration:none}
+.hidden{display:none!important}
+.container{max-width:1100px;margin:0 auto;padding:16px}
+.header{position:sticky;top:0;z-index:50;background:rgba(10,18,32,.65);backdrop-filter:blur(6px);border-bottom:1px solid #132338}
+.header-inner{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 16px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700}
+.dot{width:10px;height:10px;border-radius:50%;background:#ff2e6a;display:inline-block}
+.btn{border:0;padding:10px 14px;border-radius:12px;font-weight:600;cursor:pointer;transition:.15s}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:#ff2e6a;color:#fff;box-shadow:0 8px 24px rgba(255,46,106,.35)}
+.btn-secondary{background:#0d223b;color:#cfe7ff}
+.btn-ghost{background:transparent;color:#cfe7ff;border:1px solid #244362}
+.btn-danger{background:#ef476f;color:#fff}
+.btn-success{background:#18c37e;color:#fff}
+.btn-warning{background:#ffb020;color:#1b1407}
+.input,select,textarea{width:100%;background:#0e192a;color:#d9eeff;border:1px solid #1f3550;border-radius:12px;padding:12px 14px;outline:none}
+.field{margin-bottom:12px}
+.card{background:linear-gradient(180deg,#0f1a2b,#0a1220);border:1px solid #1b3150;border-radius:18px;padding:16px;box-shadow:0 10px 32px rgba(0,0,0,.35)}
+.small{color:#9bc2df;font-size:12px}
 
-  <!-- Bootstrap 4 -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
-  <!-- Fuente Poppins -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+/* Auth */
+.auth-wrap{min-height:100dvh;display:grid;place-items:center;background:
+radial-gradient(900px 420px at 120% -20%, #ff2e6a22, transparent 60%),
+radial-gradient(700px 320px at -10% 110%, #00d6ff22, transparent 60%),#0b1220}
+.auth-card{width:min(480px,92vw)}
+.auth-tabs{display:flex;gap:8px;margin-bottom:12px}
+.auth-tabs .btn{flex:1}
 
-  <style>
-    body { font-family: 'Poppins', sans-serif; background: #fff; color: #0a4975; padding-top: 100px; }
+/* Layout chat */
+.chat-layout{display:grid;grid-template-columns:320px 1fr;gap:16px}
+@media (max-width:960px){.chat-layout{grid-template-columns:1fr}}
+.sidebar .coins{position:sticky;top:0;display:flex;gap:8px;align-items:center;justify-content:space-between;background:#0f1a2b;border:1px solid #1b3150;padding:10px 12px;border-radius:14px;margin-bottom:12px}
+.model-list{display:grid;gap:10px}
+.model-item{display:flex;gap:12px;align-items:center;padding:10px;border:1px solid #203a5d;background:#0c1728;border-radius:14px;cursor:pointer}
+.model-item img{width:46px;height:46px;object-fit:cover;border-radius:12px}
+.model-item .name{font-weight:600}
+.model-item .desc{font-size:12px;color:#95b7d5}
+.chat-card{height:calc(100dvh - 150px);display:flex;flex-direction:column}
+.chat-head{display:flex;align-items:center;justify-content:space-between;padding-bottom:10px;border-bottom:1px solid #1b3150}
+.chat-title{display:flex;align-items:center;gap:10px}
+.chat-title img{width:38px;height:38px;border-radius:10px;object-fit:cover}
+.chat-body{flex:1;overflow:auto;display:flex;flex-direction:column;gap:8px;padding:10px 2px}
+.msg{max-width:70%;padding:10px 12px;border-radius:14px;line-height:1.35;font-size:15px;border:1px solid #1b3150}
+.msg.you{align-self:flex-end;background:#12253c}
+.msg.them{align-self:flex-start;background:#0c1728}
+.msg .meta{margin-top:6px;font-size:11px;color:#86a9c7;display:flex;gap:6px;align-items:center}
+.msg img.media{max-width:240px;border-radius:12px;display:block;margin-top:6px}
+.typing{color:#99c7ff;font-size:12px;padding:6px 0;display:none}
+.typing.on{display:block}
+.chat-input{display:flex;gap:8px;align-items:center;padding-top:10px;border-top:1px solid #1b3150}
+.chat-input .input{flex:1}
+.toolbar{display:flex;gap:6px}
 
-    /* NAVBAR */
-    .navbar {
-      background: linear-gradient(to right, #000f35, #ffffff, #000f35);
-      min-height: 60px;
-      padding: 6px 0;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-    }
-    .navbar img {
-      height: 100px; width: 100px; border-radius: 50%; object-fit: cover;
-    }
+/* Swipe tipo Tinder */
+.swipe-section{margin-bottom:14px}
+.swipe-wrap{position:relative;height:420px}
+.card-swipe{position:absolute;inset:0;border-radius:22px;overflow:hidden;border:1px solid #1b3150;background:#0f1a2b;display:grid;grid-template-rows:1fr auto;user-select:none;box-shadow:0 20px 50px rgba(0,0,0,.45);transition:box-shadow .2s}
+.card-swipe img{width:100%;height:100%;object-fit:cover}
+.card-swipe .info{padding:12px 14px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.6));color:#fff}
+.swipe-actions{display:flex;justify-content:center;gap:12px;margin-top:8px}
+.swipe-actions .btn{width:56px;height:56px;border-radius:99px;display:grid;place-items:center;font-size:18px}
 
-    section { padding: 60px 0; scroll-margin-top: 110px; }
-    h2 { font-weight: 800; color: #005899; text-align: center; margin-bottom: 30px; }
+/* Tabla admin */
+.table{width:100%;border-collapse:collapse;font-size:14px}
+.table th,.table td{border-bottom:1px solid #1b3150;padding:10px;text-align:left}
+.badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px}
+.badge.green{background:#112d22;color:#7af2bf;border:1px solid #1f8d6a}
+.badge.warn{background:#2a210d;color:#ffd483;border:1px solid #8f6d1f}
 
-    /* Títulos con icono */
-    .title-with-icon {
-      display: flex; align-items: center; justify-content: center; gap: 10px;
-    }
-    .title-with-icon img { width: 40px; height: 40px; object-fit: contain; }
-
-    /* Premios */
-    .premio-card {
-      background: #fff; border-radius: 15px; padding: 20px; text-align: center;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-    .premio-title {
-      display:flex; align-items:center; justify-content:center; gap:8px; font-weight:700; margin:0;
-    }
-    .premio-title img { width: 40px; height: 40px; object-fit: contain; }
-    .premio-card p { font-size: 20px; font-weight: 700; margin-top: 10px; }
-
-    /* Boletos */
-    .tickets-container {
-      border: 2px solid #005899; border-radius: 12px; padding: 20px; margin: 20px auto;
-      max-width: 1200px; max-height: 600px; overflow-y: auto; background: #fff;
-    }
-    .tickets-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 10px; }
-    .ticket {
-      border: 2px solid #005899; border-radius: 20px; padding: 6px; font-weight: 600;
-      text-align: center; cursor: pointer; transition: all 0.2s ease-in-out; position: relative;
-      color: #005899; background: #fff;
-    }
-    .ticket:hover { background: #5d8aa6; color: #fff; transform: translateY(-2px); }
-    .ticket.vendido { background: #f8f8f8; border-color: #ccc; cursor: not-allowed; }
-    .ticket.vendido::after {
-      content: ""; position: absolute; top: -5px; right: -5px; width: 18px; height: 18px;
-      background-image: url("https://qu.ax/zcmdn.png"); background-size: cover;
-    }
-    .ticket.seleccionado { background: #005899 !important; color: #fff !important; }
-
-    /* Barra progreso */
-    .progress-total { background: #eee; border-radius: 20px; height: 25px; margin-bottom: 15px; overflow: hidden; }
-    .progress-actual { background: linear-gradient(90deg, #005899, #0a4975); height: 100%; width: 0; transition: width 1.5s ease-in-out; }
-
-    /* Totales + seleccionados */
-    #total-seleccionados p { font-size: 25px; font-weight: 700; }
-    #boletos-elegidos { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 10px; }
-
-    /* Formulario */
-    .form-card { background: #fff; border-radius: 15px; padding: 25px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-    .form-card label { font-weight: 600; color: #005899; }
-    .metodo-pago-container { display: flex; gap: 20px; justify-content: center; }
-    .metodo-pago { border: 2px solid #005899; border-radius: 10px; padding: 10px; text-align: center; cursor: pointer; transition: background 0.2s;}
-    .metodo-pago:hover{ background:#f1f9ff; }
-    .metodo-pago img { width: 50px; margin-bottom: 5px; }
-    .instrucciones { background:#f1f9ff; border:1px solid #005899; border-radius:10px; padding:15px; display:none; }
-
-    /* Botones */
-    .btn-primary, .btn-success { background:#005899 !important; border:none !important; }
-
-    /* Footer */
-    .footer-section { background: #005899; color: #fff; padding: 20px; }
-
-    #boletos-elegidos {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: center;
-  margin-top: 10px;
-}
-#boletos-elegidos .ticket {
-  min-width: 60px;
-  padding: 8px 22px 8px 8px;
-  position: relative;
-}
-#boletos-elegidos .remove-btn {
-  position: absolute;
-  top: -6px;
-  right: -6px;
-  background: red;
-  color: white;
-  border-radius: 50%;
-  border: none;
-  font-size: 12px;
-  width: 18px;
-  height: 18px;
-  cursor: pointer;
-}
-
-  </style>
+/* Router views */
+.view{display:none}
+.view.active{display:block}
+</style>
 </head>
 <body>
 
-  <!-- NAVBAR -->
-  <nav class="navbar fixed-top">
-    <div class="container">
-      <a class="navbar-brand" href="#"><img src="https://qu.ax/eMtjy.png" alt="Tu Diamante" /></a>
-    </div>
-  </nav>
+<!-- ====== HEADER ====== -->
+<header class="header">
+  <div class="header-inner container">
+    <div class="brand"><span class="dot"></span> TuChat ⭐</div>
+    <nav style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-ghost" data-go="auth">Auth</button>
+      <button class="btn btn-ghost" data-go="chat">Chat</button>
+      <button class="btn btn-ghost" data-go="profile">Perfil</button>
+      <button class="btn btn-ghost" data-go="admin">Admin</button>
+      <button id="btnGlobalLogout" class="btn btn-danger">Salir</button>
+    </nav>
+  </div>
+</header>
 
-  <!-- PREMIOS -->
-  <section id="premios" class="container">
-    <h2>🎁 PREMIOS</h2>
-    <div class="row mt-4">
-      <div class="col-md-4">
-        <div class="premio-card">
-          <h4 class="premio-title"><img src="https://qu.ax/guAKy.png" alt="Premio 1">Premio 1</h4>
-          <p>10.000 Bs</p>
+<main class="container">
+
+  <!-- ====== VIEW: AUTH ====== -->
+  <section id="view-auth" class="view active">
+    <div class="auth-wrap" style="min-height:auto">
+      <div class="auth-card card" style="margin:20px auto">
+        <div class="brand"><span class="dot"></span> Acceder</div>
+        <div class="auth-tabs">
+          <button class="btn btn-secondary" id="tabLogin">Iniciar sesión</button>
+          <button class="btn btn-ghost" id="tabReg">Registrarme</button>
         </div>
-      </div>
-      <div class="col-md-4">
-        <div class="premio-card">
-          <h4 class="premio-title"><img src="https://qu.ax/LVLbo.png" alt="Premio 2">Premio 2</h4>
-          <p>15.000 Bs</p>
+
+        <!-- Login -->
+        <div id="loginBox">
+          <div class="field"><label>Correo / Teléfono</label><input class="input" id="loginId" placeholder="correo@dominio.com o +58..." /></div>
+          <div class="field"><label>Contraseña</label><input class="input" id="loginPass" type="password" placeholder="••••••••" /></div>
+          <div class="field hidden" id="twofaField"><label>Código 2FA</label><input class="input" id="twofaCode" inputmode="numeric" placeholder="000000"/></div>
+          <div class="field"><button class="btn btn-primary" id="btnLogin">Entrar</button></div>
+          <button class="btn btn-ghost" id="btnForgot">¿Olvidaste tu contraseña?</button>
+          <p class="small" style="margin-top:8px">Admin demo: <b>admin@site.com</b> / <b>admin123</b></p>
         </div>
-      </div>
-      <div class="col-md-4">
-        <div class="premio-card">
-          <h4 class="premio-title"><img src="https://qu.ax/DygfK.png" alt="Premio 3">Premio 3</h4>
-          <p>30.000 Bs</p>
+
+        <!-- Register -->
+        <div id="regBox" class="hidden">
+          <div class="field"><label>Correo</label><input class="input" id="regEmail"/></div>
+          <div class="field"><label>Teléfono</label><input class="input" id="regPhone"/></div>
+          <div class="field"><label>Alias</label><input class="input" id="regAlias" placeholder="Apodo visible"/></div>
+          <div class="field"><label>Contraseña</label><input class="input" id="regPass" type="password"/></div>
+          <div class="field"><button class="btn btn-primary" id="btnRegister">Crear cuenta</button></div>
+          <p class="small">Se acreditan <b>50 moneditas</b> por registro ✨</p>
         </div>
       </div>
     </div>
   </section>
 
-<!-- BOLETOS -->
-<section id="boletos" class="container mt-5">
-  <h2 class="title-with-icon">
-    <img src="https://qu.ax/Wnawm.png" alt="Logo Lista Boletos" style="width:40px; height:40px; margin-right:10px;">
-    Lista de Boletos
-  </h2>
-
-  <div class="progress-total">
-    <div class="progress-actual" id="progress-bar"></div>
-  </div>
-  <p class="progress-percent text-center" id="progress-text">0% Vendidos</p>
-
-  <!-- 🔎 Buscador -->
-  <div class="input-group mb-3">
-    <input type="text" id="buscar-boleto" class="form-control" placeholder="Número de boleto (ej: 0045)">
-    <div class="input-group-append">
-      <button class="btn btn-primary" type="button" onclick="buscarBoleto()">🔎 Buscar</button>
-    </div>
-  </div>
-  <div id="mensaje-busqueda" class="text-center mb-3" style="font-weight:600;"></div>
-
-  <div class="tickets-container">
-    <div id="boletos-list" class="tickets-grid"></div>
-  </div>
-
-  <div class="text-center mt-4">
-    <button class="btn btn-primary" onclick="prevPage()">⬅️ Anterior</button>
-    <span id="page-info" class="mx-3">Página 1 de 5</span>
-    <button class="btn btn-primary" onclick="nextPage()">Siguiente ➡️</button>
-  </div>
-
-  <div id="total-seleccionados" class="text-center mt-3"></div>
-  <div id="boletos-elegidos" class="text-center"></div>
-
-  <!-- 🎲 Aleatorio -->
-  <div class="text-center mt-3">
-    <button class="btn btn-success" onclick="elegirSuerte()">🎲 Elegir boletos aleatorios (4)</button>
-  </div>
-  <div id="resultado-suerte" class="text-center mt-3" style="font-size:20px; font-weight:600; color:#005899;"></div>
-</section>
-
-
-  <!-- FORMULARIO -->
-  <section id="formulario" class="container mt-5">
-    <div class="form-card">
-      <h2 class="title-with-icon">
-        <img src="https://qu.ax/rGfpx.png" alt="Logo Datos" />
-        Datos Personales
-      </h2>
-      <form id="frmCompra" onsubmit="return confirmarCompra(event)">
-        <label for="nombre">Nombre y Apellido</label>
-        <input id="nombre" type="text" class="form-control" required>
-
-        <label for="cedula">Cédula</label>
-        <input id="cedula" type="text" class="form-control" required>
-
-        <label>Teléfono</label>
-        <div class="input-group">
-          <select id="country_code" class="form-control" style="max-width:110px;">
-            <option value="+1">🇩🇴 +1</option>
-            <option value="+1">🇺🇸 +1</option>
-            <option value="+1">🇵🇷 +1</option>
-            <option value="+34">🇪🇸 +34</option>
-            <option value="+502">🇬🇹 +502</option>
-            <option value="+503">🇸🇻 +503</option>
-            <option value="+504">🇭🇳 +504</option>
-            <option value="+505">🇳🇮 +505</option>
-            <option value="+506">🇨🇷 +506</option>
-            <option value="+507">🇵🇦 +507</option>
-            <option value="+51">🇵🇪 +51</option>
-            <option value="+52">🇲🇽 +52</option>
-            <option value="+53">🇨🇺 +53</option>
-            <option value="+54">🇦🇷 +54</option>
-            <option value="+56">🇨🇱 +56</option>
-            <option value="+57">🇨🇴 +57</option>
-            <option value="+58" selected>🇻🇪 +58</option>
-            <option value="+591">🇧🇴 +591</option>
-            <option value="+593">🇪🇨 +593</option>
-            <option value="+595">🇵🇾 +595</option>
-            <option value="+598">🇺🇾 +598</option>
-          </select>
-          <input id="telefono" type="tel" class="form-control" placeholder="Número de teléfono" required>
-        </div>
-
-        <label for="comprobante">Comprobante de pago</label>
-        <input id="comprobante" type="file" class="form-control" required>
-
-        <label>Método de Pago</label>
-        <div class="metodo-pago-container">
-          <div class="metodo-pago" onclick="mostrarInstrucciones('pago-movil')">
-            <img src="https://play-lh.googleusercontent.com/1p1Y0PT24TZ9y6oYD0dkcqgg6BCGimhhH4XJ4lOUMj8m-VJ6FYEZbcMAHkYLhG7NDaY=w480-h960-rw" alt="Pago Móvil">
-            <span>Pago Móvil</span>
-          </div>
-          <div class="metodo-pago" onclick="mostrarInstrucciones('banesco')">
-            <img src="https://play-lh.googleusercontent.com/JP3qF5hwz0z7z-d2PEu21dhtdb7EBlC-5XKAuE0e2zLUAjWca-ePijvcb-nAQGAa9Ng=w480-h960-rw" alt="Banesco">
-            <span>Banesco</span>
-          </div>
-          <div class="metodo-pago" onclick="mostrarInstrucciones('binance')">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/5/57/Binance_Logo.png" alt="Binance">
-            <span>Binance</span>
-          </div>
-        </div>
-
-        <div id="instrucciones" class="instrucciones mt-3"></div>
-
-        <button class="btn btn-success btn-block mt-3" type="submit">Confirmar Compra</button>
-        <div id="mensaje-compra" class="mt-3"></div>
-        <button id="btnVerMisBoletos" class="btn btn-primary btn-block mt-2" type="button" style="display:none" onclick="irAVerMisBoletos()">Ver mis Boletos</button>
-      </form>
-    </div>
-  </section>
-
-  <!-- VERIFICADOR -->
-  <section id="verificador" class="container mt-5">
-    <div class="form-card">
-      <h2>🔎 Verificador de Boletos</h2>
-      <form onsubmit="verificarBoletos(event)">
-        <label>Ingresa tu número de teléfono o # de boleto</label>
-        <input type="text" id="inputVerificador" class="form-control" required>
-        <button class="btn btn-primary btn-block mt-3" type="submit">Verificar</button>
-      </form>
-      <div id="resultadoVerificador" class="mt-4" style="display:none;">
-        <h5>📋 Resultados:</h5>
-        <div id="detalleBoletos"></div>
+  <!-- ====== VIEW: CHAT ====== -->
+  <section id="view-chat" class="view">
+    <!-- Swipe tipo Tinder -->
+    <div class="card swipe-section">
+      <h3 style="margin:4px 0 10px">Descubre</h3>
+      <div class="swipe-wrap" id="swipeWrap"></div>
+      <div class="swipe-actions">
+        <button class="btn btn-secondary" id="btnNope">✖</button>
+        <button class="btn btn-primary" id="btnLike">❤</button>
+        <button class="btn btn-ghost" id="btnGoAdmin" title="Solo admin">⚙</button>
       </div>
     </div>
+
+    <div class="chat-layout">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="coins">
+          <div>Monedas: <b id="coinsLabel">0</b></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-warning" id="btnWatchAd">Ver anuncio (+10)</button>
+            <button class="btn btn-success" id="btnPayPal">PayPal</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="field"><label>Buscar mensajes</label><input class="input" id="searchInput" placeholder="Palabra clave"/></div>
+        </div>
+
+        <div class="model-list" id="chatList"></div>
+      </aside>
+
+      <!-- Chat -->
+      <section class="card chat-card">
+        <div class="chat-head">
+          <div class="chat-title">
+            <img id="chatAvatar" src="" alt="">
+            <div>
+              <div id="chatName">Selecciona una modelo</div>
+              <small id="chatStatus" class="small">—</small>
+            </div>
+          </div>
+          <div class="toolbar">
+            <button class="btn btn-secondary" id="btnVoice">📞</button>
+            <button class="btn btn-secondary" id="btnVideo">🎥</button>
+            <button class="btn btn-ghost" id="btnBlock">🚫</button>
+            <button class="btn btn-ghost" id="btnReport">⚠️</button>
+            <button class="btn btn-ghost" id="btnExport">Backup</button>
+            <input type="file" id="importFile" accept="application/json" class="hidden">
+            <button class="btn btn-ghost" id="btnImport">Importar</button>
+          </div>
+        </div>
+
+        <div class="typing" id="typingHint">Está escribiendo…</div>
+        <div class="chat-body" id="messages"></div>
+
+        <div class="chat-input">
+          <input class="input" id="msgText" placeholder="Escribe un mensaje (2 monedas)"/>
+          <div class="toolbar">
+            <button class="btn btn-secondary" id="btnAttachImg">🖼️</button>
+            <button class="btn btn-secondary" id="btnAttachAudio">🎙️</button>
+            <button class="btn btn-secondary" id="btnShareLoc">📍</button>
+          </div>
+          <button class="btn btn-primary" id="btnSend">Enviar</button>
+          <input type="file" id="fileImage" accept="image/*" class="hidden">
+          <input type="file" id="fileAudio" accept="audio/*" class="hidden">
+        </div>
+      </section>
+    </div>
   </section>
 
+  <!-- ====== VIEW: PROFILE ====== -->
+  <section id="view-profile" class="view">
+    <div class="card">
+      <h3 style="margin-top:0">Mi perfil</h3>
+      <div class="field"><label>Alias</label><input class="input" id="pAlias"/></div>
+      <div class="field"><label>Estado</label><input class="input" id="pStatus"/></div>
+      <div class="field">
+        <label>Privacidad</label>
+        <select class="input" id="pPrivacy">
+          <option value="all">Todos pueden ver mi perfil</option>
+          <option value="matches">Solo mis matches</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>2FA (opcional)</label>
+        <select class="input" id="p2fa">
+          <option value="off">Desactivado</option>
+          <option value="on">Activado</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" id="btnSaveProfile">Guardar</button>
+    </div>
 
-  <!-- CONTACTANOS -->
-<section id="contacto" class="container text-center mt-5 mb-5">
-  <h2>📞 Contáctanos</h2>
-  <p>Síguenos en nuestras redes sociales:</p>
-  <div class="social-icons d-flex justify-content-center gap-4">
-    
-    <a href="https://instagram.com/TUCUENTA" target="_blank">
-      <img src="https://img.freepik.com/vector-premium/logo-instagram_976174-11.jpg?semt=ais_incoming&w=740&q=80" 
-           alt="Instagram" style="width:50px; height:50px;">
-    </a>
+    <div class="card" style="margin-top:14px">
+      <h3 style="margin-top:0">Backup / Sync</h3>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-ghost" id="btnExportAll">Exportar todo</button>
+        <input type="file" id="importAllFile" accept="application/json" class="hidden">
+        <button class="btn btn-ghost" id="btnImportAll">Importar todo</button>
+      </div>
+      <p class="small">Funciona como respaldo y pseudo sincronización entre dispositivos.</p>
+    </div>
+  </section>
 
-    <a href="https://facebook.com/TUCUENTA" target="_blank">
-      <img src="https://img.freepik.com/vector-premium/ilustracion-arte_929495-41.jpg?semt=ais_incoming&w=740&q=80" 
-           alt="Facebook" style="width:50px; height:50px;">
-    </a>
+  <!-- ====== VIEW: ADMIN ====== -->
+  <section id="view-admin" class="view">
+    <div class="card">
+      <h3 style="margin-top:0">Agregar modelo</h3>
+      <div class="field"><label>Nombre</label><input class="input" id="mName"/></div>
+      <div class="field"><label>Descripción</label><input class="input" id="mDesc"/></div>
+      <div class="field"><label>URL Foto</label><input class="input" id="mImg" placeholder="https://..."/></div>
+      <button class="btn btn-primary" id="btnAddModel">Agregar</button>
+    </div>
 
-    <a href="https://wa.me/584248417632" target="_blank">
-      <img src="https://img.freepik.com/vector-premium/diseno-iconos-whatsapp-redes-sociales-mensajeria_1303737-6449.jpg?semt=ais_incoming&w=740&q=80" 
-           alt="WhatsApp" style="width:50px; height:50px;">
-    </a>
-    
+    <div class="card" style="margin-top:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h3 style="margin:0">Modelos</h3>
+        <button class="btn btn-ghost" id="btnSeed">Cargar ejemplos</button>
+      </div>
+      <table class="table" id="modelsTable">
+        <thead><tr><th>Foto</th><th>Nombre</th><th>Descripción</th><th>Estado</th><th>Acciones</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <h3 style="margin-top:0">Respuestas automáticas (flujo)</h3>
+      <p class="small">Ejemplo JSON: <code>[{"q":"¿Juegas?","yes":"Chat o voz?","no":"Ok, aquí te espero 😘"}]</code></p>
+      <div class="field"><textarea class="input" rows="6" id="flowJson" placeholder='[{"q":"..."}]'></textarea></div>
+      <button class="btn btn-primary" id="btnSaveFlow">Guardar flujo</button>
+    </div>
+  </section>
+
+</main>
+
+<!-- Modal recarga -->
+<div id="rechargeModal" class="hidden" style="position:fixed;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.55)">
+  <div class="card" style="width:min(420px,92vw)">
+    <h3 style="margin-top:0">Sin monedas 😢</h3>
+    <p class="small">Cada mensaje cuesta <b>2</b> moneditas.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-warning" id="modalWatchAd">Ver anuncio (+10)</button>
+      <button class="btn btn-success" id="modalPayPal">Recargar con PayPal</button>
+      <button class="btn btn-ghost" id="modalClose">Cerrar</button>
+    </div>
   </div>
-</section>
+</div>
 
-  
-  <!-- FOOTER -->
-  <footer class="footer-section text-center mt-5">
-    <p>© 2025 Tu Diamante - Todos los derechos reservados - Creador Angel Zabala.</p>
-    
+<script>
+/* ====== JS (inline) ====== */
+/* -------- Helpers / "DB" -------- */
+const DB = {
+  get(k,f=null){try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch{return f}},
+  set(k,v){localStorage.setItem(k,JSON.stringify(v))},
+  del(k){localStorage.removeItem(k)}
+};
+const START_COINS=50, COIN_PER_MSG=2;
+const uid = (p='id') => `${p}_${Math.random().toString(36).slice(2,9)}_${Date.now().toString(36)}`;
 
-    
-  </footer>
-
-  <!-- JS -->
-  <script>
-    const TOTAL_BOLETOS = 10000, POR_PAGINA = 2000, PRECIO_BOLETO = 15;
-    let paginaActual = 1, boletos = [], boletosSeleccionados = [];
-    let metodoPagoSeleccionado = null;
-    let ultimoTelefonoCompra = "";
-
-    /* ---- Generar listado ---- */
-    function generarBoletos(){
-      for(let i=0;i<TOTAL_BOLETOS;i++){
-        const numero = i.toString().padStart(4,'0');
-        const vendido = Math.random() < 0.1; // simulación
-        boletos.push({ numero, vendido });
-      }
-    }
-
-    function mostrarBoletos(){
-      const cont = document.getElementById('boletos-list');
-      cont.innerHTML = "";
-      const ini = (paginaActual-1)*POR_PAGINA, fin = ini + POR_PAGINA;
-
-      boletos.slice(ini,fin).forEach(b=>{
-        const div = document.createElement('div');
-        div.className = "ticket" + (b.vendido?" vendido":"") + (boletosSeleccionados.includes(b.numero)?" seleccionado":"");
-        div.textContent = b.numero;
-        div.onclick = ()=>toggleSeleccion(b);
-        cont.appendChild(div);
-      });
-
-      document.getElementById('page-info').textContent = `Página ${paginaActual} de ${Math.ceil(TOTAL_BOLETOS/POR_PAGINA)}`;
-      actualizarProgreso();
-      actualizarTotal();
-    }
-
-    function toggleSeleccion(b){
-      if(b.vendido) return;
-      const i = boletosSeleccionados.indexOf(b.numero);
-      i === -1 ? boletosSeleccionados.push(b.numero) : boletosSeleccionados.splice(i,1);
-      mostrarBoletos();
-    }
-
-    function actualizarProgreso(){
-      const vendidos = boletos.filter(b=>b.vendido).length;
-      const p = Math.round((vendidos/TOTAL_BOLETOS)*100);
-      document.getElementById('progress-bar').style.width = p + "%";
-      document.getElementById('progress-text').textContent = p + "% Vendidos";
-    }
-
-    function nextPage(){ if(paginaActual < TOTAL_BOLETOS/POR_PAGINA){ paginaActual++; mostrarBoletos(); } }
-    function prevPage(){ if(paginaActual > 1){ paginaActual--; mostrarBoletos(); } }
-
-    /* ---- Buscador ---- */
-    function buscarBoleto(){
-      const v = document.getElementById("buscar-boleto").value.trim();
-      const m = document.getElementById("mensaje-busqueda");
-      if(!v){ m.innerHTML=""; return; }
-
-      const idx = boletos.findIndex(b=>b.numero === v);
-      if(idx === -1){ m.innerHTML = `<span class="text-danger">❌ Ese boleto no existe</span>`; return; }
-
-      const b = boletos[idx];
-      if(b.vendido){
-        m.innerHTML = `<span class="text-danger">❌ Boleto comprado por otra persona</span>`;
-      }else{
-        paginaActual = Math.floor(idx/POR_PAGINA) + 1;
-        if(!boletosSeleccionados.includes(b.numero)) boletosSeleccionados.push(b.numero);
-        mostrarBoletos();
-        m.innerHTML = `<span class="text-success">✅ Boleto ${b.numero} seleccionado</span>`;
-        setTimeout(()=>{
-          const cont = document.getElementById("boletos-list");
-          const el = [...cont.children].find(e=>e.textContent===b.numero);
-          if(el){
-            el.scrollIntoView({behavior:"smooth", block:"center"});
-            el.style.boxShadow="0 0 10px 3px gold";
-            setTimeout(()=>el.style.boxShadow="",1500);
-          }
-        },200);
-      }
-    }
-
-    /* ---- Aleatorio 4 ---- */
-    function elegirSuerte(){
-      boletosSeleccionados = [];
-      const disponibles = boletos.filter(b=>!b.vendido);
-      let elegidos = [];
-      for(let i=0;i<4 && disponibles.length>0;i++){
-        const r = Math.floor(Math.random()*disponibles.length);
-        const n = disponibles[r].numero;
-        boletosSeleccionados.push(n);
-        elegidos.push(n);
-        disponibles.splice(r,1);
-      }
-      mostrarBoletos();
-      document.getElementById("resultado-suerte").innerHTML = "🎟️ Boletos elegidos a la suerte: " + elegidos.join(", ");
-    }
-
-    /* ---- Formulario: instrucciones de pago ---- */
-    function mostrarInstrucciones(m){
-      metodoPagoSeleccionado = m;
-      const box = document.getElementById("instrucciones");
-      box.style.display = "block";
-      if(m==="pago-movil"){
-        box.innerHTML = "<h5>📱 Pago Móvil Venezuela</h5><p><b>Banco:</b> 0102<br><b>Teléfono:</b> 0424-8417632<br><b>Cédula:</b> V-31490382<br><b>Titular:</b> Angel Zabala</p>";
-      }else if(m==="banesco"){
-        box.innerHTML = "<h5>🏦 Banesco</h5><p><b>Cuenta:</b> 0134<br><b>Titular:</b> Iraima Jimenez</p>";
-      }else if(m==="binance"){
-        box.innerHTML = "<h5>💰 Binance</h5><p><b>Wallet:</b> angelitojavier277@gmail.com</p>";
-      }
-    }
-
-    /* ---- Confirmar compra ---- */
-    const comprasSimuladas = [
-      { nombre:"Juan Pérez", cedula:"V-12345678", telefono:"04128417632", boletos:["0001","0002","0005"] }
-    ];
-
-    function confirmarCompra(e){
-      e.preventDefault(); // no recarga ni sube
-
-      if(boletosSeleccionados.length < 3){
-        alert("⚠️ La compra mínima es de 3 boletos.");
-        return false;
-      }
-
-      const nombre   = document.getElementById("nombre").value.trim();
-      const cedula   = document.getElementById("cedula").value.trim();
-      const cc       = document.getElementById("country_code").value;
-      const tel      = document.getElementById("telefono").value.trim();
-      const telefonoCompleto = cc + " " + tel;
-
-      // Marca como vendidos
-      boletosSeleccionados.forEach(num=>{
-        const i = boletos.findIndex(b=>b.numero===num);
-        if(i>-1) boletos[i].vendido = true;
-      });
-
-      // Guarda en verificador
-      comprasSimuladas.push({
-        nombre, cedula, telefono: telefonoCompleto, boletos:[...boletosSeleccionados]
-      });
-
-      // Mensaje de éxito + botón "Ver mis Boletos"
-      ultimoTelefonoCompra = telefonoCompleto;
-      const monto = boletosSeleccionados.length * PRECIO_BOLETO;
-      document.getElementById("mensaje-compra").innerHTML =
-        `<div class="alert alert-success">
-          ✅ Compra confirmada: <b>${boletosSeleccionados.length}</b> boletos. <b>Total:</b> ${monto} Bs.
-        </div>`;
-      document.getElementById("btnVerMisBoletos").style.display = "block";
-
-      // Refresca UI
-      actualizarProgreso();
-      mostrarBoletos();
-      actualizarTotal();
-
-      return false;
-    }
-
-    function irAVerMisBoletos(){
-      document.getElementById("verificador").scrollIntoView({behavior:"smooth"});
-      if(ultimoTelefonoCompra){
-        document.getElementById("inputVerificador").value = ultimoTelefonoCompra;
-        setTimeout(()=>verificarConValor(ultimoTelefonoCompra), 300);
-      }
-    }
-
-    /* ---- Verificador ---- */
-    function verificarBoletos(e){
-      e.preventDefault();
-      const valor = document.getElementById("inputVerificador").value.trim();
-      verificarConValor(valor);
-      return false;
-    }
-
-    function verificarConValor(valor){
-      const res = document.getElementById("resultadoVerificador");
-      const det = document.getElementById("detalleBoletos");
-
-      let compra = comprasSimuladas.find(c => c.telefono === valor);
-      if(!compra){
-        comprasSimuladas.forEach(c => { if(c.boletos.includes(valor)) compra = c; });
-      }
-
-      if(compra){
-        det.innerHTML = `
-          <p><b>Nombre:</b> ${compra.nombre}</p>
-          <p><b>Cédula:</b> ${compra.cedula}</p>
-          <p><b>Teléfono:</b> ${compra.telefono}</p>
-          <p><b>Boletos comprados:</b></p>
-          <div class="d-flex flex-wrap">${compra.boletos.map(num=>`<div class="ticket">${num}</div>`).join("")}</div>
-          <p class="mt-3"><b>Total Pagado:</b> ${compra.boletos.length * PRECIO_BOLETO} Bs</p>
-        `;
-      }else{
-        det.innerHTML = `<p class="text-danger">❌ No se encontraron boletos asociados.</p>`;
-      }
-      res.style.display = "block";
-    }
-
-   function actualizarTotalSeleccionados() {
-  const t = document.getElementById("total-seleccionados");
-  const d = document.getElementById("boletos-elegidos");
-  const c = boletosSeleccionados.length;
-  const total = c * PRECIO_BOLETO;
-
-  if (c > 0) {
-    t.innerHTML = `<p>Boletos seleccionados: ${c}</p>
-                   <p>Total a pagar: ${total} Bs</p>`;
-    d.innerHTML = boletosSeleccionados.map(num =>
-      `<div class="ticket seleccionado">
-         ${num}
-         <button class="remove-btn" onclick="quitarBoleto('${num}')">✖</button>
-       </div>`
-    ).join("");
-  } else {
-    t.innerHTML = "";
-    d.innerHTML = "";
+/* -------- Seed admin, modelos y flujo demo -------- */
+(function seedOnce(){
+  const users=DB.get('users',[]);
+  if(!users.find(u=>u.email==='admin@site.com')){
+    users.push({id:'u_admin',email:'admin@site.com',pass:'admin123',alias:'Admin',status:'👩‍💻',privacy:'all',twofa:false,role:'admin',coins:START_COINS});
+    DB.set('users',users);
   }
+  if(!DB.get('models')){
+    DB.set('models',[
+      {id:'m1',name:'Luna',desc:'Tierna y juguetona ✨',img:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?q=80&w=600'},
+      {id:'m2',name:'Mila',desc:'Charla traviesa 😇',img:'https://images.unsplash.com/photo-1509967419530-da38b4704bc8?q=80&w=600'},
+      {id:'m3',name:'Arya',desc:'Curiosa y divertida 💫',img:'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=600'},
+    ]);
+  }
+  if(!DB.get('autoFlow')){
+    DB.set('autoFlow',[
+      { q:"Holi {alias} bebé, ¿cómo estás? ¿Quieres jugar conmigo? 😘", yes:"¿Te gusta más hablar por chat o por voz?", no:"Aw, te espero por aquí 💖" },
+      { q:"¿Prefieres algo romántico o divertido? 💕", yes:"Romántico me encanta 😍", no:"¡Divertido entonces! 😜" }
+    ]);
+  }
+})();
+
+/* -------- Router (cambia vistas) -------- */
+const views={auth:'view-auth',chat:'view-chat',profile:'view-profile',admin:'view-admin'};
+function go(view){
+  Object.values(views).forEach(id=>document.getElementById(id).classList.remove('active'));
+  document.getElementById(views[view]).classList.add('active');
+  history.replaceState({},'',`#${view}`);
+  if(view==='chat') renderChatLists(), renderSwipe();
+  if(view==='admin') renderModelsTable(), loadFlowToTextarea();
+  if(view==='profile') loadProfile();
 }
-function quitarBoleto(num) {
-  const i = boletosSeleccionados.indexOf(num);
-  if (i !== -1) boletosSeleccionados.splice(i, 1);
-  mostrarBoletos();
-  actualizarTotalSeleccionados();
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',e=>go(e.currentTarget.dataset.go)));
+window.addEventListener('load',()=>{ const h=location.hash.replace('#',''); go(views[h]?h:'auth'); });
+
+/* -------- Auth -------- */
+function session(){return DB.get('sessionUser')}
+function setSession(u){DB.set('sessionUser',u)}
+function requireAuth(){ if(!session()){go('auth'); alert('Inicia sesión primero'); return false} return true }
+function isAdmin(){ const u=session(); return !!u && u.role==='admin' }
+
+document.getElementById('tabLogin').onclick=()=>{document.getElementById('loginBox').classList.remove('hidden');document.getElementById('regBox').classList.add('hidden')};
+document.getElementById('tabReg').onclick=()=>{document.getElementById('regBox').classList.remove('hidden');document.getElementById('loginBox').classList.add('hidden')};
+
+document.getElementById('btnLogin').onclick=()=>{
+  const id=document.getElementById('loginId').value.trim();
+  const pass=document.getElementById('loginPass').value.trim();
+  const code=document.getElementById('twofaCode').value.trim();
+  const users=DB.get('users',[]);
+  const u=users.find(x=>(x.email===id||x.phone===id)&&x.pass===pass);
+  if(!u){alert('Credenciales inválidas');return;}
+  if(u.twofa){
+    const rec=DB.get('twofa:'+u.email);
+    const field=document.getElementById('twofaField'); field.classList.remove('hidden');
+    if(!rec){
+      const gen=String(Math.floor(100000+Math.random()*900000));
+      DB.set('twofa:'+u.email,{code:gen,exp:Date.now()+5*60*1000});
+      alert('2FA enviado (demo): '+gen); return;
+    }else{
+      if(!code){alert('Ingresa tu código 2FA');return;}
+      if(Date.now()>rec.exp||rec.code!==code){alert('Código 2FA inválido/expirado');return;}
+      DB.del('twofa:'+u.email);
+    }
+  }
+  setSession(u); go('chat');
+};
+
+document.getElementById('btnForgot').onclick=()=>{
+  const id=prompt('Correo para reset (demo):'); if(!id) return;
+  const users=DB.get('users',[]); const u=users.find(x=>x.email===id);
+  if(!u){alert('No existe ese correo');return;}
+  u.pass='123456'; DB.set('users',users); alert('Tu nueva clave (demo) es 123456');
+};
+
+document.getElementById('btnRegister').onclick=()=>{
+  const email=document.getElementById('regEmail').value.trim();
+  const phone=document.getElementById('regPhone').value.trim();
+  const alias=document.getElementById('regAlias').value.trim();
+  const pass=document.getElementById('regPass').value.trim();
+  if(!email||!pass){alert('Email y contraseña obligatorios');return;}
+  const users=DB.get('users',[]);
+  if(users.find(u=>u.email===email)){alert('Ya existe ese correo');return;}
+  const u={id:uid('u'),email,phone,pass,alias:alias||email.split('@')[0],status:'Hola 👋',privacy:'all',twofa:false,role:'user',coins:START_COINS};
+  users.push(u); DB.set('users',users); setSession(u);
+  alert('¡Bienvenido! Tienes 50 moneditas ✨'); go('chat');
+};
+
+document.getElementById('btnGlobalLogout').onclick=()=>{
+  DB.del('sessionUser'); alert('Sesión cerrada'); go('auth');
+};
+
+/* -------- Perfil -------- */
+function loadProfile(){ if(!requireAuth())return;
+  const me=session();
+  document.getElementById('pAlias').value=me.alias||'';
+  document.getElementById('pStatus').value=me.status||'';
+  document.getElementById('pPrivacy').value=me.privacy||'all';
+  document.getElementById('p2fa').value=me.twofa?'on':'off';
+}
+document.getElementById('btnSaveProfile').onclick=()=>{
+  const me=session(); if(!me) return;
+  const users=DB.get('users',[]);
+  const i=users.findIndex(x=>x.email===me.email);
+  users[i]={...users[i],
+    alias:document.getElementById('pAlias').value.trim(),
+    status:document.getElementById('pStatus').value.trim(),
+    privacy:document.getElementById('pPrivacy').value,
+    twofa:document.getElementById('p2fa').value==='on'
+  };
+  DB.set('users',users); setSession(users[i]); alert('Perfil actualizado');
+};
+
+/* Backup total desde Perfil */
+document.getElementById('btnExportAll').onclick=()=>{
+  const data={users:DB.get('users',[]),models:DB.get('models',[]),chats:DB.get('chats',{})};
+  download('backup.json', JSON.stringify(data,null,2));
+};
+document.getElementById('btnImportAll').onclick=()=>document.getElementById('importAllFile').click();
+document.getElementById('importAllFile').addEventListener('change',async e=>{
+  const f=e.target.files[0]; if(!f) return; const text=await f.text();
+  try{const d=JSON.parse(text); if(d.users)DB.set('users',d.users); if(d.models)DB.set('models',d.models); if(d.chats)DB.set('chats',d.chats); alert('Importado. Ve a Chat.');}
+  catch{alert('Archivo inválido')}
+});
+
+/* -------- Chat / Monedas -------- */
+const coinsLabel=document.getElementById('coinsLabel');
+function getCoins(){return session()?.coins??0}
+function setCoins(val){const u=session(); if(!u)return; u.coins=Math.max(0,val); setSession(u); coinsLabel.textContent=u.coins}
+function ensureCoinsOrOpen(){ if(getCoins()>=COIN_PER_MSG) return true; openRecharge(true); return false }
+function openRecharge(fromSend=false){
+  document.getElementById('rechargeModal').classList.remove('hidden');
+}
+function closeRecharge(){document.getElementById('rechargeModal').classList.add('hidden')}
+document.getElementById('modalClose').onclick=closeRecharge;
+document.getElementById('btnWatchAd').onclick=()=>{setCoins(getCoins()+10); alert('+10 por ver anuncio (demo)')};
+document.getElementById('btnPayPal').onclick=()=>alert('Integración PayPal (placeholder)');
+document.getElementById('modalWatchAd').onclick=()=>{setCoins(getCoins()+10); closeRecharge()};
+document.getElementById('modalPayPal').onclick=()=>alert('Pagar con PayPal (placeholder)');
+
+/* -------- Lista de chats (modelos) -------- */
+function renderChatLists(){
+  if(!requireAuth())return;
+  coinsLabel.textContent=getCoins();
+  const list=document.getElementById('chatList'); list.innerHTML='';
+  const models=DB.get('models',[]);
+  models.forEach(m=>{
+    const item=document.createElement('div'); item.className='model-item'; item.dataset.id=m.id;
+    item.innerHTML=`<img src="${m.img}" alt=""><div><div class="name">${m.name}</div><div class="desc">${m.desc}</div></div>`;
+    item.onclick=()=>openConversation(m.id);
+    list.appendChild(item);
+  });
 }
 
+/* -------- Conversación -------- */
+let currentModelId=null;
+const messagesDiv=document.getElementById('messages');
+const typingHint=document.getElementById('typingHint');
+function chats(){return DB.get('chats',{})}
+function saveChats(c){DB.set('chats',c)}
+function convoKey(mid){const me=session(); return `${me.id}:${mid}`}
 
-    /* Init */
-    generarBoletos();
-    mostrarBoletos();
-  </script>
+function openConversation(mid){
+  currentModelId=mid;
+  const m=DB.get('models',[]).find(x=>x.id===mid);
+  document.getElementById('chatAvatar').src=m.img;
+  document.getElementById('chatName').textContent=m.name;
+  document.getElementById('chatStatus').textContent='En línea';
+  renderMessages();
+}
+
+function renderMessages(){
+  messagesDiv.innerHTML='';
+  const c=chats()[convoKey(currentModelId)]||[];
+  c.forEach(msg=>messagesDiv.appendChild(msgEl(msg)));
+  messagesDiv.scrollTop=messagesDiv.scrollHeight;
+}
+
+function msgEl(m){
+  const div=document.createElement('div'); div.className='msg '+(m.from==='you'?'you':'them');
+  let html = m.text ? sanitize(m.text) : '';
+  if(m.media && m.media.type==='img') html += `<img class="media" src="${m.media.url}" alt="">`;
+  if(m.media && m.media.type==='audio') html += `<audio controls src="${m.media.url}"></audio>`;
+  const meta=`<div class="meta">${new Date(m.ts).toLocaleTimeString()} · ${m.read?'visto':'enviado'}</div>`;
+  div.innerHTML=html+meta; return div;
+}
+
+/* Moderación muy simple */
+function cleanText(t){
+  const bad=["whatsapp","número","violencia","odio"];
+  let s=t; bad.forEach(w=>{s=s.replace(new RegExp(`\\b${w}\\b`,'ig'),'****')}); return s;
+}
+
+/* Enviar y cobrar monedas */
+document.getElementById('btnSend').onclick=()=>{
+  if(!currentModelId){alert('Selecciona una modelo');return;}
+  const input=document.getElementById('msgText'); const raw=input.value.trim(); if(!raw) return;
+  if(!ensureCoinsOrOpen()) return;
+
+  setCoins(getCoins()-COIN_PER_MSG);
+  const c=chats(); const key=convoKey(currentModelId); c[key]=c[key]||[];
+  const me=session();
+  const msg={id:uid('m'),from:'you',text:cleanText(raw),ts:Date.now(),read:false};
+  c[key].push(msg); saveChats(c); input.value=''; renderMessages();
+
+  // marcar leído después de un momento
+  setTimeout(()=>{ msg.read=true; saveChats(c); renderMessages(); },600);
+
+  // Respuesta automática basada en flow
+  autoReplyFlow(me, key);
+};
+
+function autoReplyFlow(me,key){
+  const flow=DB.get('autoFlow',[]);
+  if(!flow.length) return;
+  typing(true);
+  setTimeout(()=>{
+    const lastQ=flow[Math.floor(Math.random()*flow.length)];
+    const text = (lastQ.q||'Hola {alias}').replace('{alias}', me.alias||'guapo');
+    pushFromModel(key, text);
+    typing(false);
+  }, 1000+Math.random()*800);
+}
+
+function pushFromModel(key,text,media){
+  const c=chats(); c[key]=c[key]||[];
+  c[key].push({id:uid('m'),from:'them',text,media,ts:Date.now(),read:true});
+  saveChats(c); renderMessages();
+}
+
+function typing(on){ typingHint.classList.toggle('on', !!on) }
+
+/* Adjuntos, ubicación, “llamadas” demo */
+document.getElementById('btnAttachImg').onclick=()=>document.getElementById('fileImage').click();
+document.getElementById('fileImage').addEventListener('change', async e=>{
+  const f=e.target.files[0]; if(!f||!currentModelId) return;
+  if(!ensureCoinsOrOpen()) return; setCoins(getCoins()-COIN_PER_MSG);
+  const url=URL.createObjectURL(f);
+  const key=convoKey(currentModelId); pushFromModel(key,'(Imagen enviada)',{type:'img',url});
+});
+
+document.getElementById('btnAttachAudio').onclick=()=>document.getElementById('fileAudio').click();
+document.getElementById('fileAudio').addEventListener('change', async e=>{
+  const f=e.target.files[0]; if(!f||!currentModelId) return;
+  if(!ensureCoinsOrOpen()) return; setCoins(getCoins()-COIN_PER_MSG);
+  const url=URL.createObjectURL(f);
+  const key=convoKey(currentModelId); pushFromModel(key,'(Audio enviado)',{type:'audio',url});
+});
+
+document.getElementById('btnShareLoc').onclick=()=>{
+  if(!currentModelId){alert('Selecciona una modelo');return;}
+  if(!navigator.geolocation){alert('Geolocalización no soportada');return;}
+  if(!ensureCoinsOrOpen()) return; setCoins(getCoins()-COIN_PER_MSG);
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const {latitude,longitude}=pos.coords;
+    const key=convoKey(currentModelId);
+    pushFromModel(key,`Mi ubicación: ${latitude.toFixed(5)}, ${longitude.toFixed(5)}`);
+  },()=>alert('No se pudo obtener ubicación'));
+};
+
+document.getElementById('btnVoice').onclick=()=>alert('Demo llamada de voz (placeholder)');
+document.getElementById('btnVideo').onclick=()=>alert('Demo videollamada (placeholder)');
+
+/* Bloqueo / Reporte */
+document.getElementById('btnBlock').onclick=()=>{
+  if(!currentModelId) return; const me=session();
+  const key=`block:${me.id}`; const list=DB.get(key,[]);
+  if(!list.includes(currentModelId)) list.push(currentModelId);
+  DB.set(key,list); alert('Usuario bloqueado (demo)');
+};
+document.getElementById('btnReport').onclick=()=>alert('Reporte enviado (demo)');
+
+/* Export / Import conversación */
+document.getElementById('btnExport').onclick=()=>{
+  if(!currentModelId) return;
+  const key=convoKey(currentModelId); const c=chats()[key]||[];
+  download(`chat_${key}.json`, JSON.stringify(c,null,2));
+};
+document.getElementById('btnImport').onclick=()=>document.getElementById('importFile').click();
+document.getElementById('importFile').addEventListener('change', async e=>{
+  const f=e.target.files[0]; if(!f||!currentModelId) return;
+  const text=await f.text(); try{
+    const arr=JSON.parse(text); const all=chats(); all[convoKey(currentModelId)]=arr; saveChats(all); renderMessages();
+  }catch{alert('Archivo inválido')}
+});
+
+/* Búsqueda simple */
+document.getElementById('searchInput').addEventListener('input', e=>{
+  const term=e.target.value.trim().toLowerCase(); if(!currentModelId) return;
+  const key=convoKey(currentModelId); const c=chats()[key]||[];
+  messagesDiv.innerHTML='';
+  c.filter(m=>(m.text||'').toLowerCase().includes(term)).forEach(m=>messagesDiv.appendChild(msgEl(m)));
+});
+
+/* -------- Swipe tipo Tinder -------- */
+let swipeStack=[];
+function renderSwipe(){
+  const wrap=document.getElementById('swipeWrap'); wrap.innerHTML='';
+  swipeStack=[...DB.get('models',[])].reverse(); // to stack
+  swipeStack.forEach(m=>{
+    const card=document.createElement('div'); card.className='card-swipe'; card.dataset.id=m.id;
+    card.innerHTML=`<img src="${m.img}" alt=""><div class="info"><b>${m.name}</b> · <span class="small">${m.desc}</span></div>`;
+    initDraggable(card, ()=>like(m.id), ()=>nope(m.id));
+    wrap.appendChild(card);
+  });
+}
+function topCard(){ const wrap=document.getElementById('swipeWrap'); return wrap.querySelector('.card-swipe:last-child')}
+function like(id){ matchWith(id); removeTop() }
+function nope(id){ removeTop() }
+function removeTop(){ const c=topCard(); if(c) c.remove() }
+function initDraggable(el, onRight, onLeft){
+  let startX=0,startY=0; let dragging=false;
+  el.addEventListener('pointerdown',e=>{dragging=true;startX=e.clientX;startY=e.clientY;el.setPointerCapture(e.pointerId)});
+  el.addEventListener('pointermove',e=>{
+    if(!dragging) return; const dx=e.clientX-startX, dy=e.clientY-startY;
+    el.style.transform=`translate(${dx}px,${dy}px) rotate(${dx/18}deg)`;
+  });
+  el.addEventListener('pointerup',e=>{
+    if(!dragging) return; dragging=false; const dx=e.clientX-startX;
+    el.style.transform='';
+    if(dx>120) onRight(); else if(dx<-120) onLeft();
+  });
+}
+document.getElementById('btnLike').onclick=()=>{const c=topCard(); if(!c) return; like(c.dataset.id)}
+document.getElementById('btnNope').onclick=()=>{const c=topCard(); if(!c) return; nope(c.dataset.id)}
+function matchWith(mid){
+  const me=session(); if(!me) return;
+  // Simplemente abre el chat con esa modelo
+  openConversation(mid);
+  alert('¡Match! Se abrió el chat 💬');
+}
+document.getElementById('btnGoAdmin').onclick=()=>{ if(isAdmin()) go('admin'); else alert('Solo admin') };
+
+/* -------- Admin -------- */
+function renderModelsTable(){
+  if(!requireAuth()) return;
+  if(!isAdmin()){ alert('Solo admin'); go('chat'); return; }
+  const tb=document.querySelector('#modelsTable tbody'); tb.innerHTML='';
+  DB.get('models',[]).forEach(m=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td><img src="${m.img}" style="width:56px;height:56px;border-radius:10px;object-fit:cover"></td>
+      <td>${m.name}</td><td>${m.desc}</td><td><span class="badge green">Activo</span></td>
+      <td><button class="btn btn-ghost" data-del="${m.id}">Eliminar</button></td>`;
+    tb.appendChild(tr);
+  });
+  tb.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{
+    const id=b.dataset.del; const list=DB.get('models',[]).filter(x=>x.id!==id); DB.set('models',list); renderModelsTable();
+  });
+}
+document.getElementById('btnAddModel').onclick=()=>{
+  if(!isAdmin())return;
+  const name=document.getElementById('mName').value.trim();
+  const desc=document.getElementById('mDesc').value.trim();
+  const img=document.getElementById('mImg').value.trim();
+  if(!name||!img){alert('Nombre y foto obligatorios');return;}
+  const list=DB.get('models',[]); list.push({id:uid('m'),name,desc,img}); DB.set('models',list);
+  document.getElementById('mName').value='';document.getElementById('mDesc').value='';document.getElementById('mImg').value='';
+  renderModelsTable(); alert('Modelo agregada');
+};
+document.getElementById('btnSeed').onclick=()=>{
+  DB.set('models',[
+    {id:'m1',name:'Luna',desc:'Tierna y juguetona ✨',img:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?q=80&w=600'},
+    {id:'m2',name:'Mila',desc:'Charla traviesa 😇',img:'https://images.unsplash.com/photo-1509967419530-da38b4704bc8?q=80&w=600'},
+    {id:'m3',name:'Arya',desc:'Curiosa y divertida 💫',img:'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=600'},
+  ]); renderModelsTable(); alert('Modelos de ejemplo cargadas');
+};
+
+/* Flujo auto respuestas */
+function loadFlowToTextarea(){
+  const txt=document.getElementById('flowJson'); const flow=DB.get('autoFlow',[]);
+  txt.value=JSON.stringify(flow,null,2);
+}
+document.getElementById('btnSaveFlow').onclick=()=>{
+  try{
+    const data=JSON.parse(document.getElementById('flowJson').value||'[]');
+    DB.set('autoFlow',data); alert('Flujo guardado');
+  }catch{alert('JSON inválido')}
+};
+
+/* -------- Utilidades varias -------- */
+function download(name,content){
+  const blob=new Blob([content],{type:'application/json'}); const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=name; a.click(); URL.revokeObjectURL(url);
+}
+function sanitize(s){ const div=document.createElement('div'); div.textContent=s; return div.innerHTML }
+
+/* -------- Navegación inicial -------- */
+if(session()){ go('chat') } else { go('auth') }
+</script>
 </body>
 </html>
