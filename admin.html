@@ -1,94 +1,46 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Panel Admin - Rifas</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800&display=swap" rel="stylesheet">
-  <style>
-    body {
-      margin:0; font-family:"Inter",sans-serif; background:#f9fafb; color:#111827;
-      display:flex; flex-direction:column; align-items:center; padding:20px;
-    }
-    h1 { margin-bottom:20px; color:#0A4975; }
-    .orders { max-width:900px; width:100%; }
-    .order-card {
-      background:#fff; border:1px solid #e5e7eb; border-radius:12px;
-      padding:16px; margin-bottom:16px; box-shadow:0 1px 3px rgba(0,0,0,0.08);
-    }
-    .order-card h2 { margin:0 0 8px; font-size:18px; color:#0A4975; }
-    .order-card p { margin:4px 0; font-size:14px; }
-    .order-card img { max-width:220px; border:1px solid #ccc; border-radius:8px; margin-top:8px; }
-    .order-card button {
-      margin-top:10px; padding:8px 14px; border:none; border-radius:8px;
-      background:#ef4444; color:#fff; font-weight:700; cursor:pointer;
-    }
-    .order-card button:hover { background:#b91c1c; }
-    .empty { text-align:center; font-size:16px; color:#6b7280; }
-  </style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Panel Admin</title>
+  <link rel="stylesheet" href="./style.css"/>
 </head>
 <body>
-  <h1>📋 Panel de Administración</h1>
-  <div class="orders" id="ordersList"></div>
+  <header class="header">
+    <div class="header-inner container">
+      <div class="brand"><span class="dot"></span> Admin ⭐</div>
+      <button class="btn btn-danger" id="btnExit">Salir</button>
+    </div>
+  </header>
 
-<script>
-  const ordersKey = 'rifas_orders_v1';
-  const soldKey = 'rifas_soldTickets_v1';
+  <main class="container">
+    <div class="card">
+      <h3>Agregar modelo</h3>
+      <div class="field"><label>Nombre</label><input class="input" id="mName"/></div>
+      <div class="field"><label>Descripción</label><input class="input" id="mDesc"/></div>
+      <div class="field"><label>URL Foto</label><input class="input" id="mImg"/></div>
+      <button class="btn btn-primary" id="btnAddModel">Agregar</button>
+    </div>
 
-  const getOrders = () => JSON.parse(localStorage.getItem(ordersKey) || '[]');
-  const setOrders = arr => localStorage.setItem(ordersKey, JSON.stringify(arr));
-  const getSold = () => new Set(JSON.parse(localStorage.getItem(soldKey) || '[]'));
-  const setSold = s => localStorage.setItem(soldKey, JSON.stringify([...s]));
+    <div class="card" style="margin-top:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h3 style="margin:0">Modelos</h3>
+        <button class="btn btn-ghost" id="btnSeed">Cargar ejemplos</button>
+      </div>
+      <table class="table" id="modelsTable">
+        <thead><tr><th>Foto</th><th>Nombre</th><th>Descripción</th><th>Estado</th><th>Acciones</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
 
-  function pad4(n){ return n.toString().padStart(4,'0'); }
+    <div class="card" style="margin-top:14px">
+      <h3>Respuestas automáticas (flujo)</h3>
+      <textarea class="input" rows="6" id="flowJson" placeholder='[{"q":"..."}]'></textarea>
+      <button class="btn btn-primary" id="btnSaveFlow">Guardar flujo</button>
+    </div>
+  </main>
 
-  function renderOrders(){
-    const wrap=document.getElementById('ordersList');
-    wrap.innerHTML='';
-    const orders=getOrders();
-    if(!orders.length){
-      wrap.innerHTML='<div class="empty">No hay compras registradas</div>';
-      return;
-    }
-    orders.forEach(o=>{
-      const card=document.createElement('div');
-      card.className='order-card';
-      card.innerHTML=`
-        <h2>Pedido: ${o.id}</h2>
-        <p><b>Nombre:</b> ${o.name}</p>
-        <p><b>Cédula:</b> ${o.idnum}</p>
-        <p><b>Teléfono:</b> ${o.phone}</p>
-        <p><b>Referencia:</b> ${o.ref6}</p>
-        <p><b>Total:</b> ${o.total} Bs</p>
-        <p><b>Boletos:</b> ${o.tickets.map(pad4).join(', ')}</p>
-        <p><b>Fecha:</b> ${new Date(o.createdAt).toLocaleString('es-VE')}</p>
-        <div><b>Comprobante:</b><br>
-          <img src="${o.proof}" alt="comprobante de pago">
-        </div>
-        <button onclick="deleteOrder('${o.id}')">❌ Eliminar compra</button>
-      `;
-      wrap.appendChild(card);
-    });
-  }
-
-  function deleteOrder(id){
-    if(!confirm("¿Seguro que deseas eliminar esta compra?")) return;
-    let orders=getOrders();
-    const order=orders.find(o=>o.id===id);
-    if(order){
-      // liberar boletos vendidos
-      const sold=getSold();
-      order.tickets.forEach(n=>sold.delete(n));
-      setSold(sold);
-      // eliminar orden
-      orders=orders.filter(o=>o.id!==id);
-      setOrders(orders);
-      renderOrders();
-      alert("Compra eliminada correctamente");
-    }
-  }
-
-  renderOrders();
-</script>
+  <script src="./admin.js"></script>
 </body>
 </html>
