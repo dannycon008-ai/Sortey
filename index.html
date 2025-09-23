@@ -3,35 +3,33 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>TuChat — Demo One-File</title>
+<title>TuChat — Demo</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-/* ====== ESTILOS (inline CSS) ====== */
-*{box-sizing:border-box}html,body{height:100%}body{margin:0;font-family:Poppins,system-ui,Segoe UI,Roboto,sans-serif;background:#0b1220;color:#e9f6ff}
+/* ====== ESTILOS ====== */
+*{box-sizing:border-box}html,body{height:100%}
+body{margin:0;font-family:Poppins,system-ui,sans-serif;background:#0b1220;color:#e9f6ff}
 a{color:inherit;text-decoration:none}
 .hidden{display:none!important}
 .container{max-width:1100px;margin:0 auto;padding:16px}
 .header{position:sticky;top:0;z-index:50;background:rgba(10,18,32,.65);backdrop-filter:blur(6px);border-bottom:1px solid #132338}
-.header-inner{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 16px}
+.header-inner{display:flex;justify-content:space-between;align-items:center;padding:12px 16px}
 .brand{display:flex;align-items:center;gap:10px;font-weight:700}
 .dot{width:10px;height:10px;border-radius:50%;background:#ff2e6a;display:inline-block}
 .btn{border:0;padding:10px 14px;border-radius:12px;font-weight:600;cursor:pointer;transition:.15s}
 .btn:active{transform:translateY(1px)}
-.btn-primary{background:#ff2e6a;color:#fff;box-shadow:0 8px 24px rgba(255,46,106,.35)}
+.btn-primary{background:#ff2e6a;color:#fff}
 .btn-secondary{background:#0d223b;color:#cfe7ff}
 .btn-ghost{background:transparent;color:#cfe7ff;border:1px solid #244362}
 .btn-danger{background:#ef476f;color:#fff}
 .btn-success{background:#18c37e;color:#fff}
 .btn-warning{background:#ffb020;color:#1b1407}
-.input,select,textarea{width:100%;background:#0e192a;color:#d9eeff;border:1px solid #1f3550;border-radius:12px;padding:12px 14px;outline:none}
-.field{margin-bottom:12px}
-.card{background:linear-gradient(180deg,#0f1a2b,#0a1220);border:1px solid #1b3150;border-radius:18px;padding:16px;box-shadow:0 10px 32px rgba(0,0,0,.35)}
+.input{width:100%;background:#0e192a;color:#d9eeff;border:1px solid #1f3550;border-radius:12px;padding:12px 14px}
+.card{background:#0f1a2b;border:1px solid #1b3150;border-radius:18px;padding:16px;box-shadow:0 10px 32px rgba(0,0,0,.35)}
 .small{color:#9bc2df;font-size:12px}
 
 /* Auth */
-.auth-wrap{min-height:100dvh;display:grid;place-items:center;background:
-radial-gradient(900px 420px at 120% -20%, #ff2e6a22, transparent 60%),
-radial-gradient(700px 320px at -10% 110%, #00d6ff22, transparent 60%),#0b1220}
+.auth-wrap{min-height:100dvh;display:grid;place-items:center;background:#0b1220}
 .auth-card{width:min(480px,92vw)}
 .auth-tabs{display:flex;gap:8px;margin-bottom:12px}
 .auth-tabs .btn{flex:1}
@@ -39,56 +37,37 @@ radial-gradient(700px 320px at -10% 110%, #00d6ff22, transparent 60%),#0b1220}
 /* Layout chat */
 .chat-layout{display:grid;grid-template-columns:320px 1fr;gap:16px}
 @media (max-width:960px){.chat-layout{grid-template-columns:1fr}}
-.sidebar .coins{position:sticky;top:0;display:flex;gap:8px;align-items:center;justify-content:space-between;background:#0f1a2b;border:1px solid #1b3150;padding:10px 12px;border-radius:14px;margin-bottom:12px}
+.sidebar .coins{display:flex;gap:8px;align-items:center;justify-content:space-between;background:#0f1a2b;border:1px solid #1b3150;padding:10px 12px;border-radius:14px;margin-bottom:12px}
 .model-list{display:grid;gap:10px}
 .model-item{display:flex;gap:12px;align-items:center;padding:10px;border:1px solid #203a5d;background:#0c1728;border-radius:14px;cursor:pointer}
-.model-item img{width:46px;height:46px;object-fit:cover;border-radius:12px}
-.model-item .name{font-weight:600}
-.model-item .desc{font-size:12px;color:#95b7d5}
+.model-item img{width:46px;height:46px;border-radius:12px}
 .chat-card{height:calc(100dvh - 150px);display:flex;flex-direction:column}
-.chat-head{display:flex;align-items:center;justify-content:space-between;padding-bottom:10px;border-bottom:1px solid #1b3150}
-.chat-title{display:flex;align-items:center;gap:10px}
-.chat-title img{width:38px;height:38px;border-radius:10px;object-fit:cover}
 .chat-body{flex:1;overflow:auto;display:flex;flex-direction:column;gap:8px;padding:10px 2px}
-.msg{max-width:70%;padding:10px 12px;border-radius:14px;line-height:1.35;font-size:15px;border:1px solid #1b3150}
+.msg{max-width:70%;padding:10px 12px;border-radius:14px;line-height:1.35;font-size:15px}
 .msg.you{align-self:flex-end;background:#12253c}
 .msg.them{align-self:flex-start;background:#0c1728}
-.msg .meta{margin-top:6px;font-size:11px;color:#86a9c7;display:flex;gap:6px;align-items:center}
-.msg img.media{max-width:240px;border-radius:12px;display:block;margin-top:6px}
 .typing{color:#99c7ff;font-size:12px;padding:6px 0;display:none}
 .typing.on{display:block}
 .chat-input{display:flex;gap:8px;align-items:center;padding-top:10px;border-top:1px solid #1b3150}
 .chat-input .input{flex:1}
-.toolbar{display:flex;gap:6px}
 
 /* Swipe tipo Tinder */
-.swipe-section{margin-bottom:14px}
 .swipe-wrap{position:relative;height:420px}
-.card-swipe{position:absolute;inset:0;border-radius:22px;overflow:hidden;border:1px solid #1b3150;background:#0f1a2b;display:grid;grid-template-rows:1fr auto;user-select:none;box-shadow:0 20px 50px rgba(0,0,0,.45);transition:box-shadow .2s}
+.card-swipe{position:absolute;inset:0;border-radius:22px;overflow:hidden;background:#0f1a2b;display:grid;grid-template-rows:1fr auto;box-shadow:0 20px 50px rgba(0,0,0,.45)}
 .card-swipe img{width:100%;height:100%;object-fit:cover}
-.card-swipe .info{padding:12px 14px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.6));color:#fff}
+.card-swipe .info{padding:12px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.6));color:#fff}
 .swipe-actions{display:flex;justify-content:center;gap:12px;margin-top:8px}
-.swipe-actions .btn{width:56px;height:56px;border-radius:99px;display:grid;place-items:center;font-size:18px}
-
-/* Tabla admin */
-.table{width:100%;border-collapse:collapse;font-size:14px}
-.table th,.table td{border-bottom:1px solid #1b3150;padding:10px;text-align:left}
-.badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px}
-.badge.green{background:#112d22;color:#7af2bf;border:1px solid #1f8d6a}
-.badge.warn{background:#2a210d;color:#ffd483;border:1px solid #8f6d1f}
-
-/* Router views */
-.view{display:none}
-.view.active{display:block}
+.swipe-actions .btn{width:56px;height:56px;border-radius:99px}
+.view{display:none}.view.active{display:block}
 </style>
 </head>
 <body>
 
-<!-- ====== HEADER ====== -->
+<!-- HEADER -->
 <header class="header">
   <div class="header-inner container">
     <div class="brand"><span class="dot"></span> TuChat ⭐</div>
-    <nav style="display:flex;gap:8px;flex-wrap:wrap">
+    <nav style="display:flex;gap:8px">
       <button class="btn btn-ghost" data-go="auth">Auth</button>
       <button class="btn btn-ghost" data-go="chat">Chat</button>
       <button class="btn btn-ghost" data-go="profile">Perfil</button>
@@ -98,553 +77,92 @@ radial-gradient(700px 320px at -10% 110%, #00d6ff22, transparent 60%),#0b1220}
 </header>
 
 <main class="container">
-
-  <!-- ====== VIEW: AUTH ====== -->
+  <!-- AUTH -->
   <section id="view-auth" class="view active">
-    <div class="auth-wrap" style="min-height:auto">
-      <div class="auth-card card" style="margin:20px auto">
-        <div class="brand"><span class="dot"></span> Acceder</div>
+    <div class="auth-wrap">
+      <div class="auth-card card">
         <div class="auth-tabs">
           <button class="btn btn-secondary" id="tabLogin">Iniciar sesión</button>
           <button class="btn btn-ghost" id="tabReg">Registrarme</button>
         </div>
-
-        <!-- Login -->
         <div id="loginBox">
-          <div class="field"><label>Correo / Teléfono</label><input class="input" id="loginId" placeholder="correo@dominio.com o +58..." /></div>
-          <div class="field"><label>Contraseña</label><input class="input" id="loginPass" type="password" placeholder="••••••••" /></div>
-          <div class="field hidden" id="twofaField"><label>Código 2FA</label><input class="input" id="twofaCode" inputmode="numeric" placeholder="000000"/></div>
-          <div class="field"><button class="btn btn-primary" id="btnLogin">Entrar</button></div>
-          <button class="btn btn-ghost" id="btnForgot">¿Olvidaste tu contraseña?</button>
-          <p class="small" style="margin-top:8px">Admin demo: <b>admin@site.com</b> / <b>admin123</b></p>
+          <div class="field"><input class="input" id="loginId" placeholder="Correo o Teléfono"/></div>
+          <div class="field"><input class="input" id="loginPass" type="password" placeholder="Contraseña"/></div>
+          <button class="btn btn-primary" id="btnLogin">Entrar</button>
         </div>
-
-        <!-- Register -->
         <div id="regBox" class="hidden">
-          <div class="field"><label>Correo</label><input class="input" id="regEmail"/></div>
-          <div class="field"><label>Teléfono</label><input class="input" id="regPhone"/></div>
-          <div class="field"><label>Alias</label><input class="input" id="regAlias" placeholder="Apodo visible"/></div>
-          <div class="field"><label>Contraseña</label><input class="input" id="regPass" type="password"/></div>
-          <div class="field"><button class="btn btn-primary" id="btnRegister">Crear cuenta</button></div>
-          <p class="small">Se acreditan <b>50 moneditas</b> por registro ✨</p>
+          <div class="field"><input class="input" id="regEmail" placeholder="Correo"/></div>
+          <div class="field"><input class="input" id="regAlias" placeholder="Alias"/></div>
+          <div class="field"><input class="input" id="regPass" type="password" placeholder="Contraseña"/></div>
+          <button class="btn btn-primary" id="btnRegister">Crear cuenta</button>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ====== VIEW: CHAT ====== -->
+  <!-- CHAT -->
   <section id="view-chat" class="view">
-    <!-- Swipe tipo Tinder -->
     <div class="card swipe-section">
-      <h3 style="margin:4px 0 10px">Descubre</h3>
+      <h3>Descubre</h3>
       <div class="swipe-wrap" id="swipeWrap"></div>
       <div class="swipe-actions">
         <button class="btn btn-secondary" id="btnNope">✖</button>
         <button class="btn btn-primary" id="btnLike">❤</button>
       </div>
     </div>
-
     <div class="chat-layout">
-      <!-- Sidebar -->
       <aside class="sidebar">
-        <div class="coins">
-          <div>Monedas: <b id="coinsLabel">0</b></div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button class="btn btn-warning" id="btnWatchAd">Ver anuncio (+10)</button>
-            <button class="btn btn-success" id="btnPayPal">PayPal</button>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="field"><label>Buscar mensajes</label><input class="input" id="searchInput" placeholder="Palabra clave"/></div>
-        </div>
-
+        <div class="coins">Monedas: <b id="coinsLabel">0</b></div>
         <div class="model-list" id="chatList"></div>
       </aside>
-
-      <!-- Chat -->
       <section class="card chat-card">
-        <div class="chat-head">
-          <div class="chat-title">
-            <img id="chatAvatar" src="" alt="">
-            <div>
-              <div id="chatName">Selecciona una modelo</div>
-              <small id="chatStatus" class="small">—</small>
-            </div>
-          </div>
-          <div class="toolbar">
-            <button class="btn btn-secondary" id="btnVoice">📞</button>
-            <button class="btn btn-secondary" id="btnVideo">🎥</button>
-            <button class="btn btn-ghost" id="btnBlock">🚫</button>
-            <button class="btn btn-ghost" id="btnReport">⚠️</button>
-            <button class="btn btn-ghost" id="btnExport">Backup</button>
-            <input type="file" id="importFile" accept="application/json" class="hidden">
-            <button class="btn btn-ghost" id="btnImport">Importar</button>
-          </div>
-        </div>
-
-        <div class="typing" id="typingHint">Está escribiendo…</div>
         <div class="chat-body" id="messages"></div>
-
+        <div class="typing" id="typingHint">Está escribiendo…</div>
         <div class="chat-input">
           <input class="input" id="msgText" placeholder="Escribe un mensaje (2 monedas)"/>
-          <div class="toolbar">
-            <button class="btn btn-secondary" id="btnAttachImg">🖼️</button>
-            <button class="btn btn-secondary" id="btnAttachAudio">🎙️</button>
-            <button class="btn btn-secondary" id="btnShareLoc">📍</button>
-          </div>
           <button class="btn btn-primary" id="btnSend">Enviar</button>
-          <input type="file" id="fileImage" accept="image/*" class="hidden">
-          <input type="file" id="fileAudio" accept="audio/*" class="hidden">
         </div>
       </section>
     </div>
   </section>
 
-  <!-- ====== VIEW: PROFILE ====== -->
+  <!-- PROFILE -->
   <section id="view-profile" class="view">
     <div class="card">
-      <h3 style="margin-top:0">Mi perfil</h3>
-      <div class="field"><label>Alias</label><input class="input" id="pAlias"/></div>
-      <div class="field"><label>Estado</label><input class="input" id="pStatus"/></div>
-      <div class="field">
-        <label>Privacidad</label>
-        <select class="input" id="pPrivacy">
-          <option value="all">Todos pueden ver mi perfil</option>
-          <option value="matches">Solo mis matches</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>2FA (opcional)</label>
-        <select class="input" id="p2fa">
-          <option value="off">Desactivado</option>
-          <option value="on">Activado</option>
-        </select>
-      </div>
+      <h3>Mi perfil</h3>
+      <div class="field"><input class="input" id="pAlias" placeholder="Alias"/></div>
+      <div class="field"><input class="input" id="pStatus" placeholder="Estado"/></div>
       <button class="btn btn-primary" id="btnSaveProfile">Guardar</button>
     </div>
-
-    <div class="card" style="margin-top:14px">
-      <h3 style="margin-top:0">Backup / Sync</h3>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-ghost" id="btnExportAll">Exportar todo</button>
-        <input type="file" id="importAllFile" accept="application/json" class="hidden">
-        <button class="btn btn-ghost" id="btnImportAll">Importar todo</button>
-      </div>
-      <p class="small">Funciona como respaldo y pseudo sincronización entre dispositivos.</p>
-    </div>
   </section>
-
 </main>
 
-<!-- Modal recarga -->
-<div id="rechargeModal" class="hidden" style="position:fixed;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.55)">
-  <div class="card" style="width:min(420px,92vw)">
-    <h3 style="margin-top:0">Sin monedas 😢</h3>
-    <p class="small">Cada mensaje cuesta <b>2</b> moneditas.</p>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <button class="btn btn-warning" id="modalWatchAd">Ver anuncio (+10)</button>
-      <button class="btn btn-success" id="modalPayPal">Recargar con PayPal</button>
-      <button class="btn btn-ghost" id="modalClose">Cerrar</button>
-    </div>
-  </div>
-</div>
-
 <script>
-/* ====== JS (inline) ====== */
-/* -------- Helpers / "DB" -------- */
-const DB = {
-  get(k,f=null){try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch{return f}},
-  set(k,v){localStorage.setItem(k,JSON.stringify(v))},
-  del(k){localStorage.removeItem(k)}
-};
+/* DB */
+const DB={get:(k,f=null)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch{return f}},set:(k,v)=>localStorage.setItem(k,JSON.stringify(v))};
 const START_COINS=50, COIN_PER_MSG=2;
-const uid = (p='id') => `${p}_${Math.random().toString(36).slice(2,9)}_${Date.now().toString(36)}`;
-
-/* -------- Seed admin, modelos y flujo demo -------- */
-(function seedOnce(){
-  const users=DB.get('users',[]);
-  if(!users.find(u=>u.email==='admin@site.com')){
-    users.push({id:'u_admin',email:'admin@site.com',pass:'admin123',alias:'Admin',status:'👩‍💻',privacy:'all',twofa:false,role:'admin',coins:START_COINS});
-    DB.set('users',users);
-  }
-  if(!DB.get('models')){
-    DB.set('models',[
-      {id:'m1',name:'Luna',desc:'Tierna y juguetona ✨',img:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?q=80&w=600'},
-      {id:'m2',name:'Mila',desc:'Charla traviesa 😇',img:'https://images.unsplash.com/photo-1509967419530-da38b4704bc8?q=80&w=600'},
-      {id:'m3',name:'Arya',desc:'Curiosa y divertida 💫',img:'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=600'},
-    ]);
-  }
-  if(!DB.get('autoFlow')){
-    DB.set('autoFlow',[
-      { q:"Holi {alias} bebé, ¿cómo estás? ¿Quieres jugar conmigo? 😘", yes:"¿Te gusta más hablar por chat o por voz?", no:"Aw, te espero por aquí 💖" },
-      { q:"¿Prefieres algo romántico o divertido? 💕", yes:"Romántico me encanta 😍", no:"¡Divertido entonces! 😜" }
-    ]);
-  }
-})();
-
-/* -------- Router (cambia vistas) -------- */
-const views={auth:'view-auth',chat:'view-chat',profile:'view-profile',admin:'view-admin'};
-function go(view){
-  Object.values(views).forEach(id=>document.getElementById(id).classList.remove('active'));
-  document.getElementById(views[view]).classList.add('active');
-  history.replaceState({},'',`#${view}`);
-  if(view==='chat') renderChatLists(), renderSwipe();
-  if(view==='profile') loadProfile();
-}
-document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',e=>go(e.currentTarget.dataset.go)));
-window.addEventListener('load',()=>{ const h=location.hash.replace('#',''); go(views[h]?h:'auth'); });
-
-/* -------- Auth -------- */
-function session(){return DB.get('sessionUser')}
-function setSession(u){DB.set('sessionUser',u)}
-function requireAuth(){ if(!session()){go('auth'); alert('Inicia sesión primero'); return false} return true }
-function isAdmin(){ const u=session(); return !!u && u.role==='admin' }
-
-document.getElementById('tabLogin').onclick=()=>{document.getElementById('loginBox').classList.remove('hidden');document.getElementById('regBox').classList.add('hidden')};
-document.getElementById('tabReg').onclick=()=>{document.getElementById('regBox').classList.remove('hidden');document.getElementById('loginBox').classList.add('hidden')};
-
-document.getElementById('btnLogin').onclick=()=>{
-  const id=document.getElementById('loginId').value.trim();
-  const pass=document.getElementById('loginPass').value.trim();
-  const code=document.getElementById('twofaCode').value.trim();
-  const users=DB.get('users',[]);
-  const u=users.find(x=>(x.email===id||x.phone===id)&&x.pass===pass);
-  if(!u){alert('Credenciales inválidas');return;}
-  if(u.twofa){
-    const rec=DB.get('twofa:'+u.email);
-    const field=document.getElementById('twofaField'); field.classList.remove('hidden');
-    if(!rec){
-      const gen=String(Math.floor(100000+Math.random()*900000));
-      DB.set('twofa:'+u.email,{code:gen,exp:Date.now()+5*60*1000});
-      alert('2FA enviado (demo): '+gen); return;
-    }else{
-      if(!code){alert('Ingresa tu código 2FA');return;}
-      if(Date.now()>rec.exp||rec.code!==code){alert('Código 2FA inválido/expirado');return;}
-      DB.del('twofa:'+u.email);
-    }
-  }
-  setSession(u); go('chat');
-};
-
-document.getElementById('btnForgot').onclick=()=>{
-  const id=prompt('Correo para reset (demo):'); if(!id) return;
-  const users=DB.get('users',[]); const u=users.find(x=>x.email===id);
-  if(!u){alert('No existe ese correo');return;}
-  u.pass='123456'; DB.set('users',users); alert('Tu nueva clave (demo) es 123456');
-};
-
-document.getElementById('btnRegister').onclick=()=>{
-  const email=document.getElementById('regEmail').value.trim();
-  const phone=document.getElementById('regPhone').value.trim();
-  const alias=document.getElementById('regAlias').value.trim();
-  const pass=document.getElementById('regPass').value.trim();
-  if(!email||!pass){alert('Email y contraseña obligatorios');return;}
-  const users=DB.get('users',[]);
-  if(users.find(u=>u.email===email)){alert('Ya existe ese correo');return;}
-  const u={id:uid('u'),email,phone,pass,alias:alias||email.split('@')[0],status:'Hola 👋',privacy:'all',twofa:false,role:'user',coins:START_COINS};
-  users.push(u); DB.set('users',users); setSession(u);
-  alert('¡Bienvenido! Tienes 50 moneditas ✨'); go('chat');
-};
-
-document.getElementById('btnGlobalLogout').onclick=()=>{
-  DB.del('sessionUser'); alert('Sesión cerrada'); go('auth');
-};
-
-/* -------- Perfil -------- */
-function loadProfile(){ if(!requireAuth())return;
-  const me=session();
-  document.getElementById('pAlias').value=me.alias||'';
-  document.getElementById('pStatus').value=me.status||'';
-  document.getElementById('pPrivacy').value=me.privacy||'all';
-  document.getElementById('p2fa').value=me.twofa?'on':'off';
-}
-document.getElementById('btnSaveProfile').onclick=()=>{
-  const me=session(); if(!me) return;
-  const users=DB.get('users',[]);
-  const i=users.findIndex(x=>x.email===me.email);
-  users[i]={...users[i],
-    alias:document.getElementById('pAlias').value.trim(),
-    status:document.getElementById('pStatus').value.trim(),
-    privacy:document.getElementById('pPrivacy').value,
-    twofa:document.getElementById('p2fa').value==='on'
-  };
-  DB.set('users',users); setSession(users[i]); alert('Perfil actualizado');
-};
-
-/* Backup total desde Perfil */
-document.getElementById('btnExportAll').onclick=()=>{
-  const data={users:DB.get('users',[]),models:DB.get('models',[]),chats:DB.get('chats',{})};
-  download('backup.json', JSON.stringify(data,null,2));
-};
-document.getElementById('btnImportAll').onclick=()=>document.getElementById('importAllFile').click();
-document.getElementById('importAllFile').addEventListener('change',async e=>{
-  const f=e.target.files[0]; if(!f) return; const text=await f.text();
-  try{const d=JSON.parse(text); if(d.users)DB.set('users',d.users); if(d.models)DB.set('models',d.models); if(d.chats)DB.set('chats',d.chats); alert('Importado. Ve a Chat.');}
-  catch{alert('Archivo inválido')}
-});
-
-/* -------- Chat / Monedas -------- */
-const coinsLabel=document.getElementById('coinsLabel');
-function getCoins(){return session()?.coins??0}
-function setCoins(val){const u=session(); if(!u)return; u.coins=Math.max(0,val); setSession(u); coinsLabel.textContent=u.coins}
-function ensureCoinsOrOpen(){ if(getCoins()>=COIN_PER_MSG) return true; openRecharge(true); return false }
-function openRecharge(fromSend=false){
-  document.getElementById('rechargeModal').classList.remove('hidden');
-}
-function closeRecharge(){document.getElementById('rechargeModal').classList.add('hidden')}
-document.getElementById('modalClose').onclick=closeRecharge;
-document.getElementById('btnWatchAd').onclick=()=>{setCoins(getCoins()+10); alert('+10 por ver anuncio (demo)')};
-document.getElementById('btnPayPal').onclick=()=>alert('Integración PayPal (placeholder)');
-document.getElementById('modalWatchAd').onclick=()=>{setCoins(getCoins()+10); closeRecharge()};
-document.getElementById('modalPayPal').onclick=()=>alert('Pagar con PayPal (placeholder)');
-
-/* -------- Lista de chats (modelos) -------- */
-function renderChatLists(){
-  if(!requireAuth())return;
-  coinsLabel.textContent=getCoins();
-  const list=document.getElementById('chatList'); list.innerHTML='';
-  const models=DB.get('models',[]);
-  models.forEach(m=>{
-    const item=document.createElement('div'); item.className='model-item'; item.dataset.id=m.id;
-    item.innerHTML=`<img src="${m.img}" alt=""><div><div class="name">${m.name}</div><div class="desc">${m.desc}</div></div>`;
-    item.onclick=()=>openConversation(m.id);
-    list.appendChild(item);
-  });
-}
-
-/* -------- Conversación -------- */
-let currentModelId=null;
-const messagesDiv=document.getElementById('messages');
-const typingHint=document.getElementById('typingHint');
-function chats(){return DB.get('chats',{})}
-function saveChats(c){DB.set('chats',c)}
-function convoKey(mid){const me=session(); return `${me.id}:${mid}`}
-
-function openConversation(mid){
-  currentModelId=mid;
-  const m=DB.get('models',[]).find(x=>x.id===mid);
-  document.getElementById('chatAvatar').src=m.img;
-  document.getElementById('chatName').textContent=m.name;
-  document.getElementById('chatStatus').textContent='En línea';
-  renderMessages();
-}
-
-function renderMessages(){
-  messagesDiv.innerHTML='';
-  const c=chats()[convoKey(currentModelId)]||[];
-  c.forEach(msg=>messagesDiv.appendChild(msgEl(msg)));
-  messagesDiv.scrollTop=messagesDiv.scrollHeight;
-}
-
-function msgEl(m){
-  const div=document.createElement('div'); div.className='msg '+(m.from==='you'?'you':'them');
-  let html = m.text ? sanitize(m.text) : '';
-  if(m.media && m.media.type==='img') html += `<img class="media" src="${m.media.url}" alt="">`;
-  if(m.media && m.media.type==='audio') html += `<audio controls src="${m.media.url}"></audio>`;
-  const meta=`<div class="meta">${new Date(m.ts).toLocaleTimeString()} · ${m.read?'visto':'enviado'}</div>`;
-  div.innerHTML=html+meta; return div;
-}
-
-/* Moderación muy simple */
-function cleanText(t){
-  const bad=["whatsapp","número","violencia","odio"];
-  let s=t; bad.forEach(w=>{s=s.replace(new RegExp(`\\b${w}\\b`,'ig'),'****')}); return s;
-}
-
-/* Enviar y cobrar monedas */
-document.getElementById('btnSend').onclick=()=>{
-  if(!currentModelId){alert('Selecciona una modelo');return;}
-  const input=document.getElementById('msgText'); const raw=input.value.trim(); if(!raw) return;
-  if(!ensureCoinsOrOpen()) return;
-
-  setCoins(getCoins()-COIN_PER_MSG);
-  const c=chats(); const key=convoKey(currentModelId); c[key]=c[key]||[];
-  const me=session();
-  const msg={id:uid('m'),from:'you',text:cleanText(raw),ts:Date.now(),read:false};
-  c[key].push(msg); saveChats(c); input.value=''; renderMessages();
-
-  // marcar leído después de un momento
-  setTimeout(()=>{ msg.read=true; saveChats(c); renderMessages(); },600);
-
-  // Respuesta automática basada en flow
-  autoReplyFlow(me, key);
-};
-
-function autoReplyFlow(me,key){
-  const flow=DB.get('autoFlow',[]);
-  if(!flow.length) return;
-  typing(true);
-  setTimeout(()=>{
-    const lastQ=flow[Math.floor(Math.random()*flow.length)];
-    const text = (lastQ.q||'Hola {alias}').replace('{alias}', me.alias||'guapo');
-    pushFromModel(key, text);
-    typing(false);
-  }, 1000+Math.random()*800);
-}
-
-function pushFromModel(key,text,media){
-  const c=chats(); c[key]=c[key]||[];
-  c[key].push({id:uid('m'),from:'them',text,media,ts:Date.now(),read:true});
-  saveChats(c); renderMessages();
-}
-
-function typing(on){ typingHint.classList.toggle('on', !!on) }
-
-/* Adjuntos, ubicación, “llamadas” demo */
-document.getElementById('btnAttachImg').onclick=()=>document.getElementById('fileImage').click();
-document.getElementById('fileImage').addEventListener('change', async e=>{
-  const f=e.target.files[0]; if(!f||!currentModelId) return;
-  if(!ensureCoinsOrOpen()) return; setCoins(getCoins()-COIN_PER_MSG);
-  const url=URL.createObjectURL(f);
-  const key=convoKey(currentModelId); pushFromModel(key,'(Imagen enviada)',{type:'img',url});
-});
-
-document.getElementById('btnAttachAudio').onclick=()=>document.getElementById('fileAudio').click();
-document.getElementById('fileAudio').addEventListener('change', async e=>{
-  const f=e.target.files[0]; if(!f||!currentModelId) return;
-  if(!ensureCoinsOrOpen()) return; setCoins(getCoins()-COIN_PER_MSG);
-  const url=URL.createObjectURL(f);
-  const key=convoKey(currentModelId); pushFromModel(key,'(Audio enviado)',{type:'audio',url});
-});
-
-document.getElementById('btnShareLoc').onclick=()=>{
-  if(!currentModelId){alert('Selecciona una modelo');return;}
-  if(!navigator.geolocation){alert('Geolocalización no soportada');return;}
-  if(!ensureCoinsOrOpen()) return; setCoins(getCoins()-COIN_PER_MSG);
-  navigator.geolocation.getCurrentPosition(pos=>{
-    const {latitude,longitude}=pos.coords;
-    const key=convoKey(currentModelId);
-    pushFromModel(key,`Mi ubicación: ${latitude.toFixed(5)}, ${longitude.toFixed(5)}`);
-  },()=>alert('No se pudo obtener ubicación'));
-};
-
-document.getElementById('btnVoice').onclick=()=>alert('Demo llamada de voz (placeholder)');
-document.getElementById('btnVideo').onclick=()=>alert('Demo videollamada (placeholder)');
-
-/* Bloqueo / Reporte */
-document.getElementById('btnBlock').onclick=()=>{
-  if(!currentModelId) return; const me=session();
-  const key=`block:${me.id}`; const list=DB.get(key,[]);
-  if(!list.includes(currentModelId)) list.push(currentModelId);
-  DB.set(key,list); alert('Usuario bloqueado (demo)');
-};
-document.getElementById('btnReport').onclick=()=>alert('Reporte enviado (demo)');
-
-/* Export / Import conversación */
-document.getElementById('btnExport').onclick=()=>{
-  if(!currentModelId) return;
-  const key=convoKey(currentModelId); const c=chats()[key]||[];
-  download(`chat_${key}.json`, JSON.stringify(c,null,2));
-};
-document.getElementById('btnImport').onclick=()=>document.getElementById('importFile').click();
-document.getElementById('importFile').addEventListener('change', async e=>{
-  const f=e.target.files[0]; if(!f||!currentModelId) return;
-  const text=await f.text(); try{
-    const arr=JSON.parse(text); const all=chats(); all[convoKey(currentModelId)]=arr; saveChats(all); renderMessages();
-  }catch{alert('Archivo inválido')}
-});
-
-/* Búsqueda simple */
-document.getElementById('searchInput').addEventListener('input', e=>{
-  const term=e.target.value.trim().toLowerCase(); if(!currentModelId) return;
-  const key=convoKey(currentModelId); const c=chats()[key]||[];
-  messagesDiv.innerHTML='';
-  c.filter(m=>(m.text||'').toLowerCase().includes(term)).forEach(m=>messagesDiv.appendChild(msgEl(m)));
-});
-
-/* -------- Swipe tipo Tinder -------- */
-let swipeStack=[];
-function renderSwipe(){
-  const wrap=document.getElementById('swipeWrap'); wrap.innerHTML='';
-  swipeStack=[...DB.get('models',[])].reverse(); // to stack
-  swipeStack.forEach(m=>{
-    const card=document.createElement('div'); card.className='card-swipe'; card.dataset.id=m.id;
-    card.innerHTML=`<img src="${m.img}" alt=""><div class="info"><b>${m.name}</b> · <span class="small">${m.desc}</span></div>`;
-    initDraggable(card, ()=>like(m.id), ()=>nope(m.id));
-    wrap.appendChild(card);
-  });
-}
-function topCard(){ const wrap=document.getElementById('swipeWrap'); return wrap.querySelector('.card-swipe:last-child')}
-function like(id){ matchWith(id); removeTop() }
-function nope(id){ removeTop() }
-function removeTop(){ const c=topCard(); if(c) c.remove() }
-function initDraggable(el, onRight, onLeft){
-  let startX=0,startY=0; let dragging=false;
-  el.addEventListener('pointerdown',e=>{dragging=true;startX=e.clientX;startY=e.clientY;el.setPointerCapture(e.pointerId)});
-  el.addEventListener('pointermove',e=>{
-    if(!dragging) return; const dx=e.clientX-startX, dy=e.clientY-startY;
-    el.style.transform=`translate(${dx}px,${dy}px) rotate(${dx/18}deg)`;
-  });
-  el.addEventListener('pointerup',e=>{
-    if(!dragging) return; dragging=false; const dx=e.clientX-startX;
-    el.style.transform='';
-    if(dx>120) onRight(); else if(dx<-120) onLeft();
-  });
-}
-document.getElementById('btnLike').onclick=()=>{const c=topCard(); if(!c) return; like(c.dataset.id)}
-document.getElementById('btnNope').onclick=()=>{const c=topCard(); if(!c) return; nope(c.dataset.id)}
-function matchWith(mid){
-  const me=session(); if(!me) return;
-  // Simplemente abre el chat con esa modelo
-  openConversation(mid);
-  alert('¡Match! Se abrió el chat 💬');
-}
-/* -------- Admin -------- */
-function renderModelsTable(){
-  if(!requireAuth()) return;
-  if(!isAdmin()){ alert('Solo admin'); go('chat'); return; }
-  const tb=document.querySelector('#modelsTable tbody'); tb.innerHTML='';
-  DB.get('models',[]).forEach(m=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td><img src="${m.img}" style="width:56px;height:56px;border-radius:10px;object-fit:cover"></td>
-      <td>${m.name}</td><td>${m.desc}</td><td><span class="badge green">Activo</span></td>
-      <td><button class="btn btn-ghost" data-del="${m.id}">Eliminar</button></td>`;
-    tb.appendChild(tr);
-  });
-  tb.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{
-    const id=b.dataset.del; const list=DB.get('models',[]).filter(x=>x.id!==id); DB.set('models',list); renderModelsTable();
-  });
-}
-document.getElementById('btnAddModel').onclick=()=>{
-  if(!isAdmin())return;
-  const name=document.getElementById('mName').value.trim();
-  const desc=document.getElementById('mDesc').value.trim();
-  const img=document.getElementById('mImg').value.trim();
-  if(!name||!img){alert('Nombre y foto obligatorios');return;}
-  const list=DB.get('models',[]); list.push({id:uid('m'),name,desc,img}); DB.set('models',list);
-  document.getElementById('mName').value='';document.getElementById('mDesc').value='';document.getElementById('mImg').value='';
-  renderModelsTable(); alert('Modelo agregada');
-};
-document.getElementById('btnSeed').onclick=()=>{
-  DB.set('models',[
-    {id:'m1',name:'Luna',desc:'Tierna y juguetona ✨',img:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?q=80&w=600'},
-    {id:'m2',name:'Mila',desc:'Charla traviesa 😇',img:'https://images.unsplash.com/photo-1509967419530-da38b4704bc8?q=80&w=600'},
-    {id:'m3',name:'Arya',desc:'Curiosa y divertida 💫',img:'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=600'},
-  ]); renderModelsTable(); alert('Modelos de ejemplo cargadas');
-};
-
-/* Flujo auto respuestas */
-function loadFlowToTextarea(){
-  const txt=document.getElementById('flowJson'); const flow=DB.get('autoFlow',[]);
-  txt.value=JSON.stringify(flow,null,2);
-}
-document.getElementById('btnSaveFlow').onclick=()=>{
-  try{
-    const data=JSON.parse(document.getElementById('flowJson').value||'[]');
-    DB.set('autoFlow',data); alert('Flujo guardado');
-  }catch{alert('JSON inválido')}
-};
-
-/* -------- Utilidades varias -------- */
-function download(name,content){
-  const blob=new Blob([content],{type:'application/json'}); const url=URL.createObjectURL(blob);
-  const a=document.createElement('a'); a.href=url; a.download=name; a.click(); URL.revokeObjectURL(url);
-}
-function sanitize(s){ const div=document.createElement('div'); div.textContent=s; return div.innerHTML }
-
-/* -------- Navegación inicial -------- */
-if(session()){ go('chat') } else { go('auth') }
+/* Seed modelos */
+if(!DB.get('models'))DB.set('models',[{id:'m1',name:'Luna',desc:'Tierna y juguetona',img:'https://picsum.photos/300/400?1'}]);
+/* Router */
+const views={auth:'view-auth',chat:'view-chat',profile:'view-profile'};
+function go(v){Object.values(views).forEach(id=>document.getElementById(id).classList.remove('active'));document.getElementById(views[v]).classList.add('active');}
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
+/* Auth */
+let session=null;
+document.getElementById('btnLogin').onclick=()=>{session={alias:'User',coins:START_COINS};go('chat');renderModels();};
+document.getElementById('btnRegister').onclick=()=>{session={alias:document.getElementById('regAlias').value,coins:START_COINS};go('chat');renderModels();};
+document.getElementById('btnGlobalLogout').onclick=()=>{session=null;go('auth')};
+/* Perfil */
+document.getElementById('btnSaveProfile').onclick=()=>{session.alias=document.getElementById('pAlias').value};
+/* Chat */
+const messages=document.getElementById('messages'), coinsLabel=document.getElementById('coinsLabel');
+function renderModels(){coinsLabel.textContent=session.coins;const list=document.getElementById('chatList');list.innerHTML='';DB.get('models',[]).forEach(m=>{const d=document.createElement('div');d.className='model-item';d.innerHTML=`<img src="${m.img}"><div><b>${m.name}</b><div class=small>${m.desc}</div></div>`;d.onclick=()=>openChat(m);list.appendChild(d)});}
+let currentModel=null;
+function openChat(m){currentModel=m;messages.innerHTML=`<div class="msg them">Holi ${session.alias} 💕 ¿quieres jugar?</div>`;}
+document.getElementById('btnSend').onclick=()=>{if(!currentModel)return;const val=document.getElementById('msgText').value;if(!val)return;if(session.coins<COIN_PER_MSG){alert('Sin monedas');return;}session.coins-=COIN_PER_MSG;coinsLabel.textContent=session.coins;messages.innerHTML+=`<div class="msg you">${val}</div>`;document.getElementById('msgText').value='';setTimeout(()=>messages.innerHTML+=`<div class="msg them">Me encanta 😍</div>`,800)};
+/* Swipe */
+function renderSwipe(){const wrap=document.getElementById('swipeWrap');wrap.innerHTML='';DB.get('models',[]).forEach(m=>{const c=document.createElement('div');c.className='card-swipe';c.innerHTML=`<img src="${m.img}"><div class=info><b>${m.name}</b> · ${m.desc}</div>`;wrap.appendChild(c)});}
+renderSwipe();
 </script>
 </body>
 </html>
