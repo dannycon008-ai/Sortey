@@ -6,8 +6,7 @@
 <title>TuChat — Demo</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-  
-  /* Cards tipo Tinder */
+/* Cards tipo Tinder */
 .model-grid {
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
@@ -193,52 +192,66 @@ a{color:inherit;text-decoration:none}
 </main>
 
 <script>
-  function renderModelCards(){
-  const models=DB.get('models',[]);
-  const grid=document.getElementById('modelsGrid');
-  grid.innerHTML='';
-  models.forEach(m=>{
-    // Puedes añadir edad y hobby si los tienes guardados en el objeto m
-    const age = m.age || Math.floor(20+Math.random()*20); 
-    const hobby = m.hobby || 'Fitness';
-    const card=document.createElement('div');
-    card.className='model-card';
-    card.innerHTML=`
-      <img src="${m.img}" alt="${m.name}">
-      <div class="info">
-        <div class="name">${m.name} <span class="online">● Online</span></div>
-        <div class="extra">${age} años · ${hobby}</div>
-      </div>
-      <button>Chatea ahora</button>
-    `;
-    card.querySelector('button').onclick=()=>openConversation(m.id);
-    grid.appendChild(card);
-  });
-}
-
-/* DB */
+/* ===== Helpers DB ===== */
 const DB={get:(k,f=null)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch{return f}},set:(k,v)=>localStorage.setItem(k,JSON.stringify(v))};
 const START_COINS=50, COIN_PER_MSG=2;
-/* Seed modelos */
 if(!DB.get('models'))DB.set('models',[{id:'m1',name:'Luna',desc:'Tierna y juguetona',img:'https://picsum.photos/300/400?1'}]);
-/* Router */
+if(!DB.get('users'))DB.set('users',[]);
+
+/* ===== Router ===== */
 const views={auth:'view-auth',chat:'view-chat',profile:'view-profile'};
 function go(v){Object.values(views).forEach(id=>document.getElementById(id).classList.remove('active'));document.getElementById(views[v]).classList.add('active');}
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
-/* Auth */
+
+/* ===== Auth tabs ===== */
+document.getElementById('tabLogin').onclick=()=>{
+  document.getElementById('loginBox').classList.remove('hidden');
+  document.getElementById('regBox').classList.add('hidden');
+};
+document.getElementById('tabReg').onclick=()=>{
+  document.getElementById('regBox').classList.remove('hidden');
+  document.getElementById('loginBox').classList.add('hidden');
+};
+
+/* ===== Auth Login/Registro ===== */
 let session=null;
-document.getElementById('btnLogin').onclick=()=>{session={alias:'User',coins:START_COINS};go('chat');renderModels();};
-document.getElementById('btnRegister').onclick=()=>{session={alias:document.getElementById('regAlias').value,coins:START_COINS};go('chat');renderModels();};
+document.getElementById('btnLogin').onclick=()=>{
+  const id=document.getElementById('loginId').value.trim();
+  const pass=document.getElementById('loginPass').value.trim();
+  const users=DB.get('users',[]);
+  const u=users.find(x=>(x.email===id)&&x.pass===pass);
+  if(!u){alert('Credenciales incorrectas');return;}
+  session={alias:u.alias,coins:u.coins||START_COINS};
+  go('chat');renderModels();
+};
+
+document.getElementById('btnRegister').onclick=()=>{
+  const email=document.getElementById('regEmail').value.trim();
+  const alias=document.getElementById('regAlias').value.trim()||'Usuario';
+  const pass=document.getElementById('regPass').value.trim();
+  if(!email||!pass){alert('Completa correo y contraseña');return;}
+  const users=DB.get('users',[]);
+  if(users.find(u=>u.email===email)){alert('Ya existe ese correo');return;}
+  users.push({email,alias,pass,coins:START_COINS});
+  DB.set('users',users);
+  session={alias:alias,coins:START_COINS};
+  alert('Cuenta creada. ¡Tienes 50 moneditas!');
+  go('chat');renderModels();
+};
+
 document.getElementById('btnGlobalLogout').onclick=()=>{session=null;go('auth')};
-/* Perfil */
-document.getElementById('btnSaveProfile').onclick=()=>{session.alias=document.getElementById('pAlias').value};
-/* Chat */
+
+/* ===== Perfil ===== */
+document.getElementById('btnSaveProfile').onclick=()=>{if(session)session.alias=document.getElementById('pAlias').value};
+
+/* ===== Chat ===== */
 const messages=document.getElementById('messages'), coinsLabel=document.getElementById('coinsLabel');
-function renderModels(){coinsLabel.textContent=session.coins;const list=document.getElementById('chatList');list.innerHTML='';DB.get('models',[]).forEach(m=>{const d=document.createElement('div');d.className='model-item';d.innerHTML=`<img src="${m.img}"><div><b>${m.name}</b><div class=small>${m.desc}</div></div>`;d.onclick=()=>openChat(m);list.appendChild(d)});}
+function renderModels(){coinsLabel.textContent=session?.coins||0;const list=document.getElementById('chatList');list.innerHTML='';DB.get('models',[]).forEach(m=>{const d=document.createElement('div');d.className='model-item';d.innerHTML=`<img src="${m.img}"><div><b>${m.name}</b><div class=small>${m.desc}</div></div>`;d.onclick=()=>openChat(m);list.appendChild(d)});}
 let currentModel=null;
 function openChat(m){currentModel=m;messages.innerHTML=`<div class="msg them">Holi ${session.alias} 💕 ¿quieres jugar?</div>`;}
 document.getElementById('btnSend').onclick=()=>{if(!currentModel)return;const val=document.getElementById('msgText').value;if(!val)return;if(session.coins<COIN_PER_MSG){alert('Sin monedas');return;}session.coins-=COIN_PER_MSG;coinsLabel.textContent=session.coins;messages.innerHTML+=`<div class="msg you">${val}</div>`;document.getElementById('msgText').value='';setTimeout(()=>messages.innerHTML+=`<div class="msg them">Me encanta 😍</div>`,800)};
-/* Swipe */
+
+/* ===== Swipe ===== */
 function renderSwipe(){const wrap=document.getElementById('swipeWrap');wrap.innerHTML='';DB.get('models',[]).forEach(m=>{const c=document.createElement('div');c.className='card-swipe';c.innerHTML=`<img src="${m.img}"><div class=info><b>${m.name}</b> · ${m.desc}</div>`;wrap.appendChild(c)});}
 renderSwipe();
 </script>
