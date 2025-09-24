@@ -31,6 +31,8 @@
       <input class="input" id="mName" placeholder="Nombre"/>
       <input class="input" id="mDesc" placeholder="Descripción"/>
       <input class="input" id="mImg" placeholder="URL Foto"/>
+      <input class="input" id="mAge" placeholder="Edad"/>
+      <input class="input" id="mHobby" placeholder="Hobby"/>
       <button class="btn btn-primary" id="btnAddModel">Agregar</button>
     </div>
 
@@ -42,7 +44,7 @@
       </div>
       <table class="table" id="modelsTable">
         <thead>
-          <tr><th>Foto</th><th>Nombre</th><th>Descripción</th><th>Acciones</th></tr>
+          <tr><th>Foto</th><th>Nombre</th><th>Edad</th><th>Hobby</th><th>Descripción</th><th>Acciones</th></tr>
         </thead>
         <tbody></tbody>
       </table>
@@ -61,13 +63,16 @@
     const DB={get:(k,f=[])=>JSON.parse(localStorage.getItem(k)||JSON.stringify(f)),
               set:(k,v)=>localStorage.setItem(k,JSON.stringify(v))};
 
-    // Renderizar modelos
+    // Renderizar modelos con Edad y Hobby
     function renderModels(){
       const tb=document.querySelector('#modelsTable tbody');tb.innerHTML='';
       DB.get('models').forEach(m=>{
         const tr=document.createElement('tr');
         tr.innerHTML=`<td><img src="${m.img}" width="50"></td>
-                      <td>${m.name}</td><td>${m.desc}</td>
+                      <td>${m.name}</td>
+                      <td>${m.age||'-'}</td>
+                      <td>${m.hobby||'-'}</td>
+                      <td>${m.desc}</td>
                       <td><button data-del="${m.id}">Eliminar</button></td>`;
         tb.appendChild(tr);
       });
@@ -79,23 +84,31 @@
       });
     }
 
-    // Agregar modelo
+    // Agregar modelo con Edad y Hobby
     document.getElementById('btnAddModel').onclick=()=>{
       const name=document.getElementById('mName').value.trim();
       const desc=document.getElementById('mDesc').value.trim();
       const img=document.getElementById('mImg').value.trim();
+      const age=document.getElementById('mAge').value.trim();
+      const hobby=document.getElementById('mHobby').value.trim();
       if(!name||!img){alert("Nombre y foto obligatorios");return;}
       const list=DB.get('models');
-      list.push({id:'m_'+Date.now(),name,desc,img});
-      DB.set('models',list);renderModels();
+      list.push({id:'m_'+Date.now(),name,desc,img,age,hobby});
+      DB.set('models',list);
+      renderModels();
+      document.getElementById('mName').value='';
+      document.getElementById('mDesc').value='';
+      document.getElementById('mImg').value='';
+      document.getElementById('mAge').value='';
+      document.getElementById('mHobby').value='';
     };
 
     // Cargar ejemplos
     document.getElementById('btnSeed').onclick=()=>{
       DB.set('models',[
-        {id:'m1',name:'Luna',desc:'Tierna y juguetona ✨',img:'https://picsum.photos/200/300?1'},
-        {id:'m2',name:'Mila',desc:'Charla traviesa 😇',img:'https://picsum.photos/200/300?2'},
-        {id:'m3',name:'Arya',desc:'Curiosa y divertida 💫',img:'https://picsum.photos/200/300?3'}
+        {id:'m1',name:'Luna',desc:'Tierna y juguetona ✨',img:'https://picsum.photos/200/300?1',age:25,hobby:'Fitness'},
+        {id:'m2',name:'Mila',desc:'Charla traviesa 😇',img:'https://picsum.photos/200/300?2',age:30,hobby:'Películas'},
+        {id:'m3',name:'Arya',desc:'Curiosa y divertida 💫',img:'https://picsum.photos/200/300?3',age:27,hobby:'Caminar'}
       ]);
       renderModels();
     };
