@@ -15,8 +15,9 @@
     .btn-ghost{background:transparent;color:#cfe7ff;border:1px solid #244362}
     .input,textarea{width:100%;background:#0e192a;color:#d9eeff;border:1px solid #1f3550;border-radius:12px;padding:12px 14px;margin-bottom:10px}
     .card{background:#0f1a2b;border:1px solid #1b3150;border-radius:18px;padding:16px;margin-top:16px}
-    .table{width:100%;border-collapse:collapse;margin-top:10px}
-    .table th,.table td{border-bottom:1px solid #1b3150;padding:8px;text-align:left}
+    .table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
+    .table th,.table td{border-bottom:1px solid #1b3150;padding:8px;text-align:left;vertical-align:top}
+    img.thumb{width:50px;height:50px;object-fit:cover;border-radius:8px}
   </style>
 </head>
 <body>
@@ -29,10 +30,14 @@
     <div class="card">
       <h3>Agregar modelo</h3>
       <input class="input" id="mName" placeholder="Nombre"/>
-      <input class="input" id="mDesc" placeholder="Descripción"/>
-      <input class="input" id="mImg" placeholder="URL Foto"/>
       <input class="input" id="mAge" placeholder="Edad"/>
-      <input class="input" id="mHobby" placeholder="Hobby"/>
+      <input class="input" id="mCountry" placeholder="País"/>
+      <textarea class="input" id="mDesc" placeholder="Descripción"></textarea>
+      <input class="input" id="mPhoto1" placeholder="URL Foto 1"/>
+      <input class="input" id="mPhoto2" placeholder="URL Foto 2"/>
+      <input class="input" id="mPhoto3" placeholder="URL Foto 3"/>
+      <input class="input" id="mPhoto4" placeholder="URL Foto 4"/>
+      <input class="input" id="mPhoto5" placeholder="URL Foto 5"/>
       <button class="btn btn-primary" id="btnAddModel">Agregar</button>
     </div>
 
@@ -44,7 +49,7 @@
       </div>
       <table class="table" id="modelsTable">
         <thead>
-          <tr><th>Foto</th><th>Nombre</th><th>Edad</th><th>Hobby</th><th>Descripción</th><th>Acciones</th></tr>
+          <tr><th>Foto</th><th>Nombre</th><th>Edad</th><th>País</th><th>Descripción</th><th>Acciones</th></tr>
         </thead>
         <tbody></tbody>
       </table>
@@ -63,17 +68,18 @@
     const DB={get:(k,f=[])=>JSON.parse(localStorage.getItem(k)||JSON.stringify(f)),
               set:(k,v)=>localStorage.setItem(k,JSON.stringify(v))};
 
-    // Renderizar modelos con Edad y Hobby
+    // Renderizar modelos
     function renderModels(){
       const tb=document.querySelector('#modelsTable tbody');tb.innerHTML='';
       DB.get('models').forEach(m=>{
         const tr=document.createElement('tr');
-        tr.innerHTML=`<td><img src="${m.img}" width="50"></td>
-                      <td>${m.name}</td>
-                      <td>${m.age||'-'}</td>
-                      <td>${m.hobby||'-'}</td>
-                      <td>${m.desc}</td>
-                      <td><button data-del="${m.id}">Eliminar</button></td>`;
+        tr.innerHTML=`
+          <td><img src="${(m.photos&&m.photos[0])||''}" class="thumb"></td>
+          <td>${m.name}</td>
+          <td>${m.age||''}</td>
+          <td>${m.country||''}</td>
+          <td>${m.desc||''}</td>
+          <td><button data-del="${m.id}">Eliminar</button></td>`;
         tb.appendChild(tr);
       });
       tb.querySelectorAll('[data-del]').forEach(btn=>{
@@ -84,31 +90,42 @@
       });
     }
 
-    // Agregar modelo con Edad y Hobby
+    // Agregar modelo
     document.getElementById('btnAddModel').onclick=()=>{
       const name=document.getElementById('mName').value.trim();
-      const desc=document.getElementById('mDesc').value.trim();
-      const img=document.getElementById('mImg').value.trim();
       const age=document.getElementById('mAge').value.trim();
-      const hobby=document.getElementById('mHobby').value.trim();
-      if(!name||!img){alert("Nombre y foto obligatorios");return;}
+      const country=document.getElementById('mCountry').value.trim();
+      const desc=document.getElementById('mDesc').value.trim();
+      const photos=[1,2,3,4,5].map(i=>document.getElementById('mPhoto'+i).value.trim()).filter(x=>x);
+
+      if(!name||!photos.length){alert("Nombre y al menos una foto obligatorios");return;}
       const list=DB.get('models');
-      list.push({id:'m_'+Date.now(),name,desc,img,age,hobby});
-      DB.set('models',list);
-      renderModels();
-      document.getElementById('mName').value='';
-      document.getElementById('mDesc').value='';
-      document.getElementById('mImg').value='';
-      document.getElementById('mAge').value='';
-      document.getElementById('mHobby').value='';
+      list.push({id:'m_'+Date.now(),name,age,country,desc,photos});
+      DB.set('models',list);renderModels();
+
+      // limpiar
+      ['mName','mAge','mCountry','mDesc','mPhoto1','mPhoto2','mPhoto3','mPhoto4','mPhoto5'].forEach(id=>document.getElementById(id).value='');
     };
 
     // Cargar ejemplos
     document.getElementById('btnSeed').onclick=()=>{
       DB.set('models',[
-        {id:'m1',name:'Luna',desc:'Tierna y juguetona ✨',img:'https://picsum.photos/200/300?1',age:25,hobby:'Fitness'},
-        {id:'m2',name:'Mila',desc:'Charla traviesa 😇',img:'https://picsum.photos/200/300?2',age:30,hobby:'Películas'},
-        {id:'m3',name:'Arya',desc:'Curiosa y divertida 💫',img:'https://picsum.photos/200/300?3',age:27,hobby:'Caminar'}
+        {id:'m1',name:'Luna',age:24,country:'México',desc:'Tierna y juguetona ✨',
+         photos:[
+           'https://picsum.photos/seed/luna1/500/350',
+           'https://picsum.photos/seed/luna2/500/350',
+           'https://picsum.photos/seed/luna3/500/350',
+           'https://picsum.photos/seed/luna4/500/350',
+           'https://picsum.photos/seed/luna5/500/350'
+         ]},
+        {id:'m2',name:'Mila',age:27,country:'Colombia',desc:'Charla traviesa 😇',
+         photos:[
+           'https://picsum.photos/seed/mila1/500/350',
+           'https://picsum.photos/seed/mila2/500/350',
+           'https://picsum.photos/seed/mila3/500/350',
+           'https://picsum.photos/seed/mila4/500/350',
+           'https://picsum.photos/seed/mila5/500/350'
+         ]}
       ]);
       renderModels();
     };
