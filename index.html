@@ -6,377 +6,168 @@
 <title>TuChat — Demo</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-/* ====== BASE ====== */
-*{box-sizing:border-box}html,body{height:100%}
+/* ====== ESTILOS GLOBALES ====== */
+*{box-sizing:border-box}
+html,body{height:100%}
 body{margin:0;font-family:Poppins,system-ui,sans-serif;background:#0b1220;color:#e9f6ff}
 a{color:inherit;text-decoration:none}
 .hidden{display:none!important}
 .container{max-width:1100px;margin:0 auto;padding:16px}
-.small{color:#9bc2df;font-size:12px}
+.view{display:none}
+.view.active{display:block}
 
-/* ====== HEADER ====== */
-.header{position:sticky;top:0;z-index:50;background:rgba(10,18,32,.65);backdrop-filter:blur(6px);border-bottom:1px solid #132338}
-.header-inner{display:flex;justify-content:space-between;align-items:center;padding:10px 16px}
+/* HEADER */
+.header{position:sticky;top:0;z-index:50;background:rgba(10,18,32,.85);backdrop-filter:blur(6px);border-bottom:1px solid #132338}
+.header-inner{display:flex;justify-content:space-between;align-items:center;padding:12px 16px}
 .brand{display:flex;align-items:center;gap:10px;font-weight:700}
 .dot{width:10px;height:10px;border-radius:50%;background:#ff2e6a;display:inline-block}
-.header-actions{display:flex;align-items:center;gap:12px}
-.coins-wrap{display:flex;align-items:center;gap:8px;font-weight:600;font-size:13px;background:#0f1a2b;border:1px solid #1b3150;padding:6px 10px;border-radius:999px}
-.coins-dot{width:8px;height:8px;background:#ff2e6a;border-radius:50%}
-.header-link-img img{height:26px;border-radius:6px;display:block}
+nav{display:flex;gap:12px;align-items:center}
+.coins-label{font-weight:600;color:#ffb020}
 
-/* ====== BOTONES ====== */
-.btn{border:0;padding:10px 14px;border-radius:12px;font-weight:600;cursor:pointer;transition:.15s;background:#0d223b;color:#cfe7ff}
+/* BOTONES */
+.btn{border:0;padding:10px 14px;border-radius:12px;font-weight:600;cursor:pointer;transition:.15s}
 .btn:active{transform:translateY(1px)}
 .btn-primary{background:#ff2e6a;color:#fff}
 .btn-ghost{background:transparent;color:#cfe7ff;border:1px solid #244362}
 
-/* ====== LAYOUT ====== */
-.app-layout{display:grid;grid-template-columns:320px 1fr;gap:16px}
-@media (max-width:960px){.app-layout{grid-template-columns:1fr}}
-.card{background:linear-gradient(180deg,#0f1a2b,#0b1424);border:1px solid #1b3150;border-radius:18px;padding:14px}
+/* LISTA DE MODELOS */
+.model-list{display:grid;gap:14px;margin-top:20px}
+.model-item{display:flex;gap:12px;align-items:center;padding:12px;border:1px solid #203a5d;background:#0c1728;border-radius:14px;cursor:pointer;transition:.2s}
+.model-item:hover{background:#12253c}
+.model-item img{width:60px;height:60px;border-radius:12px;object-fit:cover}
+.small{color:#9bc2df;font-size:12px}
 
-/* ====== LISTA DE MODELOS (tarjetas) ====== */
-.model-list{display:grid;gap:12px}
-.model-card{position:relative;border:1px solid #203a5d;border-radius:16px;overflow:hidden;background:#0c1728;box-shadow:0 12px 30px rgba(0,0,0,.18);transition:transform .25s ease, box-shadow .25s ease}
-.model-card:hover{transform:scale(1.02);box-shadow:0 18px 40px rgba(0,0,0,.28)}
-.model-online{position:absolute;top:10px;left:10px;background:#1eb980;color:#052016;padding:3px 8px;border-radius:999px;font-size:12px;border:1px solid #145e46}
-.model-slideshow{position:relative;height:200px}
-.model-slideshow img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .8s ease}
-.model-slideshow img.active{opacity:1}
-.model-info{padding:10px 12px;display:flex;flex-direction:column;gap:4px}
-.model-name{font-weight:700}
-.model-meta{font-size:12px;color:#9ec6e8}
-.model-desc{font-size:13px;color:#cfe7ff}
-.model-actions{display:flex;gap:8px;margin-top:8px}
-.model-actions .icon-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:10px;border-radius:10px;background:#0e1c31;border:1px solid #234164;cursor:pointer}
-.model-actions .icon-btn img{width:18px;height:18px;display:block}
+/* CHAT */
+.chat-card{height:calc(100vh - 60px);display:flex;flex-direction:column;background:#0f1a2b;border:1px solid #1b3150;border-radius:18px}
+.chat-head{display:flex;align-items:center;gap:10px;border-bottom:1px solid #1b3150;padding:10px;background:#0f1a2b}
+.chat-head img{width:40px;height:40px;border-radius:50%;object-fit:cover}
+.chat-body{flex:1;overflow:auto;display:flex;flex-direction:column;gap:8px;padding:12px}
+.msg{max-width:70%;padding:10px 14px;border-radius:16px;line-height:1.35;font-size:15px;animation:floatIn .3s ease}
+.msg.you{align-self:flex-end;background:#12253c}
+.msg.them{align-self:flex-start;background:#ff2e6a;color:#fff}
+.typing{color:#99c7ff;font-size:12px;padding:6px 0;display:none}
+.typing.on{display:block}
+.chat-input{display:flex;gap:8px;align-items:center;padding:10px;border-top:1px solid #1b3150;background:#0f1a2b}
+.chat-input .input{flex:1}
+.input{width:100%;background:#0e192a;color:#d9eeff;border:1px solid #1f3550;border-radius:12px;padding:12px 14px}
 
-/* ====== CHAT ====== */
-.chat-card{display:flex;flex-direction:column;min-height:70vh}
-.chat-head{
-  display:flex;align-items:center;gap:10px;
-  border-bottom:1px solid #1b3150;
-  padding-bottom:10px;margin-bottom:10px;
-}
-
-.chat-title{display:flex;align-items:center;gap:10px}
-.chat-title img{width:40px;height:40px;border-radius:12px;object-fit:cover;border:1px solid #214061}
-.chat-title .name{font-weight:700}
-.chat-title .status{font-size:12px}
-.status.online{color:#7af2bf}
-.status.offline{color:#ffb6b6}
-.chat-body{flex:1;overflow:auto;display:flex;flex-direction:column;gap:10px;padding:12px 2px}
-
-/* Burbujas con “flotar” */
-@keyframes floatIn{0%{transform:translateY(8px);opacity:.0}100%{transform:translateY(0);opacity:1}}
-.msg{max-width:78%;padding:12px 14px;border-radius:16px;line-height:1.35;font-size:15px;animation:floatIn .3s ease both;position:relative}
-.msg.you{align-self:flex-end;background:#132844;border:1px solid #244a74;box-shadow:0 6px 18px rgba(19,40,68,.35)}
-.msg.them{align-self:flex-start;background:#0e1c31;border:1px solid #234164;box-shadow:0 6px 18px rgba(14,28,49,.35)}
-.msg .meta{margin-top:6px;font-size:11px;color:#86a9c7;display:flex;gap:6px;align-items:center}
-
-/* “Escribiendo…” */
-.typing{display:none;align-self:flex-start;color:#99c7ff;font-size:12px;padding-left:4px}
-.typing.on{display:flex;gap:6px;align-items:center}
-.dot-typing{width:6px;height:6px;background:#99c7ff;border-radius:50%;animation:blink 1s infinite}
-.dot-typing:nth-child(2){animation-delay:.2s}.dot-typing:nth-child(3){animation-delay:.4s}
-@keyframes blink{0%,80%,100%{opacity:.2}40%{opacity:1}}
-
-/* Input moderno */
-.chat-input{display:flex;gap:8px;align-items:center;padding-top:12px;border-top:1px solid #1b3150}
-.input{flex:1;background:#0e192a;color:#d9eeff;border:1px solid #1f3550;border-radius:16px;padding:12px 14px;outline:none;transition:border .2s}
-.input:focus{border-color:#3b6da1}
-.btn-send{background:linear-gradient(135deg,#ff2e6a,#ff7a9f);color:#fff;border:0;border-radius:16px;padding:12px 16px;font-weight:800;letter-spacing:.3px;cursor:pointer;box-shadow:0 8px 20px rgba(255,46,106,.35);transition:transform .15s ease}
-.btn-send:active{transform:translateY(1px)}
+@keyframes floatIn{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
 </style>
 </head>
 <body>
 
-<!-- ====== HEADER ====== -->
+<!-- HEADER -->
 <header class="header">
   <div class="header-inner container">
     <div class="brand"><span class="dot"></span> TuChat ⭐</div>
-
-    <!-- Orden: Monedas, Chat, Perfil -->
-    <div class="header-actions">
-      <!-- Monedas pequeñas + imagen con redirección -->
-      <div class="coins-wrap" title="Tus moneditas">
-        <span class="coins-dot"></span>
-        <span>Monedas: <b id="coinsHeader">50</b></span>
-      </div>
-      <a class="header-link-img" href="https://TU_URL_DE_REDIRECCION.com" target="_blank" rel="noopener">
-        <img src="https://TU_URL_DE_IMAGEN_MONEDAS.png" alt="Promo">
-      </a>
-
+    <nav>
+      <span class="coins-label">💰 <span id="coinsLabel">0</span></span>
       <button class="btn btn-ghost" data-go="chat">Chat</button>
       <button class="btn btn-ghost" data-go="profile">Perfil</button>
-    </div>
+    </nav>
   </div>
 </header>
 
 <main class="container">
-  <div class="app-layout">
-    <!-- ====== LISTA DE MODELOS ====== -->
-    <aside class="card">
-      <h3 style="margin:6px 0 10px">Modelos</h3>
-      <div class="model-list" id="modelList"></div>
-    </aside>
+  <!-- LISTA DE MODELOS -->
+  <section id="view-chat" class="view active">
+    <h3>Modelos</h3>
+    <div class="model-list" id="chatList"></div>
+  </section>
 
- <!-- NUEVA VISTA DE CHAT SOLO -->
-<section id="view-conversation" class="view">
-  <div class="card chat-card">
-    <div class="chat-head">
-      <img id="chatAvatar" src="" style="width:40px;height:40px;border-radius:50%;object-fit:cover">
-      <div>
-        <div id="chatName"></div>
-        <small id="chatStatus" class="small">En línea</small>
+  <!-- CHAT INDIVIDUAL -->
+  <section id="view-conversation" class="view">
+    <div class="chat-card">
+      <div class="chat-head">
+        <button class="btn btn-ghost" onclick="go('chat')">← Volver</button>
+        <img id="chatAvatar" src="">
+        <div>
+          <div id="chatName" style="font-weight:600"></div>
+          <small id="chatStatus" class="small">En línea</small>
+        </div>
       </div>
-      <button class="btn btn-ghost" onclick="go('chat')">← Volver</button>
+      <div class="chat-body" id="messages"></div>
+      <div class="typing" id="typingHint">Está escribiendo…</div>
+      <div class="chat-input">
+        <input class="input" id="msgText" placeholder="Escribe un mensaje (2 monedas)"/>
+        <button class="btn btn-primary" id="btnSend">Enviar</button>
+      </div>
     </div>
-    <div class="chat-body" id="messages"></div>
-    <div class="typing" id="typingHint">Está escribiendo…</div>
-    <div class="chat-input">
-      <input class="input" id="msgText" placeholder="Escribe un mensaje (2 monedas)"/>
-      <button class="btn btn-primary" id="btnSend">Enviar</button>
+  </section>
+
+  <!-- PERFIL -->
+  <section id="view-profile" class="view">
+    <div class="card">
+      <h3>Mi perfil</h3>
+      <div class="field"><input class="input" id="pAlias" placeholder="Alias"/></div>
+      <div class="field"><input class="input" id="pStatus" placeholder="Estado"/></div>
+      <button class="btn btn-primary" id="btnSaveProfile">Guardar</button>
     </div>
-  </div>
-</section>
-
-
-  <!-- ====== PERFIL ====== -->
-  <section id="view-profile" class="card hidden" style="margin-top:16px">
-    <h3 style="margin:6px 0 10px">Mi perfil</h3>
-    <div class="field"><input class="input" id="pAlias" placeholder="Alias"/></div>
-    <div class="field"><input class="input" id="pStatus" placeholder="Estado"/></div>
-    <button class="btn btn-primary" id="btnSaveProfile">Guardar</button>
   </section>
 </main>
 
 <script>
-/* ===== Helpers / “DB” ===== */
+/* ===== Helpers DB ===== */
 const DB={get:(k,f=null)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch{return f}},set:(k,v)=>localStorage.setItem(k,JSON.stringify(v))};
 const START_COINS=50, COIN_PER_MSG=2;
-const uid=()=>Math.random().toString(36).slice(2,9)+Date.now().toString(36);
+if(!DB.get('models'))DB.set('models',[{id:'m1',name:'Luna',desc:'Tierna y juguetona',img:'https://picsum.photos/300/400?1'}]);
 
-/* ===== Seed de modelos con 5 fotos, edad, país, desc ===== */
-if(!DB.get('models')){
-  DB.set('models',[
-    {
-      id:'m1', name:'Luna', age:24, country:'México',
-      desc:'Tierna y juguetona ✨',
-      photos:[
-        'https://picsum.photos/seed/luna1/500/350',
-        'https://picsum.photos/seed/luna2/500/350',
-        'https://picsum.photos/seed/luna3/500/350',
-        'https://picsum.photos/seed/luna4/500/350',
-        'https://picsum.photos/seed/luna5/500/350'
-      ]
-    },
-    {
-      id:'m2', name:'Mila', age:27, country:'Colombia',
-      desc:'Charla traviesa 😇',
-      photos:[
-        'https://picsum.photos/seed/mila1/500/350',
-        'https://picsum.photos/seed/mila2/500/350',
-        'https://picsum.photos/seed/mila3/500/350',
-        'https://picsum.photos/seed/mila4/500/350',
-        'https://picsum.photos/seed/mila5/500/350'
-      ]
-    },
-    {
-      id:'m3', name:'Arya', age:25, country:'Argentina',
-      desc:'Curiosa y divertida 💫',
-      photos:[
-        'https://picsum.photos/seed/arya1/500/350',
-        'https://picsum.photos/seed/arya2/500/350',
-        'https://picsum.photos/seed/arya3/500/350',
-        'https://picsum.photos/seed/arya4/500/350',
-        'https://picsum.photos/seed/arya5/500/350'
-      ]
-    }
-  ]);
-}
+/* ===== Router ===== */
+const views={chat:'view-chat',profile:'view-profile',conversation:'view-conversation'};
+function go(v){Object.values(views).forEach(id=>document.getElementById(id).classList.remove('active'));document.getElementById(views[v]).classList.add('active');}
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
 
-/* ===== Sesión mínima (sin login) ===== */
-let session=DB.get('session')||{alias:'Usuario',coins:START_COINS};
-DB.set('session',session);
+/* ===== Perfil ===== */
+let session={alias:'Invitado',coins:START_COINS};
+document.getElementById('pAlias').value=session.alias;
+document.getElementById('btnSaveProfile').onclick=()=>{session.alias=document.getElementById('pAlias').value};
 
-/* ===== Router simple: Chat / Perfil ===== */
-const sections={chat:document.querySelector('.app-layout'), profile:document.getElementById('view-profile')};
-document.querySelectorAll('[data-go]').forEach(b=>{
-  b.addEventListener('click',()=>{
-    const dest=b.dataset.go;
-    if(dest==='chat'){sections.chat.classList.remove('hidden');sections.profile.classList.add('hidden');}
-    if(dest==='profile'){sections.chat.classList.add('hidden');sections.profile.classList.remove('hidden');loadProfile();}
-  });
-});
-
-/* ===== Encabezado monedas ===== */
-const coinsHeader=document.getElementById('coinsHeader');
-function setCoins(v){session.coins=Math.max(0,v); DB.set('session',session); coinsHeader.textContent=session.coins}
-function getCoins(){return session.coins}
-setCoins(session.coins||START_COINS);
-
-/* ===== PERFIL ===== */
-function loadProfile(){document.getElementById('pAlias').value=session.alias||'';document.getElementById('pStatus').value=session.status||'';}
-document.getElementById('btnSaveProfile').onclick=()=>{
-  session.alias=document.getElementById('pAlias').value.trim()||session.alias;
-  session.status=document.getElementById('pStatus').value.trim()||'';
-  DB.set('session',session);
-  alert('Perfil actualizado');
-};
-
-/* ===== LISTA DE MODELOS ===== */
-const modelList=document.getElementById('modelList');
-const HEART_ICON='https://cdn-icons-png.flaticon.com/512/833/833472.png';   // <-- Cambia por tu URL
-const MSG_ICON='https://cdn-icons-png.flaticon.com/512/2462/2462719.png';    // <-- Cambia por tu URL
-
+/* ===== Render Modelos ===== */
 function renderModels(){
-  modelList.innerHTML='';
-  const models=DB.get('models',[]);
-  models.forEach((m,idx)=>{
-    const card=document.createElement('div');
-    card.className='model-card';
-    card.innerHTML=`
-      <span class="model-online">● En línea</span>
-      <div class="model-slideshow" id="slide_${m.id}">
-        ${(m.photos||[]).slice(0,5).map((src,i)=>`<img src="${src}" class="${i===0?'active':''}" alt="${m.name}">`).join('')}
-      </div>
-      <div class="model-info">
-        <div class="model-name">${m.name}</div>
-        <div class="model-meta">${m.age} años · ${m.country}</div>
-        <div class="model-desc">${m.desc||''}</div>
-        <div class="model-actions">
-          <button class="icon-btn btn-like"><img src="${HEART_ICON}" alt="like"> <span>Me gusta</span></button>
-          <button class="icon-btn btn-msg"><img src="${MSG_ICON}" alt="mensaje"> <span>Mensaje</span></button>
-        </div>
-      </div>
-    `;
-    // botones
-    card.querySelector('.btn-like').onclick=()=>likeModel(m);
-    card.querySelector('.btn-msg').onclick=()=>openChatWith(m); // redirige al chat
-    modelList.appendChild(card);
-
-    // slideshow auto por tarjeta
-    startSlideshow(`slide_${m.id}`);
+  document.getElementById('coinsLabel').textContent=session?.coins||0;
+  const list=document.getElementById('chatList');list.innerHTML='';
+  DB.get('models',[]).forEach(m=>{
+    const d=document.createElement('div');
+    d.className='model-item';
+    d.innerHTML=`<img src="${m.img}">
+      <div><b>${m.name}</b><div class=small>${m.desc}</div></div>`;
+    d.onclick=()=>openChat(m);
+    list.appendChild(d);
   });
 }
-function startSlideshow(id){
-  const box=document.getElementById(id); if(!box) return;
-  const imgs=[...box.querySelectorAll('img')]; if(imgs.length<=1) return;
-  let i=0;
-  setInterval(()=>{imgs[i].classList.remove('active'); i=(i+1)%imgs.length; imgs[i].classList.add('active');}, 2800+Math.random()*600);
-}
-function likeModel(m){ alert(`Le diste ❤ a ${m.name} (demo)`); }
-renderModels();
 
-/* ===== CHAT ===== */
-const messagesDiv=document.getElementById('messages');
-const typingHint=document.getElementById('typingHint');
-const chatName=document.getElementById('chatName');
-const chatStatus=document.getElementById('chatStatus');
-const chatAvatar=document.getElementById('chatAvatar');
-
+/* ===== Conversación ===== */
 let currentModel=null;
-let lastUserMsgAt=0;
-let onlineTimer=null;
+const messages=document.getElementById('messages'), coinsLabel=document.getElementById('coinsLabel');
 
-function setStatusOnline(on){
-  chatStatus.textContent=on?'En línea':'Desconectado';
-  chatStatus.classList.toggle('online',on);
-  chatStatus.classList.toggle('offline',!on);
-}
-
-function openChatWith(model){
- let currentModel=null;
+function openChat(m){
   currentModel=m;
-  // llenar cabecera
-  document.getElementById('chatAvatar').src=m.photos?m.photos[0]:m.img;
+  document.getElementById('chatAvatar').src=m.img;
   document.getElementById('chatName').textContent=m.name;
   document.getElementById('chatStatus').textContent='En línea';
   messages.innerHTML=`<div class="msg them">Holi ${session.alias} 💕 soy ${m.name}, ¿quieres jugar?</div>`;
-  go('conversation'); // vista nueva solo chat
+  go('conversation');
 }
 
-
-function msgEl({from,text,ts,seen}){
-  const div=document.createElement('div'); div.className='msg '+(from==='you'?'you':'them');
-  div.innerHTML = `${sanitize(text)}<div class="meta">${new Date(ts).toLocaleTimeString()}${from==='you' ? (seen?' · visto':' · enviado'):''}</div>`;
-  return div;
-}
-
-function pushFromModel(text){
-  const m={from:'them',text,ts:Date.now(),seen:true};
-  messagesDiv.appendChild(msgEl(m));
-  messagesDiv.scrollTop=messagesDiv.scrollHeight;
-}
-
-function pushFromUser(text){
-  const m={from:'you',text,ts:Date.now(),seen:false};
-  messagesDiv.appendChild(msgEl(m));
-  messagesDiv.scrollTop=messagesDiv.scrollHeight;
-  return m;
-}
-
-/* Enviar mensaje con monedas y lógica visto + respuesta a los 3s */
-document.getElementById('btnSend').onclick=sendMsg;
-document.getElementById('msgText').addEventListener('keydown',e=>{ if(e.key==='Enter'){e.preventDefault();sendMsg();} });
-
-function sendMsg(){
-  if(!currentModel){alert('Selecciona una modelo primero');return;}
-  const input=document.getElementById('msgText');
-  const txt=input.value.trim(); if(!txt) return;
-  if(getCoins()<COIN_PER_MSG){alert('Sin monedas');return;}
-  setCoins(getCoins()-COIN_PER_MSG);
-
-  lastUserMsgAt=Date.now();
-  setStatusOnline(true);
-
-  // Usuario envía
-  const bubble=pushFromUser(cleanText(txt));
-  input.value='';
-
-  // Modelo "está escribiendo"
-  typing(true);
-
-  // Marca "visto" rápido (ej: 500ms), y responde a los 3s tras ver
+document.getElementById('btnSend').onclick=()=>{
+  if(!currentModel)return;
+  const val=document.getElementById('msgText').value.trim();
+  if(!val)return;
+  if(session.coins<COIN_PER_MSG){alert('Sin monedas');return;}
+  session.coins-=COIN_PER_MSG;
+  coinsLabel.textContent=session.coins;
+  messages.innerHTML+=`<div class="msg you">${val}</div>`;
+  document.getElementById('msgText').value='';
+  // Simular "visto" + respuesta
+  setTimeout(()=>document.getElementById('typingHint').classList.add('on'),500);
   setTimeout(()=>{
-    bubble.seen=true;
-    // re-render solo el meta de esa burbuja:
-    const last = messagesDiv.querySelectorAll('.msg.you .meta');
-    if(last.length) last[last.length-1].textContent = `${new Date(bubble.ts).toLocaleTimeString()} · visto`;
-  }, 500);
+    document.getElementById('typingHint').classList.remove('on');
+    messages.innerHTML+=`<div class="msg them">Me encanta 😍</div>`;
+    messages.scrollTop=messages.scrollHeight;
+  },3000);
+};
 
-  setTimeout(()=>{
-    typing(false);
-    autoReply();
-  }, 3500); // 0.5s ver + 3s respuesta
-}
-
-/* Respuesta automática simple */
-const AUTO = [
-  "Me encanta lo que dices 😍",
-  "¿Prefieres voz o seguir por aquí? 🎧",
-  "¡Qué interesante! Cuéntame más 💬",
-  "Estoy aquí para ti 💖",
-  "Jaja, eres muy divertido 😜"
-];
-function autoReply(){
-  const text=AUTO[Math.floor(Math.random()*AUTO.length)];
-  pushFromModel(text);
-}
-
-/* Typing ON/OFF */
-function typing(on){ typingHint.classList.toggle('on', !!on); }
-
-/* Moderación básica */
-function cleanText(t){
-  const bad=["whatsapp","número","violencia","odio"];
-  let s=t; bad.forEach(w=>{s=s.replace(new RegExp(`\\b${w}\\b`,'ig'),'****')}); return s;
-}
-function sanitize(s){const div=document.createElement('div');div.textContent=s;return div.innerHTML}
-
-/* Inicial */
-document.querySelector('[data-go="chat"]').click(); // foco en chat por defecto
+renderModels();
 </script>
 </body>
 </html>
