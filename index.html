@@ -6,61 +6,56 @@
 <title>TuChat — Demo</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-/* Cards tipo Tinder */
-.model-grid {
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:20px;
-  margin-top:30px;
-}
-.model-card {
-  background:#fff;
-  color:#000;
+/* === Tarjetas tipo Tinder con animación === */
+.model-item {
+  position:relative;
+  background:#0c1728;
   border-radius:14px;
   overflow:hidden;
-  box-shadow:0 4px 20px rgba(0,0,0,.1);
-  display:flex;
-  flex-direction:column;
+  border:1px solid #203a5d;
+  transition:transform .3s ease, box-shadow .3s ease;
 }
-.model-card img {
+.model-item:hover {
+  transform:scale(1.03);
+  box-shadow:0 12px 30px rgba(0,0,0,.35);
+}
+.model-photo {
   width:100%;
-  height:280px;
+  height:240px;
   object-fit:cover;
+  display:block;
 }
-.model-card .info {
-  padding:12px;
-  display:flex;
-  flex-direction:column;
-  gap:4px;
-}
-.model-card .name {
-  font-weight:600;
-  font-size:16px;
-}
-.model-card .extra {
-  font-size:13px;
-  color:#555;
-}
-.model-card .online {
-  display:inline-block;
+.model-online {
+  position:absolute;
+  top:10px;
+  right:10px;
   background:#27ae60;
   color:#fff;
-  font-size:12px;
   padding:2px 6px;
-  border-radius:6px;
-  margin-left:6px;
+  border-radius:8px;
+  font-size:12px;
 }
-.model-card button {
-  background:#d6003d;
-  color:#fff;
+.model-info {
+  padding:8px;
+}
+.model-buttons {
+  display:flex;
+  gap:6px;
+  margin-top:6px;
+}
+.model-buttons button {
+  flex:1;
   border:none;
-  border-radius:0;
-  padding:12px;
-  cursor:pointer;
+  padding:8px;
+  font-size:13px;
   font-weight:600;
+  cursor:pointer;
+  border-radius:8px;
 }
+.btn-like {background:#ff2e6a;color:#fff;}
+.btn-msg {background:#0d223b;color:#cfe7ff;}
 
-/* ====== ESTILOS ====== */
+/* ====== ESTILOS BASE ====== */
 *{box-sizing:border-box}html,body{height:100%}
 body{margin:0;font-family:Poppins,system-ui,sans-serif;background:#0b1220;color:#e9f6ff}
 a{color:inherit;text-decoration:none}
@@ -92,9 +87,7 @@ a{color:inherit;text-decoration:none}
 .chat-layout{display:grid;grid-template-columns:320px 1fr;gap:16px}
 @media (max-width:960px){.chat-layout{grid-template-columns:1fr}}
 .sidebar .coins{display:flex;gap:8px;align-items:center;justify-content:space-between;background:#0f1a2b;border:1px solid #1b3150;padding:10px 12px;border-radius:14px;margin-bottom:12px}
-.model-list{display:grid;gap:10px}
-.model-item{display:flex;gap:12px;align-items:center;padding:10px;border:1px solid #203a5d;background:#0c1728;border-radius:14px;cursor:pointer}
-.model-item img{width:46px;height:46px;border-radius:12px}
+.model-list{display:grid;gap:12px}
 .chat-card{height:calc(100dvh - 150px);display:flex;flex-direction:column}
 .chat-body{flex:1;overflow:auto;display:flex;flex-direction:column;gap:8px;padding:10px 2px}
 .msg{max-width:70%;padding:10px 12px;border-radius:14px;line-height:1.35;font-size:15px}
@@ -105,13 +98,6 @@ a{color:inherit;text-decoration:none}
 .chat-input{display:flex;gap:8px;align-items:center;padding-top:10px;border-top:1px solid #1b3150}
 .chat-input .input{flex:1}
 
-/* Swipe tipo Tinder */
-.swipe-wrap{position:relative;height:420px}
-.card-swipe{position:absolute;inset:0;border-radius:22px;overflow:hidden;background:#0f1a2b;display:grid;grid-template-rows:1fr auto;box-shadow:0 20px 50px rgba(0,0,0,.45)}
-.card-swipe img{width:100%;height:100%;object-fit:cover}
-.card-swipe .info{padding:12px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.6));color:#fff}
-.swipe-actions{display:flex;justify-content:center;gap:12px;margin-top:8px}
-.swipe-actions .btn{width:56px;height:56px;border-radius:99px}
 .view{display:none}.view.active{display:block}
 </style>
 </head>
@@ -140,7 +126,7 @@ a{color:inherit;text-decoration:none}
           <button class="btn btn-ghost" id="tabReg">Registrarme</button>
         </div>
         <div id="loginBox">
-          <div class="field"><input class="input" id="loginId" placeholder="Correo o Teléfono"/></div>
+          <div class="field"><input class="input" id="loginId" placeholder="Correo"/></div>
           <div class="field"><input class="input" id="loginPass" type="password" placeholder="Contraseña"/></div>
           <button class="btn btn-primary" id="btnLogin">Entrar</button>
         </div>
@@ -156,14 +142,6 @@ a{color:inherit;text-decoration:none}
 
   <!-- CHAT -->
   <section id="view-chat" class="view">
-    <div class="card swipe-section">
-      <h3>Descubre</h3>
-      <div class="swipe-wrap" id="swipeWrap"></div>
-      <div class="swipe-actions">
-        <button class="btn btn-secondary" id="btnNope">✖</button>
-        <button class="btn btn-primary" id="btnLike">❤</button>
-      </div>
-    </div>
     <div class="chat-layout">
       <aside class="sidebar">
         <div class="coins">Monedas: <b id="coinsLabel">0</b></div>
@@ -195,7 +173,11 @@ a{color:inherit;text-decoration:none}
 /* ===== Helpers DB ===== */
 const DB={get:(k,f=null)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch{return f}},set:(k,v)=>localStorage.setItem(k,JSON.stringify(v))};
 const START_COINS=50, COIN_PER_MSG=2;
-if(!DB.get('models'))DB.set('models',[{id:'m1',name:'Luna',desc:'Tierna y juguetona',img:'https://picsum.photos/300/400?1'}]);
+if(!DB.get('models'))DB.set('models',[
+  {id:'m1',name:'Luna',desc:'Tierna y juguetona',img:'https://picsum.photos/300/400?1'},
+  {id:'m2',name:'Mila',desc:'Charla traviesa',img:'https://picsum.photos/300/400?2'},
+  {id:'m3',name:'Arya',desc:'Curiosa y divertida',img:'https://picsum.photos/300/400?3'}
+]);
 if(!DB.get('users'))DB.set('users',[]);
 
 /* ===== Router ===== */
@@ -219,7 +201,7 @@ document.getElementById('btnLogin').onclick=()=>{
   const id=document.getElementById('loginId').value.trim();
   const pass=document.getElementById('loginPass').value.trim();
   const users=DB.get('users',[]);
-  const u=users.find(x=>(x.email===id)&&x.pass===pass);
+  const u=users.find(x=>x.email===id && x.pass===pass);
   if(!u){alert('Credenciales incorrectas');return;}
   session={alias:u.alias,coins:u.coins||START_COINS};
   go('chat');renderModels();
@@ -246,14 +228,52 @@ document.getElementById('btnSaveProfile').onclick=()=>{if(session)session.alias=
 
 /* ===== Chat ===== */
 const messages=document.getElementById('messages'), coinsLabel=document.getElementById('coinsLabel');
-function renderModels(){coinsLabel.textContent=session?.coins||0;const list=document.getElementById('chatList');list.innerHTML='';DB.get('models',[]).forEach(m=>{const d=document.createElement('div');d.className='model-item';d.innerHTML=`<img src="${m.img}"><div><b>${m.name}</b><div class=small>${m.desc}</div></div>`;d.onclick=()=>openChat(m);list.appendChild(d)});}
-let currentModel=null;
-function openChat(m){currentModel=m;messages.innerHTML=`<div class="msg them">Holi ${session.alias} 💕 ¿quieres jugar?</div>`;}
-document.getElementById('btnSend').onclick=()=>{if(!currentModel)return;const val=document.getElementById('msgText').value;if(!val)return;if(session.coins<COIN_PER_MSG){alert('Sin monedas');return;}session.coins-=COIN_PER_MSG;coinsLabel.textContent=session.coins;messages.innerHTML+=`<div class="msg you">${val}</div>`;document.getElementById('msgText').value='';setTimeout(()=>messages.innerHTML+=`<div class="msg them">Me encanta 😍</div>`,800)};
 
-/* ===== Swipe ===== */
-function renderSwipe(){const wrap=document.getElementById('swipeWrap');wrap.innerHTML='';DB.get('models',[]).forEach(m=>{const c=document.createElement('div');c.className='card-swipe';c.innerHTML=`<img src="${m.img}"><div class=info><b>${m.name}</b> · ${m.desc}</div>`;wrap.appendChild(c)});}
-renderSwipe();
+/* Render modelos con ❤ y 💬 */
+function renderModels(){
+  coinsLabel.textContent=session?.coins||0;
+  const list=document.getElementById('chatList');
+  list.innerHTML='';
+  DB.get('models',[]).forEach(m=>{
+    const d=document.createElement('div');
+    d.className='model-item';
+    d.innerHTML=`
+      <span class="model-online">● Online</span>
+      <img src="${m.img}" alt="${m.name}" class="model-photo">
+      <div class="model-info">
+        <b>${m.name}</b><br><span class="small">${m.desc||''}</span>
+        <div class="model-buttons">
+          <button class="btn-like">❤</button>
+          <button class="btn-msg">💬</button>
+        </div>
+      </div>
+    `;
+    d.querySelector('.btn-like').onclick=()=>likeModel(m);
+    d.querySelector('.btn-msg').onclick=()=>messageModel(m);
+    list.appendChild(d);
+  });
+}
+
+let currentModel=null;
+function likeModel(m){
+  alert(`Le diste ❤ a ${m.name} (demo)`);
+}
+function messageModel(m){
+  currentModel=m;
+  messages.innerHTML=`<div class="msg them">Holi ${session.alias} 💕 soy ${m.name}, ¿quieres jugar?</div>`;
+  go('chat');
+}
+
+/* Enviar mensaje */
+document.getElementById('btnSend').onclick=()=>{
+  if(!currentModel)return;const val=document.getElementById('msgText').value;if(!val)return;
+  if(session.coins<COIN_PER_MSG){alert('Sin monedas');return;}
+  session.coins-=COIN_PER_MSG;coinsLabel.textContent=session.coins;
+  messages.innerHTML+=`<div class="msg you">${val}</div>`;
+  document.getElementById('msgText').value='';
+  setTimeout(()=>messages.innerHTML+=`<div class="msg them">Me encanta 😍</div>`,800)
+};
+
 </script>
 </body>
 </html>
