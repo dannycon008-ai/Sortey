@@ -6,7 +6,7 @@
 <title>TuChat — Demo</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-/* ====== ESTILOS MODELOS ====== */
+/* ====== ESTILOS MODELOS (RESPETA TU ESTILO) ====== */
 .model-grid {
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
@@ -22,9 +22,11 @@
   display:flex;
   flex-direction:column;
   cursor:pointer;
-  transition:.2s;
+  transition:.25s ease;
+  animation:floatCard 4s ease-in-out infinite;
 }
-.model-card:hover{transform:scale(1.02)}
+.model-card:hover{transform:translateY(-2px) scale(1.02)}
+@keyframes floatCard{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
 .model-card img {
   width:100%;
   height:280px;
@@ -54,11 +56,24 @@
   margin-left:6px;
 }
 .model-card .actions{
-  display:flex;gap:6px;justify-content:space-around;padding:10px;background:#f8f8f8;
+  display:flex;gap:10px;justify-content:space-between;align-items:center;
+  padding:10px;background:#f8f8f8;
 }
-.model-card .actions img{
-  width:24px;height:24px;cursor:pointer;
+.model-card .actions .left{
+  display:flex;gap:8px;align-items:center;
 }
+.model-card .actions .right{
+  display:flex;gap:8px;align-items:center;
+}
+.icon-btn{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 10px;border-radius:10px;border:none;
+  background:#eef1f4;color:#222;font-weight:600;cursor:pointer;
+  transition:.15s;
+}
+.icon-btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,0,0,.08)}
+.icon-btn img{width:20px;height:20px;display:block}
+.like-count{font-size:12px;color:#666}
 
 /* ====== ESTILOS GENERALES ====== */
 *{box-sizing:border-box}html,body{height:100%}
@@ -77,6 +92,14 @@ body{margin:0;font-family:Poppins,system-ui,sans-serif;background:#0b1220;color:
 .small{color:#9bc2df;font-size:12px}
 .view{display:none}.view.active{display:block}
 
+/* ====== BANNER ====== */
+.banner{
+  margin-top:12px;border-radius:14px;overflow:hidden;border:1px solid #1b3150
+}
+.banner img{
+  width:100%;height:140px;object-fit:cover;display:block
+}
+
 /* ====== CHAT ====== */
 .chat-card{height:calc(100vh - 80px);display:flex;flex-direction:column}
 .chat-head{display:flex;align-items:center;gap:10px;border-bottom:1px solid #1b3150;padding:10px;background:#0f1a2b}
@@ -89,6 +112,22 @@ body{margin:0;font-family:Poppins,system-ui,sans-serif;background:#0b1220;color:
 .chat-input{display:flex;gap:8px;align-items:center;padding:10px;border-top:1px solid #1b3150;background:#0f1a2b}
 .chat-input .input{flex:1}
 @keyframes floatIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* Reacciones junto al input del chat */
+.chat-reactions{display:flex;gap:8px}
+.chat-reactions .icon-btn{background:#13263f;color:#cfe7ff;border:1px solid #284a73}
+
+/* ====== MODAL RECARGA ====== */
+.modal{position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.55);z-index:1000}
+.modal.show{display:grid}
+.modal .box{background:#0f1a2b;border:1px solid #1b3150;border-radius:18px;padding:16px;width:min(420px,92vw)}
+
+/* ====== POP PROMO EN CHAT ====== */
+.pop-overlay{position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.35);z-index:900}
+.pop-overlay.show{display:grid}
+.pop-card{background:transparent;border:0;animation:popFloat 1.5s ease-in-out infinite}
+.pop-card img{width:min(320px,90vw);border-radius:16px;border:2px solid #fff}
+@keyframes popFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 </style>
 </head>
 <body>
@@ -106,26 +145,37 @@ body{margin:0;font-family:Poppins,system-ui,sans-serif;background:#0b1220;color:
 </header>
 
 <main class="container">
-  <!-- LISTA DE MODELOS -->
+  <!-- LISTA DE MODELOS (Inicio) -->
   <section id="view-chat" class="view active">
+    <!-- Banner por URL -->
+    <a class="banner" href="https://TU_BANNER_URL" target="_blank" rel="noopener">
+      <img src="https://TU_BANNER_URL" alt="Banner">
+    </a>
+
     <h3>Modelos</h3>
     <div class="model-grid" id="chatList"></div>
   </section>
 
-  <!-- CHAT SOLO -->
+  <!-- CHAT SOLO (Pantalla completa) -->
   <section id="view-conversation" class="view">
     <div class="card chat-card">
       <div class="chat-head">
-        <button class="btn btn-ghost" onclick="go('chat')">← Volver</button>
+        <button class="btn btn-ghost" onclick="leaveChat()">← Volver</button>
         <img id="chatAvatar" src="" style="width:40px;height:40px;border-radius:50%;object-fit:cover">
         <div>
           <div id="chatName"></div>
           <small id="chatStatus" class="small">En línea</small>
         </div>
       </div>
+
       <div class="chat-body" id="messages"></div>
       <div class="typing" id="typingHint">Está escribiendo…</div>
+
       <div class="chat-input">
+        <div class="chat-reactions">
+          <button class="icon-btn" id="btnReactHeart"><img src="https://HEART_ICON_URL" alt="heart">❤️</button>
+          <button class="icon-btn" id="btnReactMsg"><img src="https://MSG_ICON_URL" alt="msg">💬</button>
+        </div>
         <input class="input" id="msgText" placeholder="Escribe un mensaje (2 monedas)"/>
         <button class="btn btn-primary" id="btnSend">Enviar</button>
       </div>
@@ -143,10 +193,33 @@ body{margin:0;font-family:Poppins,system-ui,sans-serif;background:#0b1220;color:
   </section>
 </main>
 
+<!-- MODAL RECARGA -->
+<div id="rechargeModal" class="modal">
+  <div class="box">
+    <h3 style="margin:0 0 6px">Sin monedas 😢</h3>
+    <p class="small">Cada mensaje cuesta <b>2</b> moneditas.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      <button class="btn btn-primary" id="btnWatchAd">Ver anuncio (+10)</button>
+      <button class="btn btn-ghost" id="btnRecharge">Recargar monedas</button>
+      <button class="btn btn-ghost" id="btnCloseRecharge">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- POP PROMO EN CHAT C/ 1 MIN -->
+<div id="chatPop" class="pop-overlay">
+  <div class="pop-card">
+    <a href="https://TU_POP_CHAT_URL" target="_blank" rel="noopener">
+      <img src="https://TU_POP_CHAT_URL" alt="Promo">
+    </a>
+  </div>
+</div>
+
 <script>
 /* ===== Helpers DB ===== */
 const DB={get:(k,f=null)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch{return f}},set:(k,v)=>localStorage.setItem(k,JSON.stringify(v))};
 const START_COINS=50, COIN_PER_MSG=2;
+
 if(!DB.get('models'))DB.set('models',[
   {id:'m1',name:'Luna',edad:22,pais:'Venezuela',desc:'Tierna y juguetona',img:'https://picsum.photos/300/400?1'}
 ]);
@@ -156,67 +229,160 @@ const views={chat:'view-chat',profile:'view-profile',conversation:'view-conversa
 function go(v){Object.values(views).forEach(id=>document.getElementById(id).classList.remove('active'));document.getElementById(views[v]).classList.add('active');}
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
 
-/* ===== Simular sesión directa ===== */
-let session={alias:'Usuario',coins:START_COINS};
+/* ===== Sesión / Monedas ===== */
+let session=DB.get('session')||{alias:'Usuario',coins:START_COINS};
+DB.set('session',session);
+const coinsLabel=document.getElementById('coinsLabel');
+function setCoins(v){session.coins=Math.max(0,v);DB.set('session',session);coinsLabel.textContent=session.coins}
+function getCoins(){return session.coins}
+setCoins(session.coins||START_COINS);
 
 /* ===== Perfil ===== */
-document.getElementById('btnSaveProfile').onclick=()=>{if(session)session.alias=document.getElementById('pAlias').value};
+document.getElementById('btnSaveProfile').onclick=()=>{session.alias=document.getElementById('pAlias').value||session.alias;DB.set('session',session);alert('Perfil actualizado')};
 
-/* ===== Renderizar modelos ===== */
-const coinsLabel=document.getElementById('coinsLabel');
+/* ===== Likes persistentes ===== */
+function getLikes(){return DB.get('likes',{})}
+function setLikes(obj){DB.set('likes',obj)}
+function incLike(id){const l=getLikes();l[id]=(l[id]||0)+1;setLikes(l);return l[id]}
+
+/* ===== Render modelos (cards con reacciones) ===== */
 function renderModels(){
-  coinsLabel.textContent=session?.coins||0;
   const list=document.getElementById('chatList');list.innerHTML='';
+  const likes=getLikes();
   DB.get('models',[]).forEach(m=>{
-    const age=m.edad||20;
-    const pais=m.pais||'País';
-    const d=document.createElement('div');
-    d.className='model-card';
-    d.innerHTML=`
-      <img src="${m.img}">
+    const age=m.edad||20, pais=m.pais||'País';
+    const card=document.createElement('div');
+    card.className='model-card';
+    card.innerHTML=`
+      <img src="${m.img}" alt="${m.name}">
       <div class="info">
         <div class="name">${m.name} <span class="online">● Online</span></div>
         <div class="extra">${age} años · ${pais}</div>
-        <div class="small">${m.desc}</div>
+        <div class="small" style="color:#333">${m.desc||''}</div>
       </div>
-      <div class="actions">
-        <img src="https://cdn-icons-png.flaticon.com/512/833/833472.png" title="Me gusta">
-        <img src="https://cdn-icons-png.flaticon.com/512/1034/1034124.png" title="Mensaje">
+      <div class="actions" onclick="event.stopPropagation()">
+        <div class="left">
+          <button class="icon-btn btn-like"><img src="https://cdn-icons-png.flaticon.com/512/833/833472.png" alt=""><span>Me gusta</span></button>
+          <span class="like-count" id="lc_${m.id}">${likes[m.id]||0} likes</span>
+        </div>
+        <div class="right">
+          <button class="icon-btn btn-msg"><img src="https://cdn-icons-png.flaticon.com/512/1034/1034124.png" alt=""><span>Mensaje</span></button>
+        </div>
       </div>
     `;
-    d.onclick=()=>openChat(m);
-    list.appendChild(d);
+    // Like
+    card.querySelector('.btn-like').onclick=()=>{ const n=incLike(m.id); document.getElementById('lc_'+m.id).textContent=n+' likes'; };
+    // Mensaje -> abrir chat
+    card.querySelector('.btn-msg').onclick=()=>openChat(m);
+    // Clic en cualquier parte de la card abre chat
+    card.addEventListener('click',()=>openChat(m));
+    list.appendChild(card);
   });
 }
+renderModels();
 
 /* ===== Chat ===== */
 let currentModel=null;
-const messages=document.getElementById('messages'), typingHint=document.getElementById('typingHint');
-function openChat(m){
-  currentModel=m;
-  document.getElementById('chatAvatar').src=m.img;
-  document.getElementById('chatName').textContent=m.name;
-  document.getElementById('chatStatus').textContent='En línea';
-  messages.innerHTML=`<div class="msg them">Holi ${session.alias} 💕 soy ${m.name}, ¿quieres jugar?</div>`;
-  go('conversation');
+const messages=document.getElementById('messages'),
+      typingHint=document.getElementById('typingHint'),
+      chatStatus=document.getElementById('chatStatus'),
+      chatAvatar=document.getElementById('chatAvatar'),
+      chatName=document.getElementById('chatName');
+
+let chatPopTimer=null;
+
+function leaveChat(){
+  // limpiar pop cada minuto
+  if(chatPopTimer){clearInterval(chatPopTimer); chatPopTimer=null;}
+  document.getElementById('chatPop').classList.remove('show');
+  go('chat');
 }
 
+function openChat(m){
+  currentModel=m;
+  chatAvatar.src=m.img;
+  chatName.textContent=m.name;
+  chatStatus.textContent='En línea';
+  messages.innerHTML=`<div class="msg them">Holi ${session.alias} 💕 soy ${m.name}, ¿quieres jugar?</div>`;
+  go('conversation');
+
+  // Pop en chat cada minuto
+  if(chatPopTimer){clearInterval(chatPopTimer)}
+  chatPopTimer=setInterval(()=>{ document.getElementById('chatPop').classList.add('show'); setTimeout(()=>document.getElementById('chatPop').classList.remove('show'), 8000); }, 60000);
+}
+
+function sendOrPrompt(cost=COIN_PER_MSG, payloadFn){
+  if(getCoins()<cost){ openRecharge(); return false; }
+  setCoins(getCoins()-cost);
+  payloadFn && payloadFn();
+  return true;
+}
+
+/* Enviar texto */
 document.getElementById('btnSend').onclick=()=>{
-  if(!currentModel)return;
-  const val=document.getElementById('msgText').value.trim();
-  if(!val)return;
-  if(session.coins<COIN_PER_MSG){alert('Sin monedas');return;}
-  session.coins-=COIN_PER_MSG;coinsLabel.textContent=session.coins;
-  messages.innerHTML+=`<div class="msg you">${val}</div>`;
-  document.getElementById('msgText').value='';
-  typingHint.classList.add('on');
-  setTimeout(()=>{
-    typingHint.classList.remove('on');
-    messages.innerHTML+=`<div class="msg them">Me encanta 😍</div>`;
-  },3000);
+  if(!currentModel) return;
+  const val=document.getElementById('msgText').value.trim(); if(!val) return;
+  const ok=sendOrPrompt(COIN_PER_MSG, ()=>{
+    messages.innerHTML+=`<div class="msg you">${sanitize(val)}</div>`;
+    document.getElementById('msgText').value='';
+    simulateSeenAndReply();
+  });
 };
 
-renderModels();
+/* Reacciones ❤️ / 💬 en chat */
+document.getElementById('btnReactHeart').onclick=()=>{
+  if(!currentModel) return;
+  const ok=sendOrPrompt(COIN_PER_MSG, ()=>{
+    messages.innerHTML+=`<div class="msg you">❤️</div>`;
+    simulateSeenAndReply();
+  });
+};
+document.getElementById('btnReactMsg').onclick=()=>{ document.getElementById('msgText').focus(); };
+
+/* “Está escribiendo” + visto + respuesta en 3s tras ver */
+function simulateSeenAndReply(){
+  typing(true); // modelo escribiendo
+  // visto a los 500ms y respuesta 3s después
+  setTimeout(()=>{
+    // (podríamos marcar “visto” en la última burbuja del user si quisieras)
+    setTimeout(()=>{
+      typing(false);
+      messages.innerHTML+=`<div class="msg them">${autoReply()}</div>`;
+      messages.scrollTop=messages.scrollHeight;
+    }, 3000);
+  }, 500);
+}
+
+/* Respuestas auto simples */
+const AUTO = [
+  "Me encanta lo que dices 😍",
+  "¿Prefieres voz o seguir por aquí? 🎧",
+  "¡Qué interesante! Cuéntame más 💬",
+  "Estoy aquí para ti 💖",
+  "Jajaja, eres muy divertido 😜"
+];
+function autoReply(){ return AUTO[Math.floor(Math.random()*AUTO.length)]; }
+function typing(on){ typingHint.classList.toggle('on', !!on); }
+
+/* ===== Modal recarga ===== */
+const rechargeModal=document.getElementById('rechargeModal');
+function openRecharge(){rechargeModal.classList.add('show')}
+function closeRecharge(){rechargeModal.classList.remove('show')}
+document.getElementById('btnCloseRecharge').onclick=closeRecharge;
+// Ver anuncio -> abrir pop/link y dar +10 monedas (demo)
+document.getElementById('btnWatchAd').onclick=()=>{
+  window.open('https://TU_AD_POP_URL','_blank','noopener');
+  setCoins(getCoins()+10);
+  closeRecharge();
+};
+// Recargar -> aquí pones tu flujo real de pago
+document.getElementById('btnRecharge').onclick=()=>{ alert('Flujo de recarga (placeholder)'); };
+
+/* ===== Utilidades ===== */
+function sanitize(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+
+/* ===== Vista inicial ===== */
+go('chat');
 </script>
 </body>
 </html>
