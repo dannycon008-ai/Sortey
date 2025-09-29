@@ -53,7 +53,12 @@ a{color:inherit;text-decoration:none}
 
 /* ====== CHAT ====== */
 .chat-card{display:flex;flex-direction:column;min-height:70vh}
-.chat-head{display:flex;align-items:center;justify-content:space-between;padding:6px 4px 12px;border-bottom:1px solid #1b3150}
+.chat-head{
+  display:flex;align-items:center;gap:10px;
+  border-bottom:1px solid #1b3150;
+  padding-bottom:10px;margin-bottom:10px;
+}
+
 .chat-title{display:flex;align-items:center;gap:10px}
 .chat-title img{width:40px;height:40px;border-radius:12px;object-fit:cover;border:1px solid #214061}
 .chat-title .name{font-weight:700}
@@ -116,30 +121,26 @@ a{color:inherit;text-decoration:none}
       <div class="model-list" id="modelList"></div>
     </aside>
 
-    <!-- ====== CHAT ====== -->
-    <section class="card chat-card" id="chatView">
-      <div class="chat-head">
-        <div class="chat-title">
-          <img id="chatAvatar" src="" alt="">
-          <div>
-            <div class="name" id="chatName">Selecciona una modelo</div>
-            <div class="status offline" id="chatStatus">Desconectado</div>
-          </div>
-        </div>
+ <!-- NUEVA VISTA DE CHAT SOLO -->
+<section id="view-conversation" class="view">
+  <div class="card chat-card">
+    <div class="chat-head">
+      <img id="chatAvatar" src="" style="width:40px;height:40px;border-radius:50%;object-fit:cover">
+      <div>
+        <div id="chatName"></div>
+        <small id="chatStatus" class="small">En línea</small>
       </div>
-
-      <div class="chat-body" id="messages"></div>
-      <div class="typing" id="typingHint">
-        <span class="dot-typing"></span><span class="dot-typing"></span><span class="dot-typing"></span>
-        <span>Está escribiendo…</span>
-      </div>
-
-      <div class="chat-input">
-        <input class="input" id="msgText" placeholder="Escribe un mensaje (2 monedas)"/>
-        <button class="btn-send" id="btnSend">Enviar</button>
-      </div>
-    </section>
+      <button class="btn btn-ghost" onclick="go('chat')">← Volver</button>
+    </div>
+    <div class="chat-body" id="messages"></div>
+    <div class="typing" id="typingHint">Está escribiendo…</div>
+    <div class="chat-input">
+      <input class="input" id="msgText" placeholder="Escribe un mensaje (2 monedas)"/>
+      <button class="btn btn-primary" id="btnSend">Enviar</button>
+    </div>
   </div>
+</section>
+
 
   <!-- ====== PERFIL ====== -->
   <section id="view-profile" class="card hidden" style="margin-top:16px">
@@ -286,25 +287,16 @@ function setStatusOnline(on){
 }
 
 function openChatWith(model){
-  currentModel=model;
-  // encabezado
-  chatName.textContent=model.name;
-  chatAvatar.src=(model.photos&&model.photos[0])||'';
-  setStatusOnline(true);
-  // limpiar mensajes
-  messagesDiv.innerHTML='';
-  // saludo inicial
-  pushFromModel(`Holi ${session.alias} 💕 soy ${model.name}, ¿quieres jugar?`);
-  // ir a la vista de chat (redirección)
-  sections.chat.classList.remove('hidden');
-  sections.profile.classList.add('hidden');
-  // reiniciar timers online/offline
-  if(onlineTimer) clearInterval(onlineTimer);
-  onlineTimer=setInterval(()=>{
-    // si pasan 60s sin que el usuario hable, se pone desconectado
-    if(Date.now()-lastUserMsgAt>60000){ setStatusOnline(false); }
-  }, 5000);
+ let currentModel=null;
+  currentModel=m;
+  // llenar cabecera
+  document.getElementById('chatAvatar').src=m.photos?m.photos[0]:m.img;
+  document.getElementById('chatName').textContent=m.name;
+  document.getElementById('chatStatus').textContent='En línea';
+  messages.innerHTML=`<div class="msg them">Holi ${session.alias} 💕 soy ${m.name}, ¿quieres jugar?</div>`;
+  go('conversation'); // vista nueva solo chat
 }
+
 
 function msgEl({from,text,ts,seen}){
   const div=document.createElement('div'); div.className='msg '+(from==='you'?'you':'them');
