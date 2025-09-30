@@ -91,7 +91,14 @@ body{margin:0;font-family:Poppins,system-ui,sans-serif;background:#0b1220;color:
 
 /* ====== BANNER ====== */
 .banner-wrap{margin-top:8px}
-.banner-wrap img{width:100%;height:auto;border-radius:14px;display:block}
+.banner-wrap img {
+  width:80%;          /* en lugar de 100% */
+  max-height:140px;
+  object-fit:contain;
+  margin:0 auto;      /* centrado */
+  border-radius:14px;
+  display:block;
+}
 
 /* ====== CHAT ====== */
 .chat-card{height:calc(100vh - 80px);display:flex;flex-direction:column}
