@@ -75,7 +75,14 @@
     /* ====== MODAL RECARGA ====== */
     .recharge-modal {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:2000;}
     .recharge-modal.active{display:flex;}
-    .recharge-card {width:340px;background:#0f172a;color:#fff;border-radius:20px;padding:20px;text-align:center;box-shadow:0 8px 25px rgba(0,0,0,.6);animation:fadeInUp .4s ease;}
+    .recharge-card {width:360px;background:#0f172a;color:#fff;border-radius:20px;padding:20px;text-align:center;box-shadow:0 8px 25px rgba(0,0,0,.6);animation:fadeInUp .4s ease;}
+    .recharge-options {display:flex;gap:6px;margin:12px 0;}
+    .recharge-tab {flex:1;padding:8px;border:none;border-radius:10px;background:#1e293b;color:#fff;cursor:pointer;}
+    .recharge-tab.active {background:#ff2e6a;}
+    .recharge-box {display:none;margin-top:10px;}
+    .recharge-box.active{display:block;}
+    .pay-btn {display:block;width:100%;padding:10px;margin:6px 0;border:none;border-radius:12px;background:#ff2e6a;color:#fff;font-weight:600;cursor:pointer;}
+    .custom-box {margin-top:12px;text-align:left}
   </style>
 </head>
 <body>
@@ -83,12 +90,14 @@
   <header class="header">
     <div class="header-inner container">
       <div class="brand">
+        <!-- Botón Recargar -->
+        <button class="btn btn-primary" onclick="openRecharge()">💳 Recargar</button>
         <img id="appLogo" src="https://qu.ax/PyOjt.png" alt="Logo" style="height:36px;border-radius:8px;object-fit:contain">
         <span>ChispaLive</span>
-        <nav style="display:flex;gap:12px;align-items:center">
-          <div>Monedas: <b id="coinsLabel">0</b></div>
-        </nav>
       </div>
+      <nav style="display:flex;gap:12px;align-items:center">
+        <div>Monedas: <b id="coinsLabel">0</b></div>
+      </nav>
     </div>
   </header>
 
@@ -99,12 +108,8 @@
         <img src="https://qu.ax/PyOjt.png" class="login-logo">
         <h2>Bienvenido a <span style="color:#ff2e6a">ChispaLive</span></h2>
         <p>🎁 Regístrate y recibe <b>20 moneditas</b></p>
-        <div class="form-group">
-          <input id="loginName" class="input login-input" placeholder="Nombre completo">
-        </div>
-        <div class="form-group">
-          <input id="loginPhone" class="input login-input" placeholder="Número de teléfono">
-        </div>
+        <div class="form-group"><input id="loginName" class="input login-input" placeholder="Nombre completo"></div>
+        <div class="form-group"><input id="loginPhone" class="input login-input" placeholder="Número de teléfono"></div>
         <button class="btn-login" onclick="doLogin()">Entrar</button>
       </div>
     </section>
@@ -140,8 +145,24 @@
   <div id="rechargeModal" class="recharge-modal">
     <div class="recharge-card">
       <h3>⚡ Recarga tus moneditas</h3>
-      <p>Elige un método de recarga</p>
-      <button class="btn-login" onclick="closeRecharge()">Cerrar</button>
+      <div class="recharge-options">
+        <button class="recharge-tab active" onclick="showRecharge('paypal')">PayPal</button>
+        <button class="recharge-tab" onclick="showRecharge('binance')">Binance</button>
+        <button class="recharge-tab" onclick="showRecharge('ads')">Ver anuncios</button>
+      </div>
+      <div id="payPalBox" class="recharge-box active">
+        <button class="pay-btn" onclick="window.location.href='https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=TUCORREO_PAYPAL&currency_code=USD&amount=0.50&item_name=50+moneditas'">50 moneditas / 0,50$</button>
+        <button class="pay-btn" onclick="window.location.href='https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=TUCORREO_PAYPAL&currency_code=USD&amount=1.00&item_name=100+moneditas'">100 moneditas / 1$</button>
+        <button class="pay-btn" onclick="window.location.href='https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=TUCORREO_PAYPAL&currency_code=USD&amount=5.00&item_name=500+moneditas+%2B20+gratis'">500 +20 🎁 / 5$</button>
+        <div class="custom-box">
+          <label>Recarga personalizada (mínimo 50):</label>
+          <input type="number" id="customCoins" min="50" class="input" placeholder="Ej: 150">
+          <button class="btn btn-primary" onclick="customPay()">Recargar</button>
+        </div>
+      </div>
+      <div id="binanceBox" class="recharge-box"><p>📲 Escanea QR en Binance para recargar</p></div>
+      <div id="adsBox" class="recharge-box"><button class="btn btn-primary" onclick="watchAds()">Ver anuncios y ganar 30 monedas</button></div>
+      <button class="btn btn-ghost" onclick="closeRecharge()">Cerrar</button>
     </div>
   </div>
 
@@ -176,41 +197,47 @@
       document.getElementById('coinsLabel').textContent=coins;
       go('chat');
       document.getElementById('view-login').classList.remove('active');
+      document.getElementById('view-chat').classList.add('active');
     }
     window.doLogin=doLogin;
 
-    /* RECARGA */
-    function openRecharge(){document.getElementById('rechargeModal').classList.add('active');}
-    function closeRecharge(){document.getElementById('rechargeModal').classList.remove('active');}
-    window.openRecharge=openRecharge;window.closeRecharge=closeRecharge;
-
     /* MODELOS */
-    const chatList=document.getElementById('chatList');const slidesIntervals={};
+    const chatList=document.getElementById('chatList');
+    const slidesIntervals={};
     async function renderModels(){
       chatList.innerHTML='';
-      const snap=await getDocs(collection(db,"models"));
+      const snap = await getDocs(collection(db,"models"));
       snap.forEach(docSnap=>{
         const m={id:docSnap.id,...docSnap.data()};
         const card=document.createElement('div');
         card.className='model-card';
         const slideId='slide_'+m.id;
-        card.innerHTML=`<div class="model-slideshow" id="${slideId}">${(m.photos||[]).slice(0,5).map((src,i)=>`<img src="${src}" class="${i===0?'active':''}">`).join('')}</div><div class="info"><div class="name">${m.name} <span class="online">● Online</span></div><div class="extra">${m.age||'—'} años · ${m.country||'—'}</div><div class="desc">${m.desc||''}</div></div><div class="actions"><button class="action-btn btn-like"><img src="https://qu.ax/hlsxX.png" alt="like"><span>Me gusta</span><span class="like-badge">${m.likes||0}</span></button><button class="action-btn btn-msg"><img src="https://qu.ax/jGSiu.png" alt="mensaje"><span>Mensaje</span></button></div>`;
+        card.innerHTML=`
+          <div class="model-slideshow" id="${slideId}">
+            ${(m.photos||[]).slice(0,5).map((src,i)=>`<img src="${src}" class="${i===0?'active':''}">`).join('')}
+          </div>
+          <div class="info">
+            <div class="name">${m.name} <span class="online">● Online</span></div>
+            <div class="extra">${m.age||'—'} años · ${m.country||'—'}</div>
+            <div class="desc">${m.desc||''}</div>
+          </div>
+          <div class="actions">
+            <button class="action-btn btn-like"><img src="https://qu.ax/hlsxX.png"><span>Me gusta</span><span class="like-badge">${m.likes||0}</span></button>
+            <button class="action-btn btn-msg"><img src="https://qu.ax/jGSiu.png"><span>Mensaje</span></button>
+          </div>`;
         card.querySelector('.btn-msg').onclick=(e)=>{e.stopPropagation();openChatWith(m);};
         card.onclick=()=>openChatWith(m);
         chatList.appendChild(card);
         startSlideshow(slideId);
       });
     }
-    function startSlideshow(id){const box=document.getElementById(id);if(!box)return;const imgs=[...box.querySelectorAll('img')];if(imgs.length<=1)return;let i=0;if(slidesIntervals[id])clearInterval(slidesIntervals[id]);slidesIntervals[id]=setInterval(()=>{imgs[i].classList.remove('active');i=(i+1)%imgs.length;imgs[i].classList.add('active');},2800);}
+    function startSlideshow(id){const box=document.getElementById(id); if(!box) return;const imgs=[...box.querySelectorAll('img')]; if(imgs.length<=1) return;let i=0;if(slidesIntervals[id]) clearInterval(slidesIntervals[id]);slidesIntervals[id]=setInterval(()=>{imgs[i].classList.remove('active');i=(i+1)%imgs.length;imgs[i].classList.add('active');},2800);}
 
     /* CHAT */
     let currentModel=null;
     const messages=document.getElementById('messages');
     const chatName=document.getElementById('chatName');
     const chatAvatar=document.getElementById('chatAvatar');
-    const btnSend=document.getElementById('btnSend');
-    const msgText=document.getElementById('msgText');
-
     function openChatWith(m){
       currentModel=m;
       chatName.textContent=m.name;
@@ -219,9 +246,11 @@
       go('conversation');
     }
 
-    btnSend.onclick=function(){
+    /* ENVIAR MENSAJES Y DESCONTAR */
+    document.getElementById('btnSend').onclick=()=>{
+      const msgText=document.getElementById('msgText');
       const txt=msgText.value.trim();
-      if(!txt)return;
+      if(!txt) return;
       if(coins<2){openRecharge();return;}
       coins-=2;
       document.getElementById('coinsLabel').textContent=coins;
@@ -229,6 +258,24 @@
       msgText.value='';
       if(coins<=0){openRecharge();}
     };
+
+    /* MODAL RECARGA */
+    function openRecharge(){document.getElementById('rechargeModal').classList.add('active');}
+    function closeRecharge(){document.getElementById('rechargeModal').classList.remove('active');}
+    function showRecharge(tab){
+      document.querySelectorAll('.recharge-tab').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.recharge-box').forEach(b=>b.classList.remove('active'));
+      if(tab==='paypal'){document.querySelector('[onclick*="paypal"]').classList.add('active');document.getElementById('payPalBox').classList.add('active');}
+      if(tab==='binance'){document.getElementById('binanceBox').classList.add('active');}
+      if(tab==='ads'){document.getElementById('adsBox').classList.add('active');}
+    }
+    function customPay(){
+      const val=parseInt(document.getElementById('customCoins').value);
+      if(val>=50){const usd=(val*0.01).toFixed(2);
+        window.location.href=`https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=TUCORREO_PAYPAL&currency_code=USD&amount=${usd}&item_name=${val}+moneditas`;
+      }else{alert("Mínimo 50 moneditas");}
+    }
+    function watchAds(){coins+=30;document.getElementById('coinsLabel').textContent=coins;closeRecharge();alert("🎉 Has recibido 30 moneditas por ver anuncios");}
 
     renderModels();
   </script>
