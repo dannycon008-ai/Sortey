@@ -32,7 +32,7 @@
       <input class="input" id="mAge" placeholder="Edad"/>
       <input class="input" id="mCountry" placeholder="País"/>
       <textarea class="input" id="mDesc" placeholder="Descripción"></textarea>
-      <input class="input" id="mPhotos" type="file" accept="image/*" multiple/>
+      <textarea class="input" id="mPhotos" placeholder="URLs de fotos separadas por coma"></textarea>
       <button class="btn btn-primary" id="btnAddModel">Agregar</button>
     </div>
 
@@ -61,7 +61,6 @@
     /* ================= FIREBASE ================= */
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
     // Tu config Firebase
     const firebaseConfig = {
@@ -75,7 +74,6 @@
     };
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const storage = getStorage(app);
 
     /* ================= MODELOS ================= */
     async function renderModels(){
@@ -108,24 +106,17 @@
       const age=parseInt(document.getElementById('mAge').value.trim())||null;
       const country=document.getElementById('mCountry').value.trim();
       const desc=document.getElementById('mDesc').value.trim();
-      const files=document.getElementById('mPhotos').files;
+      const photos=document.getElementById('mPhotos').value
+        .split(',')
+        .map(x=>x.trim())
+        .filter(Boolean);
 
-      if(!name||!files.length){alert("Nombre y al menos 1 foto obligatoria");return;}
-
-      // Subir fotos
-      const urls=[];
-      for(let i=0;i<files.length;i++){
-        const file=files[i];
-        const storageRef=ref(storage,'models/'+Date.now()+'_'+file.name);
-        await uploadBytes(storageRef,file);
-        const url=await getDownloadURL(storageRef);
-        urls.push(url);
-      }
+      if(!name||!photos.length){alert("Nombre y al menos 1 foto obligatoria");return;}
 
       // Guardar en Firestore
       await addDoc(collection(db,"models"),{
         name,age,country,desc,
-        photos:urls,
+        photos,
         likes:0
       });
 
