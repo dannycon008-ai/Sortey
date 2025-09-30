@@ -70,6 +70,37 @@
     .card{background:#0f1a2b;border:1px solid #1b3150;border-radius:18px;padding:16px;box-shadow:0 10px 32px rgba(0,0,0,.35)}
     .small{color:#9bc2df;font-size:12px}
     .view{display:none}.view.active{display:block}
+
+    /* ====== BANNER VIDEO ====== */
+    .banner-wrap {
+      position: relative;
+      margin-top: 8px;
+    }
+    .banner-wrap video {
+      width: 100%;
+      max-height: 180px;
+      object-fit: cover;
+      border-radius: 14px;
+      display: block;
+    }
+    .live-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: #001f99;
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 6px 12px;
+      border-radius: 10px;
+      animation: pulse 1.5s infinite;
+      box-shadow: 0 0 8px rgba(0,0,0,0.4);
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.85; }
+      100% { transform: scale(1); opacity: 1; }
+    }
   </style>
 </head>
 <body>
@@ -87,6 +118,17 @@
   </header>
 
   <main class="container">
+    <!-- BANNER VIDEO -->
+    <div class="banner-wrap">
+      <a id="bannerLink" href="https://ejemplo.com" target="_blank" rel="noopener">
+        <video autoplay muted loop playsinline>
+          <source src="https://qu.ax/dMvpz.mp4" type="video/mp4">
+          Tu navegador no soporta video.
+        </video>
+        <div class="live-badge">🔴 En directo</div>
+      </a>
+    </div>
+
     <!-- MODELOS -->
     <section id="view-chat" class="view active">
       <h3>Modelos</h3>
@@ -131,7 +173,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    /* ================= CHAT BASICS ================= */
+    /* ================= ROUTER ================= */
     const views={chat:'view-chat',conversation:'view-conversation'};
     function go(v){Object.values(views).forEach(id=>document.getElementById(id).classList.remove('active'));document.getElementById(views[v]).classList.add('active');}
 
@@ -147,7 +189,6 @@
         const card=document.createElement('div');
         card.className='model-card';
 
-        // slideshow
         const slideId='slide_'+m.id;
         card.innerHTML=`
           <div class="model-slideshow" id="${slideId}">
