@@ -32,7 +32,7 @@
       <input class="input" id="mAge" placeholder="Edad"/>
       <input class="input" id="mCountry" placeholder="País"/>
       <textarea class="input" id="mDesc" placeholder="Descripción"></textarea>
-      <textarea class="input" id="mPhotos" placeholder="URLs de fotos separadas por coma"></textarea>
+      <input class="input" id="mPhotos" type="file" accept="image/*" multiple/>
       <button class="btn btn-primary" id="btnAddModel">Agregar</button>
     </div>
 
@@ -40,7 +40,6 @@
     <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:center">
         <h3>Modelos</h3>
-        <button class="btn btn-ghost" id="btnSeed">Cargar ejemplos</button>
       </div>
       <table class="table" id="modelsTable">
         <thead>
@@ -58,20 +57,36 @@
     </div>
   </main>
 
-  <script>
-    // Almacenamiento en localStorage
-    const DB={
-      get:(k,f=[])=>JSON.parse(localStorage.getItem(k)||JSON.stringify(f)),
-      set:(k,v)=>localStorage.setItem(k,JSON.stringify(v))
-    };
+  <script type="module">
+    /* ================= FIREBASE ================= */
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
-    // Renderizar modelos
-    function renderModels(){
-      const tb=document.querySelector('#modelsTable tbody');tb.innerHTML='';
-      DB.get('models').forEach(m=>{
+    // Tu config Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyAlWJTeezvz0Xkd363SgN5CnHFbEp8uNQU",
+      authDomain: "chispalive-b7ed6.firebaseapp.com",
+      projectId: "chispalive-b7ed6",
+      storageBucket: "chispalive-b7ed6.appspot.com",
+      messagingSenderId: "334811479289",
+      appId: "1:334811479289:web:403a2a1b10f7af6704b628",
+      measurementId: "G-60ERX1MFT7"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    /* ================= MODELOS ================= */
+    async function renderModels(){
+      const tb=document.querySelector('#modelsTable tbody');
+      tb.innerHTML='';
+      const snap = await getDocs(collection(db,"models"));
+      snap.forEach(docSnap=>{
+        const m={id:docSnap.id,...docSnap.data()};
         const tr=document.createElement('tr');
         tr.innerHTML=`
-          <td><img src="${m.photos && m.photos[0] ? m.photos[0] : m.img}" width="50" style="border-radius:6px"></td>
+          <td><img src="${m.photos && m.photos[0] ? m.photos[0] : ''}" width="50" style="border-radius:6px"></td>
           <td>${m.name||''}</td>
           <td>${m.age||''}</td>
           <td>${m.country||''}</td>
@@ -81,50 +96,71 @@
         tb.appendChild(tr);
       });
       tb.querySelectorAll('[data-del]').forEach(btn=>{
-        btn.onclick=()=>{
-          const list=DB.get('models').filter(x=>x.id!==btn.dataset.del);
-          DB.set('models',list);renderModels();
+        btn.onclick=async()=>{
+          await deleteDoc(doc(db,"models",btn.dataset.del));
+          renderModels();
         };
       });
     }
 
-    // Agregar modelo
-    document.getElementById('btnAddModel').onclick=()=>{
+    document.getElementById('btnAddModel').onclick=async()=>{
       const name=document.getElementById('mName').value.trim();
       const age=parseInt(document.getElementById('mAge').value.trim())||null;
       const country=document.getElementById('mCountry').value.trim();
       const desc=document.getElementById('mDesc').value.trim();
-      const photos=document.getElementById('mPhotos').value.split(',').map(x=>x.trim()).filter(Boolean);
-      if(!name||!photos.length){alert("Nombre y al menos 1 foto obligatoria");return;}
-      const list=DB.get('models');
-      list.push({id:'m_'+Date.now(),name,age,country,desc,photos,likes:0});
-      DB.set('models',list);renderModels();
+      const files=document.getElementById('mPhotos').files;
+
+      if(!name||!files.length){alert("Nombre y al menos 1 foto obligatoria");return;}
+
+      // Subir fotos
+      const urls=[];
+      for(let i=0;i<files.length;i++){
+        const file=files[i];
+        const storageRef=ref(storage,'models/'+Date.now()+'_'+file.name);
+        await uploadBytes(storageRef,file);
+        const url=await getDownloadURL(storageRef);
+        urls.push(url);
+      }
+
+      // Guardar en Firestore
+      await addDoc(collection(db,"models"),{
+        name,age,country,desc,
+        photos:urls,
+        likes:0
+      });
+
+      alert("Modelo agregado ✅");
       document.getElementById('mName').value='';
       document.getElementById('mAge').value='';
       document.getElementById('mCountry').value='';
       document.getElementById('mDesc').value='';
       document.getElementById('mPhotos').value='';
-    };
-
-    // Cargar ejemplos
-    document.getElementById('btnSeed').onclick=()=>{
-      DB.set('models',[
-        {id:'m1',name:'Luna',age:22,country:'Venezuela',desc:'Tierna y juguetona ✨',photos:['https://picsum.photos/200/300?1','https://picsum.photos/200/300?11'],likes:0},
-        {id:'m2',name:'Mila',age:25,country:'Colombia',desc:'Charla traviesa 😇',photos:['https://picsum.photos/200/300?2','https://picsum.photos/200/300?22'],likes:0},
-        {id:'m3',name:'Arya',age:20,country:'Chile',desc:'Curiosa y divertida 💫',photos:['https://picsum.photos/200/300?3','https://picsum.photos/200/300?33'],likes:0}
-      ]);
       renderModels();
     };
 
-    // Flujo auto-respuestas
+    /* ================= AUTO-RESPUESTAS ================= */
     const flowTxt=document.getElementById('flowJson');
-    flowTxt.value=JSON.stringify(DB.get('autoFlow',[]),null,2);
-    document.getElementById('btnSaveFlow').onclick=()=>{
-      try{DB.set('autoFlow',JSON.parse(flowTxt.value));alert("Guardado ✅");}
-      catch{alert("JSON inválido ❌");}
+    async function loadFlow(){
+      const snap = await getDocs(collection(db,"config"));
+      let flow=[];
+      snap.forEach(d=>{
+        if(d.id==="autoFlow") flow=d.data().list||[];
+      });
+      flowTxt.value=JSON.stringify(flow,null,2);
+    }
+    document.getElementById('btnSaveFlow').onclick=async()=>{
+      try{
+        const parsed=JSON.parse(flowTxt.value);
+        await setDoc(doc(db,"config","autoFlow"),{list:parsed});
+        alert("Flujo guardado ✅");
+      }catch(e){
+        alert("JSON inválido ❌");
+      }
     };
 
+    /* Init */
     renderModels();
+    loadFlow();
   </script>
 </body>
 </html>
