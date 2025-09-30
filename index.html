@@ -71,6 +71,11 @@
     .login-input:focus {border-color:#ff2e6a;box-shadow:0 0 6px rgba(255,46,106,.6);}
     .btn-login {width:100%;padding:12px;font-size:15px;font-weight:700;border:none;border-radius:14px;background:linear-gradient(90deg,#ff2e6a,#ff4f8b);color:#fff;cursor:pointer;transition:.3s;}
     .btn-login:hover {transform:translateY(-2px);box-shadow:0 8px 20px rgba(255,46,106,.4);}
+
+    /* ====== MODAL RECARGA ====== */
+    .recharge-modal {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:2000;}
+    .recharge-modal.active{display:flex;}
+    .recharge-card {width:340px;background:#0f172a;color:#fff;border-radius:20px;padding:20px;text-align:center;box-shadow:0 8px 25px rgba(0,0,0,.6);animation:fadeInUp .4s ease;}
   </style>
 </head>
 <body>
@@ -94,14 +99,12 @@
         <img src="https://qu.ax/PyOjt.png" class="login-logo">
         <h2>Bienvenido a <span style="color:#ff2e6a">ChispaLive</span></h2>
         <p>🎁 Regístrate y recibe <b>20 moneditas</b></p>
-
         <div class="form-group">
           <input id="loginName" class="input login-input" placeholder="Nombre completo">
         </div>
         <div class="form-group">
           <input id="loginPhone" class="input login-input" placeholder="Número de teléfono">
         </div>
-
         <button class="btn-login" onclick="doLogin()">Entrar</button>
       </div>
     </section>
@@ -133,8 +136,16 @@
     </section>
   </main>
 
+  <!-- MODAL RECARGA -->
+  <div id="rechargeModal" class="recharge-modal">
+    <div class="recharge-card">
+      <h3>⚡ Recarga tus moneditas</h3>
+      <p>Elige un método de recarga</p>
+      <button class="btn-login" onclick="closeRecharge()">Cerrar</button>
+    </div>
+  </div>
+
   <script type="module">
-    /* ================= FIREBASE ================= */
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
@@ -150,32 +161,34 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    /* ================= ROUTER ================= */
-    const views = { login:'view-login', chat:'view-chat', conversation:'view-conversation' };
-    function go(v){
-      Object.values(views).forEach(id => document.getElementById(id).classList.remove('active'));
-      document.getElementById(views[v]).classList.add('active');
-    }
-    window.go = go;
+    /* ROUTER */
+    const views={login:'view-login',chat:'view-chat',conversation:'view-conversation'};
+    function go(v){Object.values(views).forEach(id=>document.getElementById(id).classList.remove('active'));document.getElementById(views[v]).classList.add('active');}
+    window.go=go;
 
-    /* ================= LOGIN ================= */
-    let coins = 0;
+    /* LOGIN */
+    let coins=0;
     function doLogin(){
-      const name = document.getElementById('loginName').value.trim();
-      const phone = document.getElementById('loginPhone').value.trim();
-      if(!name || !phone){ alert("Completa todos los campos"); return; }
-      coins = 20; // regalo inicial
-      document.getElementById('coinsLabel').textContent = coins;
+      const name=document.getElementById('loginName').value.trim();
+      const phone=document.getElementById('loginPhone').value.trim();
+      if(!name||!phone){alert("Completa todos los campos");return;}
+      coins=20;
+      document.getElementById('coinsLabel').textContent=coins;
       go('chat');
       document.getElementById('view-login').classList.remove('active');
     }
-    window.doLogin = doLogin;
+    window.doLogin=doLogin;
 
-    /* ================= MODELOS FIRESTORE ================= */
+    /* RECARGA */
+    function openRecharge(){document.getElementById('rechargeModal').classList.add('active');}
+    function closeRecharge(){document.getElementById('rechargeModal').classList.remove('active');}
+    window.openRecharge=openRecharge;window.closeRecharge=closeRecharge;
+
+    /* MODELOS */
     const chatList=document.getElementById('chatList');const slidesIntervals={};
     async function renderModels(){
       chatList.innerHTML='';
-      const snap = await getDocs(collection(db,"models"));
+      const snap=await getDocs(collection(db,"models"));
       snap.forEach(docSnap=>{
         const m={id:docSnap.id,...docSnap.data()};
         const card=document.createElement('div');
@@ -190,9 +203,32 @@
     }
     function startSlideshow(id){const box=document.getElementById(id);if(!box)return;const imgs=[...box.querySelectorAll('img')];if(imgs.length<=1)return;let i=0;if(slidesIntervals[id])clearInterval(slidesIntervals[id]);slidesIntervals[id]=setInterval(()=>{imgs[i].classList.remove('active');i=(i+1)%imgs.length;imgs[i].classList.add('active');},2800);}
 
-    /* ================= CHAT ================= */
-    let currentModel=null;const messages=document.getElementById('messages');const chatName=document.getElementById('chatName');const chatAvatar=document.getElementById('chatAvatar');
-    function openChatWith(m){if(coins<2){alert("No tienes suficientes monedas 😢");return;}coins-=2;document.getElementById('coinsLabel').textContent=coins;currentModel=m;chatName.textContent=m.name;chatAvatar.src=(m.photos&&m.photos[0])||'';messages.innerHTML=`<div class="msg them">Holi 💕 soy ${m.name}, ¿quieres jugar?</div>`;go('conversation');}
+    /* CHAT */
+    let currentModel=null;
+    const messages=document.getElementById('messages');
+    const chatName=document.getElementById('chatName');
+    const chatAvatar=document.getElementById('chatAvatar');
+    const btnSend=document.getElementById('btnSend');
+    const msgText=document.getElementById('msgText');
+
+    function openChatWith(m){
+      currentModel=m;
+      chatName.textContent=m.name;
+      chatAvatar.src=(m.photos&&m.photos[0])||'';
+      messages.innerHTML=`<div class="msg them">Holi 💕 soy ${m.name}, ¿quieres jugar?</div>`;
+      go('conversation');
+    }
+
+    btnSend.onclick=function(){
+      const txt=msgText.value.trim();
+      if(!txt)return;
+      if(coins<2){openRecharge();return;}
+      coins-=2;
+      document.getElementById('coinsLabel').textContent=coins;
+      messages.innerHTML+=`<div class="msg me">${txt}</div>`;
+      msgText.value='';
+      if(coins<=0){openRecharge();}
+    };
 
     renderModels();
   </script>
