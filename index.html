@@ -72,10 +72,7 @@
     .view{display:none}.view.active{display:block}
 
     /* ====== BANNER VIDEO ====== */
-    .banner-wrap {
-      position: relative;
-      margin-top: 8px;
-    }
+    .banner-wrap { position: relative; margin-top: 8px; }
     .banner-wrap video {
       width: 100%;
       max-height: 180px;
@@ -101,6 +98,95 @@
       50% { transform: scale(1.1); opacity: 0.85; }
       100% { transform: scale(1); opacity: 1; }
     }
+
+    /* ====== CHAT MODERNO ====== */
+    .chat-card {
+      display: flex;
+      flex-direction: column;
+      background: #0f172a;
+      color: #fff;
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0,0,0,.45);
+      overflow: hidden;
+      animation: fadeInUp .35s ease;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 380px;
+      max-height: 520px;
+      z-index: 1000;
+    }
+    @media (max-width: 768px) {
+      .chat-card {
+        top: 0; left: 0; right: 0; bottom: 0;
+        width: 100%;
+        height: 100%;
+        max-height: none;
+        border-radius: 0;
+      }
+    }
+    @keyframes fadeInUp {
+      from { transform: translateY(40px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .chat-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: linear-gradient(90deg,#ff2e6a,#ff4f8b);
+      color: #fff;
+    }
+    .chat-body {
+      flex: 1;
+      padding: 14px;
+      overflow-y: auto;
+      background: #0b1220;
+      display: flex;
+      flex-direction: column;
+    }
+    .msg {
+      padding: 10px 14px;
+      margin: 8px 0;
+      border-radius: 14px;
+      font-size: 14px;
+      max-width: 75%;
+    }
+    .msg.them { background: #1e293b; align-self: flex-start; }
+    .msg.me { background: #ff2e6a; align-self: flex-end; color: #fff; }
+    .typing {
+      font-size: 12px;
+      color: #94a3b8;
+      font-style: italic;
+      padding: 0 14px 8px;
+    }
+    .chat-input {
+      display: flex;
+      padding: 10px;
+      background: #111827;
+      border-top: 1px solid #1f2937;
+    }
+    .chat-input input {
+      flex: 1;
+      border: none;
+      outline: none;
+      border-radius: 12px;
+      padding: 10px;
+      margin-right: 8px;
+      background: #1e293b;
+      color: #fff;
+    }
+    .chat-input button {
+      background: #ff2e6a;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 12px;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      transition: .25s;
+    }
+    .chat-input button:hover { background: #e11d48; }
   </style>
 </head>
 <body>
@@ -137,9 +223,9 @@
 
     <!-- CHAT -->
     <section id="view-conversation" class="view">
-      <div class="card chat-card">
+      <div class="chat-card">
         <div class="chat-head">
-          <button class="btn btn-ghost" onclick="go('chat')">← Volver</button>
+          <button class="btn btn-ghost" onclick="go('chat')">←</button>
           <img id="chatAvatar" src="" style="width:40px;height:40px;border-radius:50%;object-fit:cover">
           <div>
             <div id="chatName" class="name"></div>
@@ -149,8 +235,8 @@
         <div class="chat-body" id="messages"></div>
         <div class="typing" id="typingHint">Está escribiendo…</div>
         <div class="chat-input">
-          <input class="input" id="msgText" placeholder="Escribe un mensaje (2 monedas)"/>
-          <button class="btn btn-primary" id="btnSend">Enviar</button>
+          <input id="msgText" placeholder="Escribe un mensaje (2 monedas)">
+          <button id="btnSend">Enviar</button>
         </div>
       </div>
     </section>
