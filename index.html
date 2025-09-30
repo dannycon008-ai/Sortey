@@ -7,48 +7,18 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     /* ====== ESTILOS MODELOS ====== */
-    .model-grid {
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-      gap:18px;
-      margin-top:18px;
-    }
-    .model-card {
-      background:#fff;
-      color:#000;
-      border-radius:14px;
-      overflow:hidden;
-      box-shadow:0 4px 20px rgba(0,0,0,.12);
-      display:flex;
-      flex-direction:column;
-      cursor:pointer;
-      transition:transform .25s ease, box-shadow .25s ease;
-      animation:softFloat 4s ease-in-out infinite;
-    }
+    .model-grid {display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;margin-top:18px;}
+    .model-card {background:#fff;color:#000;border-radius:14px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.12);display:flex;flex-direction:column;cursor:pointer;transition:transform .25s ease, box-shadow .25s ease;animation:softFloat 4s ease-in-out infinite;}
     .model-card:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 12px 30px rgba(0,0,0,.2)}
-    @keyframes softFloat{
-      0%,100%{transform:translateY(0)}
-      50%{transform:translateY(-6px)}
-    }
+    @keyframes softFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
     .model-slideshow { position:relative; height:200px; }
-    .model-slideshow img {
-      position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
-      opacity:0; transition:opacity .6s ease;
-    }
+    .model-slideshow img {position:absolute; inset:0; width:100%; height:100%; object-fit:cover;opacity:0; transition:opacity .6s ease;}
     .model-slideshow img.active{opacity:1}
     .model-card .info { padding:12px; display:flex; flex-direction:column; gap:6px; }
     .model-card .name { font-weight:700; font-size:16px; color:#111; }
     .model-card .extra { font-size:12px; color:#555; }
     .model-card .desc  { font-size:13px; color:#333; }
-    .model-card .online {
-      display:inline-block;
-      background:#27ae60;
-      color:#fff;
-      font-size:12px;
-      padding:2px 6px;
-      border-radius:6px;
-      margin-left:6px;
-    }
+    .model-card .online {display:inline-block;background:#27ae60;color:#fff;font-size:12px;padding:2px 6px;border-radius:6px;margin-left:6px;}
     .model-card .actions{display:flex; gap:10px; justify-content:space-between; align-items:center; padding:10px 12px; background:#f7f9fb; border-top:1px solid #eaeef3;}
     .action-btn{display:flex; align-items:center; gap:8px; padding:8px 12px; border-radius:10px; border:1px solid #e0e6ee; background:#fff; cursor:pointer; transition:.2s; font-weight:600; font-size:13px; color:#222;}
     .action-btn:hover{transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.08)}
@@ -62,7 +32,6 @@
     .header{position:sticky;top:0;z-index:50;background:rgba(10,18,32,.85);backdrop-filter:blur(6px);border-bottom:1px solid #132338}
     .header-inner{display:flex;justify-content:space-between;align-items:center;padding:12px 16px}
     .brand{display:flex;align-items:center;gap:10px;font-weight:700}
-    .dot{width:10px;height:10px;border-radius:50%;background:#ff2e6a;display:inline-block}
     .btn{border:0;padding:8px 12px;border-radius:10px;font-weight:600;cursor:pointer;transition:.15s;font-size:14px}
     .btn-primary{background:#ff2e6a;color:#fff}
     .btn-ghost{background:transparent;color:#cfe7ff;border:1px solid #244362}
@@ -73,120 +42,40 @@
 
     /* ====== BANNER VIDEO ====== */
     .banner-wrap { position: relative; margin-top: 8px; }
-    .banner-wrap video {
-      width: 100%;
-      max-height: 180px;
-      object-fit: cover;
-      border-radius: 14px;
-      display: block;
-    }
-    .live-badge {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      background: #001f99;
-      color: #fff;
-      font-weight: 700;
-      font-size: 14px;
-      padding: 6px 12px;
-      border-radius: 10px;
-      animation: pulse 1.5s infinite;
-      box-shadow: 0 0 8px rgba(0,0,0,0.4);
-    }
-    @keyframes pulse {
-      0% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.1); opacity: 0.85; }
-      100% { transform: scale(1); opacity: 1; }
-    }
+    .banner-wrap video {width: 100%;max-height: 180px;object-fit: cover;border-radius: 14px;display: block;}
+    .live-badge {position: absolute;top: 12px;left: 12px;background: #001f99;color: #fff;font-weight: 700;font-size: 14px;padding: 6px 12px;border-radius: 10px;animation: pulse 1.5s infinite;box-shadow: 0 0 8px rgba(0,0,0,0.4);}
+    @keyframes pulse {0% { transform: scale(1); opacity: 1; }50% { transform: scale(1.1); opacity: 0.85; }100% { transform: scale(1); opacity: 1; }}
 
     /* ====== CHAT MODERNO ====== */
-    .chat-card {
-      display: flex;
-      flex-direction: column;
-      background: #0f172a;
-      color: #fff;
-      border-radius: 20px;
-      box-shadow: 0 8px 25px rgba(0,0,0,.45);
-      overflow: hidden;
-      animation: fadeInUp .35s ease;
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      width: 380px;
-      max-height: 520px;
-      z-index: 1000;
-    }
-    @media (max-width: 768px) {
-      .chat-card {
-        top: 0; left: 0; right: 0; bottom: 0;
-        width: 100%;
-        height: 100%;
-        max-height: none;
-        border-radius: 0;
-      }
-    }
-    @keyframes fadeInUp {
-      from { transform: translateY(40px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-    .chat-head {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 16px;
-      background: linear-gradient(90deg,#ff2e6a,#ff4f8b);
-      color: #fff;
-    }
-    .chat-body {
-      flex: 1;
-      padding: 14px;
-      overflow-y: auto;
-      background: #0b1220;
-      display: flex;
-      flex-direction: column;
-    }
-    .msg {
-      padding: 10px 14px;
-      margin: 8px 0;
-      border-radius: 14px;
-      font-size: 14px;
-      max-width: 75%;
-    }
-    .msg.them { background: #1e293b; align-self: flex-start; }
-    .msg.me { background: #ff2e6a; align-self: flex-end; color: #fff; }
-    .typing {
-      font-size: 12px;
-      color: #94a3b8;
-      font-style: italic;
-      padding: 0 14px 8px;
-    }
-    .chat-input {
-      display: flex;
-      padding: 10px;
-      background: #111827;
-      border-top: 1px solid #1f2937;
-    }
-    .chat-input input {
-      flex: 1;
-      border: none;
-      outline: none;
-      border-radius: 12px;
-      padding: 10px;
-      margin-right: 8px;
-      background: #1e293b;
-      color: #fff;
-    }
-    .chat-input button {
-      background: #ff2e6a;
-      border: none;
-      padding: 10px 14px;
-      border-radius: 12px;
-      color: #fff;
-      font-weight: 600;
-      cursor: pointer;
-      transition: .25s;
-    }
-    .chat-input button:hover { background: #e11d48; }
+    .chat-card {display:flex;flex-direction:column;background:#0f172a;color:#fff;border-radius:20px;box-shadow:0 8px 25px rgba(0,0,0,.45);overflow:hidden;animation:fadeInUp .35s ease;position:fixed;bottom:20px;right:20px;width:380px;max-height:520px;z-index:1000;}
+    @media (max-width: 768px) {.chat-card {top:0;left:0;right:0;bottom:0;width:100%;height:100%;max-height:none;border-radius:0;}}
+    @keyframes fadeInUp {from { transform: translateY(40px); opacity: 0; }to { transform: translateY(0); opacity: 1; }}
+    .chat-head {display:flex;align-items:center;gap:12px;padding:12px 16px;background:linear-gradient(90deg,#ff2e6a,#ff4f8b);color:#fff;}
+    .chat-body {flex:1;padding:14px;overflow-y:auto;background:#0b1220;display:flex;flex-direction:column;}
+    .msg {padding:10px 14px;margin:8px 0;border-radius:14px;font-size:14px;max-width:75%;}
+    .msg.them {background:#1e293b;align-self:flex-start;}
+    .msg.me {background:#ff2e6a;align-self:flex-end;color:#fff;}
+    .typing {font-size:12px;color:#94a3b8;font-style:italic;padding:0 14px 8px;}
+    .chat-input {display:flex;padding:10px;background:#111827;border-top:1px solid #1f2937;}
+    .chat-input input {flex:1;border:none;outline:none;border-radius:12px;padding:10px;margin-right:8px;background:#1e293b;color:#fff;}
+    .chat-input button {background:#ff2e6a;border:none;padding:10px 14px;border-radius:12px;color:#fff;font-weight:600;cursor:pointer;transition:.25s;}
+    .chat-input button:hover { background:#e11d48; }
+
+    /* ====== LOGIN ====== */
+    .login-card {max-width:340px;margin:50px auto;padding:24px;background:#0f172a;border-radius:20px;box-shadow:0 8px 25px rgba(0,0,0,.45);text-align:center;color:#fff;animation:fadeInUp .4s ease;}
+    .login-logo {width:80px;margin-bottom:16px;border-radius:12px;}
+
+    /* ====== RECARGA MODAL ====== */
+    .recharge-modal {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:2000;}
+    .recharge-modal.active{display:flex;}
+    .recharge-card {width:360px;background:#0f172a;color:#fff;border-radius:20px;padding:20px;text-align:center;box-shadow:0 8px 25px rgba(0,0,0,.6);animation:fadeInUp .4s ease;}
+    .recharge-options {display:flex;gap:6px;margin:12px 0;}
+    .recharge-tab {flex:1;padding:8px;border:none;border-radius:10px;background:#1e293b;color:#fff;cursor:pointer;}
+    .recharge-tab.active {background:#ff2e6a;}
+    .recharge-box {display:none;margin-top:10px;}
+    .recharge-box.active{display:block;}
+    .pay-btn {display:block;width:100%;padding:10px;margin:6px 0;border:none;border-radius:12px;background:#ff2e6a;color:#fff;font-weight:600;cursor:pointer;}
+    .custom-box {margin-top:12px;text-align:left}
   </style>
 </head>
 <body>
@@ -197,26 +86,27 @@
         <img id="appLogo" src="https://qu.ax/PyOjt.png" alt="Logo" style="height:36px;border-radius:8px;object-fit:contain">
         <span>ChispaLive</span>
         <nav style="display:flex;gap:12px;align-items:center">
-          <div>Monedas 20: <b id="coinsLabel">0</b></div>
+          <div>Monedas: <b id="coinsLabel">0</b></div>
         </nav>
       </div>
     </div>
   </header>
 
   <main class="container">
-    <!-- BANNER VIDEO -->
-    <div class="banner-wrap">
-      <a id="bannerLink" href="https://ejemplo.com" target="_blank" rel="noopener">
-        <video autoplay muted loop playsinline>
-          <source src="https://qu.ax/dMvpz.mp4" type="video/mp4">
-          Tu navegador no soporta video.
-        </video>
-        <div class="live-badge">🔴 En directo</div>
-      </a>
-    </div>
+    <!-- LOGIN -->
+    <section id="view-login" class="view active">
+      <div class="login-card">
+        <img src="https://qu.ax/PyOjt.png" class="login-logo">
+        <h2>Bienvenido a <span style="color:#ff2e6a">ChispaLive</span></h2>
+        <p>🎁 Regístrate y recibe <b>20 moneditas</b></p>
+        <input id="loginName" class="input" placeholder="Nombre completo">
+        <input id="loginPhone" class="input" placeholder="Número de teléfono">
+        <button class="btn btn-primary" onclick="doLogin()">Entrar</button>
+      </div>
+    </section>
 
     <!-- MODELOS -->
-    <section id="view-chat" class="view active">
+    <section id="view-chat" class="view">
       <h3>Modelos</h3>
       <div class="model-grid" id="chatList"></div>
     </section>
@@ -242,102 +132,79 @@
     </section>
   </main>
 
+  <!-- MODAL RECARGA -->
+  <div id="rechargeModal" class="recharge-modal">
+    <div class="recharge-card">
+      <h3>⚡ Recarga tus moneditas</h3>
+      <div class="recharge-options">
+        <button class="recharge-tab active" onclick="showRecharge('paypal')">PayPal</button>
+        <button class="recharge-tab" onclick="showRecharge('binance')">Binance</button>
+        <button class="recharge-tab" onclick="showRecharge('ads')">Ver anuncios</button>
+      </div>
+      <div id="payPalBox" class="recharge-box active">
+        <button class="pay-btn" onclick="pay(50,0.5)">50 moneditas / 0,50$</button>
+        <button class="pay-btn" onclick="pay(100,1)">100 moneditas / 1$</button>
+        <button class="pay-btn" onclick="pay(500,5)">500 +20 🎁 / 5$</button>
+        <div class="custom-box">
+          <label>Recarga personalizada (mínimo 50):</label>
+          <input type="number" id="customCoins" min="50" class="input" placeholder="Ej: 150">
+          <button class="btn btn-primary" onclick="customPay()">Recargar</button>
+        </div>
+      </div>
+      <div id="binanceBox" class="recharge-box"><p>Escanea QR de Binance 📲</p></div>
+      <div id="adsBox" class="recharge-box"><button class="btn btn-primary" onclick="watchAds()">Ver anuncios (30 moneditas)</button></div>
+      <button class="btn btn-ghost" onclick="closeRecharge()">Cerrar</button>
+    </div>
+  </div>
+
   <script type="module">
     /* ================= FIREBASE ================= */
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAlWJTeezvz0Xkd363SgN5CnHFbEp8uNQU",
-      authDomain: "chispalive-b7ed6.firebaseapp.com",
-      projectId: "chispalive-b7ed6",
-      storageBucket: "chispalive-b7ed6.appspot.com",
-      messagingSenderId: "334811479289",
-      appId: "1:334811479289:web:403a2a1b10f7af6704b628",
-      measurementId: "G-60ERX1MFT7"
-    };
+    const firebaseConfig = { /* tus claves */ };
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
     /* ================= ROUTER ================= */
-   /* ================= ROUTER ================= */
-const views = { chat:'view-chat', conversation:'view-conversation' };
-function go(v){
-  Object.values(views).forEach(id => document.getElementById(id).classList.remove('active'));
-  document.getElementById(views[v]).classList.add('active');
-}
-window.go = go; // <- IMPORTANTE
+    const views = { login:'view-login', chat:'view-chat', conversation:'view-conversation' };
+    function go(v){Object.values(views).forEach(id=>document.getElementById(id).classList.remove('active'));document.getElementById(views[v]).classList.add('active');}
+    window.go = go;
 
-    /* ================= MODELOS DESDE FIRESTORE ================= */
-    const chatList=document.getElementById('chatList');
-    const slidesIntervals={};
-
-    async function renderModels(){
-      chatList.innerHTML='';
-      const snap = await getDocs(collection(db,"models"));
-      snap.forEach(docSnap=>{
-        const m={id:docSnap.id,...docSnap.data()};
-        const card=document.createElement('div');
-        card.className='model-card';
-
-        const slideId='slide_'+m.id;
-        card.innerHTML=`
-          <div class="model-slideshow" id="${slideId}">
-            ${(m.photos||[]).slice(0,5).map((src,i)=>`<img src="${src}" class="${i===0?'active':''}">`).join('')}
-          </div>
-          <div class="info">
-            <div class="name">${m.name} <span class="online">● Online</span></div>
-            <div class="extra">${m.age||'—'} años · ${m.country||'—'}</div>
-            <div class="desc">${m.desc||''}</div>
-          </div>
-          <div class="actions">
-            <button class="action-btn btn-like">
-              <img src="https://qu.ax/hlsxX.png" alt="like">
-              <span>Me gusta</span>
-              <span class="like-badge">${m.likes||0}</span>
-            </button>
-            <button class="action-btn btn-msg">
-              <img src="https://qu.ax/jGSiu.png" alt="mensaje">
-              <span>Mensaje</span>
-            </button>
-          </div>
-        `;
-
-        card.querySelector('.btn-msg').onclick=(e)=>{e.stopPropagation(); openChatWith(m);};
-        card.onclick=()=>openChatWith(m);
-
-        chatList.appendChild(card);
-        startSlideshow(slideId);
-      });
+    /* ================= LOGIN ================= */
+    let coins=0;
+    function doLogin(){
+      const name=document.getElementById('loginName').value.trim();
+      const phone=document.getElementById('loginPhone').value.trim();
+      if(!name||!phone){alert("Completa todos los campos");return;}
+      coins=20;document.getElementById('coinsLabel').textContent=coins;
+      go('chat');
     }
 
-    function startSlideshow(id){
-      const box=document.getElementById(id); if(!box) return;
-      const imgs=[...box.querySelectorAll('img')]; if(imgs.length<=1) return;
-      let i=0;
-      if(slidesIntervals[id]) clearInterval(slidesIntervals[id]);
-      slidesIntervals[id]=setInterval(()=>{
-        imgs[i].classList.remove('active');
-        i=(i+1)%imgs.length;
-        imgs[i].classList.add('active');
-      }, 2800);
+    /* ================= RECARGA ================= */
+    function openRecharge(){document.getElementById('rechargeModal').classList.add('active');}
+    function closeRecharge(){document.getElementById('rechargeModal').classList.remove('active');}
+    function showRecharge(type){
+      document.querySelectorAll('.recharge-tab').forEach(t=>t.classList.remove('active'));
+      document.querySelectorAll('.recharge-box').forEach(b=>b.classList.remove('active'));
+      if(type==='paypal'){document.querySelector('#payPalBox').classList.add('active');}
+      if(type==='binance'){document.querySelector('#binanceBox').classList.add('active');}
+      if(type==='ads'){document.querySelector('#adsBox').classList.add('active');}
+      event.target.classList.add('active');
     }
+    function pay(c,m){alert(`Aquí rediriges a PayPal para pagar ${m}$ y recibir ${c} monedas`);}
+    function customPay(){const val=parseInt(document.getElementById('customCoins').value);if(val>=50){alert(`Redirigir a PayPal para ${val} monedas`);}else{alert("Mínimo 50 monedas");}}
+    function watchAds(){coins+=30;document.getElementById('coinsLabel').textContent=coins;closeRecharge();}
+
+    /* ================= MODELOS FIRESTORE ================= */
+    const chatList=document.getElementById('chatList');const slidesIntervals={};
+    async function renderModels(){chatList.innerHTML='';const snap=await getDocs(collection(db,"models"));snap.forEach(docSnap=>{const m={id:docSnap.id,...docSnap.data()};const card=document.createElement('div');card.className='model-card';const slideId='slide_'+m.id;card.innerHTML=`<div class="model-slideshow" id="${slideId}">${(m.photos||[]).slice(0,5).map((src,i)=>`<img src="${src}" class="${i===0?'active':''}">`).join('')}</div><div class="info"><div class="name">${m.name} <span class="online">● Online</span></div><div class="extra">${m.age||'—'} años · ${m.country||'—'}</div><div class="desc">${m.desc||''}</div></div><div class="actions"><button class="action-btn btn-like"><img src="https://qu.ax/hlsxX.png" alt="like"><span>Me gusta</span><span class="like-badge">${m.likes||0}</span></button><button class="action-btn btn-msg"><img src="https://qu.ax/jGSiu.png" alt="mensaje"><span>Mensaje</span></button></div>`;card.querySelector('.btn-msg').onclick=(e)=>{e.stopPropagation();openChatWith(m);};card.onclick=()=>openChatWith(m);chatList.appendChild(card);startSlideshow(slideId);});}
+    function startSlideshow(id){const box=document.getElementById(id);if(!box)return;const imgs=[...box.querySelectorAll('img')];if(imgs.length<=1)return;let i=0;if(slidesIntervals[id])clearInterval(slidesIntervals[id]);slidesIntervals[id]=setInterval(()=>{imgs[i].classList.remove('active');i=(i+1)%imgs.length;imgs[i].classList.add('active');},2800);}
 
     /* ================= CHAT ================= */
-    let currentModel=null;
-    const messages=document.getElementById('messages');
-    const chatName=document.getElementById('chatName');
-    const chatAvatar=document.getElementById('chatAvatar');
+    let currentModel=null;const messages=document.getElementById('messages');const chatName=document.getElementById('chatName');const chatAvatar=document.getElementById('chatAvatar');
+    function openChatWith(m){if(coins<2){openRecharge();return;}coins-=2;document.getElementById('coinsLabel').textContent=coins;currentModel=m;chatName.textContent=m.name;chatAvatar.src=(m.photos&&m.photos[0])||'';messages.innerHTML=`<div class="msg them">Holi 💕 soy ${m.name}, ¿quieres jugar?</div>`;go('conversation');}
 
-    function openChatWith(m){
-      currentModel=m;
-      chatName.textContent=m.name;
-      chatAvatar.src=(m.photos&&m.photos[0])||'';
-      messages.innerHTML=`<div class="msg them">Holi 💕 soy ${m.name}, ¿quieres jugar?</div>`;
-      go('conversation');
-    }
-
-    /* INIT */
     renderModels();
   </script>
 </body>
