@@ -7,50 +7,23 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     /* ====== ESTILOS MODELOS ====== */
-    .model-grid {
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-      gap:18px;
-      margin-top:18px;
-    }
-    .model-card {
-      background:#fff;
-      color:#000;
-      border-radius:14px;
-      overflow:hidden;
-      box-shadow:0 4px 20px rgba(0,0,0,.12);
-      display:flex;
-      flex-direction:column;
-      cursor:pointer;
-      transition:transform .25s ease, box-shadow .25s ease;
-      animation:softFloat 4s ease-in-out infinite;
-    }
+    .model-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;margin-top:18px;}
+    .model-card{background:#fff;color:#000;border-radius:14px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.12);display:flex;flex-direction:column;cursor:pointer;transition:.25s;animation:softFloat 4s ease-in-out infinite;}
     .model-card:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 12px 30px rgba(0,0,0,.2)}
     @keyframes softFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-    .model-slideshow { position:relative; height:200px; }
-    .model-slideshow img {
-      position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
-      opacity:0; transition:opacity .6s ease;
-    }
+    .model-slideshow{position:relative;height:200px;}
+    .model-slideshow img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:.6s;}
     .model-slideshow img.active{opacity:1}
-    .model-card .info { padding:12px; display:flex; flex-direction:column; gap:6px; }
-    .model-card .name { font-weight:700; font-size:16px; color:#111; }
-    .model-card .extra { font-size:12px; color:#555; }
-    .model-card .desc  { font-size:13px; color:#333; }
-    .model-card .online {
-      display:inline-block;
-      background:#27ae60;
-      color:#fff;
-      font-size:12px;
-      padding:2px 6px;
-      border-radius:6px;
-      margin-left:6px;
-    }
-    .model-card .actions{display:flex; gap:10px; justify-content:space-between; align-items:center; padding:10px 12px; background:#f7f9fb; border-top:1px solid #eaeef3;}
-    .action-btn{display:flex; align-items:center; gap:8px; padding:8px 12px; border-radius:10px; border:1px solid #e0e6ee; background:#fff; cursor:pointer; transition:.2s; font-weight:600; font-size:13px; color:#222;}
-    .action-btn:hover{transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.08)}
-    .action-btn img{width:18px;height:18px;display:block}
-    .like-badge{background:#ff2e6a; color:#fff; font-size:12px; padding:2px 8px; border-radius:999px;}
+    .model-card .info{padding:12px;display:flex;flex-direction:column;gap:6px;}
+    .model-card .name{font-weight:700;font-size:16px;color:#111;}
+    .model-card .extra{font-size:12px;color:#555;}
+    .model-card .desc{font-size:13px;color:#333;}
+    .model-card .online{display:inline-block;background:#27ae60;color:#fff;font-size:12px;padding:2px 6px;border-radius:6px;margin-left:6px;}
+    .model-card .actions{display:flex;gap:10px;justify-content:space-between;align-items:center;padding:10px 12px;background:#f7f9fb;border-top:1px solid #eaeef3;}
+    .action-btn{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;border:1px solid #e0e6ee;background:#fff;cursor:pointer;font-weight:600;font-size:13px;color:#222;transition:.2s;}
+    .action-btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.08)}
+    .action-btn img{width:18px;height:18px}
+    .like-badge{background:#ff2e6a;color:#fff;font-size:12px;padding:2px 8px;border-radius:999px;}
 
     /* ====== GENERALES ====== */
     *{box-sizing:border-box}html,body{height:100%}
@@ -69,141 +42,41 @@
     .view{display:none}.view.active{display:block}
 
     /* ====== BANNER VIDEO ====== */
-    .banner-wrap { position: relative; margin-top: 8px; }
-    .banner-wrap video {
-      width: 100%;
-      max-height: 180px;
-      object-fit: cover;
-      border-radius: 14px;
-      display: block;
-    }
-    .live-badge {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      background: #001f99;
-      color: #fff;
-      font-weight: 700;
-      font-size: 14px;
-      padding: 6px 12px;
-      border-radius: 10px;
-      animation: pulse 1.5s infinite;
-      box-shadow: 0 0 8px rgba(0,0,0,0.4);
-    }
-    @keyframes pulse {
-      0% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.1); opacity: 0.85; }
-      100% { transform: scale(1); opacity: 1; }
-    }
+    .banner-wrap{position:relative;margin-top:8px;}
+    .banner-wrap video{width:100%;max-height:180px;object-fit:cover;border-radius:14px;display:block;}
+    .live-badge{position:absolute;top:12px;left:12px;background:#001f99;color:#fff;font-weight:700;font-size:14px;padding:6px 12px;border-radius:10px;animation:pulse 1.5s infinite;box-shadow:0 0 8px rgba(0,0,0,0.4);}
+    @keyframes pulse{0%{transform:scale(1);opacity:1}50%{transform:scale(1.1);opacity:.85}100%{transform:scale(1);opacity:1}}
 
-    /* ====== CHAT MODERNO ====== */
-    .chat-card {
-      display: flex;
-      flex-direction: column;
-      background: #0f172a;
-      color: #fff;
-      border-radius: 20px;
-      box-shadow: 0 8px 25px rgba(0,0,0,.45);
-      overflow: hidden;
-      animation: fadeInUp .35s ease;
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      width: 380px;
-      max-height: 520px;
-      z-index: 1000;
-    }
-    @media (max-width: 768px) {
-      .chat-card {
-        top: 0; left: 0; right: 0; bottom: 0;
-        width: 100%;
-        height: 100%;
-        max-height: none;
-        border-radius: 0;
-      }
-    }
-    @keyframes fadeInUp {
-      from { transform: translateY(40px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-    .chat-head {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 16px;
-      background: linear-gradient(90deg,#ff2e6a,#ff4f8b);
-      color: #fff;
-    }
-    .chat-body {
-      flex: 1;
-      padding: 14px;
-      overflow-y: auto;
-      background: #0b1220;
-      display: flex;
-      flex-direction: column;
-    }
-    .msg {
-      padding: 10px 14px;
-      margin: 8px 0;
-      border-radius: 14px;
-      font-size: 14px;
-      max-width: 75%;
-    }
-    .msg.them { background: #1e293b; align-self: flex-start; }
-    .msg.me   { background: #ff2e6a; align-self: flex-end; color: #fff; }
-    .typing {
-      font-size: 12px; color: #94a3b8; font-style: italic; padding: 0 14px 8px;
-    }
-    .chat-input {
-      display: flex;
-      padding: 10px;
-      background: #111827;
-      border-top: 1px solid #1f2937;
-    }
-    .chat-input input {
-      flex: 1;
-      border: none;
-      outline: none;
-      border-radius: 12px;
-      padding: 10px;
-      margin-right: 8px;
-      background: #1e293b;
-      color: #fff;
-    }
-    .chat-input button {
-      background: #ff2e6a;
-      border: none;
-      padding: 10px 14px;
-      border-radius: 12px;
-      color: #fff;
-      font-weight: 600;
-      cursor: pointer;
-      transition: .25s;
-    }
-    .chat-input button:hover { background: #e11d48; }
+    /* ====== CHAT ====== */
+    .chat-card{display:flex;flex-direction:column;background:#0f172a;color:#fff;border-radius:20px;box-shadow:0 8px 25px rgba(0,0,0,.45);overflow:hidden;animation:fadeInUp .35s ease;position:fixed;bottom:20px;right:20px;width:380px;max-height:520px;z-index:1000;}
+    @media(max-width:768px){.chat-card{top:0;left:0;right:0;bottom:0;width:100%;height:100%;max-height:none;border-radius:0}}
+    @keyframes fadeInUp{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
+    .chat-head{display:flex;align-items:center;gap:12px;padding:12px 16px;background:linear-gradient(90deg,#ff2e6a,#ff4f8b);color:#fff;}
+    .chat-body{flex:1;padding:14px;overflow-y:auto;background:#0b1220;display:flex;flex-direction:column;}
+    .msg{padding:10px 14px;margin:8px 0;border-radius:14px;font-size:14px;max-width:75%;}
+    .msg.them{background:#1e293b;align-self:flex-start;}
+    .msg.me{background:#ff2e6a;align-self:flex-end;color:#fff;}
+    .chat-input{display:flex;padding:10px;background:#111827;border-top:1px solid #1f2937;}
+    .chat-input input{flex:1;border:none;outline:none;border-radius:12px;padding:10px;margin-right:8px;background:#1e293b;color:#fff;}
+    .chat-input button{background:#ff2e6a;border:none;padding:10px 14px;border-radius:12px;color:#fff;font-weight:600;cursor:pointer;transition:.25s;}
+    .chat-input button:hover{background:#e11d48;}
 
     /* ====== LOGIN ====== */
-    .login-card {max-width:360px;margin:60px auto;padding:28px;background:#0f172a;border-radius:20px;box-shadow:0 12px 32px rgba(0,0,0,.55);text-align:center;color:#fff;animation:fadeInUp .4s ease;}
-    .login-logo {width:90px;margin-bottom:18px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.4);}
-    .login-card h2 { font-size:20px;margin-bottom:6px; }
-    .login-card p { font-size:14px;margin-bottom:20px;color:#cbd5e1; }
-    .form-group { margin-bottom:14px; }
-    .login-input {width:100%;padding:12px 14px;font-size:14px;border-radius:12px;border:1px solid #1f3550;background:#0e192a;color:#fff;outline:none;transition:.25s;}
-    .login-input:focus {border-color:#ff2e6a;box-shadow:0 0 6px rgba(255,46,106,.6);}
-    .btn-login {width:100%;padding:12px;font-size:15px;font-weight:700;border:none;border-radius:14px;background:linear-gradient(90deg,#ff2e6a,#ff4f8b);color:#fff;cursor:pointer;transition:.3s;}
-    .btn-login:hover {transform:translateY(-2px);box-shadow:0 8px 20px rgba(255,46,106,.4);}
+    .login-card{max-width:360px;margin:60px auto;padding:28px;background:#0f172a;border-radius:20px;box-shadow:0 12px 32px rgba(0,0,0,.55);text-align:center;color:#fff;animation:fadeInUp .4s ease;}
+    .login-logo{width:90px;margin-bottom:18px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.4);}
+    .btn-login{width:100%;padding:12px;font-size:15px;font-weight:700;border:none;border-radius:14px;background:linear-gradient(90deg,#ff2e6a,#ff4f8b);color:#fff;cursor:pointer;transition:.3s;}
+    .btn-login:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(255,46,106,.4);}
 
     /* ====== MODAL RECARGA ====== */
-    .recharge-modal {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:2000;}
+    .recharge-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:2000;}
     .recharge-modal.active{display:flex;}
-    .recharge-card {width:360px;background:#0f172a;color:#fff;border-radius:20px;padding:20px;text-align:center;box-shadow:0 8px 25px rgba(0,0,0,.6);animation:fadeInUp .4s ease;}
-    .recharge-options {display:flex;gap:6px;margin:12px 0;}
-    .recharge-tab {flex:1;padding:8px;border:none;border-radius:10px;background:#1e293b;color:#fff;cursor:pointer;}
-    .recharge-tab.active {background:#ff2e6a;}
-    .recharge-box {display:none;margin-top:10px;}
+    .recharge-card{width:360px;background:#0f172a;color:#fff;border-radius:20px;padding:20px;text-align:center;box-shadow:0 8px 25px rgba(0,0,0,.6);}
+    .method-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;margin:8px 0;padding:10px;border:none;border-radius:12px;background:#1e293b;color:#fff;cursor:pointer;transition:.25s;font-weight:600;}
+    .method-btn img{width:22px;height:22px;}
+    .method-btn:hover{background:#ff2e6a;}
+    .recharge-box{display:none;margin-top:10px;}
     .recharge-box.active{display:block;}
-    .pay-btn {display:block;width:100%;padding:10px;margin:6px 0;border:none;border-radius:12px;background:#ff2e6a;color:#fff;font-weight:600;cursor:pointer;}
-    .custom-box {margin-top:12px;text-align:left}
+    .pay-btn{display:block;width:100%;padding:10px;margin:6px 0;border:none;border-radius:12px;background:#ff2e6a;color:#fff;font-weight:600;cursor:pointer;}
   </style>
 </head>
 <body>
@@ -211,305 +84,77 @@
   <header class="header">
     <div class="header-inner container">
       <div class="brand">
-        <img id="appLogo" src="https://qu.ax/PyOjt.png" alt="Logo" style="height:36px;border-radius:8px;object-fit:contain">
+        <img id="appLogo" src="https://qu.ax/PyOjt.png" alt="Logo" style="height:36px;border-radius:8px">
         <span>ChispaLive</span>
       </div>
       <nav style="display:flex;gap:12px;align-items:center">
         <div>Monedas: <b id="coinsLabel">0</b></div>
-        <!-- Botón Recargar a la derecha -->
-        <button class="btn btn-primary" type="button" onclick="openRecharge()">💳 Recargar</button>
+        <button class="btn btn-primary" onclick="openRecharge()">💳 Recargar</button>
       </nav>
     </div>
   </header>
 
-  <main class="container">
-    <!-- BANNER VIDEO -->
-    <div class="banner-wrap">
-      <a id="bannerLink" href="https://ejemplo.com" target="_blank" rel="noopener">
-        <video autoplay muted loop playsinline>
-          <source src="https://qu.ax/dMvpz.mp4" type="video/mp4">
-          Tu navegador no soporta video.
-        </video>
-        <div class="live-badge">🔴 En directo</div>
-      </a>
+  <!-- LOGIN -->
+  <section id="view-login" class="view active">
+    <div class="login-card">
+      <img src="https://qu.ax/PyOjt.png" class="login-logo" alt="Logo">
+      <h2>Bienvenido a <span style="color:#ff2e6a">ChispaLive</span></h2>
+      <p>🎁 Regístrate y recibe <b>20 moneditas</b></p>
+      <div><input id="loginName" class="input login-input" placeholder="Nombre completo"></div>
+      <div><input id="loginPhone" class="input login-input" placeholder="Número de teléfono"></div>
+      <button class="btn-login" onclick="doLogin()">Entrar</button>
     </div>
+  </section>
 
-    <!-- LOGIN -->
-    <section id="view-login" class="view active">
-      <div class="login-card">
-        <img src="https://qu.ax/PyOjt.png" class="login-logo" alt="Logo">
-        <h2>Bienvenido a <span style="color:#ff2e6a">ChispaLive</span></h2>
-        <p>🎁 Regístrate y recibe <b>20 moneditas</b></p>
+  <!-- MODELOS -->
+  <section id="view-chat" class="view"><h3>Modelos</h3><div class="model-grid" id="chatList"></div></section>
 
-        <div class="form-group"><input id="loginName" class="input login-input" placeholder="Nombre completo"></div>
-        <div class="form-group"><input id="loginPhone" class="input login-input" placeholder="Número de teléfono"></div>
-
-        <button class="btn-login" onclick="doLogin()">Entrar</button>
+  <!-- CHAT -->
+  <section id="view-conversation" class="view">
+    <div class="chat-card">
+      <div class="chat-head">
+        <button class="btn btn-ghost" onclick="go('chat')">← Volver</button>
+        <img id="chatAvatar" src="" style="width:40px;height:40px;border-radius:50%">
+        <div><div id="chatName"></div><small id="chatStatus" class="small">En línea</small></div>
       </div>
-    </section>
-
-    <!-- MODELOS -->
-    <section id="view-chat" class="view">
-      <h3>Modelos</h3>
-      <div class="model-grid" id="chatList"></div>
-    </section>
-
-    <!-- CHAT -->
-    <section id="view-conversation" class="view">
-      <div class="chat-card">
-        <div class="chat-head">
-          <button class="btn btn-ghost" type="button" onclick="go('chat')">← Volver</button>
-          <img id="chatAvatar" src="" style="width:40px;height:40px;border-radius:50%;object-fit:cover" alt="Foto">
-          <div>
-            <div id="chatName" class="name"></div>
-            <small id="chatStatus" class="small">En línea</small>
-          </div>
-        </div>
-        <div class="chat-body" id="messages"></div>
-        <div class="typing" id="typingHint">Está escribiendo…</div>
-        <div class="chat-input">
-          <input id="msgText" placeholder="Escribe un mensaje (2 monedas)">
-          <button id="btnSend">Enviar</button>
-        </div>
+      <div class="chat-body" id="messages"></div>
+      <div class="chat-input">
+        <input id="msgText" placeholder="Escribe un mensaje (2 monedas)">
+        <button id="btnSend">Enviar</button>
       </div>
-    </section>
-  </main>
+    </div>
+  </section>
 
   <!-- MODAL RECARGA -->
   <div id="rechargeModal" class="recharge-modal">
     <div class="recharge-card">
       <h3>⚡ Recarga tus moneditas</h3>
-      <div class="recharge-options">
-        <button class="recharge-tab active" onclick="showRecharge('paypal', this)">PayPal</button>
-        <button class="recharge-tab" onclick="showRecharge('binance', this)">Binance</button>
-        <button class="recharge-tab" onclick="showRecharge('ads', this)">Ver anuncios</button>
+      <button class="method-btn" onclick="showRecharge('paypal')"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg">PayPal</button>
+      <button class="method-btn" onclick="showRecharge('binance')"><img src="https://cryptologos.cc/logos/binance-coin-bnb-logo.svg">Binance</button>
+      <button class="method-btn" onclick="watchAds()"><img src="https://cdn-icons-png.flaticon.com/512/3178/3178283.png">Ver anuncios</button>
+
+      <div id="paypalBox" class="recharge-box">
+        <button class="pay-btn">50 moneditas / 0,50$</button>
+        <button class="pay-btn">100 moneditas / 1$</button>
+        <button class="pay-btn">500 +20 🎁 / 5$</button>
       </div>
 
-      <!-- PAYPAL -->
-      <div id="payPalBox" class="recharge-box active">
-        <button class="pay-btn" onclick="window.location.href='https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=TUCORREO_PAYPAL&currency_code=USD&amount=0.50&item_name=50+moneditas'">
-          50 moneditas / 0,50$
-        </button>
-        <button class="pay-btn" onclick="window.location.href='https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=TUCORREO_PAYPAL&currency_code=USD&amount=1.00&item_name=100+moneditas'">
-          100 moneditas / 1$
-        </button>
-        <button class="pay-btn" onclick="window.location.href='https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=TUCORREO_PAYPAL&currency_code=USD&amount=5.00&item_name=500+moneditas+%2B20+gratis'">
-          500 +20 🎁 / 5$
-        </button>
-        <div class="custom-box">
-          <label>Recarga personalizada (mínimo 50):</label>
-          <input type="number" id="customCoins" min="50" class="input" placeholder="Ej: 150">
-          <button class="btn btn-primary" onclick="customPay()">Recargar</button>
-        </div>
-      </div>
-
-      <!-- BINANCE -->
       <div id="binanceBox" class="recharge-box">
-        <p>📲 Escanea tu QR/Wallet de Binance para completar la recarga.</p>
-        <!-- <img src="TU_QR_BINANCE.png" alt="QR Binance" style="width:160px;border-radius:12px"> -->
-      </div>
-
-      <!-- ADS -->
-      <div id="adsBox" class="recharge-box">
-        <p>🎥 Mira 3 anuncios y gana <b>30 moneditas</b>.</p>
-        <button class="btn btn-primary" onclick="watchAds()">Ver anuncios</button>
+        <p>📲 Escanea este QR:</p>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Binance_QR_code.png" style="width:160px">
       </div>
 
       <button class="btn btn-ghost" onclick="closeRecharge()">Cerrar</button>
     </div>
   </div>
 
-  <script type="module">
-    /* ================= FIREBASE ================= */
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyAlWJTeezvz0Xkd363SgN5CnHFbEp8uNQU",
-      authDomain: "chispalive-b7ed6.firebaseapp.com",
-      projectId: "chispalive-b7ed6",
-      storageBucket: "chispalive-b7ed6.appspot.com",
-      messagingSenderId: "334811479289",
-      appId: "1:334811479289:web:403a2a1b10f7af6704b628",
-      measurementId: "G-60ERX1MFT7"
-    };
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    /* ================= ROUTER ================= */
+  <script>
     const views={login:'view-login',chat:'view-chat',conversation:'view-conversation'};
-    function go(v){
-      Object.values(views).forEach(id=>document.getElementById(id).classList.remove('active'));
-      document.getElementById(views[v]).classList.add('active');
-    }
-    window.go = go; // necesario para onclick en HTML
-
-    /* ================= PERSISTENCIA ================= */
-    const STORAGE_KEY = 'chispaUser';
-    let coins = 0;
-    let user = null;
-
-    function saveUser(){
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ user, coins }));
-    }
-    function loadUser(){
-      try{
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if(!raw) return false;
-        const data = JSON.parse(raw);
-        if(!data || typeof data.coins!=='number') return false;
-        user = data.user || null;
-        coins = data.coins || 0;
-        document.getElementById('coinsLabel').textContent = coins;
-        return true;
-      }catch(e){ return false; }
-    }
-
-    /* ================= LOGIN ================= */
-    function doLogin(){
-      const name = document.getElementById('loginName').value.trim();
-      const phone = document.getElementById('loginPhone').value.trim();
-      if(!name || !phone){ alert("Completa todos los campos"); return; }
-
-      const already = loadUser();
-      if(!already){
-        coins = 20; // regalo de bienvenida SOLO primera vez
-      }
-      user = { name, phone };
-      document.getElementById('coinsLabel').textContent = coins;
-      saveUser();
-      go('chat');
-    }
-    window.doLogin = doLogin; // para onclick
-
-    // Cargar usuario si existe
-    if(loadUser()){
-      go('chat'); // entra directo con saldo guardado
-    }
-
-    /* ================= MODELOS DESDE FIRESTORE ================= */
-    const chatList=document.getElementById('chatList');
-    const slidesIntervals={};
-
-    async function renderModels(){
-      chatList.innerHTML='';
-      const snap = await getDocs(collection(db,"models"));
-      snap.forEach(docSnap=>{
-        const m={id:docSnap.id,...docSnap.data()};
-        const card=document.createElement('div');
-        card.className='model-card';
-
-        const slideId='slide_'+m.id;
-        card.innerHTML=`
-          <div class="model-slideshow" id="${slideId}">
-            ${(m.photos||[]).slice(0,5).map((src,i)=>`<img src="${src}" class="${i===0?'active':''}">`).join('')}
-          </div>
-          <div class="info">
-            <div class="name">${m.name} <span class="online">● Online</span></div>
-            <div class="extra">${m.age||'—'} años · ${m.country||'—'}</div>
-            <div class="desc">${m.desc||''}</div>
-          </div>
-          <div class="actions">
-            <button class="action-btn btn-like">
-              <img src="https://qu.ax/hlsxX.png" alt="like">
-              <span>Me gusta</span>
-              <span class="like-badge">${m.likes||0}</span>
-            </button>
-            <button class="action-btn btn-msg">
-              <img src="https://qu.ax/jGSiu.png" alt="mensaje">
-              <span>Mensaje</span>
-            </button>
-          </div>
-        `;
-
-        card.querySelector('.btn-msg').onclick=(e)=>{e.stopPropagation(); openChatWith(m);};
-        card.onclick=()=>openChatWith(m);
-
-        chatList.appendChild(card);
-        startSlideshow(slideId);
-      });
-    }
-
-    function startSlideshow(id){
-      const box=document.getElementById(id); if(!box) return;
-      const imgs=[...box.querySelectorAll('img')]; if(imgs.length<=1) return;
-      let i=0;
-      if(slidesIntervals[id]) clearInterval(slidesIntervals[id]);
-      slidesIntervals[id]=setInterval(()=>{
-        imgs[i].classList.remove('active');
-        i=(i+1)%imgs.length;
-        imgs[i].classList.add('active');
-      }, 2800);
-    }
-
-    /* ================= CHAT ================= */
-    let currentModel=null;
-    const messages=document.getElementById('messages');
-    const chatName=document.getElementById('chatName');
-    const chatAvatar=document.getElementById('chatAvatar');
-    const msgText=document.getElementById('msgText');
-    const btnSend=document.getElementById('btnSend');
-
-    function openChatWith(m){
-      currentModel=m;
-      chatName.textContent=m.name;
-      chatAvatar.src=(m.photos&&m.photos[0])||'';
-      messages.innerHTML=`<div class="msg them">Holi 💕 soy ${m.name}, ¿quieres jugar?</div>`;
-      msgText.value='';
-      go('conversation');
-    }
-
-    // Enviar (descontar 2 monedas por mensaje)
-    function sendMessage(){
-      const txt=msgText.value.trim();
-      if(!txt) return;
-      if(coins < 2){ openRecharge(); return; }
-      coins -= 2;
-      document.getElementById('coinsLabel').textContent = coins;
-      messages.innerHTML += `<div class="msg me">${txt}</div>`;
-      msgText.value='';
-      saveUser();
-      if(coins <= 0){ openRecharge(); }
-    }
-    btnSend.addEventListener('click', sendMessage);
-    msgText.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); sendMessage(); }});
-
-    /* ================= RECARGA ================= */
-    function openRecharge(){ document.getElementById('rechargeModal').classList.add('active'); }
-    function closeRecharge(){ document.getElementById('rechargeModal').classList.remove('active'); }
-    window.openRecharge = openRecharge;
-    window.closeRecharge = closeRecharge;
-
-    function showRecharge(type, el){
-      document.querySelectorAll('.recharge-tab').forEach(t=>t.classList.remove('active'));
-      if(el) el.classList.add('active');
-      document.querySelectorAll('.recharge-box').forEach(b=>b.classList.remove('active'));
-      if(type==='paypal')  document.getElementById('payPalBox').classList.add('active');
-      if(type==='binance') document.getElementById('binanceBox').classList.add('active');
-      if(type==='ads')     document.getElementById('adsBox').classList.add('active');
-    }
-    window.showRecharge = showRecharge;
-
-    function customPay(){
-      const val = parseInt(document.getElementById('customCoins').value,10);
-      if(isNaN(val) || val < 50){ alert('Mínimo 50 moneditas'); return; }
-      const usd = (val * 0.01).toFixed(2); // 0.01 USD por moneda (ajusta si quieres)
-      window.location.href =
-        `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=TUCORREO_PAYPAL&currency_code=USD&amount=${usd}&item_name=${val}+moneditas`;
-    }
-    window.customPay = customPay;
-
-    function watchAds(){
-      coins += 30;
-      document.getElementById('coinsLabel').textContent = coins;
-      saveUser();
-      closeRecharge();
-      alert("🎉 Has recibido 30 moneditas por ver anuncios");
-    }
-    window.watchAds = watchAds;
-
-    /* INIT */
-    renderModels();
+    function go(v){Object.values(views).forEach(id=>document.getElementById(id).classList.remove('active'));document.getElementById(views[v]).classList.add('active');}
+    function openRecharge(){document.getElementById('rechargeModal').classList.add('active')}
+    function closeRecharge(){document.getElementById('rechargeModal').classList.remove('active')}
+    function showRecharge(type){document.querySelectorAll('.recharge-box').forEach(b=>b.classList.remove('active'));if(type==='paypal')paypalBox.classList.add('active');if(type==='binance')binanceBox.classList.add('active')}
+    function watchAds(){let popup=window.open('https://tu-link-pop.com','_blank','width=400,height=400');setTimeout(()=>{popup.close();alert('🎉 30 monedas añadidas');},5000)}
   </script>
 </body>
 </html>
