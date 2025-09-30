@@ -225,7 +225,7 @@
     <section id="view-conversation" class="view">
       <div class="chat-card">
         <div class="chat-head">
-          <button class="btn btn-ghost" onclick="go('chat')">←</button>
+          <button class="btn btn-ghost" type="button" onclick="go('chat')">← Volver</button>
           <img id="chatAvatar" src="" style="width:40px;height:40px;border-radius:50%;object-fit:cover">
           <div>
             <div id="chatName" class="name"></div>
@@ -260,8 +260,13 @@
     const db = getFirestore(app);
 
     /* ================= ROUTER ================= */
-    const views={chat:'view-chat',conversation:'view-conversation'};
-    function go(v){Object.values(views).forEach(id=>document.getElementById(id).classList.remove('active'));document.getElementById(views[v]).classList.add('active');}
+   /* ================= ROUTER ================= */
+const views = { chat:'view-chat', conversation:'view-conversation' };
+function go(v){
+  Object.values(views).forEach(id => document.getElementById(id).classList.remove('active'));
+  document.getElementById(views[v]).classList.add('active');
+}
+window.go = go; // <- IMPORTANTE
 
     /* ================= MODELOS DESDE FIRESTORE ================= */
     const chatList=document.getElementById('chatList');
