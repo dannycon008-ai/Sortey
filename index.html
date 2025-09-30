@@ -6,73 +6,39 @@
 <title>TuChat — Demo</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-/* ====== ESTILOS MODELOS (RESPETA TU LOOK, AJUSTE TAMAÑO + FLOTE) ====== */
+/* ====== ESTILOS MODELOS ====== */
 .model-grid {
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); /* más pequeñas */
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
   gap:18px;
   margin-top:18px;
 }
 .model-card {
-  background:#fff;
-  color:#000;
-  border-radius:14px;
-  overflow:hidden;
+  background:#fff; color:#000;
+  border-radius:14px; overflow:hidden;
   box-shadow:0 4px 20px rgba(0,0,0,.12);
-  display:flex;
-  flex-direction:column;
+  display:flex; flex-direction:column;
   cursor:pointer;
   transition:transform .25s ease, box-shadow .25s ease;
   animation:softFloat 4s ease-in-out infinite;
 }
 .model-card:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 12px 30px rgba(0,0,0,.2)}
-@keyframes softFloat{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-6px)}
-}
-.model-slideshow {
-  position:relative; height:200px; /* más bajo que antes */
-}
-.model-slideshow img {
-  position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
-  opacity:0; transition:opacity .6s ease;
-}
+@keyframes softFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.model-slideshow{position:relative;height:200px;}
+.model-slideshow img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .6s ease;}
 .model-slideshow img.active{opacity:1}
-.model-card .info {
-  padding:12px;
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-}
-.model-card .name { font-weight:700; font-size:16px; color:#111; }
-.model-card .extra { font-size:12px; color:#555; }
-.model-card .desc  { font-size:13px; color:#333; }
-.model-card .online {
-  display:inline-block;
-  background:#27ae60;
-  color:#fff;
-  font-size:12px;
-  padding:2px 6px;
-  border-radius:6px;
-  margin-left:6px;
-}
-.model-card .actions{
-  display:flex; gap:10px; justify-content:space-between; align-items:center;
-  padding:10px 12px; background:#f7f9fb; border-top:1px solid #eaeef3;
-}
-.action-btn{
-  display:flex; align-items:center; gap:8px;
-  padding:8px 12px; border-radius:10px; border:1px solid #e0e6ee;
-  background:#fff; cursor:pointer; transition:.2s;
-  font-weight:600; font-size:13px; color:#222;
-}
-.action-btn:hover{transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.08)}
+.model-card .info{padding:12px;display:flex;flex-direction:column;gap:6px;}
+.model-card .name{font-weight:700;font-size:16px;color:#111;}
+.model-card .extra{font-size:12px;color:#555;}
+.model-card .desc{font-size:13px;color:#333;}
+.model-card .online{display:inline-block;background:#27ae60;color:#fff;font-size:12px;padding:2px 6px;border-radius:6px;margin-left:6px;}
+.model-card .actions{display:flex;gap:10px;justify-content:space-between;align-items:center;padding:10px 12px;background:#f7f9fb;border-top:1px solid #eaeef3;}
+.action-btn{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;border:1px solid #e0e6ee;background:#fff;cursor:pointer;transition:.2s;font-weight:600;font-size:13px;color:#222;}
+.action-btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.08)}
 .action-btn img{width:18px;height:18px;display:block}
-.like-badge{
-  background:#ff2e6a; color:#fff; font-size:12px; padding:2px 8px; border-radius:999px;
-}
+.like-badge{background:#ff2e6a;color:#fff;font-size:12px;padding:2px 8px;border-radius:999px;}
 
-/* ====== ESTILOS GENERALES ====== */
+/* ====== GENERALES ====== */
 *{box-sizing:border-box}html,body{height:100%}
 body{margin:0;font-family:Poppins,system-ui,sans-serif;background:#0b1220;color:#e9f6ff}
 .container{max-width:1100px;margin:0 auto;padding:16px}
@@ -81,7 +47,6 @@ body{margin:0;font-family:Poppins,system-ui,sans-serif;background:#0b1220;color:
 .brand{display:flex;align-items:center;gap:10px;font-weight:700}
 .dot{width:10px;height:10px;border-radius:50%;background:#ff2e6a;display:inline-block}
 .btn{border:0;padding:8px 12px;border-radius:10px;font-weight:600;cursor:pointer;transition:.15s;font-size:14px}
-.btn:active{transform:translateY(1px)}
 .btn-primary{background:#ff2e6a;color:#fff}
 .btn-ghost{background:transparent;color:#cfe7ff;border:1px solid #244362}
 .input{width:100%;background:#0e192a;color:#d9eeff;border:1px solid #1f3550;border-radius:12px;padding:10px 12px}
@@ -89,41 +54,11 @@ body{margin:0;font-family:Poppins,system-ui,sans-serif;background:#0b1220;color:
 .small{color:#9bc2df;font-size:12px}
 .view{display:none}.view.active{display:block}
 
-.banner-wrap {
-  position: relative;
-  margin-top: 8px;
-}
-.banner-wrap video,
-.banner-wrap img {
-  width: 100%;
-  max-height: 180px;
-  object-fit: cover;
-  border-radius: 14px;
-  display: block;
-}
-
-/* Badge flotante */
-.live-badge {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  background: #001f99; /* azul fuerte */
-  color: #fff;
-  font-weight: 700;
-  font-size: 14px;
-  padding: 6px 12px;
-  border-radius: 10px;
-  animation: pulse 1.5s infinite;
-  box-shadow: 0 0 8px rgba(0,0,0,0.4);
-}
-
-/* Animación de "latido" */
-@keyframes pulse {
-  0% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.1); opacity: 0.85; }
-  100% { transform: scale(1); opacity: 1; }
-}
-
+/* ====== BANNER ====== */
+.banner-wrap{position:relative;margin-top:8px}
+.banner-wrap video{width:100%;max-height:180px;object-fit:cover;border-radius:14px;display:block}
+.live-badge{position:absolute;top:12px;left:12px;background:#001f99;color:#fff;font-weight:700;font-size:14px;padding:6px 12px;border-radius:10px;animation:pulse 1.5s infinite;box-shadow:0 0 8px rgba(0,0,0,0.4)}
+@keyframes pulse{0%{transform:scale(1);opacity:1}50%{transform:scale(1.1);opacity:.85}100%{transform:scale(1);opacity:1}}
 
 /* ====== CHAT ====== */
 .chat-card{height:calc(100vh - 80px);display:flex;flex-direction:column}
@@ -139,24 +74,6 @@ body{margin:0;font-family:Poppins,system-ui,sans-serif;background:#0b1220;color:
 .chat-input{display:flex;gap:8px;align-items:center;padding:10px;border-top:1px solid #1b3150;background:#0f1a2b}
 .chat-input .input{flex:1}
 @keyframes floatIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-
-/* ====== MODAL RECARGA ====== */
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;place-items:center;z-index:1000}
-.modal .content{background:#0f1a2b;border:1px solid #1b3150;border-radius:18px;padding:16px;width:min(420px,92vw);box-shadow:0 24px 60px rgba(0,0,0,.45)}
-.modal.show{display:grid}
-
-/* ====== POP/IMAGEN TENTADORA EN CHAT ====== */
-.promo-float{
-  position:fixed; right:16px; bottom:18px; z-index:999;
-  background:#0f1a2b; border:1px solid #1b3150; border-radius:16px; padding:8px;
-  box-shadow:0 12px 30px rgba(0,0,0,.45); animation:popFloat 1.8s ease-in-out infinite;
-}
-.promo-float img{display:block;max-width:220px;border-radius:12px}
-@keyframes popFloat{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-8px)}
-}
-.promo-close{position:absolute;top:-10px;right:-10px;background:#ff2e6a;color:#fff;border:0;border-radius:999px;width:28px;height:28px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -165,38 +82,33 @@ body{margin:0;font-family:Poppins,system-ui,sans-serif;background:#0b1220;color:
 <header class="header">
   <div class="header-inner container">
     <div class="brand">
-  <img id="appLogo" src="https://qu.ax/PyOjt.png" alt="Logo" style="height:36px;border-radius:8px;object-fit:contain">
-  <span>ChispaLive</span>
-    <nav style="display:flex;gap:12px;align-items:center">
-      <div>Monedas: <b id="coinsLabel">0</b></div>
-    </nav>
+      <img id="appLogo" src="https://qu.ax/PyOjt.png" alt="Logo" style="height:36px;border-radius:8px;object-fit:contain">
+      <span>ChispaLive</span>
+      <nav style="display:flex;gap:12px;align-items:center">
+        <div>Monedas: <b id="coinsLabel">0</b></div>
+      </nav>
+    </div>
   </div>
 </header>
 
 <main class="container">
+  <!-- Banner con video -->
+  <div class="banner-wrap">
+    <a id="bannerLink" href="https://overplantovervaluetwine.com/2061965" target="_blank" rel="noopener">
+      <video id="bannerVideo" autoplay muted loop playsinline>
+        <source src="https://qu.ax/dMvpz.mp4" type="video/mp4">
+      </video>
+      <div class="live-badge">🔴 En directo</div>
+    </a>
+  </div>
 
-<div class="banner-wrap">
-  <a id="bannerLink" href="https://overplantovervaluetwine.com/2061965" target="_blank" rel="noopener">
-    <video id="bannerVideo" autoplay muted loop playsinline>
-      <source src="https://qu.ax/dMvpz.mp4" type="video/mp4">
-      Tu navegador no soporta video.
-    </video>
-    
-     <!-- Badge "En directo" -->
-    <div class="live-badge">🔴 En directo</div>
-  </a>
-</div>
-  </a>
-</div>
-
-
-  <!-- LISTA DE MODELOS (INICIO) -->
+  <!-- Lista de modelos -->
   <section id="view-chat" class="view active">
     <h3>Modelos</h3>
     <div class="model-grid" id="chatList"></div>
   </section>
 
-  <!-- CHAT SOLO (PANTALLA COMPLETA) -->
+  <!-- Chat -->
   <section id="view-conversation" class="view">
     <div class="card chat-card">
       <div class="chat-head">
@@ -215,80 +127,48 @@ body{margin:0;font-family:Poppins,system-ui,sans-serif;background:#0b1220;color:
       </div>
     </div>
   </section>
-
-  <!-- PROFILE -->
-  <section id="view-profile" class="view">
-    <div class="card">
-      <h3>Mi perfil</h3>
-      <div class="field"><input class="input" id="pAlias" placeholder="Alias"/></div>
-      <div class="field"><input class="input" id="pStatus" placeholder="Estado"/></div>
-      <button class="btn btn-primary" id="btnSaveProfile">Guardar</button>
-    </div>
-  </section>
 </main>
 
-<!-- MODAL RECARGA MONEDAS -->
-<div id="rechargeModal" class="modal">
-  <div class="content">
-    <h3 style="margin-top:0">Sin monedas 😢</h3>
-    <p class="small">Cada mensaje cuesta <b>2</b> moneditas.</p>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <button class="btn btn-primary" id="btnWatchAd">Ver anuncio (+10)</button>
-      <button class="btn btn-ghost" id="btnRecharge">Recargar</button>
-      <button class="btn btn-ghost" id="btnCloseModal">Cerrar</button>
-    </div>
-  </div>
-</div>
+<!-- ================= Firebase & Lógica ================= -->
+<script type="module">
+/* ===== Importar Firebase ===== */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
-<script>
-/* ===== Config rápida (REEMPLAZA ESTAS URLS) ===== */
-const AD_POP_URL = "https://TU_LINK_POP_ANUNCIO.com";            // Al ver anuncio
-const CHAT_PROMO_IMG_URL = "https://CHAT_PROMO_IMG_URL.png";     // Imagen tentadora en chat
-const CHAT_PROMO_LINK_URL = "https://CHAT_PROMO_LINK_URL.com";   // Pop del chat
+/* ===== Config de tu Firebase ===== */
+const firebaseConfig = {
+  apiKey: "AIzaSyAlWJTeezvz0Xkd363SgN5CnHFbEp8uNQU",
+  authDomain: "chispalive-b7ed6.firebaseapp.com",
+  projectId: "chispalive-b7ed6",
+  storageBucket: "chispalive-b7ed6.appspot.com",
+  messagingSenderId: "334811479289",
+  appId: "1:334811479289:web:403a2a1b10f7af6704b628",
+  measurementId: "G-60ERX1MFT7"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const storage = getStorage(app);
 
-/* ===== Helpers DB ===== */
-const DB={get:(k,f=null)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch{return f}},set:(k,v)=>localStorage.setItem(k,JSON.stringify(v))};
-const START_COINS=50, COIN_PER_MSG=2;
-if(!DB.get('models'))DB.set('models',[
-  {id:'m1',name:'Luna',age:22,country:'Venezuela',desc:'Tierna y juguetona',photos:[
-    'https://picsum.photos/seed/luna1/600/400',
-    'https://picsum.photos/seed/luna2/600/400',
-    'https://picsum.photos/seed/luna3/600/400',
-    'https://picsum.photos/seed/luna4/600/400',
-    'https://picsum.photos/seed/luna5/600/400'
-  ], likes:0}
-]);
-if(!DB.get('users'))DB.set('users',[]);
-let session=DB.get('session')||{alias:'Usuario',coins:START_COINS};
-DB.set('session',session);
-
-/* ===== Router ===== */
-const views={chat:'view-chat',profile:'view-profile',conversation:'view-conversation'};
-function go(v){Object.values(views).forEach(id=>document.getElementById(id).classList.remove('active'));document.getElementById(views[v]).classList.add('active');}
-document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
-
-/* ===== Perfil ===== */
-document.getElementById('btnSaveProfile').onclick=()=>{session.alias=document.getElementById('pAlias').value||session.alias; DB.set('session',session); alert('Perfil actualizado');};
-
-/* ===== Monedas Header ===== */
+/* ===== Sesión y monedas ===== */
+let session = { alias:'Usuario', coins:50 };
 const coinsLabel=document.getElementById('coinsLabel');
-function setCoins(v){session.coins=Math.max(0,v); DB.set('session',session); coinsLabel.textContent=session.coins}
-function getCoins(){return session.coins}
-setCoins(session.coins||START_COINS);
+function setCoins(v){ session.coins=Math.max(0,v); coinsLabel.textContent=session.coins; }
+function getCoins(){ return session.coins; }
+setCoins(session.coins);
 
-/* ===== Render modelos con slideshow, likes persistentes y acciones ===== */
+/* ===== Cargar modelos desde Firestore ===== */
 const chatList=document.getElementById('chatList');
-const slidesIntervals={}; // para manejar intervals por tarjeta
+const slidesIntervals={};
 
-function renderModels(){
+async function loadModels(){
   chatList.innerHTML='';
-  const models=DB.get('models',[]);
-  models.forEach(m=>{
-    if(typeof m.likes!=='number'){ m.likes=0; } // asegurar campo
+  const snap=await getDocs(collection(db,"models"));
+  snap.forEach(doc=>{
+    const m={id:doc.id,...doc.data()};
     const card=document.createElement('div');
     card.className='model-card';
 
-    // Slideshow
     const slideId='slide_'+m.id;
     card.innerHTML=`
       <div class="model-slideshow" id="${slideId}">
@@ -301,28 +181,16 @@ function renderModels(){
       </div>
       <div class="actions">
         <button class="action-btn btn-like">
-          <img src="https://qu.ax/hlsxX.png" alt="like">
-          <span>Me gusta</span>
-          <span class="like-badge" id="likes_${m.id}">${m.likes}</span>
+          <img src="https://qu.ax/hlsxX.png"><span>Me gusta</span>
+          <span class="like-badge">${m.likes||0}</span>
         </button>
         <button class="action-btn btn-msg">
-          <img src="https://qu.ax/jGSiu.png" alt="mensaje">
-          <span>Mensaje</span>
+          <img src="https://qu.ax/jGSiu.png"><span>Mensaje</span>
         </button>
       </div>
     `;
-
-    // Acciones
-    card.querySelector('.btn-like').onclick=(e)=>{
-      e.stopPropagation();
-      const modelsNow=DB.get('models',[]);
-      const idx=modelsNow.findIndex(x=>x.id===m.id);
-      if(idx>-1){ modelsNow[idx].likes=(modelsNow[idx].likes||0)+1; DB.set('models',modelsNow); }
-      const lbl=card.querySelector('#likes_'+m.id); if(lbl) lbl.textContent=modelsNow[idx].likes;
-    };
-    card.querySelector('.btn-msg').onclick=(e)=>{ e.stopPropagation(); openChatWith(m); };
-    card.onclick=()=>openChatWith(m); // abrir chat tocando la tarjeta
-
+    card.querySelector('.btn-msg').onclick=()=>openChatWith(m);
+    card.onclick=()=>openChatWith(m);
     chatList.appendChild(card);
     startSlideshow(slideId);
   });
@@ -333,113 +201,38 @@ function startSlideshow(id){
   const imgs=[...box.querySelectorAll('img')]; if(imgs.length<=1) return;
   let i=0;
   if(slidesIntervals[id]) clearInterval(slidesIntervals[id]);
-  slidesIntervals[id]=setInterval(()=>{
-    imgs[i].classList.remove('active'); i=(i+1)%imgs.length; imgs[i].classList.add('active');
-  }, 2800);
+  slidesIntervals[id]=setInterval(()=>{ imgs[i].classList.remove('active'); i=(i+1)%imgs.length; imgs[i].classList.add('active'); }, 2800);
 }
 
 /* ===== Chat ===== */
 let currentModel=null;
 const messages=document.getElementById('messages'), typingHint=document.getElementById('typingHint');
-const chatName=document.getElementById('chatName'), chatStatus=document.getElementById('chatStatus'), chatAvatar=document.getElementById('chatAvatar');
-let promoTimer=null;
+const chatName=document.getElementById('chatName'), chatAvatar=document.getElementById('chatAvatar');
+function go(v){ document.querySelectorAll('.view').forEach(el=>el.classList.remove('active')); document.getElementById('view-'+v).classList.add('active'); }
 
 function openChatWith(m){
   currentModel=m;
   chatName.textContent=m.name;
   chatAvatar.src=(m.photos&&m.photos[0])||'';
-  chatStatus.textContent='En línea';
-  messages.innerHTML=`<div class="msg them">Holi ${session.alias} 💕 soy ${m.name}, ¿quieres jugar?</div>`;
+  messages.innerHTML=`<div class="msg them">Holi ${session.alias} 💕 soy ${m.name}</div>`;
   go('conversation');
-
-  // reiniciar promo timer
-  if(promoTimer) clearInterval(promoTimer);
-  promoTimer=setInterval(showChatPromo, 60000); // cada 1 minuto
 }
 
-/* Enviar y cobro */
 document.getElementById('btnSend').onclick=sendMsg;
-document.getElementById('msgText').addEventListener('keydown',e=>{ if(e.key==='Enter'){e.preventDefault();sendMsg();} });
-
 function sendMsg(){
   if(!currentModel) return;
-  const input=document.getElementById('msgText');
-  const val=input.value.trim(); if(!val) return;
-
-  // Cobro y verificación
-  if(getCoins()<COIN_PER_MSG){ openRecharge(); return; }
-  setCoins(getCoins()-COIN_PER_MSG);
-
-  // Burbujas
-  const ts=Date.now();
-  messages.innerHTML+=`<div class="msg you">${sanitize(val)}<div class="meta">${new Date(ts).toLocaleTimeString()} · enviado</div></div>`;
-  input.value='';
-
-  // "Visto" + respuesta a los 3s, usando autoFlow desde admin
+  const val=document.getElementById('msgText').value.trim(); if(!val) return;
+  if(getCoins()<2){ alert("Sin monedas"); return; }
+  setCoins(getCoins()-2);
+  messages.innerHTML+=`<div class="msg you">${val}</div>`;
+  document.getElementById('msgText').value='';
   typing(true);
-  setTimeout(()=>{
-    // marcar "visto" (solo actual para simplicidad)
-    const metas=[...messages.querySelectorAll('.msg.you .meta')];
-    if(metas.length){ metas[metas.length-1].textContent = `${new Date(ts).toLocaleTimeString()} · visto`; }
-    setTimeout(()=>{
-      typing(false);
-      autoReplyFromFlow();
-    },3000);
-  },500);
+  setTimeout(()=>{ typing(false); messages.innerHTML+=`<div class="msg them">Me encanta 😍</div>`; },3000);
 }
-
-/* Respuesta automática gestionada por admin (autoFlow en localStorage) */
-function autoReplyFromFlow(){
-  const flow=DB.get('autoFlow',[]);
-  let text="Estoy aquí para ti 💖";
-  if(Array.isArray(flow) && flow.length){
-    const item=flow[Math.floor(Math.random()*flow.length)];
-    // se usa el campo q como texto principal
-    text = (item.q||text).replace('{alias}', session.alias||'bebe');
-  }
-  messages.innerHTML+=`<div class="msg them">${sanitize(text)}<div class="meta">${new Date().toLocaleTimeString()}</div></div>`;
-}
-
-/* Typing */
-function typing(on){ typingHint.classList.toggle('on', !!on) }
-
-/* ===== Modal recarga ===== */
-const rechargeModal=document.getElementById('rechargeModal');
-function openRecharge(){ rechargeModal.classList.add('show'); }
-function closeRecharge(){ rechargeModal.classList.remove('show'); }
-document.getElementById('btnCloseModal').onclick=closeRecharge;
-document.getElementById('btnRecharge').onclick=()=>{ window.open('https://www.paypal.com/', '_blank'); };
-document.getElementById('btnWatchAd').onclick=()=>{
-  // redirigir a POP
-  window.open(AD_POP_URL, '_blank');
-  // bonus por ver anuncio (demo)
-  setCoins(getCoins()+10);
-  closeRecharge();
-};
-
-/* ===== Promo flotante en chat por minuto ===== */
-function showChatPromo(){
-  // si no está en vista conversación, no mostrar
-  const convVisible=document.getElementById('view-conversation').classList.contains('active');
-  if(!convVisible) return;
-  const box=document.createElement('div'); box.className='promo-float';
-  box.innerHTML=`
-    <button class="promo-close" title="Cerrar">×</button>
-    <a href="${CHAT_PROMO_LINK_URL}" target="_blank" rel="noopener">
-      <img src="${CHAT_PROMO_IMG_URL}" alt="Sigue conmigo">
-    </a>
-  `;
-  document.body.appendChild(box);
-  box.querySelector('.promo-close').onclick=()=>box.remove();
-  // auto cerrar en 15s
-  setTimeout(()=>{ if(box && box.parentNode) box.remove(); }, 15000);
-}
-
-/* ===== Util ===== */
-function sanitize(s){const div=document.createElement('div');div.textContent=s;return div.innerHTML}
+function typing(on){ typingHint.classList.toggle('on',on); }
 
 /* Init */
-renderModels();
+loadModels();
 </script>
 </body>
 </html>
