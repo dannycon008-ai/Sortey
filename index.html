@@ -255,11 +255,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    /* ================= CONFIG RÁPIDA (URLs Pop) ================= */
-    // Stub para evitar errores en callbacks del pop si se usa el script
-    window.fcfhcgj = window.fcfhcgj || function(){};
-    const POP_URL = "https://artcapturemumble.com/2061965";     // Pop al cerrar chat
-
     /* ================= SESIÓN / ECONOMÍA ================= */
     const START_COINS = 50;
     const COIN_PER_MSG = 2;
@@ -455,10 +450,7 @@
     // Volver => cerrar chat y lanzar POP
     document.getElementById('btnBack').onclick=()=>{
       go('chat');
-      // ✅ Pop real al cerrar el chat
-      window.open(POP_URL,'_blank');
-    };
-
+    
     document.getElementById('btnSend').onclick=sendMsg;
     document.getElementById('msgText').addEventListener('keydown',e=>{ if(e.key==='Enter'){e.preventDefault();sendMsg();} });
 
@@ -540,7 +532,5 @@
     renderModels();
   </script>
 
-  <!-- (Opcional) Puedes precargar el script POP de tu red si lo deseas -->
-  <script data-cfasync="false" data-clocid="2061965" async src="//artcapturemumble.com/on.js" onerror="fcfhcgj(15)" onload="fcfhcgj(15)"></script>
 </body>
 </html>
