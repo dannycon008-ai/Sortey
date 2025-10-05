@@ -225,7 +225,7 @@
   <!-- INTERSTITIAL OVERLAY (previa al chat) -->
   <div id="interstitialOverlay" class="interstitial">
     <div class="inner">
-      <!-- Stub para evitar errores si la red llama a callbacks aún no definidos -->
+      <!-- Evita errores si la red llama a callbacks -->
       <script>window.peblqx=window.peblqx||function(){};</script>
       <!-- ✅ TU SCRIPT REAL INTERSTITIAL (ClickAd) -->
       <script data-cfasync="false" data-clipid="2086017" async src="//detoxifylagoonsnugness.com/in.js" onerror="peblqx(17)" onload="peblqx(17)"></script>
@@ -337,7 +337,6 @@
       b.onclick = ()=>{ setVIP(b.dataset.vip); alert('VIP activado 🎉'); rechargeModal.classList.remove('show'); };
     });
     document.getElementById('btnWatchAd').onclick=()=>{
-      // Aquí puedes abrir cualquier fuente de anuncio de recompensa si la integras
       updateCoins(10);
       rechargeModal.classList.remove('show');
     };
@@ -381,12 +380,14 @@
           </div>
         `;
 
+        // Like (local visual)
         card.querySelector('.btn-like').onclick=(e)=>{
           e.stopPropagation();
           const badge = card.querySelector('.like-badge');
           badge.textContent = String(parseInt(badge.textContent||'0')+1);
         };
 
+        // Ver privadas -> solo VIP
         card.querySelector('.btn-priv').onclick=(e)=>{
           e.stopPropagation();
           if(!isVIP()){
@@ -401,7 +402,7 @@
           });
         };
 
-        // Abrir chat: ahora mostramos la PREVIA (interstitial overlay) antes
+        // Abrir chat: primero mostramos la PREVIA (interstitial overlay) 6s
         card.querySelector('.btn-msg').onclick=(e)=>{ e.stopPropagation(); showInterstitialBeforeChat(m); };
         card.onclick=()=> showInterstitialBeforeChat(m);
 
@@ -447,10 +448,12 @@
       go('conversation');
     }
 
-    // Volver => cerrar chat y lanzar POP
+    // Volver => cerrar chat (SIN POP)
     document.getElementById('btnBack').onclick=()=>{
       go('chat');
-    
+    };
+
+    // Enviar
     document.getElementById('btnSend').onclick=sendMsg;
     document.getElementById('msgText').addEventListener('keydown',e=>{ if(e.key==='Enter'){e.preventDefault();sendMsg();} });
 
@@ -459,6 +462,7 @@
       const input=document.getElementById('msgText');
       const val=(input.value||'').trim(); if(!val) return;
 
+      // Si NO es VIP, cobrar; si no alcanza, abrir recarga
       if(!isVIP()){
         if((session.coins||0) < COIN_PER_MSG){ openRecharge(); return; }
         updateCoins(-COIN_PER_MSG);
@@ -468,6 +472,7 @@
       messages.innerHTML+=`<div class="msg you">${sanitize(val)}<div class="meta">${new Date(ts).toLocaleTimeString()} · enviado</div></div>`;
       input.value='';
 
+      // typing + visto + respuesta a los 3s
       typing(true);
       setTimeout(()=>{
         const metas=[...messages.querySelectorAll('.msg.you .meta')];
@@ -478,6 +483,7 @@
         },3000);
       },500);
 
+      // si el usuario deja de hablar 90s -> desconectado
       clearTimeout(window.__idleTimer);
       window.__idleTimer = setTimeout(()=> chatStatus.textContent='Desconectado', 90000);
     }
@@ -531,6 +537,5 @@
     document.getElementById('coinsLabel2').textContent = session.coins||0;
     renderModels();
   </script>
-
 </body>
 </html>
