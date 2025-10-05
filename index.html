@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>TuChat — Demo</title>
+  <title>ChispaLive — Demo</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     /* ====== ESTILOS MODELOS (RESPETA TU LOOK) ====== */
@@ -45,6 +45,7 @@
     .brand{display:flex;align-items:center;gap:10px;font-weight:700}
     .dot{width:10px;height:10px;border-radius:50%;background:#ff2e6a;display:inline-block}
     .btn{border:0;padding:8px 12px;border-radius:10px;font-weight:600;cursor:pointer;transition:.15s;font-size:14px}
+    .btn:active{transform:translateY(1px)}
     .btn-primary{background:#ff2e6a;color:#fff}
     .btn-ghost{background:transparent;color:#cfe7ff;border:1px solid #244362}
     .btn-warning{background:#ffb020;color:#1b1407}
@@ -80,18 +81,12 @@
     .modal.show{display:grid}
     .modal .content{background:#0f1a2b;border:1px solid #1b3150;border-radius:18px;padding:16px;width:min(520px,92vw);box-shadow:0 24px 60px rgba(0,0,0,.45)}
 
-    /* ====== ZONAS PUBLICIDAD ====== */
-    .ads-row{display:grid;grid-template-columns:1fr 280px;gap:16px;margin-top:16px}
-    @media (max-width:1000px){.ads-row{grid-template-columns:1fr}}
-    .ad-box{background:#0f1a2b;border:1px dashed #27415f;border-radius:12px;padding:12px;text-align:center;color:#9bc2df}
-    .ad-sticky-bottom{position:sticky;bottom:0;margin-top:14px}
-
-    /* Interstitial InPage */
-    .interstitial{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;place-items:center;z-index:1500}
+    /* ====== INTERSTITIAL OVERLAY (previa al chat) ====== */
+    .interstitial{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;place-items:center;z-index:2000}
     .interstitial.show{display:grid}
-    .interstitial .inner{background:#0f1a2b;padding:0;border-radius:16px;overflow:hidden;border:1px solid #1b3150;width:min(640px,94vw)}
-    .interstitial iframe,.interstitial img{display:block;width:100%;height:360px;object-fit:cover}
+    .interstitial .inner{background:#0f1a2b;border:1px solid #1b3150;border-radius:18px;overflow:hidden;width:min(640px,95vw)}
     .interstitial .bar{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-top:1px solid #1b3150}
+    .countdown{font-size:12px;opacity:.8;margin-right:auto;margin-left:8px}
   </style>
 </head>
 <body>
@@ -124,27 +119,13 @@
       </a>
     </div>
 
-    <!-- FILA CON MODELOS + LATERAL ADS -->
-    <div class="ads-row">
-      <section id="view-chat" class="view active">
-        <h3>Modelos</h3>
-        <div class="model-grid" id="chatList"></div>
+    <!-- LISTA DE MODELOS (INICIO) -->
+    <section id="view-chat" class="view active">
+      <h3>Modelos</h3>
+      <div class="model-grid" id="chatList"></div>
+    </section>
 
-        <!-- Banner CPA inferior -->
-        <div class="ad-sticky-bottom ad-box" id="cpaBottom">
-          <!-- Pega aquí tu banner CPA (HTML/script de tu red) -->
-          Banner CPA inferior (coloca aquí tu código)
-        </div>
-      </section>
-
-      <!-- Lateral derecho: banners -->
-      <aside>
-        <div class="ad-box" id="adRight1" style="min-height:250px">Banner lateral 300x250</div>
-        <div class="ad-box" id="adRight2" style="min-height:600px;margin-top:16px">Skyscraper 300x600</div>
-      </aside>
-    </div>
-
-    <!-- CHAT -->
+    <!-- CHAT SOLO (PANTALLA COMPLETA) -->
     <section id="view-conversation" class="view">
       <div class="card chat-card">
         <div class="chat-head">
@@ -241,16 +222,18 @@
     </div>
   </div>
 
-  <!-- INTERSTITIAL INPAGE (al entrar/salir del chat) -->
-  <div id="inpage" class="interstitial">
+  <!-- INTERSTITIAL OVERLAY (previa al chat) -->
+  <div id="interstitialOverlay" class="interstitial">
     <div class="inner">
-      <!-- Reemplaza por el tag de tu red publicitaria (iframe/script) -->
-      <a id="inpageLink" href="https://example-ads.com" target="_blank" rel="noopener">
-        <img src="https://picsum.photos/800/360" alt="Publicidad">
-      </a>
+      <!-- Stub para evitar errores si la red llama a callbacks aún no definidos -->
+      <script>window.peblqx=window.peblqx||function(){};</script>
+      <!-- ✅ TU SCRIPT REAL INTERSTITIAL (ClickAd) -->
+      <script data-cfasync="false" data-clipid="2086017" async src="//detoxifylagoonsnugness.com/in.js" onerror="peblqx(17)" onload="peblqx(17)"></script>
+
       <div class="bar">
-        <span class="small" style="opacity:.85;margin-left:8px">Publicidad — Interstitial</span>
-        <button class="btn btn-ghost" id="closeInpage">Cerrar</button>
+        <span class="small">Publicidad — Interstitial</span>
+        <span class="countdown" id="interCounter">Esperando…</span>
+        <button id="closeInterstitial" class="btn btn-ghost" style="display:none">Cerrar</button>
       </div>
     </div>
   </div>
@@ -272,16 +255,15 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    /* ================= CONFIG RÁPIDA (URLs Anuncios) ================= */
-    const AD_POP_URL = "https://TU_LINK_POP_ANUNCIO.com";       // Pop-under al 1er click
-    const INPAGE_URL = "https://TU_LINK_INTERSTITIAL.com";      // Interstitial InPage
-    document.getElementById('inpageLink').href = INPAGE_URL;
+    /* ================= CONFIG RÁPIDA (URLs Pop) ================= */
+    // Stub para evitar errores en callbacks del pop si se usa el script
+    window.fcfhcgj = window.fcfhcgj || function(){};
+    const POP_URL = "https://artcapturemumble.com/2061965";     // Pop al cerrar chat
 
     /* ================= SESIÓN / ECONOMÍA ================= */
     const START_COINS = 50;
     const COIN_PER_MSG = 2;
     const DAILY_BONUS = 10;
-    const REF_BONUS_OWNER = 15;
     const REF_BONUS_GUEST = 20;
 
     const coinsLabel = document.getElementById('coinsLabel');
@@ -291,9 +273,8 @@
 
     let session = JSON.parse(localStorage.getItem('session')||'{}');
     if(!session.alias){ session = { alias:'Usuario', coins: START_COINS, refCode: genRef() }; saveSession(); }
-    updateCoins(0); // pintar
+    updateCoins(0);
 
-    // Membresía VIP en localStorage: { until: timestamp }
     let membership = JSON.parse(localStorage.getItem('membership')||'null');
     paintVIP();
 
@@ -315,8 +296,7 @@
     }
 
     /* ================= BONO DIARIO ================= */
-    const btnDaily = document.getElementById('btnDaily');
-    btnDaily.onclick = ()=>{
+    document.getElementById('btnDaily').onclick = ()=>{
       const today = new Date().toISOString().slice(0,10);
       const last = localStorage.getItem('lastDaily') || '';
       if(last===today){ alert('Ya reclamaste el bono diario hoy.'); return; }
@@ -335,58 +315,41 @@
       if(!code || code===session.refCode){ alert('Código inválido'); return; }
       const used = JSON.parse(localStorage.getItem('refUsed')||'[]');
       if(used.includes(code)){ alert('Ya usaste ese código'); return; }
-      // Marcamos como usado en este navegador (simple)
       used.push(code); localStorage.setItem('refUsed', JSON.stringify(used));
       updateCoins(REF_BONUS_GUEST);
       alert(`¡Código canjeado! Ganaste +${REF_BONUS_GUEST} monedas.`);
-      // Al dueño no podemos abonarle sin backend; lo dejamos documentado.
     };
 
     /* ================= TIENDA / RECARGA / VIP ================= */
     document.getElementById('btnStore').onclick = ()=> openModal('storeModal');
     document.getElementById('btnCloseStore').onclick = ()=> closeModal('storeModal');
 
-    // Compras rápidas (simuladas)
     document.getElementById('sBuy50').onclick = ()=>{ updateCoins(50); alert('Gracias por tu compra (50)'); };
     document.getElementById('sBuy150').onclick = ()=>{ updateCoins(150); alert('Gracias por tu compra (150)'); };
     document.getElementById('sBuy400').onclick = ()=>{ updateCoins(400); alert('Gracias por tu compra (400)'); };
 
-    // Activar VIP desde tienda
     document.querySelectorAll('[data-vip2]').forEach(b=>{
       b.onclick = ()=>{ setVIP(b.dataset.vip2); alert('VIP activado 🎉'); closeModal('storeModal'); };
     });
 
-    // Modal recarga (cuando no hay monedas)
     const rechargeModal = document.getElementById('rechargeModal');
     function openRecharge(){ rechargeModal.classList.add('show'); }
     document.getElementById('btnCloseModal').onclick = ()=> rechargeModal.classList.remove('show');
     document.getElementById('btnBuy20').onclick = ()=>{ updateCoins(20); rechargeModal.classList.remove('show'); };
     document.getElementById('btnBuy50').onclick = ()=>{ updateCoins(50); rechargeModal.classList.remove('show'); };
     document.getElementById('btnBuy100').onclick = ()=>{ updateCoins(100); rechargeModal.classList.remove('show'); };
-    // VIP upsell dentro del modal
     document.querySelectorAll('[data-vip]').forEach(b=>{
       b.onclick = ()=>{ setVIP(b.dataset.vip); alert('VIP activado 🎉'); rechargeModal.classList.remove('show'); };
     });
-    // Ver anuncio (+10)
-    document.getElementById('btnWatchAd').onclick = ()=>{
-      window.open(AD_POP_URL,'_blank'); // Pop-under/redirect
+    document.getElementById('btnWatchAd').onclick=()=>{
+      // Aquí puedes abrir cualquier fuente de anuncio de recompensa si la integras
       updateCoins(10);
       rechargeModal.classList.remove('show');
     };
 
-    // Abrir tienda desde header
-    const btnStore = document.getElementById('btnStore');
-
-    /* ================= INTERSTITIAL INPAGE (entrar/salir del chat) ================= */
-    const inpage = document.getElementById('inpage');
-    const closeInpage = document.getElementById('closeInpage');
-    closeInpage.onclick = ()=> inpage.classList.remove('show');
-    function showInPage(){ inpage.classList.add('show'); setTimeout(()=>inpage.classList.remove('show'), 6000); }
-
     /* ================= MODELOS DESDE FIRESTORE ================= */
-    const chatList = document.getElementById('chatList');
-    const slidesIntervals = {};
-    let firstUserClickOpenedPop = false;
+    const chatList=document.getElementById('chatList');
+    const slidesIntervals={};
 
     async function renderModels(){
       chatList.innerHTML='';
@@ -423,22 +386,19 @@
           </div>
         `;
 
-        // Like (local persistente)
         card.querySelector('.btn-like').onclick=(e)=>{
           e.stopPropagation();
           const badge = card.querySelector('.like-badge');
           badge.textContent = String(parseInt(badge.textContent||'0')+1);
         };
 
-        // Ver privadas -> solo VIP
         card.querySelector('.btn-priv').onclick=(e)=>{
           e.stopPropagation();
           if(!isVIP()){
-            openRecharge(); // oferta VIP también
+            openRecharge();
             alert('Activa VIP para ver fotos privadas 💎');
             return;
           }
-          // abrir un visor sencillo
           const w = window.open('','_blank','width=800,height=600');
           w.document.write('<title>Privadas</title>');
           (priv.length?priv:pub).forEach(src=>{
@@ -446,9 +406,9 @@
           });
         };
 
-        // Abrir chat
-        card.querySelector('.btn-msg').onclick=(e)=>{ e.stopPropagation(); openChatWith(m); };
-        card.onclick=()=> openChatWith(m);
+        // Abrir chat: ahora mostramos la PREVIA (interstitial overlay) antes
+        card.querySelector('.btn-msg').onclick=(e)=>{ e.stopPropagation(); showInterstitialBeforeChat(m); };
+        card.onclick=()=> showInterstitialBeforeChat(m);
 
         chatList.appendChild(card);
         startSlideshow(slideId);
@@ -469,10 +429,7 @@
 
     /* ================= ROUTER ================= */
     const views={chat:'view-chat',conversation:'view-conversation'};
-    function go(v){
-      Object.values(views).forEach(id=>document.getElementById(id).classList.remove('active'));
-      document.getElementById(views[v]).classList.add('active');
-    }
+    function go(v){ Object.values(views).forEach(id=>document.getElementById(id).classList.remove('active')); document.getElementById(views[v]).classList.add('active'); }
 
     /* ================= CHAT ================= */
     let currentModel=null;
@@ -482,7 +439,6 @@
     const chatStatus=document.getElementById('chatStatus');
     const typingHint=document.getElementById('typingHint');
 
-    // Emojis VIP insert
     document.querySelectorAll('#vipEmojis [data-emoji]').forEach(b=>{
       b.onclick=()=>{ const i=document.getElementById('msgText'); i.value += b.dataset.emoji; i.focus(); };
     });
@@ -494,24 +450,15 @@
       chatStatus.textContent='En línea';
       messages.innerHTML=`<div class="msg them">Holi 💕 soy ${m.name}, ¿quieres jugar?</div>`;
       go('conversation');
-
-      // Interstitial InPage al entrar
-      showInPage();
-
-      // Pop-under en primer click del usuario (anti-bloqueo)
-      if(!firstUserClickOpenedPop){
-        const once = ()=>{ window.open(AD_POP_URL,'_blank'); firstUserClickOpenedPop=true; document.removeEventListener('click', once, true); };
-        document.addEventListener('click', once, true);
-      }
     }
 
-    // Volver -> mostrar interstitial de salida
-    document.getElementById('btnBack').onclick = ()=>{
+    // Volver => cerrar chat y lanzar POP
+    document.getElementById('btnBack').onclick=()=>{
       go('chat');
-      showInPage();
+      // ✅ Pop real al cerrar el chat
+      window.open(POP_URL,'_blank');
     };
 
-    // Enviar
     document.getElementById('btnSend').onclick=sendMsg;
     document.getElementById('msgText').addEventListener('keydown',e=>{ if(e.key==='Enter'){e.preventDefault();sendMsg();} });
 
@@ -520,7 +467,6 @@
       const input=document.getElementById('msgText');
       const val=(input.value||'').trim(); if(!val) return;
 
-      // Si NO es VIP, cobrar; si no alcanza, abrir recarga
       if(!isVIP()){
         if((session.coins||0) < COIN_PER_MSG){ openRecharge(); return; }
         updateCoins(-COIN_PER_MSG);
@@ -530,7 +476,6 @@
       messages.innerHTML+=`<div class="msg you">${sanitize(val)}<div class="meta">${new Date(ts).toLocaleTimeString()} · enviado</div></div>`;
       input.value='';
 
-      // typing + visto + respuesta a los 3s
       typing(true);
       setTimeout(()=>{
         const metas=[...messages.querySelectorAll('.msg.you .meta')];
@@ -541,35 +486,61 @@
         },3000);
       },500);
 
-      // si el usuario deja de hablar 90s -> desconectado
       clearTimeout(window.__idleTimer);
       window.__idleTimer = setTimeout(()=> chatStatus.textContent='Desconectado', 90000);
     }
 
     function typing(on){ typingHint.classList.toggle('on', !!on); chatStatus.textContent = on?'En línea · escribiendo…':'En línea'; }
-
-    // Auto-reply desde config/autoFlow en Firestore (solo lectura simple en esta versión)
-    async function autoReplyFromFlow(){
-      // Puedes cargar flujo desde Firestore config/autoFlow si lo necesitas
+    function autoReplyFromFlow(){
       const fallback = "Estoy aquí para ti 💖";
       messages.innerHTML+=`<div class="msg them">${sanitize(fallback)}<div class="meta">${new Date().toLocaleTimeString()}</div></div>`;
     }
+
+    /* ================= INTERSTITIAL PREVIA ANTES DE CHAT ================= */
+    const interstitial = document.getElementById('interstitialOverlay');
+    const closeInterstitial = document.getElementById('closeInterstitial');
+    const interCounter = document.getElementById('interCounter');
+    let nextModel = null;
+    let interTimer = null;
+    function showInterstitialBeforeChat(m){
+      nextModel = m;
+      interstitial.classList.add('show');
+      closeInterstitial.style.display='none';
+      let sec=6;
+      interCounter.textContent = `Cierra disponible en ${sec}s`;
+      clearInterval(interTimer);
+      interTimer = setInterval(()=>{
+        sec--;
+        if(sec>0){
+          interCounter.textContent = `Cierra disponible en ${sec}s`;
+        }else{
+          clearInterval(interTimer);
+          interCounter.textContent = '';
+          closeInterstitial.style.display='inline-block';
+        }
+      },1000);
+    }
+    closeInterstitial.onclick=()=>{
+      interstitial.classList.remove('show');
+      if(nextModel){ openChatWith(nextModel); nextModel=null; }
+    };
 
     /* ================= UTIL ================= */
     function openModal(id){ document.getElementById(id).classList.add('show'); }
     function closeModal(id){ document.getElementById(id).classList.remove('show'); }
     function sanitize(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
 
-    // Abrir tienda desde header
-    btnStore.onclick = ()=> openModal('storeModal');
-
-    // Cerrar referidos si clic fuera
+    // Cerrar modales al clicar fuera
     ['storeModal','refModal','rechargeModal'].forEach(id=>{
       document.getElementById(id).addEventListener('click',e=>{ if(e.target.id===id) e.target.classList.remove('show'); });
     });
 
     /* INIT */
+    document.getElementById('coinsLabel2').textContent = session.coins||0;
     renderModels();
   </script>
+
+  <!-- (Opcional) Puedes precargar el script POP de tu red si lo deseas -->
+  <script data-cfasync="false" data-clocid="2061965" async src="//artcapturemumble.com/on.js" onerror="fcfhcgj(15)" onload="fcfhcgj(15)"></script>
 </body>
 </html>
