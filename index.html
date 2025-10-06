@@ -5,78 +5,122 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>ChispaLive — Demo</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    /* ====== ESTILOS GENERALES ====== */
-    * { box-sizing: border-box; }
-    html, body { height: 100%; }
-    body { margin: 0; font-family: 'Poppins', system-ui, sans-serif; background: #0b1220; color: #e9f6ff; overflow-x: hidden; }
-    .container { max-width: 1100px; margin: 20px auto; padding: 16px; }
-    .header { position: sticky; top: 0; z-index: 50; background: rgba(10,18,32,.85); backdrop-filter: blur(6px); border-bottom: 1px solid #132338; }
-    .header-inner { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; }
-    .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; }
-    .topnav { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-    .btn { border: 0; padding: 8px 12px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: .15s; font-size: 14px; }
-    .btn:active { transform: translateY(1px); }
-    .btn-primary { background: #ff2e6a; color: #fff; }
-    .btn-ghost { background: transparent; color: #cfe7ff; border: 1px solid #244362; }
-    .btn-warning { background: #ffb020; color: #1b1407; }
-    .input { width: 100%; background: #0e192a; color: #d9eeff; border: 1px solid #1f3550; border-radius: 12px; padding: 10px 12px; }
-    .small { color: #9bc2df; font-size: 12px; }
-    .view { display: none; }
-    .view.active { display: block; }
 
-    /* ====== MONEDAS CON ICONO ====== */
-    .coin { display: inline-flex; align-items: center; gap: 6px; }
-    .coin img { width: 18px; height: 18px; vertical-align: middle; }
+  <style>
+    :root{
+      --brand:#ff2e6a;
+      --bg:#0b1220;
+      --card:#0f1a2b;
+      --line:#1b3150;
+      --text:#e9f6ff;
+      --sub:#9bc2df;
+      --ok:#27ae60;
+      --warn:#ffb020;
+      --vip:#ffd54d;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:Poppins,system-ui,sans-serif;background:var(--bg);color:var(--text)}
+    .container{max-width:1100px;margin:0 auto;padding:16px}
+    .header{position:sticky;top:0;z-index:50;background:rgba(10,18,32,.85);backdrop-filter:blur(6px);border-bottom:1px solid #132338}
+    .header-inner{display:flex;justify-content:space-between;align-items:center;padding:12px 16px}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:700}
+    .btn{border:0;padding:8px 12px;border-radius:10px;font-weight:600;cursor:pointer;transition:.15s;font-size:14px}
+    .btn:active{transform:translateY(1px)}
+    .btn-primary{background:var(--brand);color:#fff}
+    .btn-ghost{background:transparent;color:#cfe7ff;border:1px solid #244362}
+    .btn-warning{background:var(--warn);color:#1b1407}
+    .input{width:100%;background:#0e192a;color:#d9eeff;border:1px solid #1f3550;border-radius:12px;padding:10px 12px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 10px 32px rgba(0,0,0,.35)}
+    .small{color:var(--sub);font-size:12px}
+    .view{display:none}.view.active{display:block}
+
+    /* ====== Contador de monedas mejorado ====== */
+    .coins-badge{
+      display:inline-flex;align-items:center;gap:6px;
+      background:#0e192a;border:1px solid #233f60;padding:6px 10px;border-radius:999px;
+      font-weight:700
+    }
+    .coins-badge img{height:18px;width:18px;object-fit:contain;display:block}
+
+    /* ====== Título animado ====== */
+    .title-hero{
+      font-weight:800;font-size:22px;margin:10px 0 0 0;
+      display:inline-flex;align-items:center;gap:8px;
+      background:linear-gradient(90deg,#fff,#ffd1dc,#fff);
+      -webkit-background-clip:text;background-clip:text;color:transparent;
+      animation:shine 2.4s linear infinite, pulseZoom 3.8s ease-in-out infinite;
+      text-shadow:0 0 18px rgba(255,255,255,.12);
+    }
+    @keyframes shine{0%{filter:brightness(1)}50%{filter:brightness(1.25)}100%{filter:brightness(1)}}
+    @keyframes pulseZoom{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+
+    /* ====== MODELOS (respeta look) ====== */
+    .model-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;margin-top:18px}
+    .model-card{background:#fff;color:#000;border-radius:14px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.12);display:flex;flex-direction:column;cursor:pointer;transition:transform .25s, box-shadow .25s;animation:softFloat 4s ease-in-out infinite}
+    .model-card:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 12px 30px rgba(0,0,0,.2)}
+    @keyframes softFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+    .model-slideshow{position:relative;height:200px}
+    .model-slideshow img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .6s ease}
+    .model-slideshow img.active{opacity:1}
+    .model-card .info{padding:12px;display:flex;flex-direction:column;gap:6px}
+    .model-card .name{font-weight:700;font-size:16px;color:#111}
+    .model-card .extra{font-size:12px;color:#555}
+    .model-card .desc{font-size:13px;color:#333}
+    .model-card .online{display:inline-block;background:var(--ok);color:#fff;font-size:12px;padding:2px 6px;border-radius:6px;margin-left:6px}
+    .model-card .actions{display:flex;gap:10px;justify-content:space-between;align-items:center;padding:10px 12px;background:#f7f9fb;border-top:1px solid #eaeef3}
+    .action-btn{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;border:1px solid #e0e6ee;background:#fff;cursor:pointer;transition:.2s;font-weight:600;font-size:13px;color:#222}
+    .action-btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.08)}
+    .action-btn img{width:18px;height:18px;display:block}
+    .like-badge{background:var(--brand);color:#fff;font-size:12px;padding:2px 8px;border-radius:999px}
 
     /* ====== BANNER VIDEO ====== */
-    .banner-wrap { position: relative; margin-top: 8px; }
-    .banner-wrap video { width: 100%; max-height: 180px; object-fit: cover; border-radius: 14px; display: block; }
-    .live-badge { position: absolute; top: 12px; left: 12px; background: #001f99; color: #fff; font-weight: 700; font-size: 14px; padding: 6px 12px; border-radius: 10px; animation: pulse 1.5s infinite; box-shadow: 0 0 8px rgba(0,0,0,.4); }
-    @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: .85; } 100% { transform: scale(1); opacity: 1; } }
+    .banner-wrap{position:relative;margin-top:8px}
+    .banner-wrap video{width:100%;max-height:180px;object-fit:cover;border-radius:14px;display:block}
+    .live-badge{position:absolute;top:12px;left:12px;background:#001f99;color:#fff;font-weight:700;font-size:14px;padding:6px 12px;border-radius:10px;animation:pulse 1.5s infinite;box-shadow:0 0 8px rgba(0,0,0,.4)}
+    @keyframes pulse{0%{transform:scale(1);opacity:1}50%{transform:scale(1.1);opacity:.85}100%{transform:scale(1);opacity:1}}
 
     /* ====== CHAT ====== */
-    .chat-card { height: calc(100vh - 80px); display: flex; flex-direction: column; }
-    .chat-head { display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #1b3150; padding: 10px; background: #0f1a2b; }
-    .chat-head .name { font-weight: 700; }
-    .chat-body { flex: 1; overflow: auto; display: flex; flex-direction: column; gap: 8px; padding: 10px 2px; }
-    .msg { max-width: 70%; padding: 10px 14px; border-radius: 18px; line-height: 1.35; font-size: 15px; animation: floatIn .25s ease; }
-    .msg.you { align-self: flex-end; background: #12253c; }
-    .msg.them { align-self: flex-start; background: #0c1728; }
-    .msg .meta { margin-top: 6px; font-size: 11px; color: #86a9c7; }
-    .typing { color: #99c7ff; font-size: 12px; padding: 6px 0; display: none; }
-    .typing.on { display: block; }
-    .chat-input { display: flex; gap: 8px; align-items: center; padding: 10px; border-top: 1px solid #1b3150; background: #0f1a2b; }
-    .chat-input .input { flex: 1; }
-    .emoji-vip { display: flex; gap: 6px; flex-wrap: wrap; }
-
-    /* ====== ANIMACIÓN MODELOS ====== */
-    .model-grid h3 {
-      font-size: 24px;
-      color: #fff;
-      font-weight: 700;
-      animation: zoomInOut 2s ease-in-out infinite;
-    }
-    @keyframes zoomInOut {
-      0% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.1); opacity: 0.9; }
-      100% { transform: scale(1); opacity: 1; }
-    }
+    .chat-card{height:calc(100vh - 80px);display:flex;flex-direction:column}
+    .chat-head{display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line);padding:10px;background:var(--card)}
+    .chat-head .name{font-weight:700}
+    .chat-body{flex:1;overflow:auto;display:flex;flex-direction:column;gap:8px;padding:10px 2px}
+    .msg{max-width:70%;padding:10px 14px;border-radius:18px;line-height:1.35;font-size:15px;animation:floatIn .25s ease}
+    .msg.you{align-self:flex-end;background:#12253c}
+    .msg.them{align-self:flex-start;background:#0c1728}
+    .msg .meta{margin-top:6px;font-size:11px;color:#86a9c7}
+    .typing{color:#99c7ff;font-size:12px;padding:6px 0;display:none}
+    .typing.on{display:block}
+    .chat-input{display:flex;gap:8px;align-items:center;padding:10px;border-top:1px solid var(--line);background:var(--card)}
+    .chat-input .input{flex:1}
+    .emoji-vip{display:flex;gap:6px;flex-wrap:wrap}
+    @keyframes floatIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
     /* ====== MODALES ====== */
-    .modal { position: fixed; inset: 0; background: rgba(0, 0, 0, .55); display: none; place-items: center; z-index: 1000; }
-    .modal.show { display: grid; }
-    .modal .content { background: #0f1a2b; border: 1px solid #1b3150; border-radius: 18px; padding: 16px; width: min(520px, 92vw); box-shadow: 0 24px 60px rgba(0, 0, 0, .45); }
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;place-items:center;z-index:1000}
+    .modal.show{display:grid}
+    .modal .content{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;width:min(560px,92vw);box-shadow:0 24px 60px rgba(0,0,0,.45)}
 
-    /* ====== INTERSTITIAL OVERLAY ====== */
-    .interstitial { position: fixed; inset: 0; background: rgba(0, 0, 0, .75); display: none; place-items: center; z-index: 2000; }
-    .interstitial.show { display: grid; }
-    .interstitial .inner { background: #0f1a2b; border: 1px solid #1b3150; border-radius: 18px; overflow: hidden; width: min(640px, 95vw); }
-    .interstitial .slot { width: 100%; height: 360px; display: block; background: #0b1424; }
-    .interstitial .slot iframe, .interstitial .slot img { width: 100%; height: 100%; display: block; object-fit: cover; }
-    .interstitial .bar { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-top: 1px solid #1b3150; }
-    .countdown { font-size: 12px; opacity: .8; margin-right: auto; margin-left: 8px; }
+    /* ====== INTERSTITIAL (previo al chat) ====== */
+    .interstitial{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;place-items:center;z-index:2000}
+    .interstitial.show{display:grid}
+    .interstitial .inner{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;width:min(640px,95vw)}
+    .interstitial .bar{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-top:1px solid var(--line)}
+    .countdown{font-size:12px;opacity:.8;margin-right:auto;margin-left:8px}
+
+    /* ====== TOASTS ====== */
+    .toast-wrap{position:fixed;right:16px;bottom:16px;display:flex;flex-direction:column;gap:10px;z-index:3000}
+    .toast{background:#0e1a2a;color:#d8ecff;border:1px solid #27507c;padding:12px 14px;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.35);animation:floatIn .25s ease;display:flex;align-items:flex-start;gap:8px}
+    .toast.ok{border-color:#2f7c4b}
+    .toast.warn{border-color:#7c5b2f}
+    .toast .title{font-weight:700;margin-bottom:4px}
+    .toast .close{margin-left:auto;background:transparent;border:0;color:#cfe7ff;cursor:pointer}
+
   </style>
+
+  <!-- PayPal SDK (LIVE) — coloca tu client-id real abajo con JS -->
+  <script id="paypal-sdk-loader"></script>
 </head>
 <body>
   <!-- HEADER -->
@@ -86,13 +130,15 @@
         <img id="appLogo" src="https://qu.ax/PyOjt.png" alt="Logo" style="height:36px;border-radius:8px;object-fit:contain">
         <span>ChispaLive</span>
       </div>
-      <nav class="topnav">
-        <span id="vipBadge" class="small" style="display:none;background:#ffd54d;color:#1e1600;padding:4px 8px;border-radius:999px;font-weight:700">VIP ✨</span>
-        <button class="btn btn-ghost" id="btnDaily">🎯 MISIONES DIARIAS</button>
+
+      <nav style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button class="btn btn-ghost" id="btnMissions">🗓️ Misiones diarias</button>
         <button class="btn btn-primary" id="btnStore">💳 Tienda</button>
-        <div class="coin" style="margin-left:6px">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Coin_icon_3.svg/2048px-Coin_icon_3.svg.png" alt="Monedas">
-          <b id="coinsLabel">0</b>
+
+        <!-- Monedas con icono y modo VIP -->
+        <div id="coinsBox" class="coins-badge">
+          <img id="coinsIcon" src="" alt="Coins">
+          <span id="coinsLabel">0</span>
         </div>
       </nav>
     </div>
@@ -101,9 +147,9 @@
   <main class="container">
     <!-- BANNER VIDEO -->
     <div class="banner-wrap">
-      <a id="bannerLink" href="https://ejemplo.com" target="_blank" rel="noopener">
+      <a id="bannerLink" href="#" target="_blank" rel="noopener">
         <video autoplay muted loop playsinline>
-          <source src="https://qu.ax/dMvpz.mp4" type="video/mp4">
+          <source id="bannerVideoSrc" src="" type="video/mp4">
           Tu navegador no soporta video.
         </video>
         <div class="live-badge">🔴 En directo</div>
@@ -112,7 +158,7 @@
 
     <!-- LISTA DE MODELOS (INICIO) -->
     <section id="view-chat" class="view active">
-      <h3>Chatea en vivo 🥰</h3>
+      <h3 class="title-hero">Chatea en vivo 🥰</h3>
       <div class="model-grid" id="chatList"></div>
     </section>
 
@@ -126,8 +172,8 @@
             <div id="chatName" class="name"></div>
             <small id="chatStatus" class="small">En línea</small>
           </div>
-          <div style="margin-left:auto" class="coin small">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Coin_icon_3.svg/2048px-Coin_icon_3.svg.png" alt="Monedas">
+          <div style="margin-left:auto" class="coins-badge">
+            <img id="coinsIcon2" src="" alt="Coins">
             <b id="coinsLabel2">0</b>
           </div>
         </div>
@@ -151,60 +197,117 @@
     <div class="content">
       <h3 style="margin:0 0 6px">Sin monedas 😢</h3>
       <p class="small">Cada mensaje cuesta <b>2</b> moneditas.</p>
+
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
-        <button class="btn btn-primary" id="btnBuy20">Comprar 20</button>
-        <button class="btn btn-primary" id="btnBuy50">Comprar 50</button>
-        <button class="btn btn-primary" id="btnBuy100">Comprar 100</button>
+        <button class="btn btn-primary buy-coins" data-amount="20">Comprar 20</button>
+        <button class="btn btn-primary buy-coins" data-amount="50">Comprar 50</button>
+        <button class="btn btn-primary buy-coins" data-amount="100">Comprar 100</button>
         <button class="btn btn-warning" id="btnWatchAd">Ver anuncio (+10)</button>
       </div>
-      <div class="card" style="margin-top:8px">
-        <b>💎 Suscríbete VIP y chatea sin límites</b>
-        <div class="small" style="opacity:.85;margin:6px 0 10px">Elige tu plan (PayPal):</div>
-        <div id="paypal24h_m"></div>
-        <div id="paypal7d_m" style="margin-top:8px"></div>
-        <div id="paypal30d_m" style="margin-top:8px"></div>
+
+      <!-- PayPal contenedor dinámico para monedas -->
+      <div id="paypal-coins-wrap" style="display:none">
+        <div class="small" id="paypal-coins-caption" style="margin:6px 0 8px"></div>
+        <div id="paypal-coins-btn"></div>
       </div>
-      <div style="margin-top:10px">
+
+      <div class="card" style="margin-top:12px">
+        <b>💎 Suscríbete VIP y chatea sin límites</b>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+          <button class="btn btn-ghost vip-plan" data-plan="24h" data-price="4">VIP 24h — 4$</button>
+          <button class="btn btn-ghost vip-plan" data-plan="7d" data-price="15">VIP 1 semana — 15$</button>
+          <button class="btn btn-ghost vip-plan" data-plan="30d" data-price="30">VIP 1 mes — 30$</button>
+        </div>
+        <!-- PayPal contenedor dinámico VIP -->
+        <div id="paypal-vip-wrap" style="display:none;margin-top:10px">
+          <div class="small" id="paypal-vip-caption" style="margin:6px 0 8px"></div>
+          <div id="paypal-vip-btn"></div>
+        </div>
+      </div>
+
+      <div style="margin-top:12px">
         <button class="btn btn-ghost" id="btnCloseModal">Cerrar</button>
       </div>
     </div>
   </div>
 
-  <!-- MODAL: TIENDA DIRECTA -->
+  <!-- MODAL: TIENDA DIRECTA (también con PayPal) -->
   <div id="storeModal" class="modal">
     <div class="content">
       <h3 style="margin:0 0 6px">Tienda</h3>
-      <p class="small">Activa VIP con PayPal o compra monedas.</p>
-      <div class="card">
-        <b>💎 VIP</b>
-        <div class="small" style="opacity:.85;margin:6px 0 10px">Selecciona un plan (PayPal):</div>
-        <div id="paypal24h"></div>
-        <div id="paypal7d" style="margin-top:8px"></div>
-        <div id="paypal30d" style="margin-top:8px"></div>
+      <p class="small">Compra monedas o activa VIP.</p>
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+        <button class="btn btn-primary s-buy-coins" data-amount="50">50 monedas</button>
+        <button class="btn btn-primary s-buy-coins" data-amount="150">150 monedas</button>
+        <button class="btn btn-primary s-buy-coins" data-amount="400">400 monedas</button>
       </div>
+
+      <div id="paypal-store-wrap" style="display:none">
+        <div class="small" id="paypal-store-caption" style="margin:6px 0 8px"></div>
+        <div id="paypal-store-btn"></div>
+      </div>
+
       <div class="card" style="margin-top:12px">
-        <b>🪙 Monedas rápidas</b>
+        <b>💎 VIP</b>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
-          <button class="btn btn-primary" id="sBuy50">50 monedas</button>
-          <button class="btn btn-primary" id="sBuy150">150 monedas</button>
-          <button class="btn btn-primary" id="sBuy400">400 monedas</button>
+          <button class="btn btn-ghost vip2-plan" data-plan="24h" data-price="4">VIP 24h — 4$</button>
+          <button class="btn btn-ghost vip2-plan" data-plan="7d" data-price="15">VIP 1 semana — 15$</button>
+          <button class="btn btn-ghost vip2-plan" data-plan="30d" data-price="30">VIP 1 mes — 30$</button>
+        </div>
+
+        <div id="paypal-vip2-wrap" style="display:none;margin-top:10px">
+          <div class="small" id="paypal-vip2-caption" style="margin:6px 0 8px"></div>
+          <div id="paypal-vip2-btn"></div>
         </div>
       </div>
+
       <div style="margin-top:10px">
         <button class="btn btn-ghost" id="btnCloseStore">Cerrar</button>
       </div>
     </div>
   </div>
 
-  <!-- INTERSTITIAL -->
+  <!-- MODAL: MISIONES DIARIAS -->
+  <div id="missionsModal" class="modal">
+    <div class="content">
+      <h3 style="margin:0 0 6px">Misiones diarias</h3>
+
+      <div class="card">
+        <b>1) Seguir estas cuentas de Facebook (+20)</b>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+          <a class="btn btn-ghost" id="fb1" target="_blank" rel="noopener">
+            <img id="fb1logo" src="" alt="fb" style="height:16px;vertical-align:-3px;margin-right:6px"> Página 1
+          </a>
+          <a class="btn btn-ghost" id="fb2" target="_blank" rel="noopener">
+            <img id="fb2logo" src="" alt="fb" style="height:16px;vertical-align:-3px;margin-right:6px"> Página 2
+          </a>
+          <a class="btn btn-ghost" id="fb3" target="_blank" rel="noopener">
+            <img id="fb3logo" src="" alt="fb" style="height:16px;vertical-align:-3px;margin-right:6px"> Página 3
+          </a>
+        </div>
+        <button class="btn btn-primary" id="btnMissionFollow" style="margin-top:8px">Marcar como hecho (+20)</button>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <b>2) Reaccionar a 3 fotos de cada cuenta (+10)</b>
+        <p class="small" style="margin:6px 0">Haz like/❤️ en 3 publicaciones por cuenta.</p>
+        <button class="btn btn-primary" id="btnMissionReact">Marcar como hecho (+10)</button>
+      </div>
+
+      <div style="margin-top:12px">
+        <button class="btn btn-ghost" id="btnCloseMissions">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTERSTITIAL OVERLAY (previa al chat) -->
   <div id="interstitialOverlay" class="interstitial">
     <div class="inner">
-      <div class="slot" id="adSlot">
-        <!-- Fallback visible si la red no dibuja nada -->
-        <a href="https://detoxifylagoonsnugness.com/2086017" target="_blank" rel="noopener">
-          <img src="https://picsum.photos/800/360?random=22" alt="Publicidad">
-        </a>
-      </div>
+      <script>window.peblqx=window.peblqx||function(){};</script>
+      <!-- Script Interstitial de ClickAd -->
+      <script data-cfasync="false" data-clipid="2086017" async src="//detoxifylagoonsnugness.com/in.js" onerror="peblqx(17)" onload="peblqx(17)"></script>
+
       <div class="bar">
         <span class="small">Publicidad — Interstitial</span>
         <span class="countdown" id="interCounter">Esperando…</span>
@@ -213,278 +316,520 @@
     </div>
   </div>
 
-  <!-- SCRIPT PARA PAYPAL -->
-  <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=USD"></script>
+  <!-- TOASTS -->
+  <div class="toast-wrap" id="toasts"></div>
 
   <script type="module">
-    /* ================= CONFIG ================= */
-    const FACEBOOK_ICON_URL = "https://cdn-icons-png.flaticon.com/512/124/124010.png"; // cambiar si deseas
-    const PRIVATE_ICON_URL  = "https://cdn-icons-png.flaticon.com/512/747/747376.png"; // cambiar icono de privadas
-    const FB_URL_1 = "https://facebook.com/";
-    const FB_URL_2 = "https://facebook.com/";
-    const FB_URL_3 = "https://facebook.com/";
+    /* =======================
+       CONFIGURACIÓN RÁPIDA
+    ========================*/
+    const PAYPAL_CLIENT_ID = 'TU_CLIENT_ID_PAYPAL_LIVE'; // <-- Pega aquí tu client-id LIVE
 
-    /* ================= ECONOMÍA ================= */
+    // Íconos/URLs
+    const COIN_ICON_URL = 'https://i.imgur.com/5o8w7oS.png';       // Monedas normal
+    const VIP_ICON_URL  = 'https://i.imgur.com/1F2r0yN.png';       // Icono VIP dorado
+    const FACEBOOK_ICON_URL = 'https://i.imgur.com/6c1mQw6.png';   // Logo FB para botón por modelo
+    const PRIV_ICON_URL     = 'https://i.imgur.com/Q8oQH0x.png';   // Icono ver privadas
+
+    const BANNER_LINK  = 'https://tu-enlace-del-banner.com';
+    const BANNER_VIDEO = 'https://qu.ax/dMvpz.mp4';
+
+    // Misiones: logos y enlaces por página
+    const FB_MISSIONS = [
+      { logo:'https://i.imgur.com/6c1mQw6.png', url:'https://facebook.com/pagina1' },
+      { logo:'https://i.imgur.com/6c1mQw6.png', url:'https://facebook.com/pagina2' },
+      { logo:'https://i.imgur.com/6c1mQw6.png', url:'https://facebook.com/pagina3' }
+    ];
+
+    // POP scripts (ClickAd - pop)
+    const POP_SCRIPT_URL = "//artcapturemumble.com/on.js"; // tiene data-clocid
+    const POP_ATTRS = { 'data-cfasync':'false', 'data-clocid':'2061965', async:true };
+
+    // Interstitial ya está dentro del overlay arriba
+
+    // Cargar SDK de PayPal dinámicamente
+    (function loadPayPal(){
+      const s=document.getElementById('paypal-sdk-loader');
+      s.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(PAYPAL_CLIENT_ID)}&currency=USD`;
+    })();
+
+    /* ================= FIREBASE (solo lectura modelos) ================= */
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyAlWJTeezvz0Xkd363SgN5CnHFbEp8uNQU",
+      authDomain: "chispalive-b7ed6.firebaseapp.com",
+      projectId: "chispalive-b7ed6",
+      storageBucket: "chispalive-b7ed6.appspot.com",
+      messagingSenderId: "334811479289",
+      appId: "1:334811479289:web:403a2a1b10f7af6704b628",
+      measurementId: "G-60ERX1MFT7"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    /* ================= SESIÓN / ECONOMÍA ================= */
     const START_COINS = 50;
     const COIN_PER_MSG = 2;
-    const DAILY_BONUS = 10;
-    const REF_BONUS_GUEST = 20;
 
-    const coinsLabel = document.getElementById('coinsLabel');
+    const coinsLabel  = document.getElementById('coinsLabel');
     const coinsLabel2 = document.getElementById('coinsLabel2');
-    const vipBadge = document.getElementById('vipBadge');
-    const vipEmojis = document.getElementById('vipEmojis');
+    const coinsIcon   = document.getElementById('coinsIcon');
+    const coinsIcon2  = document.getElementById('coinsIcon2');
+    const vipEmojis   = document.getElementById('vipEmojis');
 
-    let session = JSON.parse(localStorage.getItem('session') || '{}');
-    if (!session.alias) { session = { alias: 'Usuario', coins: START_COINS }; saveSession(); }
-    updateCoins(0);
+    let session = JSON.parse(localStorage.getItem('session')||'{}');
+    if(!session.alias){ session = { alias:'Usuario', coins: START_COINS }; saveSession(); }
+    let membership = JSON.parse(localStorage.getItem('membership')||'null');
 
-    let membership = JSON.parse(localStorage.getItem('membership') || 'null');
-    paintVIP();
-
-    function saveSession() { localStorage.setItem('session', JSON.stringify(session)); }
-    function updateCoins(delta) { session.coins = Math.max(0, (session.coins || 0) + delta); saveSession(); coinsLabel.textContent = session.coins; coinsLabel2.textContent = session.coins; }
-    function isVIP() { return membership && Date.now() < membership.until; }
-    function setVIP(duration) {
-      const ms = duration === '24h' ? 24 * 3600e3 : duration === '7d' ? 7 * 24 * 3600e3 : 30 * 24 * 3600e3;
-      membership = { until: Date.now() + ms };
+    function saveSession(){ localStorage.setItem('session', JSON.stringify(session)); }
+    function updateCoins(delta){
+      session.coins = Math.max(0,(session.coins||0)+delta);
+      saveSession();
+      coinsLabel.textContent=session.coins; coinsLabel2.textContent=session.coins;
+    }
+    function isVIP(){ return membership && Date.now() < membership.until; }
+    function setVIP(duration){
+      const now = Date.now();
+      const add = duration==='24h'? 24*3600e3 : duration==='7d'? 7*24*3600e3 : 30*24*3600e3;
+      membership = { until: now + add };
       localStorage.setItem('membership', JSON.stringify(membership));
       paintVIP();
-      alert('VIP activado 🎉');
+      toast('VIP ACTIVADO ✨','Disfruta chat ilimitado y fotos privadas.','ok');
     }
-    function paintVIP() {
-      const on = isVIP();
-      vipBadge.style.display = on ? 'inline-block' : 'none';
-      vipEmojis.style.display = on ? 'flex' : 'none';
+    function paintVIP(){
+      const active = isVIP();
+      vipEmojis.style.display = active ? 'flex' : 'none';
+      const icon = active ? VIP_ICON_URL : COIN_ICON_URL;
+      coinsIcon.src = icon; coinsIcon2.src = icon;
     }
+    updateCoins(0); paintVIP();
 
-    /* ================= INTERSTITIAL CONTROL ================= */
-    const interstitial = document.getElementById('interstitialOverlay');
-    const closeInterstitial = document.getElementById('closeInterstitial');
-    const interCounter = document.getElementById('interCounter');
-    let interTimer = null;
+    /* ================= Banner config ================= */
+    document.getElementById('bannerLink').href = BANNER_LINK;
+    document.getElementById('bannerVideoSrc').src = BANNER_VIDEO;
 
-    function showInterstitial(seconds = 6) {
-      interstitial.classList.add('show');
-      closeInterstitial.style.display = 'none';
-      let sec = seconds;
-      interCounter.textContent = `Cierra disponible en ${sec}s`;
-      clearInterval(interTimer);
-      interTimer = setInterval(() => {
-        sec--;
-        if (sec > 0) { interCounter.textContent = `Cierra disponible en ${sec}s`; }
-        else {
-          clearInterval(interTimer);
-          interCounter.textContent = '';
-          closeInterstitial.style.display = 'inline-block';
-        }
-      }, 1000);
+    /* ================= Misiones diarias ================= */
+    const missionsModal = document.getElementById('missionsModal');
+    document.getElementById('btnMissions').onclick = ()=> missionsModal.classList.add('show');
+    document.getElementById('btnCloseMissions').onclick = ()=> missionsModal.classList.remove('show');
+
+    // Set logos y links
+    document.getElementById('fb1').href = FB_MISSIONS[0].url;
+    document.getElementById('fb2').href = FB_MISSIONS[1].url;
+    document.getElementById('fb3').href = FB_MISSIONS[2].url;
+    document.getElementById('fb1logo').src = FB_MISSIONS[0].logo;
+    document.getElementById('fb2logo').src = FB_MISSIONS[1].logo;
+    document.getElementById('fb3logo').src = FB_MISSIONS[2].logo;
+
+    const todayKey = ()=> 'missions_'+new Date().toISOString().slice(0,10);
+    function missionState(){
+      return JSON.parse(localStorage.getItem(todayKey())||'{"follow":false,"react":false}');
     }
-
-    function showInterstitialSequence(cb) {
-      // 1) Mostrar previa
-      showInterstitial(6);
-      // cerrar => ejecuta callback (abrir chat)
-      const handler = () => { interstitial.classList.remove('show'); closeInterstitial.removeEventListener('click', handler); if (typeof cb === 'function') cb(); };
-      closeInterstitial.addEventListener('click', handler);
+    function setMission(key){
+      const s=missionState(); s[key]=true; localStorage.setItem(todayKey(), JSON.stringify(s));
     }
+    document.getElementById('btnMissionFollow').onclick = ()=>{
+      const s=missionState();
+      if(s.follow) return toast('Ya completaste esta misión','Vuelve mañana.','warn');
+      updateCoins(20); setMission('follow');
+      toast('+20 moneditas','Gracias por seguir las cuentas.','ok');
+    };
+    document.getElementById('btnMissionReact').onclick = ()=>{
+      const s=missionState();
+      if(s.react) return toast('Ya completaste esta misión','Vuelve mañana.','warn');
+      updateCoins(10); setMission('react');
+      toast('+10 moneditas','¡Gracias por reaccionar a las fotos!','ok');
+    };
 
-    closeInterstitial.onclick = () => interstitial.classList.remove('show');
-    // Mostrar 2 veces al inicio (al cargar y a los 3s)
-    window.addEventListener('load', () => { showInterstitial(6); setTimeout(() => showInterstitial(6), 3000); });
+    /* ================= TIENDA / RECARGA / PayPal ================= */
+    const rechargeModal = document.getElementById('rechargeModal');
+    document.getElementById('btnCloseModal').onclick = ()=> rechargeModal.classList.remove('show');
+    document.getElementById('btnStore').onclick = ()=> openModal('storeModal');
+    document.getElementById('btnCloseStore').onclick = ()=> closeModal('storeModal');
 
-    /* ================= PAGOS PAYPAL ================= */
-    function mountPayPal(containerId, amount, duration) {
-      const mount = () => {
-        if (!window.paypal || !document.getElementById(containerId)) return setTimeout(mount, 300);
-        window.paypal.Buttons({
-          style: { layout: 'horizontal', height: 40 },
-          createOrder: (data, actions) => actions.order.create({ purchase_units: [{ amount: { value: String(amount) } }] }),
-          onApprove: async (data, actions) => {
-            await actions.order.capture();
-            setVIP(duration);
-          },
-          onError: () => alert('No se pudo procesar el pago. Intenta de nuevo.')
-        }).render('#' + containerId);
+    // Ver anuncio
+    document.getElementById('btnWatchAd').onclick=()=>{
+      updateCoins(10);
+      rechargeModal.classList.remove('show');
+      toast('+10 por ver anuncio','Se acreditaron tus moneditas.','ok');
+    };
+
+    // Monedas (recharge modal) con PayPal
+    document.querySelectorAll('.buy-coins').forEach(b=>{
+      b.onclick = ()=>{
+        const amount = parseInt(b.dataset.amount,10);
+        showPaypalForCoins('paypal-coins-wrap','paypal-coins-caption','paypal-coins-btn', amount);
       };
-      mount();
+    });
+
+    // Monedas (store modal) con PayPal
+    document.querySelectorAll('.s-buy-coins').forEach(b=>{
+      b.onclick = ()=>{
+        const amount = parseInt(b.dataset.amount,10);
+        showPaypalForCoins('paypal-store-wrap','paypal-store-caption','paypal-store-btn', amount);
+      };
+    });
+
+    // VIP (recharge modal)
+    document.querySelectorAll('.vip-plan').forEach(b=>{
+      b.onclick = ()=>{
+        const plan = b.dataset.plan;
+        const price= parseFloat(b.dataset.price);
+        showPaypalForVIP('paypal-vip-wrap','paypal-vip-caption','paypal-vip-btn', plan, price);
+      };
+    });
+    // VIP (store modal)
+    document.querySelectorAll('.vip2-plan').forEach(b=>{
+      b.onclick = ()=>{
+        const plan = b.dataset.plan;
+        const price= parseFloat(b.dataset.price);
+        showPaypalForVIP('paypal-vip2-wrap','paypal-vip2-caption','paypal-vip2-btn', plan, price);
+      };
+    });
+
+    function showPaypalForCoins(wrapId, capId, btnId, amount){
+      const wrap = document.getElementById(wrapId);
+      const cap  = document.getElementById(capId);
+      const btn  = document.getElementById(btnId);
+      cap.textContent = `Comprar ${amount} monedas (USD ${(amount/10).toFixed(2)})`; // regla ejemplo: $1 por 10 monedas
+      wrap.style.display='block';
+      btn.innerHTML='';
+      renderPayPal(btn, (amount/10).toFixed(2), ()=>{ updateCoins(amount); toast(`+${amount} monedas`,'Pago aprobado.','ok'); });
+    }
+
+    function showPaypalForVIP(wrapId, capId, btnId, plan, price){
+      const wrap = document.getElementById(wrapId);
+      const cap  = document.getElementById(capId);
+      const btn  = document.getElementById(btnId);
+      const label = plan==='24h'?'24 horas':(plan==='7d'?'1 semana':'1 mes');
+      cap.textContent = `Activar VIP ${label} — USD ${price.toFixed(2)} (BOTON PAYPAL)`;
+      wrap.style.display='block';
+      btn.innerHTML='';
+      renderPayPal(btn, price.toFixed(2), ()=>{ setVIP(plan); });
+    }
+
+    function renderPayPal(containerEl, price, onApproveCb){
+      const wait = ()=> new Promise(res=>{
+        const i=setInterval(()=>{ if(window.paypal){ clearInterval(i); res(); } },100);
+      });
+      wait().then(()=>{
+        window.paypal.Buttons({
+          style:{ layout:'horizontal', color:'gold', shape:'pill', label:'pay' },
+          createOrder: (data,actions)=> actions.order.create({
+            purchase_units:[{ amount:{ value:String(price) } }]
+          }),
+          onApprove: async (data,actions)=>{
+            try{
+              await actions.order.capture();
+              onApproveCb && onApproveCb();
+            }catch{ toast('Pago aprobado, pero hubo un detalle al capturar.','Revisa tu cuenta.','warn'); }
+          },
+          onError: (err)=> toast('Error de pago','Intenta nuevamente.','warn')
+        }).render(containerEl);
+      });
     }
 
     /* ================= MODELOS DESDE FIRESTORE ================= */
-    const chatList = document.getElementById('chatList');
-    const slidesIntervals = {};
+    const chatList=document.getElementById('chatList');
+    const slidesIntervals={};
 
-    async function renderModels() {
-      chatList.innerHTML = '';
-      const snap = await getDocs(collection(db, "models"));
-      snap.forEach(docSnap => {
-        const m = { id: docSnap.id, fb: (docSnap.data().fb || '#'), ...docSnap.data() };
-        const card = document.createElement('div');
-        card.className = 'model-card';
+    // Encender pops 2 veces al inicio (primera y segunda interacción)
+    let initPopShown = 0;
+    function armPopOnFirstClicks(){
+      const firePop = ()=>{
+        if(initPopShown>=2) return;
+        loadPopScriptOnce();
+        initPopShown++;
+        if(initPopShown>=2) document.removeEventListener('click', firePop, true);
+      };
+      document.addEventListener('click', firePop, true);
+    }
+    armPopOnFirstClicks();
 
-        const slideId = 'slide_' + m.id;
-        const pub = (m.photos || []).slice(0, 3);
-        const priv = (m.photos || []).slice(3, 5);
+    async function renderModels(){
+      chatList.innerHTML='';
+      const snap = await getDocs(collection(db,"models"));
+      snap.forEach(docSnap=>{
+        const m={id:docSnap.id,...docSnap.data()};
+        const card=document.createElement('div');
+        card.className='model-card';
 
-        card.innerHTML = `
+        const slideId='slide_'+m.id;
+        const pub = (m.photos||[]).slice(0,3);
+        const priv = (m.photos||[]).slice(3,5);
+
+        card.innerHTML=`
           <div class="model-slideshow" id="${slideId}">
-            ${pub.map((src, i) => `<img src="${src}" class="${i === 0 ? 'active' : ''}" alt="${m.name}">`).join('')}
+            ${pub.map((src,i)=>`<img src="${src}" class="${i===0?'active':''}">`).join('')}
           </div>
           <div class="info">
             <div class="name">${m.name} <span class="online">● Online</span></div>
-            <div class="extra">${m.age || '—'} años · ${m.country || '—'}</div>
-            <div class="desc">${m.desc || ''}</div>
+            <div class="extra">${m.age||'—'} años · ${m.country||'—'}</div>
+            <div class="desc">${m.desc||''}</div>
           </div>
           <div class="actions">
-            <button class="action-btn btn-like">
+            <button class="action-btn btn-like" title="Me gusta">
               <img src="https://qu.ax/hlsxX.png" alt="like"><span>Me gusta</span>
-              <span class="like-badge">${m.likes || 0}</span>
+              <span class="like-badge">${m.likes||0}</span>
             </button>
-            <button class="action-btn btn-priv">
-              <img src="${PRIVATE_ICON_URL}" alt="priv"><span>Ver privadas</span>
-            </button>
-            <button class="action-btn btn-fb">
+
+            <a class="action-btn btn-fb" ${m.facebookUrl?`href="${m.facebookUrl}" target="_blank" rel="noopener"`:'style="pointer-events:none;opacity:.5"'} title="Facebook">
               <img src="${FACEBOOK_ICON_URL}" alt="fb"><span>Facebook</span>
+            </a>
+
+            <button class="action-btn btn-priv" title="Ver privadas">
+              <img src="${PRIV_ICON_URL}" alt="priv"><span>Privadas</span>
             </button>
-            <button class="action-btn btn-msg">
+
+            <button class="action-btn btn-msg" title="Hablar">
               <img src="https://qu.ax/jGSiu.png" alt="mensaje"><span>Mensaje</span>
             </button>
           </div>
         `;
 
-        // like visual
-        card.querySelector('.btn-like').onclick = (e) => { e.stopPropagation(); const b = card.querySelector('.like-badge'); b.textContent = String(parseInt(b.textContent || '0') + 1); };
-
-        // ver privadas
-        card.querySelector('.btn-priv').onclick = (e) => {
+        card.querySelector('.btn-like').onclick=(e)=>{
           e.stopPropagation();
-          if (!isVIP()) { openModal('storeModal'); alert('Activa VIP para ver fotos privadas 💎'); return; }
-          const w = window.open('', '_blank', 'width=900,height=700');
-          w.document.write('<title>Privadas</title>');
-          (priv.length ? priv : pub).forEach(src => w.document.write(`<img src="${src}" style="max-width:100%;display:block;margin:8px 0;border-radius:8px">`));
+          const badge = card.querySelector('.like-badge');
+          badge.textContent = String(parseInt(badge.textContent||'0')+1);
         };
 
-        // facebook
-        card.querySelector('.btn-fb').onclick = (e) => { e.stopPropagation(); if (m.fb && m.fb !== '#') window.open(m.fb, '_blank'); };
+        card.querySelector('.btn-priv').onclick=(e)=>{
+          e.stopPropagation();
+          if(!isVIP()){
+            openRecharge();
+            toast('Activa VIP para ver fotos privadas 💎','Elige un plan para desbloquear.','warn');
+            return;
+          }
+          const w = window.open('','_blank','width=800,height=600');
+          w.document.write('<title>Privadas</title>');
+          (priv.length?priv:pub).forEach(src=>{
+            w.document.write(`<img src="${src}" style="max-width:100%;display:block;margin-bottom:8px">`);
+          });
+        };
 
-        // abrir chat (con interstitial previo)
-        card.querySelector('.btn-msg').onclick = (e) => { e.stopPropagation(); showInterstitialSequence(() => openChatWith(m)); };
-        card.onclick = () => showInterstitialSequence(() => openChatWith(m));
+        card.querySelector('.btn-msg').onclick=(e)=>{ e.stopPropagation(); showInterstitialBeforeChat(m); };
+        card.onclick=()=> showInterstitialBeforeChat(m);
 
         chatList.appendChild(card);
         startSlideshow(slideId);
       });
     }
 
-    function startSlideshow(id) {
-      const box = document.getElementById(id); if (!box) return;
-      const imgs = [...box.querySelectorAll('img')]; if (imgs.length <= 1) return;
-      let i = 0;
-      if (slidesIntervals[id]) clearInterval(slidesIntervals[id]);
-      slidesIntervals[id] = setInterval(() => {
+    function startSlideshow(id){
+      const box=document.getElementById(id); if(!box) return;
+      const imgs=[...box.querySelectorAll('img')]; if(imgs.length<=1) return;
+      let i=0;
+      if(slidesIntervals[id]) clearInterval(slidesIntervals[id]);
+      slidesIntervals[id]=setInterval(()=>{
         imgs[i].classList.remove('active');
-        i = (i + 1) % imgs.length;
+        i=(i+1)%imgs.length;
         imgs[i].classList.add('active');
       }, 2800);
     }
 
-    /* ================= CHAT ================= */
-    let currentModel = null;
-    const messages = document.getElementById('messages');
-    const chatName = document.getElementById('chatName');
-    const chatAvatar = document.getElementById('chatAvatar');
-    const chatStatus = document.getElementById('chatStatus');
-    const typingHint = document.getElementById('typingHint');
+    /* ================= ROUTER ================= */
+    const views={chat:'view-chat',conversation:'view-conversation'};
+    function go(v){ Object.values(views).forEach(id=>document.getElementById(id).classList.remove('active')); document.getElementById(views[v]).classList.add('active'); }
 
-    document.querySelectorAll('#vipEmojis [data-emoji]').forEach(b => {
-      b.onclick = () => { const i = document.getElementById('msgText'); i.value += b.dataset.emoji; i.focus(); };
+    /* ================= CHAT ================= */
+    let currentModel=null;
+    const messages=document.getElementById('messages');
+    const chatName=document.getElementById('chatName');
+    const chatAvatar=document.getElementById('chatAvatar');
+    const chatStatus=document.getElementById('chatStatus');
+    const typingHint=document.getElementById('typingHint');
+
+    document.querySelectorAll('#vipEmojis [data-emoji]').forEach(b=>{
+      b.onclick=()=>{ const i=document.getElementById('msgText'); i.value += b.dataset.emoji; i.focus(); };
     });
 
-    function openChatWith(m) {
-      currentModel = m;
-      chatName.textContent = m.name;
-      chatAvatar.src = (m.photos && m.photos[0]) || '';
-      chatStatus.textContent = 'En línea';
-      messages.innerHTML = `<div class="msg them">Holi 💕 soy ${m.name}, ¿quieres jugar?</div>`;
+    function openChatWith(m){
+      currentModel=m;
+      chatName.textContent=m.name;
+      chatAvatar.src=(m.photos&&m.photos[0])||'';
+      chatStatus.textContent='En línea';
+      messages.innerHTML=`<div class="msg them">${spicyIntro(m.name)}</div>`;
       go('conversation');
 
-      // Interstitial dentro del chat: nuevamente a los 0s y a los 3s
-      showInterstitial(6);
-      setTimeout(() => showInterstitial(6), 3000);
+      // POP en apertura de chat (1)
+      ensurePopTimesInChat();
+      triggerChatPopOnce();
+
+      // POP 3s después (2)
+      setTimeout(()=> triggerChatPopSecond(), 3000);
     }
 
-    document.getElementById('btnBack').onclick = () => { go('chat'); };
+    // Volver => cerrar chat (SIN pop)
+    document.getElementById('btnBack').onclick=()=>{ go('chat'); };
 
-    document.getElementById('btnSend').onclick = sendMsg;
-    document.getElementById('msgText').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); sendMsg(); } });
+    // Enviar
+    document.getElementById('btnSend').onclick=sendMsg;
+    document.getElementById('msgText').addEventListener('keydown',e=>{ if(e.key==='Enter'){e.preventDefault();sendMsg();} });
 
-    function sendMsg() {
-      if (!currentModel) return;
-      const input = document.getElementById('msgText');
-      const val = (input.value || '').trim(); if (!val) return;
+    const BAD_WORDS = [/put[a|o]/i,/mierd/i,/ctm/i,/pene/i,/vagin/i,/verga/i,/mamad/i,/chingad/i,/cul[o|a]/i];
+    function hasBadWords(t){ return BAD_WORDS.some(rx=>rx.test(t)); }
 
-      if (!isVIP()) {
-        if ((session.coins || 0) < COIN_PER_MSG) { openRecharge(); return; }
+    function sendMsg(){
+      if(!currentModel) return;
+      const input=document.getElementById('msgText');
+      const val=(input.value||'').trim(); if(!val) return;
+
+      if(hasBadWords(val)){
+        toast('¡Hey! Cuidado 👀','Palabras como esas no se dicen porque puedes ser bloqueado.','warn');
+        input.value=''; return;
+      }
+
+      if(!isVIP()){
+        if((session.coins||0) < COIN_PER_MSG){ openRecharge(); return; }
         updateCoins(-COIN_PER_MSG);
       }
 
-      const ts = Date.now();
-      messages.innerHTML += `<div class="msg you">${sanitize(val)}<div class="meta">${new Date(ts).toLocaleTimeString()} · enviado</div></div>`;
-      input.value = '';
+      const ts=Date.now();
+      messages.innerHTML+=`<div class="msg you">${sanitize(val)}<div class="meta">${new Date(ts).toLocaleTimeString()} · enviado</div></div>`;
+      input.value='';
 
       typing(true);
-      setTimeout(() => {
-        const metas = [...messages.querySelectorAll('.msg.you .meta')];
-        if (metas.length) { metas[metas.length - 1].textContent = `${new Date(ts).toLocaleTimeString()} · visto`; }
-        setTimeout(() => { typing(false); autoReply(val); }, 3000);
-      }, 500);
+      setTimeout(()=>{
+        const metas=[...messages.querySelectorAll('.msg.you .meta')];
+        if(metas.length){ metas[metas.length-1].textContent = `${new Date(ts).toLocaleTimeString()} · visto`; }
+        setTimeout(()=>{
+          typing(false);
+          autoReply(val);
+        },3000);
+      },500);
 
       clearTimeout(window.__idleTimer);
-      window.__idleTimer = setTimeout(() => chatStatus.textContent = 'Desconectado', 90000);
+      window.__idleTimer = setTimeout(()=> chatStatus.textContent='Desconectado', 90000);
     }
 
-    function typing(on) { typingHint.classList.toggle('on', !!on); chatStatus.textContent = on ? 'En línea · escribiendo…' : 'En línea'; }
+    function typing(on){ typingHint.classList.toggle('on', !!on); chatStatus.textContent = on?'En línea · escribiendo…':'En línea'; }
 
-    /* ===== Auto-respuestas complejas y filtro de malas palabras ===== */
-    const BAD_WORDS = ['mierda', 'pendejo', 'idiota', 'estupido']; // Agrega las palabras que desees bloquear
-    const BOT = [
-      { k: ['hola', 'buenas', 'hey', 'holi'], r: ['Hola 😘 ¿Cómo te llamas?', 'Holi 💕 ¿cómo estás?', 'Hola bb 😏'] },
-      { k: ['foto', 'privada', 'contenido'], r: ['Activa VIP para ver mis privadas 💎', 'Tengo sorpresas en privadas… 😉 Activa VIP'] },
-      { k: ['precio', 'cuanto', 'costo', 'valor', 'vip'], r: ['VIP 24h $4 · 1 semana $15 · 1 mes $30. ¿Cuál quieres?', 'Podemos hablar sin límites si activas VIP 💎'] },
-      { k: ['donde', 'pais', 'de donde'], r: ['Soy latina y cariñosa 😘', 'Más cerquita de lo que crees 😉'] },
-      { k: ['whatsapp', 'numero', 'tel'], r: ['Quedémonos aquí por seguridad 💕', 'Aquí estamos más cómodos 😌'] },
-    ];
+    // Bot de respuestas: un poco más “picante” y contextual
+    function autoReply(userText){
+      const lower=userText.toLowerCase();
+      let reply;
 
-    const FALLBACKS = ['Estoy aquí para ti 💖', 'Mmm… cuéntame más 😏', '¿Qué te gustaría hacer ahora? 😉', 'Me encantas 😘'];
-
-    function autoReply(userText = '') {
-      // Filtro de malas palabras
-      const t = userText.toLowerCase();
-      for (const word of BAD_WORDS) {
-        if (t.includes(word)) {
-          alert('Palabras como esas no se dicen porque puedes ser bloqueado.');
-          return;
-        }
+      if(/(hola|buenas|hey|ola)/i.test(lower)){
+        reply = rand([
+          `Holiii ✨ ¿Cómo va tu día? Soy ${currentModel.name} y me encanta conocer gente nueva 😇`,
+          `¡Hey! 💕 Me alegra que escribas, ¿de dónde eres?`
+        ]);
+      }else if(/(edad|años)/i.test(lower)){
+        reply = `Tengo ${currentModel.age||'22'} añitos 😜 ¿te gustan más grandes o más traviesas?`;
+      }else if(/(foto|fotos|privada|privadas)/i.test(lower)){
+        reply = isVIP()
+          ? `Tengo unas fotos muy ricas solo para ti… ¿quieres que te muestre una pista? 😏`
+          : `Me muero por enseñarte mis privadas… Activa VIP y te consiento como mereces 💖`;
+      }else if(/(dónde|pais|país)/i.test(lower)){
+        reply = `Soy de ${currentModel.country||'un lugar muy calientito'} ☀️ ¿y tú?`;
+      }else if(/(novia|relación|salir)/i.test(lower)){
+        reply = rand([
+          `Uuuy, ¿estás buscando algo serio o algo divertido? 😈`,
+          `Podemos empezar por un jueguito… luego vemos a dónde nos lleva 😉`
+        ]);
+      }else{
+        reply = rand([
+          `Me encantó lo que dijiste… ¿te apetece que suba la temperatura? 🔥`,
+          `Mmm suenas interesante… ¿qué es lo que más te gusta en una conversación? 💫`,
+          `Te voy a confesar algo, me encanta cuando me hablan bonito… ¿me hablas así? 😍`
+        ]);
       }
 
-      let pool = null;
-      for (const m of BOT) { if (m.k.some(w => t.includes(w))) { pool = m.r; break; } }
-      const reply = (pool || FALLBACKS)[Math.floor(Math.random() * (pool || FALLBACKS).length)];
-      messages.innerHTML += `<div class="msg them">${sanitize(reply)}<div class="meta">${new Date().toLocaleTimeString()}</div></div>`;
+      messages.innerHTML+=`<div class="msg them">${sanitize(reply)}<div class="meta">${new Date().toLocaleTimeString()}</div></div>`;
     }
 
-    /* ================= UTIL ================= */
-    function openModal(id) { document.getElementById(id).classList.add('show'); }
-    function closeModal(id) { document.getElementById(id).classList.remove('show'); }
-    function sanitize(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+    function spicyIntro(name){
+      return `Holi 💖 soy ${sanitize(name)}, estaba pensando en ti… ¿charlamos rico?`;
+    }
+    function rand(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 
-    // cerrar modales clic fuera
-    ['storeModal', 'rechargeModal', 'missionsModal'].forEach(id => {
-      document.getElementById(id).addEventListener('click', e => { if (e.target.id === id) e.target.classList.remove('show'); });
+    /* ================= INTERSTITIAL PREVIA (una vez por apertura) ================= */
+    const interstitial = document.getElementById('interstitialOverlay');
+    const closeInterstitial = document.getElementById('closeInterstitial');
+    const interCounter = document.getElementById('interCounter');
+    let nextModel = null;
+    let interTimer = null;
+    let interOpen = false;
+
+    function showInterstitialBeforeChat(m){
+      if(interOpen) return; // evita duplicar
+      interOpen = true;
+      nextModel = m;
+      interstitial.classList.add('show');
+      closeInterstitial.style.display='none';
+      let sec=6;
+      interCounter.textContent = `Cierra disponible en ${sec}s`;
+      clearInterval(interTimer);
+      interTimer = setInterval(()=>{
+        sec--;
+        if(sec>0){
+          interCounter.textContent = `Cierra disponible en ${sec}s`;
+        }else{
+          clearInterval(interTimer);
+          interCounter.textContent = '';
+          closeInterstitial.style.display='inline-block';
+        }
+      },1000);
+    }
+    closeInterstitial.onclick=()=>{
+      interstitial.classList.remove('show');
+      interOpen = false;
+      if(nextModel){ openChatWith(nextModel); nextModel=null; }
+    };
+
+    /* ================= POP control ================= */
+    let popLoaded=false;
+    function loadPopScriptOnce(){
+      if(popLoaded) return;
+      const s=document.createElement('script');
+      Object.entries(POP_ATTRS).forEach(([k,v])=> s.setAttribute(k,v));
+      s.src=POP_SCRIPT_URL;
+      s.onerror=()=>{/* no-op */};
+      document.head.appendChild(s);
+      popLoaded=true;
+    }
+
+    // En chat: 2 pops (apertura y +3s)
+    let chatPopCounter=0;
+    function ensurePopTimesInChat(){ chatPopCounter=0; }
+    function triggerChatPopOnce(){
+      if(chatPopCounter>=2) return;
+      loadPopScriptOnce(); chatPopCounter++;
+    }
+    function triggerChatPopSecond(){
+      if(chatPopCounter>=2) return;
+      loadPopScriptOnce(); chatPopCounter++;
+    }
+
+    /* ================= UTIL: toasts & modales ================= */
+    function openModal(id){ document.getElementById(id).classList.add('show'); }
+    function closeModal(id){ document.getElementById(id).classList.remove('show'); }
+    function sanitize(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+
+    const toasts = document.getElementById('toasts');
+    function toast(title,body,type='ok'){
+      const el=document.createElement('div');
+      el.className=`toast ${type}`;
+      el.innerHTML=`
+        <div>
+          <div class="title">${sanitize(title)}</div>
+          <div class="small">${sanitize(body)}</div>
+        </div>
+        <button class="close">×</button>
+      `;
+      toasts.appendChild(el);
+      const c=el.querySelector('.close'); c.onclick=()=>el.remove();
+      setTimeout(()=>{ if(el.parentNode) el.remove(); }, 6000);
+    }
+
+    // Cerrar modales clic afuera
+    ['storeModal','rechargeModal','missionsModal'].forEach(id=>{
+      document.getElementById(id).addEventListener('click',e=>{ if(e.target.id===id) e.target.classList.remove('show'); });
     });
 
     /* INIT */
-    document.getElementById('coinsLabel2').textContent = session.coins || 0;
+    document.getElementById('coinsLabel2').textContent = session.coins||0;
     renderModels();
   </script>
 </body>
