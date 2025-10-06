@@ -43,6 +43,9 @@
     .small{color:#9bc2df;font-size:12px}
     .view{display:none}.view.active{display:block}
 
+    /* ====== MONEDAS CON ICONO ====== */
+    .coin-icon { width: 18px; height: 18px; margin-right: 5px; vertical-align: middle; }
+    
     /* ====== BANNER ====== */
     .banner-wrap{position:relative;margin-top:8px}
     .banner-wrap video{width:100%;max-height:180px;object-fit:cover;border-radius:14px;display:block}
@@ -88,10 +91,12 @@
       </div>
       <nav class="topnav">
         <span id="vipBadge" class="small" style="display:none;background:#ffd54d;color:#1e1600;padding:4px 8px;border-radius:999px;font-weight:700">VIP ✨</span>
-        <button class="btn btn-ghost" id="btnDaily">🎁 Bono diario</button>
-        <!-- REFERIDOS ELIMINADO -->
+        <button class="btn btn-ghost" id="btnDaily">🎁 MISIONES DIARIAS</button> <!-- cambio de "Bono diario" -->
         <button class="btn btn-primary" id="btnStore">💳 Tienda</button>
-        <div style="margin-left:6px">Monedas: <b id="coinsLabel">0</b></div>
+        <div style="margin-left:6px">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Coin_icon_3.svg/2048px-Coin_icon_3.svg.png" class="coin-icon" alt="Monedas">
+          <b id="coinsLabel">0</b>
+        </div>
       </nav>
     </div>
   </header>
@@ -155,9 +160,9 @@
       <div class="card" style="margin-top:8px">
         <b>💎 Suscríbete VIP y chatea sin límites</b>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
-          <button class="btn btn-ghost" data-vip="24h">VIP 24h</button>
-          <button class="btn btn-ghost" data-vip="7d">VIP 1 semana</button>
-          <button class="btn btn-ghost" data-vip="30d">VIP 1 mes</button>
+          <button class="btn btn-ghost" data-vip="24h">VIP 24h - $4</button>
+          <button class="btn btn-ghost" data-vip="7d">VIP 1 semana - $15</button>
+          <button class="btn btn-ghost" data-vip="30d">VIP 1 mes - $30</button>
         </div>
       </div>
       <div style="margin-top:10px"><button class="btn btn-ghost" id="btnCloseModal">Cerrar</button></div>
@@ -169,7 +174,6 @@
     <div class="content">
       <h3 style="margin:0 0 6px">Tienda</h3>
       <p class="small">Activa VIP con PayPal o compra monedas.</p>
-
       <div class="card" style="margin-top:8px">
         <b>💎 VIP con PayPal</b>
         <div class="small" style="opacity:.85;margin:6px 0 10px">Selecciona un plan:</div>
@@ -177,7 +181,6 @@
         <div id="paypal7d" style="margin-top:8px"></div>
         <div id="paypal30d" style="margin-top:8px"></div>
       </div>
-
       <div class="card" style="margin-top:12px">
         <b>🪙 Monedas rápidas</b>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
@@ -186,7 +189,6 @@
           <button class="btn btn-primary" id="sBuy400">400 monedas</button>
         </div>
       </div>
-
       <div style="margin-top:10px"><button class="btn btn-ghost" id="btnCloseStore">Cerrar</button></div>
     </div>
   </div>
@@ -195,7 +197,6 @@
   <div id="interstitialOverlay" class="interstitial">
     <div class="inner">
       <script>window.peblqx=window.peblqx||function(){};</script>
-      <!-- Tag real de ClickAd (interstitial) -->
       <script data-cfasync="false" data-clipid="2086017" async src="//detoxifylagoonsnugness.com/in.js" onerror="peblqx(17)" onload="peblqx(17)"></script>
       <div class="bar">
         <span class="small">Publicidad — Interstitial</span>
@@ -205,93 +206,111 @@
     </div>
   </div>
 
-  <!-- SDK PayPal (sandbox 'sb'). Reemplaza client-id por el tuyo en producción -->
-  <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=USD"></script>
-
   <script type="module">
-    /* ================= FIREBASE (solo lectura de modelos) ================= */
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-    const firebaseConfig={apiKey:"AIzaSyAlWJTeezvz0Xkd363SgN5CnHFbEp8uNQU",authDomain:"chispalive-b7ed6.firebaseapp.com",projectId:"chispalive-b7ed6",storageBucket:"chispalive-b7ed6.appspot.com",messagingSenderId:"334811479289",appId:"1:334811479289:web:403a2a1b10f7af6704b628",measurementId:"G-60ERX1MFT7"};
-    const app=initializeApp(firebaseConfig); const db=getFirestore(app);
-
-    /* ================= CONFIG ICONOS / LINKS ================= */
-    const FACEBOOK_ICON_URL = "https://cdn-icons-png.flaticon.com/512/124/124010.png"; // cambia si quieres
-    const PRIVATE_ICON_URL  = "https://cdn-icons-png.flaticon.com/512/747/747376.png"; // icono de “ver privadas” (cámbialo)
-    const FACEBOOK_FALLBACK_URL = "https://facebook.com/";
+    /* ================= CONFIG ICONOS ================= */
+    const FACEBOOK_ICON_URL = "https://cdn-icons-png.flaticon.com/512/124/124010.png"; // cambiar si deseas
+    const PRIVATE_ICON_URL  = "https://cdn-icons-png.flaticon.com/512/747/747376.png"; // cambiar icono de privadas
 
     /* ================= ECONOMÍA / ESTADO ================= */
     const START_COINS=50, COIN_PER_MSG=2, DAILY_BONUS=10;
-    const coinsLabel=document.getElementById('coinsLabel'), coinsLabel2=document.getElementById('coinsLabel2'), vipBadge=document.getElementById('vipBadge'), vipEmojis=document.getElementById('vipEmojis');
-    let session=JSON.parse(localStorage.getItem('session')||'{}'); if(!session.alias){session={alias:'Usuario',coins:START_COINS}; saveSession();}
+    const coinsLabel=document.getElementById('coinsLabel'), coinsLabel2=document.getElementById('coinsLabel2');
+    const vipBadge=document.getElementById('vipBadge'), vipEmojis=document.getElementById('vipEmojis');
+    let session=JSON.parse(localStorage.getItem('session')||'{}'); if(!session.alias){session={alias:'Usuario',coins:START_COINS};saveSession();}
     updateCoins(0);
     let membership=JSON.parse(localStorage.getItem('membership')||'null'); paintVIP();
+
     function saveSession(){localStorage.setItem('session',JSON.stringify(session))}
     function updateCoins(d){session.coins=Math.max(0,(session.coins||0)+d);saveSession();coinsLabel.textContent=session.coins;coinsLabel2.textContent=session.coins}
     function isVIP(){return membership && Date.now()<membership.until}
-    function setVIP(duration){const now=Date.now();const add=duration==='24h'?24*3600e3:duration==='7d'?7*24*3600e3:30*24*3600e3;membership={until:now+add};localStorage.setItem('membership',JSON.stringify(membership));paintVIP();alert('VIP activado 🎉');}
-    function paintVIP(){const on=isVIP();vipBadge.style.display=on?'inline-block':'none';vipEmojis.style.display=on?'flex':'none'}
-
-    /* ================= BONO DIARIO ================= */
-    document.getElementById('btnDaily').onclick=()=>{const today=new Date().toISOString().slice(0,10);const last=localStorage.getItem('lastDaily')||'';if(last===today){alert('Ya reclamaste el bono diario hoy.');return;}localStorage.setItem('lastDaily',today);updateCoins(DAILY_BONUS);alert(`+${DAILY_BONUS} monedas por ingreso diario 🎁`)};
-
-    /* ================= TIENDA / PAYPAL ================= */
-    const storeModal=document.getElementById('storeModal');
-    document.getElementById('btnStore').onclick=()=>{openModal('storeModal'); renderPayPalButtons();};
-    document.getElementById('btnCloseStore').onclick=()=>closeModal('storeModal');
-    document.getElementById('sBuy50').onclick=()=>{updateCoins(50);alert('Gracias por tu compra (50)')};
-    document.getElementById('sBuy150').onclick=()=>{updateCoins(150);alert('Gracias por tu compra (150)')};
-    document.getElementById('sBuy400').onclick=()=>{updateCoins(400);alert('Gracias por tu compra (400)')};
-
-    function renderPayPalButtons(){
-      if(!window.paypal){console.warn('PayPal SDK no cargó aún');return;}
-      const mounts=[['#paypal24h','4.00','24h'],['#paypal7d','15.00','7d'],['#paypal30d','30.00','30d']];
-      mounts.forEach(([sel,amount,dur])=>{
-        const el=document.querySelector(sel); el.innerHTML='';
-        window.paypal.Buttons({
-          style:{shape:'pill',color:'blue',layout:'horizontal',label:'paypal'},
-          createOrder:(data,actions)=>actions.order.create({purchase_units:[{amount:{value:amount}}]}),
-          onApprove:(data,actions)=>actions.order.capture().then(()=>{ setVIP(dur); closeModal('storeModal'); })
-        }).render(sel);
-      });
+    function setVIP(duration){
+      const now=Date.now(); 
+      const add=duration==='24h'?24*3600e3:duration==='7d'?7*24*3600e3:30*24*3600e3; 
+      membership={until:now+add}; 
+      localStorage.setItem('membership',JSON.stringify(membership)); paintVIP();
     }
 
-    /* ================= RECARGA ================= */
-    const rechargeModal=document.getElementById('rechargeModal');
-    function openRecharge(){rechargeModal.classList.add('show')}
-    document.getElementById('btnCloseModal').onclick=()=>rechargeModal.classList.remove('show');
-    document.getElementById('btnBuy20').onclick=()=>{updateCoins(20);rechargeModal.classList.remove('show')};
-    document.getElementById('btnBuy50').onclick=()=>{updateCoins(50);rechargeModal.classList.remove('show')};
-    document.getElementById('btnBuy100').onclick=()=>{updateCoins(100);rechargeModal.classList.remove('show')};
-    document.querySelectorAll('[data-vip]').forEach(b=>b.onclick=()=>{setVIP(b.dataset.vip);rechargeModal.classList.remove('show')});
-    document.getElementById('btnWatchAd').onclick=()=>{updateCoins(10);rechargeModal.classList.remove('show')};
+    function paintVIP(){
+      const on=isVIP();
+      vipBadge.style.display=on?'inline-block':'none'; 
+      vipEmojis.style.display=on?'flex':'none';
+    }
+
+    /* ================= INTERSTITIAL PREVIO AL CHAT ================= */
+    const interstitial=document.getElementById('interstitialOverlay');
+    const closeInterstitial=document.getElementById('closeInterstitial');
+    const interCounter=document.getElementById('interCounter');
+    let nextModel=null, interTimer=null;
+
+    function showInterstitialBeforeChat(m){
+      nextModel=m; 
+      interstitial.classList.add('show');
+      closeInterstitial.style.display='none'; 
+      let sec=6;
+      interCounter.textContent=`Cierra disponible en ${sec}s`; 
+      clearInterval(interTimer);
+      interTimer=setInterval(()=>{ sec--; 
+        if(sec>0){
+          interCounter.textContent = `Cierra disponible en ${sec}s`;
+        }else{
+          clearInterval(interTimer);
+          interCounter.textContent = '';
+          closeInterstitial.style.display = 'inline-block';
+        }
+      },1000);
+    }
+
+    closeInterstitial.onclick = () => {
+      interstitial.classList.remove('show');
+      if(nextModel){
+        openChatWith(nextModel); 
+        nextModel = null; 
+      }
+    };
+
+    /* ================= FACEBOOK MISSIONS ================= */
+    const fbMissionDiv = document.getElementById('missions');
+    const fbMissionBtns = `
+    <button class="btn btn-ghost" data-mission="facebook1">Seguir cuenta 1</button>
+    <button class="btn btn-ghost" data-mission="facebook2">Seguir cuenta 2</button>
+    <button class="btn btn-ghost" data-mission="facebook3">Seguir cuenta 3</button>
+    `;
+    fbMissionDiv.innerHTML = fbMissionBtns;
+
+    /* Add listener to Missions buttons */
+    document.querySelectorAll('[data-mission]').forEach(btn => {
+      btn.onclick = () => {
+        updateCoins(20);
+        alert('Misión completada: 20 monedas');
+      }
+    });
 
     /* ================= MODELOS Firestore ================= */
-    const chatList=document.getElementById('chatList'); const slidesIntervals={};
+    const chatList = document.getElementById('chatList');
     async function renderModels(){
-      chatList.innerHTML='';
-      const snap=await getDocs(collection(db,'models'));
-      snap.forEach(docSnap=>{
-        const m={id:docSnap.id,...docSnap.data()};
-        const card=document.createElement('div'); card.className='model-card';
-        const slideId='slide_'+m.id;
-        const pub=(m.photos||[]).slice(0,3);
-        const priv=(m.photos||[]).slice(3,5);
+      chatList.innerHTML = '';
+      const snap = await getDocs(collection(db, "models"));
+      snap.forEach(docSnap => {
+        const m = { id: docSnap.id, ...docSnap.data() };
+        const card = document.createElement('div');
+        card.className = 'model-card';
+        const slideId = 'slide_' + m.id;
+        const pub = (m.photos || []).slice(0, 3);
+        const priv = (m.photos || []).slice(3, 5);
         const fbUrl = m.facebook || FACEBOOK_FALLBACK_URL;
 
-        card.innerHTML=`
+        card.innerHTML = `
           <div class="model-slideshow" id="${slideId}">
-            ${pub.map((src,i)=>`<img src="${src}" class="${i===0?'active':''}" alt="">`).join('')}
+            ${pub.map((src, i) => `<img src="${src}" class="${i === 0 ? 'active' : ''}" alt="">`).join('')}
           </div>
           <div class="info">
             <div class="name">${m.name} <span class="online">● Online</span></div>
-            <div class="extra">${m.age||'—'} años · ${m.country||'—'}</div>
-            <div class="desc">${m.desc||''}</div>
+            <div class="extra">${m.age || '—'} años · ${m.country || '—'}</div>
+            <div class="desc">${m.desc || ''}</div>
           </div>
           <div class="actions">
             <button class="action-btn btn-like">
               <img src="https://qu.ax/hlsxX.png" alt="like"><span>Me gusta</span>
-              <span class="like-badge">${m.likes||0}</span>
+              <span class="like-badge">${m.likes || 0}</span>
             </button>
             <button class="action-btn btn-priv">
               <img src="${PRIVATE_ICON_URL}" alt="priv"><span>Ver privadas</span>
@@ -305,53 +324,14 @@
           </div>
         `;
 
-        card.querySelector('.btn-like').onclick=(e)=>{e.stopPropagation();const badge=card.querySelector('.like-badge');badge.textContent=String(parseInt(badge.textContent||'0')+1)};
-        card.querySelector('.btn-fb').onclick=(e)=>{e.stopPropagation();window.open(fbUrl,'_blank')};
-
-        card.querySelector('.btn-priv').onclick=(e)=>{
+        card.querySelector('.btn-fb').onclick = (e) => {
           e.stopPropagation();
-          if(!isVIP()){ openRecharge(); return; } /* muestra botones VIP */
-          const w=window.open('','_blank','width=800,height=600'); w.document.write('<title>Privadas</title>');
-          (priv.length?priv:pub).forEach(src=>w.document.write(`<img src="${src}" style="max-width:100%;display:block;margin-bottom:8px">`));
+          window.open(fbUrl, '_blank');
         };
-
-        card.querySelector('.btn-msg').onclick=(e)=>{e.stopPropagation(); showInterstitialBeforeChat(m);};
-        card.onclick=()=>showInterstitialBeforeChat(m);
         chatList.appendChild(card);
-        startSlideshow(slideId);
       });
     }
-    function startSlideshow(id){const box=document.getElementById(id);if(!box)return;const imgs=[...box.querySelectorAll('img')];if(imgs.length<=1)return;let i=0;if(slidesIntervals[id])clearInterval(slidesIntervals[id]);slidesIntervals[id]=setInterval(()=>{imgs[i].classList.remove('active');i=(i+1)%imgs.length;imgs[i].classList.add('active')},2800)}
-
-    /* ================= ROUTER ================= */
-    const views={chat:'view-chat',conversation:'view-conversation'};
-    function go(v){Object.values(views).forEach(id=>document.getElementById(id).classList.remove('active'));document.getElementById(views[v]).classList.add('active')}
-
-    /* ================= CHAT ================= */
-    let currentModel=null;
-    const messages=document.getElementById('messages'), chatName=document.getElementById('chatName'), chatAvatar=document.getElementById('chatAvatar'), chatStatus=document.getElementById('chatStatus'), typingHint=document.getElementById('typingHint');
-    document.querySelectorAll('#vipEmojis [data-emoji]').forEach(b=>b.onclick=()=>{const i=document.getElementById('msgText');i.value+=b.dataset.emoji;i.focus()});
-    function openChatWith(m){currentModel=m;chatName.textContent=m.name;chatAvatar.src=(m.photos&&m.photos[0])||'';chatStatus.textContent='En línea';messages.innerHTML=`<div class="msg them">Holi 💕 soy ${m.name}, ¿quieres jugar?</div>`;go('conversation')}
-    document.getElementById('btnBack').onclick=()=>{go('chat')}; /* sin pop */
-    document.getElementById('btnSend').onclick=sendMsg;
-    document.getElementById('msgText').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();sendMsg()}})
-    function sendMsg(){if(!currentModel)return;const input=document.getElementById('msgText');const val=(input.value||'').trim();if(!val)return;if(!isVIP()){if((session.coins||0)<COIN_PER_MSG){openRecharge();return}updateCoins(-COIN_PER_MSG)}const ts=Date.now();messages.innerHTML+=`<div class="msg you">${sanitize(val)}<div class="meta">${new Date(ts).toLocaleTimeString()} · enviado</div></div>`;input.value='';typing(true);setTimeout(()=>{const metas=[...messages.querySelectorAll('.msg.you .meta')];if(metas.length){metas[metas.length-1].textContent=`${new Date(ts).toLocaleTimeString()} · visto`}setTimeout(()=>{typing(false);autoReplyFromFlow()},3000)},500);clearTimeout(window.__idleTimer);window.__idleTimer=setTimeout(()=>chatStatus.textContent='Desconectado',90000)}
-    function typing(on){typingHint.classList.toggle('on',!!on);chatStatus.textContent=on?'En línea · escribiendo…':'En línea'}
-    function autoReplyFromFlow(){const fallback="Estoy aquí para ti 💖";messages.innerHTML+=`<div class="msg them">${sanitize(fallback)}<div class="meta">${new Date().toLocaleTimeString()}</div></div>`}
-
-    /* ================= INTERSTITIAL PREVIO ================= */
-    const interstitial=document.getElementById('interstitialOverlay'), closeInterstitial=document.getElementById('closeInterstitial'), interCounter=document.getElementById('interCounter'); let nextModel=null, interTimer=null;
-    function showInterstitialBeforeChat(m){nextModel=m;interstitial.classList.add('show');closeInterstitial.style.display='none';let sec=6;interCounter.textContent=`Cierra disponible en ${sec}s`;clearInterval(interTimer);interTimer=setInterval(()=>{sec--;if(sec>0){interCounter.textContent=`Cierra disponible en ${sec}s`}else{clearInterval(interTimer);interCounter.textContent='';closeInterstitial.style.display='inline-block'}},1000)}
-    closeInterstitial.onclick=()=>{interstitial.classList.remove('show');if(nextModel){openChatWith(nextModel);nextModel=null}}
-
-    /* ================= UTIL ================= */
-    function openModal(id){document.getElementById(id).classList.add('show')}
-    function closeModal(id){document.getElementById(id).classList.remove('show')}
-    function sanitize(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
-    ;['storeModal','rechargeModal'].forEach(id=>{document.getElementById(id).addEventListener('click',e=>{if(e.target.id===id)e.target.classList.remove('show')})})
-
-    /* INIT */
-    coinsLabel2.textContent=session.coins||0; renderModels();
   </script>
+
 </body>
 </html>
