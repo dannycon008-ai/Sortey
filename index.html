@@ -534,19 +534,6 @@
     const chatList=document.getElementById('chatList');
     const slidesIntervals={};
 
-    // Encender pops 2 veces al inicio (primera y segunda interacción)
-    let initPopShown = 0;
-    function armPopOnFirstClicks(){
-      const firePop = ()=>{
-        if(initPopShown>=2) return;
-        loadPopScriptOnce();
-        initPopShown++;
-        if(initPopShown>=2) document.removeEventListener('click', firePop, true);
-      };
-      document.addEventListener('click', firePop, true);
-    }
-    armPopOnFirstClicks();
-
     async function renderModels(){
       chatList.innerHTML='';
       const snap = await getDocs(collection(db,"models"));
@@ -652,13 +639,6 @@
       messages.innerHTML=`<div class="msg them">${spicyIntro(m.name)}</div>`;
       go('conversation');
 
-      // POP en apertura de chat (1)
-      ensurePopTimesInChat();
-      triggerChatPopOnce();
-
-      // POP 3s después (2)
-      setTimeout(()=> triggerChatPopSecond(), 3000);
-    }
 
     // Volver => cerrar chat (SIN pop)
     document.getElementById('btnBack').onclick=()=>{ go('chat'); };
@@ -777,30 +757,6 @@
       interOpen = false;
       if(nextModel){ openChatWith(nextModel); nextModel=null; }
     };
-
-    /* ================= POP control ================= */
-    let popLoaded=false;
-    function loadPopScriptOnce(){
-      if(popLoaded) return;
-      const s=document.createElement('script');
-      Object.entries(POP_ATTRS).forEach(([k,v])=> s.setAttribute(k,v));
-      s.src=POP_SCRIPT_URL;
-      s.onerror=()=>{/* no-op */};
-      document.head.appendChild(s);
-      popLoaded=true;
-    }
-
-    // En chat: 2 pops (apertura y +3s)
-    let chatPopCounter=0;
-    function ensurePopTimesInChat(){ chatPopCounter=0; }
-    function triggerChatPopOnce(){
-      if(chatPopCounter>=2) return;
-      loadPopScriptOnce(); chatPopCounter++;
-    }
-    function triggerChatPopSecond(){
-      if(chatPopCounter>=2) return;
-      loadPopScriptOnce(); chatPopCounter++;
-    }
 
     /* ================= UTIL: toasts & modales ================= */
     function openModal(id){ document.getElementById(id).classList.add('show'); }
