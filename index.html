@@ -23,14 +23,16 @@
     html,body{height:100%}
     body{margin:0;font-family:Poppins,system-ui,sans-serif;background:var(--bg);color:var(--text)}
     .container{max-width:1100px;margin:0 auto;padding:16px}
-    .header{position:sticky;top:0;z-index:100;background:rgba(10,18,32,.92);backdrop-filter:none;border-bottom:1px solid #132338}
+    .header{position:sticky;top:0;z-index:100;background:rgba(10,18,32,.92);border-bottom:1px solid #132338}
     .header-inner{display:flex;justify-content:space-between;align-items:center;padding:12px 16px}
     .brand{display:flex;align-items:center;gap:10px;font-weight:700}
+
     .btn{border:0;padding:8px 12px;border-radius:10px;font-weight:600;cursor:pointer;transition:.15s;font-size:14px}
     .btn:active{transform:translateY(1px)}
     .btn-primary{background:var(--brand);color:#fff}
     .btn-ghost{background:transparent;color:#cfe7ff;border:1px solid #244362}
     .btn-warning{background:var(--warn);color:#1b1407}
+
     .input{width:100%;background:#0e192a;color:#d9eeff;border:1px solid #1f3550;border-radius:12px;padding:10px 12px}
     .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 10px 32px rgba(0,0,0,.35)}
     .small{color:var(--sub);font-size:12px}
@@ -96,22 +98,10 @@
     .chat-input .input{flex:1}
     .emoji-vip{display:flex;gap:6px;flex-wrap:wrap}
 
-    /* ====== Modales (fondo oscuro sólido y centrado) ====== */
-    .modal{
-      position:fixed;inset:0;
-      background:rgba(0,0,0,.75);
-      display:none;place-items:center;
-      z-index:1000; /* mayor que header y contenido */
-    }
+    /* ====== Modales ====== */
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;place-items:center;z-index:1000}
     .modal.show{display:grid}
-    .modal .content{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:16px;
-      width:min(560px,92vw);
-      box-shadow:0 24px 60px rgba(0,0,0,.6)
-    }
+    .modal .content{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;width:min(560px,92vw);box-shadow:0 24px 60px rgba(0,0,0,.6)}
 
     /* ====== Interstitial ====== */
     .interstitial{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;place-items:center;z-index:1200}
@@ -131,7 +121,6 @@
     @keyframes floatIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
   </style>
 
-  <!-- PayPal SDK (se carga por JS) -->
   <script id="paypal-sdk-loader"></script>
 </head>
 <body>
@@ -142,12 +131,9 @@
         <img id="appLogo" src="https://qu.ax/PyOjt.png" alt="Logo" style="height:36px;border-radius:8px;object-fit:contain">
         <span>ChispaLive</span>
       </div>
-
       <nav style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
         <button class="btn btn-ghost" id="btnMissions">🗓️ Misiones diarias</button>
         <button class="btn btn-primary" id="btnStore">💳 Tienda</button>
-
-        <!-- Monedas con icono y modo VIP -->
         <div id="coinsBox" class="coins-badge">
           <img id="coinsIcon" src="" alt="Coins">
           <span id="coinsLabel">0</span>
@@ -168,13 +154,13 @@
       </a>
     </div>
 
-    <!-- LISTA DE MODELOS (INICIO) -->
+    <!-- LISTA MODELOS -->
     <section id="view-chat" class="view active">
       <h3 class="title-hero">Chatea en vivo 🥰</h3>
       <div class="model-grid" id="chatList"></div>
     </section>
 
-    <!-- CHAT SOLO (PANTALLA COMPLETA) -->
+    <!-- CHAT -->
     <section id="view-conversation" class="view">
       <div class="card chat-card">
         <div class="chat-head">
@@ -204,122 +190,14 @@
     </section>
   </main>
 
-  <!-- MODAL: RECARGA / VIP -->
-  <div id="rechargeModal" class="modal">
-    <div class="content">
-      <h3 style="margin:0 0 6px">Sin monedas 😢</h3>
-      <p class="small">Cada mensaje cuesta <b>2</b> moneditas.</p>
-
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
-        <button class="btn btn-primary buy-coins" data-amount="20">Comprar 20</button>
-        <button class="btn btn-primary buy-coins" data-amount="50">Comprar 50</button>
-        <button class="btn btn-primary buy-coins" data-amount="100">Comprar 100</button>
-        <button class="btn btn-warning" id="btnWatchAd">Ver anuncio (+10)</button>
-      </div>
-
-      <!-- PayPal – Monedas -->
-      <div id="paypal-coins-wrap" style="display:none">
-        <div class="small" id="paypal-coins-caption" style="margin:6px 0 8px"></div>
-        <div id="paypal-coins-btn"></div>
-      </div>
-
-      <div class="card" style="margin-top:12px">
-        <b>💎 Suscríbete VIP y chatea sin límites</b>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
-          <button class="btn btn-ghost vip-plan" data-plan="24h" data-price="4">VIP 24h — 4$</button>
-          <button class="btn btn-ghost vip-plan" data-plan="7d" data-price="15">VIP 1 semana — 15$</button>
-          <button class="btn btn-ghost vip-plan" data-plan="30d" data-price="30">VIP 1 mes — 30$</button>
-        </div>
-        <!-- PayPal – VIP -->
-        <div id="paypal-vip-wrap" style="display:none;margin-top:10px">
-          <div class="small" id="paypal-vip-caption" style="margin:6px 0 8px"></div>
-          <div id="paypal-vip-btn"></div>
-        </div>
-      </div>
-
-      <div style="margin-top:12px">
-        <button class="btn btn-ghost" id="btnCloseModal">Cerrar</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL: TIENDA -->
-  <div id="storeModal" class="modal">
-    <div class="content">
-      <h3 style="margin:0 0 6px">Tienda</h3>
-      <p class="small">Compra monedas o activa VIP.</p>
-
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
-        <button class="btn btn-primary s-buy-coins" data-amount="50">50 monedas</button>
-        <button class="btn btn-primary s-buy-coins" data-amount="150">150 monedas</button>
-        <button class="btn btn-primary s-buy-coins" data-amount="400">400 monedas</button>
-      </div>
-
-      <div id="paypal-store-wrap" style="display:none">
-        <div class="small" id="paypal-store-caption" style="margin:6px 0 8px"></div>
-        <div id="paypal-store-btn"></div>
-      </div>
-
-      <div class="card" style="margin-top:12px">
-        <b>💎 VIP</b>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
-          <button class="btn btn-ghost vip2-plan" data-plan="24h" data-price="4">VIP 24h — 4$</button>
-          <button class="btn btn-ghost vip2-plan" data-plan="7d" data-price="15">VIP 1 semana — 15$</button>
-          <button class="btn btn-ghost vip2-plan" data-plan="30d" data-price="30">VIP 1 mes — 30$</button>
-        </div>
-
-        <div id="paypal-vip2-wrap" style="display:none;margin-top:10px">
-          <div class="small" id="paypal-vip2-caption" style="margin:6px 0 8px"></div>
-          <div id="paypal-vip2-btn"></div>
-        </div>
-      </div>
-
-      <div style="margin-top:10px">
-        <button class="btn btn-ghost" id="btnCloseStore">Cerrar</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL: MISIONES DIARIAS -->
-  <div id="missionsModal" class="modal">
-    <div class="content">
-      <h3 style="margin:0 0 6px">Misiones diarias</h3>
-
-      <div class="card">
-        <b>1) Seguir estas cuentas de Facebook (+20)</b>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
-          <a class="btn btn-ghost" id="fb1" target="_blank" rel="noopener">
-            <img id="fb1logo" src="" alt="fb" style="height:16px;vertical-align:-3px;margin-right:6px"> Página 1
-          </a>
-          <a class="btn btn-ghost" id="fb2" target="_blank" rel="noopener">
-            <img id="fb2logo" src="" alt="fb" style="height:16px;vertical-align:-3px;margin-right:6px"> Página 2
-          </a>
-          <a class="btn btn-ghost" id="fb3" target="_blank" rel="noopener">
-            <img id="fb3logo" src="" alt="fb" style="height:16px;vertical-align:-3px;margin-right:6px"> Página 3
-          </a>
-        </div>
-        <button class="btn btn-primary" id="btnMissionFollow" style="margin-top:8px">Marcar como hecho (+20)</button>
-      </div>
-
-      <div class="card" style="margin-top:12px">
-        <b>2) Reaccionar a 3 fotos de cada cuenta (+10)</b>
-        <p class="small" style="margin:6px 0">Haz like/❤️ en 3 publicaciones por cuenta.</p>
-        <button class="btn btn-primary" id="btnMissionReact">Marcar como hecho (+10)</button>
-      </div>
-
-      <div style="margin-top:12px">
-        <button class="btn btn-ghost" id="btnCloseMissions">Cerrar</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- INTERSTITIAL OVERLAY (previa al chat) -->
+  <!-- MODALES: Recarga, Tienda, Misiones, Interstitial, Toasts -->
+  <div id="rechargeModal" class="modal"><div class="content" id="rechargeContent"></div></div>
+  <div id="storeModal" class="modal"><div class="content" id="storeContent"></div></div>
+  <div id="missionsModal" class="modal"><div class="content" id="missionsContent"></div></div>
   <div id="interstitialOverlay" class="interstitial">
     <div class="inner">
       <script>window.peblqx=window.peblqx||function(){};</script>
-      <!-- Script Interstitial de ClickAd (tu script real) -->
       <script data-cfasync="false" data-clipid="2086017" async src="//detoxifylagoonsnugness.com/in.js" onerror="peblqx(17)" onload="peblqx(17)"></script>
-
       <div class="bar">
         <span class="small">Publicidad — Interstitial</span>
         <span class="countdown" id="interCounter">Esperando…</span>
@@ -327,17 +205,14 @@
       </div>
     </div>
   </div>
-
-  <!-- TOASTS -->
   <div class="toast-wrap" id="toasts"></div>
-
 <script type="module">
-    /* =======================
-   CONFIGURACIÓN RÁPIDA
-========================*/
-const PAYPAL_CLIENT_ID = 'TU_CLIENT_ID_PAYPAL_LIVE'; // <-- Pega aquí tu client-id real
+/* =====================
+   CONFIGURACIÓN INICIAL
+======================== */
+const PAYPAL_CLIENT_ID = 'TU_CLIENT_ID_PAYPAL_LIVE'; // 👈 reemplaza con el real
 
-// Íconos/URLs
+// ICONOS / URLS
 const COIN_ICON_URL = 'https://i.imgur.com/5o8w7oS.png';
 const VIP_ICON_URL  = 'https://i.imgur.com/1F2r0yN.png';
 const FACEBOOK_ICON_URL = 'https://i.imgur.com/6c1mQw6.png';
@@ -346,13 +221,13 @@ const PRIV_ICON_URL = 'https://i.imgur.com/Q8oQH0x.png';
 const BANNER_LINK  = 'https://tu-enlace-del-banner.com';
 const BANNER_VIDEO = 'https://qu.ax/dMvpz.mp4';
 
-/* ================= Cargar SDK de PayPal ================= */
+/* ================= PayPal SDK ================= */
 (function loadPayPal(){
   const s=document.getElementById('paypal-sdk-loader');
-  s.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(PAYPAL_CLIENT_ID)}&currency=USD`;
+  s.src=`https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(PAYPAL_CLIENT_ID)}&currency=USD`;
 })();
 
-/* ================= FIREBASE ================= */
+/* ================= Firebase ================= */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
@@ -368,7 +243,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-/* ================= SESIÓN / ECONOMÍA ================= */
+/* ================= Sesión y Monedas ================= */
 const START_COINS = 50;
 const COIN_PER_MSG = 2;
 
@@ -379,7 +254,7 @@ const coinsIcon2  = document.getElementById('coinsIcon2');
 const vipEmojis   = document.getElementById('vipEmojis');
 
 let session = JSON.parse(localStorage.getItem('session')||'{}');
-if(!session.alias){ session = { alias:'Usuario', coins: START_COINS }; saveSession(); }
+if(!session.alias){ session={alias:'Usuario',coins:START_COINS}; saveSession(); }
 let membership = JSON.parse(localStorage.getItem('membership')||'null');
 
 function saveSession(){ localStorage.setItem('session', JSON.stringify(session)); }
@@ -390,18 +265,18 @@ function updateCoins(delta){
 }
 function isVIP(){ return membership && Date.now() < membership.until; }
 function setVIP(duration){
-  const now = Date.now();
-  const add = duration==='24h'? 24*3600e3 : duration==='7d'? 7*24*3600e3 : 30*24*3600e3;
-  membership = { until: now + add };
-  localStorage.setItem('membership', JSON.stringify(membership));
+  const now=Date.now();
+  const add = duration==='24h'?24*3600e3:duration==='7d'?7*24*3600e3:30*24*3600e3;
+  membership={until:now+add};
+  localStorage.setItem('membership',JSON.stringify(membership));
   paintVIP();
   toast('VIP ACTIVADO ✨','Disfruta chat ilimitado y fotos privadas.','ok');
 }
 function paintVIP(){
-  const active = isVIP();
-  vipEmojis.style.display = active ? 'flex' : 'none';
-  const icon = active ? VIP_ICON_URL : COIN_ICON_URL;
-  coinsIcon.src = icon; coinsIcon2.src = icon;
+  const active=isVIP();
+  vipEmojis.style.display=active?'flex':'none';
+  const icon=active?VIP_ICON_URL:COIN_ICON_URL;
+  coinsIcon.src=icon; coinsIcon2.src=icon;
 }
 updateCoins(0); paintVIP();
 
@@ -410,226 +285,196 @@ document.getElementById('bannerLink').href = BANNER_LINK;
 document.getElementById('bannerVideoSrc').src = BANNER_VIDEO;
 
 /* ================= Misiones ================= */
-const FB_MISSIONS = [
-  { logo: FACEBOOK_ICON_URL, url: 'https://facebook.com/pagina1' },
-  { logo: FACEBOOK_ICON_URL, url: 'https://facebook.com/pagina2' },
-  { logo: FACEBOOK_ICON_URL, url: 'https://facebook.com/pagina3' }
+const missionsModal=document.getElementById('missionsModal');
+document.getElementById('btnMissions').onclick=()=>missionsModal.classList.add('show');
+missionsModal.addEventListener('click',e=>{if(e.target.id==='missionsModal')missionsModal.classList.remove('show');});
+
+const fbAccounts=[
+  {logo:FACEBOOK_ICON_URL,url:'https://facebook.com/pagina1'},
+  {logo:FACEBOOK_ICON_URL,url:'https://facebook.com/pagina2'},
+  {logo:FACEBOOK_ICON_URL,url:'https://facebook.com/pagina3'}
 ];
+const missionsContent=document.getElementById('missionsContent');
+missionsContent.innerHTML=`
+  <h3 style="margin:0 0 6px">Misiones diarias</h3>
+  <div class="card">
+    <b>1) Seguir estas cuentas de Facebook (+20)</b>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+      ${fbAccounts.map((f,i)=>`<a href="${f.url}" target="_blank" class="btn btn-ghost"><img src="${f.logo}" style="height:16px;margin-right:6px"> Página ${i+1}</a>`).join('')}
+    </div>
+    <button class="btn btn-primary" id="btnMissionFollow" style="margin-top:8px">Marcar como hecho (+20)</button>
+  </div>
 
-const missionsModal = document.getElementById('missionsModal');
-document.getElementById('btnMissions').onclick = ()=> missionsModal.classList.add('show');
-document.getElementById('btnCloseMissions').onclick = ()=> missionsModal.classList.remove('show');
+  <div class="card" style="margin-top:12px">
+    <b>2) Reaccionar a 3 fotos de cada cuenta (+10)</b>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+      ${fbAccounts.map((f,i)=>`<a href="${f.url}" target="_blank" class="btn btn-ghost"><img src="${f.logo}" style="height:16px;margin-right:6px"> Página ${i+1}</a>`).join('')}
+    </div>
+    <p class="small" style="margin:6px 0">Haz like/❤️ en 3 publicaciones por cuenta.</p>
+    <button class="btn btn-primary" id="btnMissionReact">Marcar como hecho (+10)</button>
+  </div>
 
-document.getElementById('fb1').href = FB_MISSIONS[0].url;
-document.getElementById('fb2').href = FB_MISSIONS[1].url;
-document.getElementById('fb3').href = FB_MISSIONS[2].url;
-document.getElementById('fb1logo').src = FB_MISSIONS[0].logo;
-document.getElementById('fb2logo').src = FB_MISSIONS[1].logo;
-document.getElementById('fb3logo').src = FB_MISSIONS[2].logo;
+  <div style="margin-top:12px">
+    <button class="btn btn-ghost" onclick="missionsModal.classList.remove('show')">Cerrar</button>
+  </div>
+`;
 
 const todayKey = ()=> 'missions_'+new Date().toISOString().slice(0,10);
 function missionState(){ return JSON.parse(localStorage.getItem(todayKey())||'{"follow":false,"react":false}'); }
-function setMission(key){ const s=missionState(); s[key]=true; localStorage.setItem(todayKey(), JSON.stringify(s)); }
+function setMission(key){ const s=missionState(); s[key]=true; localStorage.setItem(todayKey(),JSON.stringify(s)); }
 
-document.getElementById('btnMissionFollow').onclick = ()=>{
+document.getElementById('btnMissionFollow').onclick=()=>{
   const s=missionState();
   if(s.follow) return toast('Ya completaste esta misión','Vuelve mañana.','warn');
   updateCoins(20); setMission('follow');
   toast('+20 moneditas','Gracias por seguir las cuentas.','ok');
 };
-document.getElementById('btnMissionReact').onclick = ()=>{
+document.getElementById('btnMissionReact').onclick=()=>{
   const s=missionState();
   if(s.react) return toast('Ya completaste esta misión','Vuelve mañana.','warn');
   updateCoins(10); setMission('react');
   toast('+10 moneditas','¡Gracias por reaccionar a las fotos!','ok');
 };
 
-/* ================= TIENDA / RECARGA / PayPal ================= */
-const rechargeModal = document.getElementById('rechargeModal');
-document.getElementById('btnCloseModal').onclick = ()=> rechargeModal.classList.remove('show');
-document.getElementById('btnStore').onclick = ()=> openModal('storeModal');
-document.getElementById('btnCloseStore').onclick = ()=> closeModal('storeModal');
+/* ================= Tienda ================= */
+const storeModal=document.getElementById('storeModal');
+document.getElementById('btnStore').onclick=()=>storeModal.classList.add('show');
+storeModal.addEventListener('click',e=>{if(e.target.id==='storeModal')storeModal.classList.remove('show');});
 
-document.getElementById('btnWatchAd').onclick=()=>{
-  updateCoins(10);
-  rechargeModal.classList.remove('show');
-  toast('+10 por ver anuncio','Se acreditaron tus moneditas.','ok');
-};
+const storeContent=document.getElementById('storeContent');
+storeContent.innerHTML=`
+  <h3 style="margin:0 0 6px">Tienda</h3>
+  <p class="small">Compra monedas o activa VIP.</p>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+    <button class="btn btn-primary s-buy" data-amount="50" data-price="0.50">50 monedas</button>
+    <button class="btn btn-primary s-buy" data-amount="150" data-price="1.00">150 monedas</button>
+    <button class="btn btn-primary s-buy" data-amount="400" data-price="4.00">400 monedas</button>
+  </div>
+  <div id="paypal-store-wrap" style="display:none">
+    <div class="small" id="paypal-store-caption"></div>
+    <div id="paypal-store-btn"></div>
+  </div>
 
-// Monedas (recharge modal)
-document.querySelectorAll('.buy-coins').forEach(b=>{
-  b.onclick = ()=>{
-    const amount = parseInt(b.dataset.amount,10);
-    showPaypalForCoins('paypal-coins-wrap','paypal-coins-caption','paypal-coins-btn', amount);
+  <div class="card" style="margin-top:12px">
+    <b>💎 VIP</b>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+      <button class="btn btn-ghost vip2-plan" data-plan="24h" data-price="4">VIP 24h — 4$</button>
+      <button class="btn btn-ghost vip2-plan" data-plan="7d" data-price="15">VIP 1 semana — 15$</button>
+      <button class="btn btn-ghost vip2-plan" data-plan="30d" data-price="30">VIP 1 mes — 30$</button>
+    </div>
+    <div id="paypal-vip2-wrap" style="display:none;margin-top:10px">
+      <div class="small" id="paypal-vip2-caption"></div>
+      <div id="paypal-vip2-btn"></div>
+    </div>
+  </div>
+
+  <div style="margin-top:10px">
+    <button class="btn btn-ghost" onclick="storeModal.classList.remove('show')">Cerrar</button>
+  </div>
+`;
+
+storeContent.querySelectorAll('.s-buy').forEach(b=>{
+  b.onclick=()=>{
+    const amount=parseInt(b.dataset.amount,10);
+    const price=parseFloat(b.dataset.price);
+    showPayPal('paypal-store-wrap','paypal-store-caption','paypal-store-btn',price,()=>{updateCoins(amount);toast(`+${amount} monedas`,'Pago aprobado.','ok');});
   };
 });
-// Monedas (store modal)
-document.querySelectorAll('.s-buy-coins').forEach(b=>{
-  b.onclick = ()=>{
-    const amount = parseInt(b.dataset.amount,10);
-    showPaypalForCoins('paypal-store-wrap','paypal-store-caption','paypal-store-btn', amount);
+storeContent.querySelectorAll('.vip2-plan').forEach(b=>{
+  b.onclick=()=>{
+    const plan=b.dataset.plan;
+    const price=parseFloat(b.dataset.price);
+    showPayPal('paypal-vip2-wrap','paypal-vip2-caption','paypal-vip2-btn',price,()=>{setVIP(plan);});
   };
 });
 
-// VIP (recharge modal)
-document.querySelectorAll('.vip-plan').forEach(b=>{
-  b.onclick = ()=>{
-    const plan = b.dataset.plan;
-    const price= parseFloat(b.dataset.price);
-    showPaypalForVIP('paypal-vip-wrap','paypal-vip-caption','paypal-vip-btn', plan, price);
-  };
-});
-// VIP (store modal)
-document.querySelectorAll('.vip2-plan').forEach(b=>{
-  b.onclick = ()=>{
-    const plan = b.dataset.plan;
-    const price= parseFloat(b.dataset.price);
-    showPaypalForVIP('paypal-vip2-wrap','paypal-vip2-caption','paypal-vip2-btn', plan, price);
-  };
-});
-
-function showPaypalForCoins(wrapId, capId, btnId, amount){
-  const wrap = document.getElementById(wrapId);
-  const cap  = document.getElementById(capId);
-  const btn  = document.getElementById(btnId);
-  cap.textContent = `Comprar ${amount} monedas (USD ${(amount/10).toFixed(2)})`;
-  wrap.style.display='block';
-  btn.innerHTML='';
-  renderPayPal(btn, (amount/10).toFixed(2), ()=>{ updateCoins(amount); toast(`+${amount} monedas`,'Pago aprobado.','ok'); });
-}
-function showPaypalForVIP(wrapId, capId, btnId, plan, price){
-  const wrap = document.getElementById(wrapId);
-  const cap  = document.getElementById(capId);
-  const btn  = document.getElementById(btnId);
-  const label = plan==='24h'?'24 horas':(plan==='7d'?'1 semana':'1 mes');
-  cap.textContent = `Activar VIP ${label} — USD ${price.toFixed(2)} (BOTON PAYPAL)`;
-  wrap.style.display='block';
-  btn.innerHTML='';
-  renderPayPal(btn, price.toFixed(2), ()=>{ setVIP(plan); });
-}
-function renderPayPal(containerEl, price, onApproveCb){
-  const wait = ()=> new Promise(res=>{
-    const i=setInterval(()=>{ if(window.paypal){ clearInterval(i); res(); } },100);
+function showPayPal(wrapId,capId,btnId,price,onApprove){
+  const wrap=document.getElementById(wrapId);
+  const cap=document.getElementById(capId);
+  const btn=document.getElementById(btnId);
+  cap.textContent=`Pagar USD ${price.toFixed(2)} (BOTON PAYPAL)`;
+  wrap.style.display='block'; btn.innerHTML='';
+  const wait=()=>new Promise(res=>{
+    const i=setInterval(()=>{if(window.paypal){clearInterval(i);res();}},100);
   });
   wait().then(()=>{
     window.paypal.Buttons({
-      style:{ layout:'horizontal', color:'gold', shape:'pill', label:'pay' },
-      createOrder: (data,actions)=> actions.order.create({
-        purchase_units:[{ amount:{ value:String(price) } }]
-      }),
-      onApprove: async (data,actions)=>{
-        try{
-          await actions.order.capture();
-          onApproveCb && onApproveCb();
-        }catch{ toast('Pago aprobado, pero hubo un detalle al capturar.','Revisa tu cuenta.','warn'); }
-      },
-      onError: ()=> toast('Error de pago','Intenta nuevamente.','warn')
-    }).render(containerEl);
+      style:{layout:'horizontal',color:'gold',shape:'pill',label:'pay'},
+      createOrder:(data,actions)=>actions.order.create({purchase_units:[{amount:{value:String(price)}}]}),
+      onApprove:async (data,actions)=>{await actions.order.capture();onApprove&&onApprove();},
+      onError:()=>toast('Error de pago','Intenta nuevamente.','warn')
+    }).render(btn);
   });
 }
 
-/* ================= MODELOS DESDE FIRESTORE ================= */
+/* ================= Modelos ================= */
 const chatList=document.getElementById('chatList');
 const slidesIntervals={};
-
 async function renderModels(){
   chatList.innerHTML='';
-  const snap = await getDocs(collection(db,"models"));
+  const snap=await getDocs(collection(db,"models"));
   snap.forEach(docSnap=>{
     const m={id:docSnap.id,...docSnap.data()};
     const card=document.createElement('div');
     card.className='model-card';
-
     const slideId='slide_'+m.id;
-    const pub = (m.photos||[]).slice(0,3);
-    const priv = (m.photos||[]).slice(3,5);
+    const pub=(m.photos||[]).slice(0,3);
+    const priv=(m.photos||[]).slice(3,5);
 
     card.innerHTML=`
       <div class="model-slideshow" id="${slideId}">
         ${pub.map((src,i)=>`<img src="${src}" class="${i===0?'active':''}">`).join('')}
       </div>
       <div class="info">
-        <div class="name">${m.name} <span class="online">● Online</span></div>
+        <div class="name">${m.name}<span class="online">● Online</span></div>
         <div class="extra">${m.age||'—'} años · ${m.country||'—'}</div>
         <div class="desc">${m.desc||''}</div>
       </div>
       <div class="actions">
-        <button class="action-btn btn-like" title="Me gusta">
-          <img src="https://qu.ax/hlsxX.png" alt="like"><span>Me gusta</span>
-          <span class="like-badge">${m.likes||0}</span>
-        </button>
-
-        <a class="action-btn btn-fb" ${m.facebookUrl?`href="${m.facebookUrl}" target="_blank" rel="noopener"`:'style="pointer-events:none;opacity:.5"'} title="Facebook">
-          <img src="${FACEBOOK_ICON_URL}" alt="fb"><span>Facebook</span>
-        </a>
-
-        <button class="action-btn btn-priv" title="Ver privadas">
-          <img src="${PRIV_ICON_URL}" alt="priv"><span>Privadas</span>
-        </button>
-
-        <button class="action-btn btn-msg" title="Hablar">
-          <img src="https://qu.ax/jGSiu.png" alt="mensaje"><span>Mensaje</span>
-        </button>
+        <button class="action-btn btn-like"><img src="https://qu.ax/hlsxX.png"> Me gusta <span class="like-badge">${m.likes||0}</span></button>
+        <a class="action-btn btn-fb" ${m.facebookUrl?`href="${m.facebookUrl}" target="_blank"`:'style="pointer-events:none;opacity:.5"'}><img src="${FACEBOOK_ICON_URL}"> Facebook</a>
+        <button class="action-btn btn-priv"><img src="${PRIV_ICON_URL}"> Privadas</button>
+        <button class="action-btn btn-msg"><img src="https://qu.ax/jGSiu.png"> Mensaje</button>
       </div>
     `;
 
-    // Like
-    card.querySelector('.btn-like').onclick=(e)=>{
+    card.querySelector('.btn-like').onclick=e=>{
       e.stopPropagation();
-      const badge = card.querySelector('.like-badge');
-      badge.textContent = String(parseInt(badge.textContent||'0')+1);
+      const badge=card.querySelector('.like-badge');
+      badge.textContent=String(parseInt(badge.textContent||'0')+1);
     };
-
-    // Privadas
-    card.querySelector('.btn-priv').onclick=(e)=>{
+    card.querySelector('.btn-priv').onclick=e=>{
       e.stopPropagation();
-      if(!isVIP()){
-        openModal('rechargeModal');
-        toast('Activa VIP para ver fotos privadas 💎','Elige un plan para desbloquear.','warn');
-        return;
-      }
-      const w = window.open('','_blank','width=800,height=600');
-      (priv.length?priv:pub).forEach(src=> w.document.write(`<img src="${src}" style="width:100%;display:block;margin-bottom:8px">`));
+      if(!isVIP()){toast('Activa VIP para ver privadas','Elige un plan.','warn');return;}
+      const w=window.open('','_blank','width=800,height=600');
+      (priv.length?priv:pub).forEach(src=>w.document.write(`<img src="${src}" style="width:100%;display:block;margin-bottom:8px">`));
     };
-
-    // Mensaje / abrir interstitial
-    card.querySelector('.btn-msg').onclick=(e)=>{ e.stopPropagation(); showInterstitialBeforeChat(m); };
-    card.onclick=()=> showInterstitialBeforeChat(m);
-
+    card.querySelector('.btn-msg').onclick=e=>{e.stopPropagation();showInterstitialBeforeChat(m);};
+    card.onclick=()=>showInterstitialBeforeChat(m);
     chatList.appendChild(card);
     startSlideshow(slideId);
   });
 }
-
 function startSlideshow(id){
-  const box=document.getElementById(id); if(!box) return;
-  const imgs=[...box.querySelectorAll('img')]; if(imgs.length<=1) return;
-  let i=0;
-  if(slidesIntervals[id]) clearInterval(slidesIntervals[id]);
-  slidesIntervals[id]=setInterval(()=>{
-    imgs[i].classList.remove('active');
-    i=(i+1)%imgs.length;
-    imgs[i].classList.add('active');
-  }, 2800);
+  const box=document.getElementById(id);if(!box)return;
+  const imgs=[...box.querySelectorAll('img')];if(imgs.length<=1)return;
+  let i=0;if(slidesIntervals[id])clearInterval(slidesIntervals[id]);
+  slidesIntervals[id]=setInterval(()=>{imgs[i].classList.remove('active');i=(i+1)%imgs.length;imgs[i].classList.add('active');},2800);
 }
 
-/* ================= ROUTER ================= */
+/* ================= Router ================= */
 function go(v){
-  document.getElementById('view-chat').classList.toggle('active', v==='chat');
-  document.getElementById('view-conversation').classList.toggle('active', v==='conversation');
+  document.getElementById('view-chat').classList.toggle('active',v==='chat');
+  document.getElementById('view-conversation').classList.toggle('active',v==='conversation');
 }
 
-/* ================= CHAT ================= */
+/* ================= Chat ================= */
 let currentModel=null;
 const messages=document.getElementById('messages');
 const chatName=document.getElementById('chatName');
 const chatAvatar=document.getElementById('chatAvatar');
 const chatStatus=document.getElementById('chatStatus');
 const typingHint=document.getElementById('typingHint');
-
-document.querySelectorAll('#vipEmojis [data-emoji]').forEach(b=>{
-  b.onclick=()=>{ const i=document.getElementById('msgText'); i.value += b.dataset.emoji; i.focus(); };
-});
 
 function openChatWith(m){
   currentModel=m;
@@ -639,111 +484,77 @@ function openChatWith(m){
   messages.innerHTML=`<div class="msg them">Holi 💖 soy ${m.name}, ¿quieres jugar cariño?</div>`;
   go('conversation');
 }
-
-document.getElementById('btnBack').onclick=()=> go('chat');
+document.getElementById('btnBack').onclick=()=>go('chat');
 
 document.getElementById('btnSend').onclick=sendMsg;
-document.getElementById('msgText').addEventListener('keydown',e=>{ if(e.key==='Enter'){e.preventDefault();sendMsg();} });
+document.getElementById('msgText').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();sendMsg();}});
 
-const BAD_WORDS = [/puta/i,/puto/i,/mierd/i,/ctm/i,/pene/i,/vagin/i,/verga/i,/mamad/i,/chingad/i,/cul[oa]/i];
-function hasBadWords(t){ return BAD_WORDS.some(rx=>rx.test(t)); }
+const BAD_WORDS=[/puta/i,/puto/i,/mierd/i,/ctm/i,/pene/i,/vagin/i,/verga/i,/mamad/i,/chingad/i,/cul[oa]/i];
+function hasBadWords(t){return BAD_WORDS.some(rx=>rx.test(t));}
 
 function sendMsg(){
-  if(!currentModel) return;
+  if(!currentModel)return;
   const input=document.getElementById('msgText');
-  const val=(input.value||'').trim(); if(!val) return;
-
-  if(hasBadWords(val)){
-    toast('¡Hey! Cuidado 👀','Palabras como esas no se dicen porque puedes ser bloqueado.','warn');
-    input.value=''; return;
-  }
-
-  if(!isVIP()){
-    if((session.coins||0) < COIN_PER_MSG){ openModal('rechargeModal'); return; }
-    updateCoins(-COIN_PER_MSG);
-  }
-
+  const val=(input.value||'').trim();if(!val)return;
+  if(hasBadWords(val)){toast('¡Hey! Cuidado 👀','Palabras como esas no se dicen porque puedes ser bloqueado.','warn');input.value='';return;}
+  if(!isVIP()){if((session.coins||0)<COIN_PER_MSG){openModal('storeModal');return;}updateCoins(-COIN_PER_MSG);}
   const ts=Date.now();
-  messages.innerHTML+=`<div class="msg you">${sanitize(val)}<div class="meta">${new Date(ts).toLocaleTimeString()} · enviado</div></div>`;
+  messages.innerHTML+=`<div class="msg you">${sanitize(val)}<div class="meta">${new Date(ts).toLocaleTimeString()}</div></div>`;
   input.value='';
-
   typing(true);
-  setTimeout(()=>{
-    typing(false);
-    autoReply(val);
-  },3000);
+  setTimeout(()=>{typing(false);autoReply(val);},2500);
 }
-
-function typing(on){ typingHint.classList.toggle('on', !!on); chatStatus.textContent = on?'En línea · escribiendo…':'En línea'; }
-
-/* ==== Bot de respuestas “cariñoso y picante” con más triggers ==== */
-function autoReply(userText){
-  const lower=userText.toLowerCase();
+function typing(on){typingHint.classList.toggle('on',!!on);chatStatus.textContent=on?'En línea · escribiendo…':'En línea';}
+function autoReply(text){
+  const t=text.toLowerCase();
   let reply;
-
-  if(/(hola|buenas|hey|ola|holii|holaaa|qué tal|que tal)/i.test(lower)){
-    reply = `¡Holi amor 😘! Soy ${currentModel.name}. Cuéntame algo bonito, ¿cómo estás hoy mi rey?`;
-  }else if(/(edad|años|cuántos años|cuantos años)/i.test(lower)){
-    reply = `Tengo ${currentModel.age||'22'} añitos 😜 ¿te gustan así, bebé?`;
-  }else if(/(foto|fotos|privada|privadas)/i.test(lower)){
-    reply = isVIP()
-      ? `Tengo unas fotos 🔥 solo para ti, papasito… ¿quieres una pista? 😏`
-      : `Activa VIP y te muestro cositas ricas, príncipe 👑`;
-  }else if(/(dónde|donde|pais|país|de dónde eres|de donde eres)/i.test(lower)){
-    reply = `Soy de ${currentModel.country||'un lugar calientito'} ☀️ ¿y tú, mi amor?`;
-  }else if(/(novia|relación|relacion|salir|cita)/i.test(lower)){
-    reply = `Uff papasito 😈 ¿buscas amor o travesuras? Puedo ser muy dulce… o muy traviesa 😉`;
-  }else if(/(whats|whatsapp|ig|instagram|telegram|teléfono|telefono)/i.test(lower)){
-    reply = `Primero háblame un poquito aquí, bebé 💕 Me encanta conocerte y luego vemos si damos el siguiente paso 😘`;
-  }else if(/(juego|verdad|reto|reto|picante)/i.test(lower)){
-    reply = `Me gusta jugar… ¿verdad o reto, mi príncipe? 🔥`;
-  }else{
-    reply = `Mmm… me gusta cuando me hablas así, cariño 😍 ¿qué es lo que más te gusta en una conversación?`;
-  }
-
-  messages.innerHTML+=`<div class="msg them">${sanitize(reply)}<div class="meta">${new Date().toLocaleTimeString()}</div></div>`;
+  if(/hola|hey|buenas|holi/i.test(t)) reply=`¡Holi amor 😘! Soy ${currentModel.name}. ¿Cómo estás mi rey?`;
+  else if(/edad|años/i.test(t)) reply=`Tengo ${currentModel.age||'22'} añitos 😜`;
+  else if(/foto|privad/i.test(t)) reply=isVIP()?`Tengo unas 🔥 solo para ti, papasito 😏`:`Activa VIP y te muestro cositas, príncipe 👑`;
+  else if(/dónde|pais|de donde/i.test(t)) reply=`Soy de ${currentModel.country||'un lugar calientito'} ☀️ ¿y tú?`;
+  else if(/novia|cita|relaci/i.test(t)) reply=`Uff 😈 ¿buscas amor o travesuras?`;
+  else reply=`Mmm… me gusta cuando me hablas así, cariño 😍`;
+    messages.innerHTML+=`<div class="msg them">${sanitize(reply)}<div class="meta">${new Date().toLocaleTimeString()}</div></div>`;
 }
 
-/* ================= INTERSTITIAL ================= */
-const interstitial = document.getElementById('interstitialOverlay');
-const closeInterstitial = document.getElementById('closeInterstitial');
-const interCounter = document.getElementById('interCounter');
-let nextModel = null;
-let interTimer = null;
-let interOpen = false;
+/* ================= Interstitial ================= */
+const interstitial=document.getElementById('interstitialOverlay');
+const closeInterstitial=document.getElementById('closeInterstitial');
+const interCounter=document.getElementById('interCounter');
+let nextModel=null; let interTimer=null; let interOpen=false;
 
 function showInterstitialBeforeChat(m){
-  if(interOpen) return; // evita duplicado
-  interOpen = true;
-  nextModel = m;
+  if(interOpen) return;
+  interOpen=true;
+  nextModel=m;
   interstitial.classList.add('show');
   closeInterstitial.style.display='none';
   let sec=6;
-  interCounter.textContent = `Cierra disponible en ${sec}s`;
+  interCounter.textContent=`Cierra disponible en ${sec}s`;
   clearInterval(interTimer);
-  interTimer = setInterval(()=>{
+  interTimer=setInterval(()=>{
     sec--;
     if(sec>0){
-      interCounter.textContent = `Cierra disponible en ${sec}s`;
+      interCounter.textContent=`Cierra disponible en ${sec}s`;
     }else{
       clearInterval(interTimer);
-      interCounter.textContent = '';
+      interCounter.textContent='';
       closeInterstitial.style.display='inline-block';
     }
   },1000);
 }
 closeInterstitial.onclick=()=>{
   interstitial.classList.remove('show');
-  interOpen = false;
+  interOpen=false;
   if(nextModel){ openChatWith(nextModel); nextModel=null; }
 };
 
-/* ================= UTIL ================= */
-function openModal(id){ document.getElementById(id).classList.add('show'); }
-function closeModal(id){ document.getElementById(id).classList.remove('show'); }
-function sanitize(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+/* ================= Utilidades ================= */
+function openModal(id){document.getElementById(id).classList.add('show');}
+function closeModal(id){document.getElementById(id).classList.remove('show');}
+function sanitize(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
 
-const toasts = document.getElementById('toasts');
+const toasts=document.getElementById('toasts');
 function toast(title,body,type='ok'){
   const el=document.createElement('div');
   el.className=`toast ${type}`;
@@ -756,19 +567,10 @@ function toast(title,body,type='ok'){
   `;
   toasts.appendChild(el);
   el.querySelector('.close').onclick=()=>el.remove();
-  setTimeout(()=>{ if(el.parentNode) el.remove(); }, 6000);
+  setTimeout(()=>{if(el.parentNode)el.remove();},6000);
 }
 
-// Cerrar modales clic afuera
-['storeModal','rechargeModal','missionsModal'].forEach(id=>{
-  document.getElementById(id).addEventListener('click',e=>{ if(e.target.id===id) e.target.classList.remove('show'); });
-});
-
 /* INIT */
-document.getElementById('coinsLabel2').textContent = session.coins||0;
+document.getElementById('coinsLabel2').textContent=session.coins||0;
 renderModels();
-
-  </script>
-</body>
-</html>
-
+</script>
