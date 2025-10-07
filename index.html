@@ -207,6 +207,58 @@
       </div>
     </section>
   </main>
+    <!-- MODAL: RECARGA / OFERTA VIP -->
+  <div id="rechargeModal" class="modal">
+    <div class="content">
+      <h3 style="margin:0 0 6px">Sin monedas 😢</h3>
+      <p class="small">Cada mensaje cuesta <b>2</b> moneditas.</p>
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+        <button class="btn btn-primary buy-coins" data-amount="20">Comprar 20</button>
+        <button class="btn btn-primary buy-coins" data-amount="50">Comprar 50</button>
+        <button class="btn btn-primary buy-coins" data-amount="100">Comprar 100</button>
+        <button class="btn btn-warning" id="btnWatchAd">Ver anuncio (+10)</button>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <b>💎 Suscríbete VIP y chatea sin límites</b>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+          <button class="btn btn-ghost vip-plan" data-plan="24h" data-price="4">VIP 24h — 4$</button>
+          <button class="btn btn-ghost vip-plan" data-plan="7d" data-price="15">VIP 1 semana — 15$</button>
+          <button class="btn btn-ghost vip-plan" data-plan="30d" data-price="30">VIP 1 mes — 30$</button>
+        </div>
+      </div>
+
+      <div style="margin-top:12px">
+        <button class="btn btn-ghost" id="btnCloseModal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: TIENDA DIRECTA -->
+  <div id="storeModal" class="modal">
+    <div class="content">
+      <h3 style="margin:0 0 6px">Tienda</h3>
+      <p class="small">Compra monedas o activa VIP.</p>
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+        <button class="btn btn-primary s-buy-coins" data-amount="50">50 monedas</button>
+        <button class="btn btn-primary s-buy-coins" data-amount="150">150 monedas</button>
+        <button class="btn btn-primary s-buy-coins" data-amount="400">400 monedas</button>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <b>💎 VIP</b>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+          <button class="btn btn-ghost vip2-plan" data-plan="24h" data-price="4">VIP 24h — 4$</button>
+          <button class="btn btn-ghost vip2-plan" data-plan="7d" data-price="15">VIP 1 semana — 15$</button>
+          <button class="btn btn-ghost vip2-plan" data-plan="30d" data-price="30">VIP 1 mes — 30$</button>
+        </div>
+      </div>
+
+      <div style="margin-top:10px">
+        <button class="btn btn-ghost" id="btnCloseStore">Cerrar
+
   <!-- TOASTS -->
   <div class="toast-wrap" id="toasts"></div>
 
