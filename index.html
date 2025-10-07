@@ -257,7 +257,55 @@
       </div>
 
       <div style="margin-top:10px">
-        <button class="btn btn-ghost" id="btnCloseStore">Cerrar
+        <button class="btn btn-ghost" id="btnCloseStore">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: MISIONES DIARIAS -->
+  <div id="missionsModal" class="modal">
+    <div class="content">
+      <h3 style="margin:0 0 6px">Misiones diarias</h3>
+
+      <div class="card">
+        <b>1) Seguir estas cuentas de Facebook (+20)</b>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+          <a class="btn btn-ghost" id="fb1" target="_blank" rel="noopener">
+            <img id="fb1logo" src="" alt="fb" style="height:16px;vertical-align:-3px;margin-right:6px"> Página 1
+          </a>
+          <a class="btn btn-ghost" id="fb2" target="_blank" rel="noopener">
+            <img id="fb2logo" src="" alt="fb" style="height:16px;vertical-align:-3px;margin-right:6px"> Página 2
+          </a>
+          <a class="btn btn-ghost" id="fb3" target="_blank" rel="noopener">
+            <img id="fb3logo" src="" alt="fb" style="height:16px;vertical-align:-3px;margin-right:6px"> Página 3
+          </a>
+        </div>
+        <button class="btn btn-primary" id="btnMissionFollow" style="margin-top:8px">Marcar como hecho (+20)</button>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <b>2) Reaccionar a 3 fotos de cada cuenta (+10)</b>
+        <p class="small" style="margin:6px 0">Haz like/❤️ en 3 publicaciones por cuenta.</p>
+        <button class="btn btn-primary" id="btnMissionReact">Marcar como hecho (+10)</button>
+      </div>
+
+      <div style="margin-top:12px">
+        <button class="btn btn-ghost" id="btnCloseMissions">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTERSTITIAL OVERLAY -->
+  <div id="interstitialOverlay" class="interstitial">
+    <div class="inner">
+      <div class="bar">
+        <span class="small">Publicidad — Interstitial</span>
+        <span class="countdown" id="interCounter">Esperando…</span>
+        <button id="closeInterstitial" class="btn btn-ghost" style="display:none">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
 
   <!-- TOASTS -->
   <div class="toast-wrap" id="toasts"></div>
