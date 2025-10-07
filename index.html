@@ -78,7 +78,6 @@
     .toast.ok{border-color:#2f7c4b}.toast.warn{border-color:#7c5b2f}
     .toast .title{font-weight:700;margin-bottom:4px}.toast .close{margin-left:auto;background:transparent;border:0;color:#cfe7ff;cursor:pointer}
   </style>
-  <script id="paypal-sdk-loader"></script>
 </head>
 <body>
 <header class="header">
@@ -99,23 +98,32 @@
       <div class="live-badge">🔴 En directo</div>
     </a>
   </div>
+
   <section id="view-chat" class="view active">
     <h3 class="title-hero">Chatea en vivo 🥰</h3>
     <div class="model-grid" id="chatList"></div>
   </section>
+
   <section id="view-conversation" class="view">
     <div class="card chat-card">
       <div class="chat-head">
         <button class="btn btn-ghost" id="btnBack">← Volver</button>
         <img id="chatAvatar" style="width:40px;height:40px;border-radius:50%">
-        <div><div id="chatName" class="name"></div><small id="chatStatus" class="small">En línea</small></div>
+        <div>
+          <div id="chatName" class="name"></div>
+          <small id="chatStatus" class="small">En línea</small>
+        </div>
         <div style="margin-left:auto" class="coins-badge"><img id="coinsIcon2"><b id="coinsLabel2">0</b></div>
       </div>
       <div class="chat-body" id="messages"></div>
       <div class="typing" id="typingHint">Está escribiendo…</div>
       <div class="chat-input">
         <input class="input" id="msgText" placeholder="Escribe un mensaje (2 monedas / ilimitado si VIP)">
-        <div class="emoji-vip" id="vipEmojis"><button class="btn btn-ghost" data-emoji="💋">💋</button><button class="btn btn-ghost" data-emoji="🔥">🔥</button><button class="btn btn-ghost" data-emoji="💎">💎</button></div>
+        <div class="emoji-vip" id="vipEmojis">
+          <button class="btn btn-ghost" data-emoji="💋">💋</button>
+          <button class="btn btn-ghost" data-emoji="🔥">🔥</button>
+          <button class="btn btn-ghost" data-emoji="💎">💎</button>
+        </div>
         <button class="btn btn-primary" id="btnSend">Enviar</button>
       </div>
     </div>
@@ -129,26 +137,215 @@
   <div class="inner">
     <script>window.peblqx=window.peblqx||function(){};</script>
     <script data-cfasync="false" data-clipid="2086017" async src="//detoxifylagoonsnugness.com/in.js"></script>
-    <div class="bar"><span class="small">Publicidad — Interstitial</span><span class="countdown" id="interCounter">Esperando…</span><button id="closeInterstitial" class="btn btn-ghost" style="display:none">Cerrar</button></div>
+    <div class="bar">
+      <span class="small">Publicidad — Interstitial</span>
+      <span class="countdown" id="interCounter">Esperando…</span>
+      <button id="closeInterstitial" class="btn btn-ghost" style="display:none">Cerrar</button>
+    </div>
   </div>
 </div>
-<div class="toast-wrap" id="toasts"></div>
 
-<!-- ==================== SCRIPT PRINCIPAL ==================== -->
+<div class="toast-wrap" id="toasts"></div>
 <script type="module">
-  messages.innerHTML+=`<div class="msg them">${sanitize(reply)}<div class="meta">${new Date().toLocaleTimeString()}</div></div>`;
+  // ========================== CONFIGURACIONES ==========================
+const bannerVideoSrc = document.getElementById('bannerVideoSrc');
+const bannerLink = document.getElementById('bannerLink');
+const chatList = document.getElementById('chatList');
+const messages = document.getElementById('messages');
+const msgText = document.getElementById('msgText');
+const typingHint = document.getElementById('typingHint');
+const coinsLabel = document.getElementById('coinsLabel');
+const coinsLabel2 = document.getElementById('coinsLabel2');
+const storeContent = document.getElementById('storeContent');
+const missionsContent = document.getElementById('missionsContent');
+
+// Datos iniciales (ejemplo)
+let session = {
+  coins: 0,
+  vip: false,
+};
+
+// ========================== MODELOS ==========================
+const modelos = [
+  {
+    nombre: "Carla",
+    edad: 23,
+    pais: "Colombia",
+    desc: "Divertida y muy coqueta 😉",
+    fotos: [
+      "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e",
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb",
+    ],
+  },
+  {
+    nombre: "Sofía",
+    edad: 18,
+    pais: "Venezuela",
+    desc: "Me encanta conocer chicos nuevos 😍",
+    fotos: [
+      "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e",
+      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1",
+    ],
+  },
+];
+
+function renderModels() {
+  chatList.innerHTML = '';
+  modelos.forEach((m) => {
+    const el = document.createElement('div');
+    el.className = 'model-card';
+    el.innerHTML = `
+      <div class="model-slideshow">
+        ${m.fotos.map((f, i) => `<img src="${f}" class="${i===0?'active':''}">`).join('')}
+      </div>
+      <div class="info">
+        <div class="name">${m.nombre}<span class="online">●</span></div>
+        <div class="extra">${m.edad} años · ${m.pais}</div>
+        <div class="desc">${m.desc}</div>
+      </div>
+      <div class="actions">
+        <div class="action-btn"><img src="https://cdn-icons-png.flaticon.com/512/833/833472.png"><span>❤️ Me gusta</span></div>
+        <div class="action-btn" onclick="showInterstitialBeforeChat('${m.nombre}')"><img src="https://cdn-icons-png.flaticon.com/512/1160/1160358.png"><span>Chatear</span></div>
+      </div>
+    `;
+    // Slideshow
+    const slides = el.querySelectorAll('.model-slideshow img');
+    let idx = 0;
+    setInterval(() => {
+      slides[idx].classList.remove('active');
+      idx = (idx + 1) % slides.length;
+      slides[idx].classList.add('active');
+    }, 3000);
+
+    chatList.appendChild(el);
+  });
 }
 
-/* ================= Interstitial ================= */
+// ========================== BANNER ==========================
+bannerVideoSrc.src = "https://cdn.coverr.co/videos/coverr-aerial-view-of-a-beach-2557/1080p.mp4";
+bannerLink.href = "https://facebook.com";
+
+// ========================== TIENDA ==========================
+document.getElementById('btnStore').onclick = () => {
+  storeContent.innerHTML = `
+    <h3>Tienda</h3>
+    <p>Compra monedas o activa VIP.</p>
+    <button class="btn btn-primary" onclick="buyCoins(50,0.5)">50 monedas — $0.50</button>
+    <button class="btn btn-primary" onclick="buyCoins(150,1)">150 monedas — $1.00</button>
+    <button class="btn btn-primary" onclick="buyCoins(400,4)">400 monedas — $4.00</button>
+
+    <div class="card" style="margin-top:12px">
+      <h4>💎 VIP</h4>
+      <button class="btn btn-ghost" onclick="activateVip('24h',4)">VIP 24h — 4$</button>
+      <button class="btn btn-ghost" onclick="activateVip('1 semana',15)">VIP 1 semana — 15$</button>
+      <button class="btn btn-ghost" onclick="activateVip('1 mes',30)">VIP 1 mes — 30$</button>
+    </div>
+    <div style="margin-top:10px;text-align:right">
+      <button class="btn btn-ghost" onclick="closeModal('storeModal')">Cerrar</button>
+    </div>
+  `;
+  openModal('storeModal');
+};
+
+function buyCoins(cantidad, precio) {
+  toast("PayPal", `Simulando pago de ${precio}$ por ${cantidad} monedas`);
+  session.coins += cantidad;
+  coinsLabel.textContent = session.coins;
+  coinsLabel2.textContent = session.coins;
+}
+
+function activateVip(tipo, precio) {
+  toast("VIP", `Activando plan VIP ${tipo} por ${precio}$`);
+  session.vip = true;
+  document.getElementById('coinsIcon').src = 'https://cdn-icons-png.flaticon.com/512/616/616489.png';
+  document.getElementById('coinsIcon2').src = 'https://cdn-icons-png.flaticon.com/512/616/616489.png';
+}
+
+// ========================== MISIONES ==========================
+document.getElementById('btnMissions').onclick = () => {
+  missionsContent.innerHTML = `
+    <h3>Misiones diarias</h3>
+    <p>¡Completa misiones para ganar monedas gratis!</p>
+
+    <div class="card">
+      <h4>1) Seguir estas cuentas de Facebook (+20)</h4>
+      <a href="https://facebook.com" target="_blank" class="btn btn-ghost">Página 1</a>
+      <a href="https://facebook.com" target="_blank" class="btn btn-ghost">Página 2</a>
+      <a href="https://facebook.com" target="_blank" class="btn btn-ghost">Página 3</a>
+    </div>
+
+    <div class="card" style="margin-top:10px">
+      <h4>2) Reaccionar a 3 fotos de cada cuenta (+10)</h4>
+      <a href="https://facebook.com" target="_blank" class="btn btn-ghost">Cuenta A</a>
+      <a href="https://facebook.com" target="_blank" class="btn btn-ghost">Cuenta B</a>
+      <a href="https://facebook.com" target="_blank" class="btn btn-ghost">Cuenta C</a>
+    </div>
+
+    <div style="margin-top:10px;text-align:right">
+      <button class="btn btn-ghost" onclick="closeModal('missionsModal')">Cerrar</button>
+    </div>
+  `;
+  openModal('missionsModal');
+};
+
+// ========================== CHAT ==========================
+msgText.addEventListener('keydown', (e) => {
+  if(e.key === 'Enter') sendMsg();
+});
+document.getElementById('btnSend').onclick = sendMsg;
+
+function sendMsg() {
+  const txt = msgText.value.trim();
+  if(!txt) return;
+  msgText.value = '';
+
+  // Resta monedas si no es VIP
+  if(!session.vip) {
+    if(session.coins < 2) {
+      toast("Sin monedas 😢","Recarga para seguir chateando");
+      return;
+    }
+    session.coins -= 2;
+    coinsLabel.textContent = session.coins;
+    coinsLabel2.textContent = session.coins;
+  }
+
+  messages.innerHTML += `<div class="msg you">${sanitize(txt)}<div class="meta">${new Date().toLocaleTimeString()}</div></div>`;
+  messages.scrollTop = messages.scrollHeight;
+  botReply(txt);
+}
+
+function botReply(txt) {
+  typingHint.classList.add('on');
+  setTimeout(()=>{
+    typingHint.classList.remove('on');
+    let reply = getAutoReply(txt);
+    messages.innerHTML += `<div class="msg them">${sanitize(reply)}<div class="meta">${new Date().toLocaleTimeString()}</div></div>`;
+    messages.scrollTop = messages.scrollHeight;
+  }, 1000);
+}
+
+// Respuestas automáticas mejoradas
+function getAutoReply(txt) {
+  const lower = txt.toLowerCase();
+  if(lower.includes('hola')) return "Hola cariño 😍 ¿cómo estás?";
+  if(lower.includes('amor') || lower.includes('bebe') || lower.includes('papasito') || lower.includes('rey') || lower.includes('príncipe'))
+    return "Mmm... me gusta cuando me hablas así, mi amor 😘🔥";
+  if(lower.includes('foto')) return "Claro, puedo mandarte una foto 📸😉";
+  if(lower.includes('malas')) return "Palabras como esas no se dicen porque puedes ser bloqueado 🚫";
+  return "Cuéntame más 😏✨";
+}
+
+// ========================== INTERSTITIAL ==========================
 const interstitial=document.getElementById('interstitialOverlay');
 const closeInterstitial=document.getElementById('closeInterstitial');
 const interCounter=document.getElementById('interCounter');
 let nextModel=null; let interTimer=null; let interOpen=false;
 
-function showInterstitialBeforeChat(m){
+window.showInterstitialBeforeChat = function(modelName){
   if(interOpen) return;
   interOpen=true;
-  nextModel=m;
+  nextModel=modelName;
   interstitial.classList.add('show');
   closeInterstitial.style.display='none';
   let sec=6;
@@ -164,18 +361,22 @@ function showInterstitialBeforeChat(m){
       closeInterstitial.style.display='inline-block';
     }
   },1000);
-}
+};
+
 closeInterstitial.onclick=()=>{
   interstitial.classList.remove('show');
   interOpen=false;
   if(nextModel){ openChatWith(nextModel); nextModel=null; }
 };
 
-/* ================= Utilidades ================= */
-function openModal(id){document.getElementById(id).classList.add('show');}
-function closeModal(id){document.getElementById(id).classList.remove('show');}
-function sanitize(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+function openChatWith(name){
+  document.getElementById('view-chat').classList.remove('active');
+  document.getElementById('view-conversation').classList.add('active');
+  document.getElementById('chatName').textContent = name;
+}
 
+// ========================== TOASTS ==========================
+function sanitize(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
 const toasts=document.getElementById('toasts');
 function toast(title,body,type='ok'){
   const el=document.createElement('div');
@@ -192,9 +393,13 @@ function toast(title,body,type='ok'){
   setTimeout(()=>{if(el.parentNode)el.remove();},6000);
 }
 
-/* INIT */
-document.getElementById('coinsLabel2').textContent=session.coins||0;
+// ========================== INIT ==========================
+coinsLabel.textContent = session.coins;
+coinsLabel2.textContent = session.coins;
+document.getElementById('coinsIcon').src = 'https://cdn-icons-png.flaticon.com/512/1828/1828884.png';
+document.getElementById('coinsIcon2').src = 'https://cdn-icons-png.flaticon.com/512/1828/1828884.png';
+
 renderModels();
-</script>
-</body>
+</script> 
+</body> 
 </html>
