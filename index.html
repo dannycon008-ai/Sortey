@@ -110,6 +110,30 @@
     .toast.warn{border-color:#7c5b2f}
     .toast .title{font-weight:700;margin-bottom:4px}
     .toast .close{margin-left:auto;background:transparent;border:0;color:#cfe7ff;cursor:pointer}
+
+    /* ====== MODALES ====== */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.75);
+      display: none;
+      place-items: center;
+      z-index: 3000;
+    }
+    .modal.show {
+      display: grid;
+    }
+    .modal .content {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 20px;
+      width: min(400px, 95%);
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 12px 32px rgba(0,0,0,.5);
+    }
+
   </style>
 
   <script id="paypal-sdk-loader"></script>
@@ -127,7 +151,7 @@
         <button class="btn btn-ghost" id="btnMissions">🗓️ Misiones diarias</button>
         <button class="btn btn-primary" id="btnStore">💳 Tienda</button>
 
-        <!-- Monedas con icono y modo VIP -->
+        <!-- Monedas -->
         <div id="coinsBox" class="coins-badge">
           <img id="coinsIcon" src="" alt="Coins">
           <span id="coinsLabel">0</span>
@@ -148,13 +172,13 @@
       </a>
     </div>
 
-    <!-- LISTA DE MODELOS (INICIO) -->
+    <!-- LISTA DE MODELOS -->
     <section id="view-chat" class="view active">
       <h3 class="title-hero">Chatea en vivo 🥰</h3>
       <div class="model-grid" id="chatList"></div>
     </section>
 
-    <!-- CHAT SOLO (PANTALLA COMPLETA) -->
+    <!-- CHAT -->
     <section id="view-conversation" class="view">
       <div class="card chat-card">
         <div class="chat-head">
@@ -183,131 +207,6 @@
       </div>
     </section>
   </main>
-
-  <!-- MODAL: RECARGA / OFERTA VIP -->
-  <div id="rechargeModal" class="modal">
-    <div class="content">
-      <h3 style="margin:0 0 6px">Sin monedas 😢</h3>
-      <p class="small">Cada mensaje cuesta <b>2</b> moneditas.</p>
-
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
-        <button class="btn btn-primary buy-coins" data-amount="20">Comprar 20</button>
-        <button class="btn btn-primary buy-coins" data-amount="50">Comprar 50</button>
-        <button class="btn btn-primary buy-coins" data-amount="100">Comprar 100</button>
-        <button class="btn btn-warning" id="btnWatchAd">Ver anuncio (+10)</button>
-      </div>
-
-      <!-- PayPal contenedor dinámico para monedas -->
-      <div id="paypal-coins-wrap" style="display:none">
-        <div class="small" id="paypal-coins-caption" style="margin:6px 0 8px"></div>
-        <div id="paypal-coins-btn"></div>
-      </div>
-
-      <div class="card" style="margin-top:12px">
-        <b>💎 Suscríbete VIP y chatea sin límites</b>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
-          <button class="btn btn-ghost vip-plan" data-plan="24h" data-price="4">VIP 24h — 4$</button>
-          <button class="btn btn-ghost vip-plan" data-plan="7d" data-price="15">VIP 1 semana — 15$</button>
-          <button class="btn btn-ghost vip-plan" data-plan="30d" data-price="30">VIP 1 mes — 30$</button>
-        </div>
-        <!-- PayPal contenedor dinámico VIP -->
-        <div id="paypal-vip-wrap" style="display:none;margin-top:10px">
-          <div class="small" id="paypal-vip-caption" style="margin:6px 0 8px"></div>
-          <div id="paypal-vip-btn"></div>
-        </div>
-      </div>
-
-      <div style="margin-top:12px">
-        <button class="btn btn-ghost" id="btnCloseModal">Cerrar</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL: TIENDA DIRECTA (también con PayPal) -->
-  <div id="storeModal" class="modal">
-    <div class="content">
-      <h3 style="margin:0 0 6px">Tienda</h3>
-      <p class="small">Compra monedas o activa VIP.</p>
-
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
-        <button class="btn btn-primary s-buy-coins" data-amount="50">50 monedas</button>
-        <button class="btn btn-primary s-buy-coins" data-amount="150">150 monedas</button>
-        <button class="btn btn-primary s-buy-coins" data-amount="400">400 monedas</button>
-      </div>
-
-      <div id="paypal-store-wrap" style="display:none">
-        <div class="small" id="paypal-store-caption" style="margin:6px 0 8px"></div>
-        <div id="paypal-store-btn"></div>
-      </div>
-
-      <div class="card" style="margin-top:12px">
-        <b>💎 VIP</b>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
-          <button class="btn btn-ghost vip2-plan" data-plan="24h" data-price="4">VIP 24h — 4$</button>
-          <button class="btn btn-ghost vip2-plan" data-plan="7d" data-price="15">VIP 1 semana — 15$</button>
-          <button class="btn btn-ghost vip2-plan" data-plan="30d" data-price="30">VIP 1 mes — 30$</button>
-        </div>
-
-        <div id="paypal-vip2-wrap" style="display:none;margin-top:10px">
-          <div class="small" id="paypal-vip2-caption" style="margin:6px 0 8px"></div>
-          <div id="paypal-vip2-btn"></div>
-        </div>
-      </div>
-
-      <div style="margin-top:10px">
-        <button class="btn btn-ghost" id="btnCloseStore">Cerrar</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL: MISIONES DIARIAS -->
-  <div id="missionsModal" class="modal">
-    <div class="content">
-      <h3 style="margin:0 0 6px">Misiones diarias</h3>
-
-      <div class="card">
-        <b>1) Seguir estas cuentas de Facebook (+20)</b>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
-          <a class="btn btn-ghost" id="fb1" target="_blank" rel="noopener">
-            <img id="fb1logo" src="" alt="fb" style="height:16px;vertical-align:-3px;margin-right:6px"> Página 1
-          </a>
-          <a class="btn btn-ghost" id="fb2" target="_blank" rel="noopener">
-            <img id="fb2logo" src="" alt="fb" style="height:16px;vertical-align:-3px;margin-right:6px"> Página 2
-          </a>
-          <a class="btn btn-ghost" id="fb3" target="_blank" rel="noopener">
-            <img id="fb3logo" src="" alt="fb" style="height:16px;vertical-align:-3px;margin-right:6px"> Página 3
-          </a>
-        </div>
-        <button class="btn btn-primary" id="btnMissionFollow" style="margin-top:8px">Marcar como hecho (+20)</button>
-      </div>
-
-      <div class="card" style="margin-top:12px">
-        <b>2) Reaccionar a 3 fotos de cada cuenta (+10)</b>
-        <p class="small" style="margin:6px 0">Haz like/❤️ en 3 publicaciones por cuenta.</p>
-        <button class="btn btn-primary" id="btnMissionReact">Marcar como hecho (+10)</button>
-      </div>
-
-      <div style="margin-top:12px">
-        <button class="btn btn-ghost" id="btnCloseMissions">Cerrar</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- INTERSTITIAL OVERLAY (previa al chat) -->
-  <div id="interstitialOverlay" class="interstitial">
-    <div class="inner">
-      <script>window.peblqx=window.peblqx||function(){};</script>
-      <!-- Script Interstitial de ClickAd -->
-      <script data-cfasync="false" data-clipid="2086017" async src="//detoxifylagoonsnugness.com/in.js" onerror="peblqx(17)" onload="peblqx(17)"></script>
-
-      <div class="bar">
-        <span class="small">Publicidad — Interstitial</span>
-        <span class="countdown" id="interCounter">Esperando…</span>
-        <button id="closeInterstitial" class="btn btn-ghost" style="display:none">Cerrar</button>
-      </div>
-    </div>
-  </div>
-
   <!-- TOASTS -->
   <div class="toast-wrap" id="toasts"></div>
 
