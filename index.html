@@ -72,14 +72,14 @@
     .model-card .desc{font-size:13px;color:#333}
     .model-card .online{display:inline-block;background:var(--ok);color:#fff;font-size:12px;padding:2px 6px;border-radius:6px;margin-left:6px}
     .model-card .actions{display:flex;gap:10px;justify-content:space-between;align-items:center;padding:10px 12px;background:#f7f9fb;border-top:1px solid #eaeef3}
-    .action-btn{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;border:1px solid #e0e6ee;background:#fff;cursor:pointer;transition:.2s;font-weight:600;font-size:13px;color:#222}
+    .action-btn{display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:10px;border:1px solid #e0e6ee;background:#fff;cursor:pointer;transition:.2s;font-weight:600;font-size:13px;color:#222;justify-content:center;flex:1}
     .action-btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.08)}
     .action-btn img{width:18px;height:18px;display:block}
     .like-badge{background:var(--brand);color:#fff;font-size:12px;padding:2px 8px;border-radius:999px}
 
     /* ====== Banner Video ====== */
-    .banner-wrap{position:relative;margin-top:8px}
-    .banner-wrap video{width:100%;max-height:180px;object-fit:cover;border-radius:14px;display:block}
+    .banner-wrap{position:relative;margin-top:8px;cursor:pointer}
+    .banner-wrap video{width:100%;max-height:200px;object-fit:cover;border-radius:14px;display:block}
     .live-badge{position:absolute;top:12px;left:12px;background:#001f99;color:#fff;font-weight:700;font-size:14px;padding:6px 12px;border-radius:10px;animation:pulse 1.5s infinite;box-shadow:0 0 8px rgba(0,0,0,.4)}
     @keyframes pulse{0%{transform:scale(1);opacity:1}50%{transform:scale(1.1);opacity:.85}100%{transform:scale(1);opacity:1}}
 
@@ -101,13 +101,19 @@
     /* ====== Interstitial ====== */
     .interstitial{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;place-items:center;z-index:2000}
     .interstitial.show{display:grid}
-    .interstitial .inner{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;width:min(640px,95vw)}
-    .interstitial .bar{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-top:1px solid var(--line)}
+    .interstitial .inner{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;width:min(640px,95vw);padding:16px}
+    .interstitial .bar{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-top:1px solid var(--line);margin-top:10px}
     .countdown{font-size:12px;opacity:.8;margin-right:auto;margin-left:8px}
+
+    /* ====== Popup breve ====== */
+    .popup{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;place-items:center;z-index:2500}
+    .popup.show{display:grid}
+    .popup .inner{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 18px;animation:fadeIn .22s ease}
+    @keyframes fadeIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
 
     /* ====== Toasts ====== */
     .toast-wrap{position:fixed;right:16px;bottom:16px;display:flex;flex-direction:column;gap:10px;z-index:3000}
-    .toast{background:#0e1a2a;color:#d8ecff;border:1px solid #27507c;padding:12px 14px;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.35);animation:floatIn .25s ease;display:flex;align-items:flex-start;gap:8px}
+    .toast{background:#0e1a2a;color:#d8ecff;border:1px solid #27507c;padding:12px 14px;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.35);display:flex;align-items:flex-start;gap:8px}
     .toast.ok{border-color:#2f7c4b}
     .toast.warn{border-color:#7c5b2f}
     .toast .title{font-weight:700;margin-bottom:4px}
@@ -122,9 +128,7 @@
       place-items: center;
       z-index: 3000;
     }
-    .modal.show {
-      display: grid;
-    }
+    .modal.show { display: grid; }
     .modal .content {
       background: var(--card);
       border: 1px solid var(--line);
@@ -137,23 +141,15 @@
       opacity: 0; transform: scale(.96);
       animation: modalIn .18s ease forwards;
     }
-    @keyframes modalIn {
-      to { opacity: 1; transform: scale(1); }
-    }
+    @keyframes modalIn { to { opacity: 1; transform: scale(1); } }
 
-    /* Elementos dentro de modales */
-    .price-pill{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:8px 12px;border-radius:999px;border:1px solid #294a72;background:#0f1a2b;color:#e9f6ff;font-weight:700;font-size:13px
-    }
-    .grid-buttons{display:flex;gap:8px;flex-wrap:wrap}
-    .muted{color:#9bc2df}
     .vip-hero{
       display:flex;gap:10px;align-items:center;margin:0 0 8px;font-weight:800;font-size:18px
     }
+    .grid-buttons{display:flex;gap:8px;flex-wrap:wrap}
   </style>
 
-  <!-- PayPal SDK (se carga dinámicamente en JS) -->
+  <!-- PayPal SDK (se carga en JS con tu client-id) -->
   <script id="paypal-sdk-loader"></script>
 </head>
 <body>
@@ -167,7 +163,7 @@
 
       <nav style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
         <button class="btn btn-ghost" id="btnMissions">🗓️ Misiones</button>
-        <button class="btn btn-primary" id="btnStore">💳 Tienda</button>
+        <!-- Eliminado: <button class="btn btn-primary" id="btnStore">💳 Tienda</button> -->
         <button class="btn btn-ghost" id="btnVIP">💎 VIP</button>
 
         <!-- Monedas -->
@@ -181,14 +177,12 @@
 
   <main class="container">
     <!-- BANNER VIDEO -->
-    <div class="banner-wrap">
-      <a id="bannerLink" href="#" target="_blank" rel="noopener">
-        <video autoplay muted loop playsinline>
-          <source id="bannerVideoSrc" src="" type="video/mp4">
-          Tu navegador no soporta video.
-        </video>
-        <div class="live-badge">🔴 En directo</div>
-      </a>
+    <div class="banner-wrap" id="bannerWrap">
+      <video autoplay muted loop playsinline>
+        <source id="bannerVideoSrc" src="https://qu.ax/dMvpz.mp4" type="video/mp4">
+        Tu navegador no soporta video.
+      </video>
+      <div class="live-badge">🔴 En directo</div>
     </div>
 
     <!-- LISTA DE MODELOS -->
@@ -227,53 +221,16 @@
     </section>
   </main>
 
+  <!-- POPUP breve tras interstitial -->
+  <div id="welcomePopup" class="popup">
+    <div class="inner">
+      💋 ¡Bienvenido al chat! Disfruta tu experiencia en <b>ChispaLive</b> 😘
+    </div>
+  </div>
+
   <!-- ========== MODALES ========== -->
 
-  <!-- RECARGA AUTORÁPIDA cuando faltan monedas -->
-  <div id="rechargeModal" class="modal">
-    <div class="content">
-      <h3 style="margin:0 0 6px">Sin monedas 😢</h3>
-      <p class="small">Cada mensaje cuesta <b>2</b> moneditas.</p>
-
-      <div class="grid-buttons" style="margin-bottom:8px">
-        <button class="btn btn-primary s-buy-coins" data-amount="50" data-price="0.50">50 — $0.50</button>
-        <button class="btn btn-primary s-buy-coins" data-amount="150" data-price="1.50">150 — $1.50</button>
-        <button class="btn btn-primary s-buy-coins" data-amount="400" data-price="4.00">400 — $4.00</button>
-      </div>
-
-      <div style="display:flex;gap:8px;align-items:center;margin:8px 0 10px">
-        <span class="muted">¿Prefieres ver todo?</span>
-        <button class="btn btn-ghost" id="goToStoreFromRecharge">Abrir Tienda</button>
-      </div>
-
-      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-ghost" id="btnCloseModal">Cerrar</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- TIENDA (solo MONEDAS) -->
-  <div id="storeModal" class="modal">
-    <div class="content">
-      <h3 style="margin:0 0 6px">Tienda</h3>
-      <p class="small">Compra moneditas para seguir chateando.</p>
-
-      <div class="grid-buttons" style="margin-bottom:8px">
-        <button class="btn btn-primary s-buy-coins" data-amount="50" data-price="0.50">50 — $0.50</button>
-        <button class="btn btn-primary s-buy-coins" data-amount="150" data-price="1.50">150 — $1.50</button>
-        <button class="btn btn-primary s-buy-coins" data-amount="400" data-price="4.00">400 — $4.00</button>
-      </div>
-
-      <div id="paypal-store-wrap" style="display:none;margin-top:10px">
-        <div class="small" id="paypal-store-caption" style="margin:6px 0 8px"></div>
-        <div id="paypal-store-btn"></div>
-      </div>
-
-      <div style="margin-top:10px">
-        <button class="btn btn-ghost" id="btnCloseStore">Cerrar</button>
-      </div>
-    </div>
-  </div>
+  <!-- (Eliminado Store/Tienda) -->
 
   <!-- VIP (solo PLANES) -->
   <div id="vipModal" class="modal">
@@ -341,7 +298,11 @@
   <!-- INTERSTITIAL OVERLAY (previa al chat) -->
   <div id="interstitialOverlay" class="interstitial">
     <div class="inner">
-      <!-- Puedes colocar aquí el script de tu red de interstitial si quieres -->
+      <!-- Aquí puedes integrar tu script de interstitial de ads si deseas -->
+      <video autoplay muted loop playsinline style="width:100%;border-radius:10px">
+        <source src="https://qu.ax/dMvpz.mp4" type="video/mp4">
+      </video>
+
       <div class="bar">
         <span class="small">Publicidad — Interstitial</span>
         <span class="countdown" id="interCounter">Esperando…</span>
@@ -355,31 +316,27 @@
 
   <script type="module">
 /* =======================
-   CONFIGURACIÓN RÁPIDA
+   CONFIG RÁPIDA
 ========================*/
 const PAYPAL_CLIENT_ID = 'TU_CLIENT_ID_PAYPAL_LIVE'; // <-- Reemplaza por tu Client ID real
+const BANNER_POP_URL = ''; // <-- Pon aquí tu URL de POP (queda vacío para que tú lo pongas)
 
-// Íconos/URLs
+/* Íconos/URLs */
 const COIN_ICON_URL = 'https://i.imgur.com/5o8w7oS.png';
 const VIP_ICON_URL  = 'https://i.imgur.com/1F2r0yN.png';
 const FACEBOOK_ICON_URL = 'https://i.imgur.com/6c1mQw6.png';
 const PRIV_ICON_URL = 'https://i.imgur.com/Q8oQH0x.png';
 
-const BANNER_LINK  = 'https://tu-enlace-del-banner.com';
+/* Banner config */
+const BANNER_LINK  = 'https://tu-enlace-del-banner.com'; // el video es correcto; el POP lo pones tú
 const BANNER_VIDEO = 'https://qu.ax/dMvpz.mp4';
 
-// Misiones: logos y enlaces
+/* Misiones: logos y enlaces */
 const FB_MISSIONS = [
   { logo: FACEBOOK_ICON_URL, url: 'https://facebook.com/pagina1', posts: 'https://facebook.com/pagina1/posts' },
   { logo: FACEBOOK_ICON_URL, url: 'https://facebook.com/pagina2', posts: 'https://facebook.com/pagina2/posts' },
   { logo: FACEBOOK_ICON_URL, url: 'https://facebook.com/pagina3', posts: 'https://facebook.com/pagina3/posts' }
 ];
-
-// Cargar SDK de PayPal dinámicamente
-(function loadPayPal(){
-  const s=document.getElementById('paypal-sdk-loader');
-  s.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(PAYPAL_CLIENT_ID)}&currency=USD`;
-})();
 
 /* ================= FIREBASE (solo lectura modelos) ================= */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -434,9 +391,18 @@ function paintVIP(){
 }
 updateCoins(0); paintVIP();
 
-/* ================= Banner config ================= */
-document.getElementById('bannerLink').href = BANNER_LINK;
+/* ================= Banner ================= */
 document.getElementById('bannerVideoSrc').src = BANNER_VIDEO;
+// POP al clic en el banner (tú pones la URL en BANNER_POP_URL)
+document.getElementById('bannerWrap').onclick = ()=>{
+  if(!BANNER_POP_URL){
+    toast('POP sin URL','Edita BANNER_POP_URL en el código.','warn');
+    return;
+  }
+  const w = 800, h = 600;
+  const left = (screen.width - w)/2, top = (screen.height - h)/2;
+  window.open(BANNER_POP_URL, 'pop', `width=${w},height=${h},left=${left},top=${top},noopener`);
+};
 
 /* ================= Misiones ================= */
 const missionsModal = document.getElementById('missionsModal');
@@ -449,7 +415,6 @@ document.getElementById('fb3').href = FB_MISSIONS[2].url;
 document.getElementById('fb1logo').src = FB_MISSIONS[0].logo;
 document.getElementById('fb2logo').src = FB_MISSIONS[1].logo;
 document.getElementById('fb3logo').src = FB_MISSIONS[2].logo;
-// Enlaces de publicaciones (Misión 2)
 document.getElementById('fbp1').href = FB_MISSIONS[0].posts;
 document.getElementById('fbp2').href = FB_MISSIONS[1].posts;
 document.getElementById('fbp3').href = FB_MISSIONS[2].posts;
@@ -494,31 +459,30 @@ function openModal(id){ document.getElementById(id).classList.add('show'); }
 function closeModal(id){ document.getElementById(id).classList.remove('show'); }
 
 /* Abridores header */
-document.getElementById('btnStore').onclick = ()=> openModal('storeModal');
 document.getElementById('btnVIP').onclick   = ()=> openModal('vipModal');
 
 /* Cerradores */
-document.getElementById('btnCloseModal').onclick = ()=> closeModal('rechargeModal');
-document.getElementById('btnCloseStore').onclick = ()=> closeModal('storeModal');
 document.getElementById('btnCloseVIP').onclick   = ()=> closeModal('vipModal');
-document.getElementById('goToStoreFromRecharge').onclick = ()=>{
-  closeModal('rechargeModal'); openModal('storeModal');
-};
 
-/* ================= PAYPAL RENDER ================= */
+/* ================= PAYPAL (solo VIP) ================= */
+(function loadPayPal(){
+  const s=document.getElementById('paypal-sdk-loader');
+  s.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(PAYPAL_CLIENT_ID)}&currency=USD`;
+})();
+
 function ensurePayPal(cb){
   let tries=0;
   const iv=setInterval(()=>{
     tries++;
     if(window.paypal){ clearInterval(iv); cb(); }
-    else if(tries>60){ clearInterval(iv); toast('PayPal no cargó','Revisa tu Client ID en el código.','warn'); }
+    else if(tries>60){ clearInterval(iv); toast('PayPal no cargó','Revisa tu Client ID.','warn'); }
   },250);
 }
 
 function renderPayPalButton({price, onApprove, containerId}){
   ensurePayPal(()=>{
     const container = document.getElementById(containerId);
-    container.innerHTML = ''; // limpiar si ya había uno
+    container.innerHTML = '';
     window.paypal.Buttons({
       style:{ layout:'horizontal', shape:'pill', label:'paypal', tagline:false },
       createOrder: (data, actions)=> actions.order.create({
@@ -532,21 +496,6 @@ function renderPayPalButton({price, onApprove, containerId}){
       },
       onError: ()=> toast('Error en PayPal','Verifica tu cuenta o conexión.','warn')
     }).render('#'+containerId);
-  });
-}
-
-/* Monedas: al elegir paquete */
-function selectCoinsPackage(amount, price){
-  document.getElementById('paypal-store-wrap').style.display='block';
-  document.getElementById('paypal-store-caption').textContent = `Pagar $${Number(price).toFixed(2)} por ${amount} monedas`;
-  renderPayPalButton({
-    price,
-    containerId:'paypal-store-btn',
-    onApprove: ()=>{
-      updateCoins(Number(amount));
-      toast('Compra exitosa','Se acreditaron tus moneditas.','ok');
-      closeModal('storeModal');
-    }
   });
 }
 
@@ -565,18 +514,7 @@ function selectVIPPlan(plan, price){
   });
 }
 
-/* Delegación: botones de paquetes y VIP */
 document.addEventListener('click', (e)=>{
-  const coinBtn = e.target.closest('.s-buy-coins');
-  if(coinBtn){
-    const amount = coinBtn.getAttribute('data-amount');
-    const price  = coinBtn.getAttribute('data-price');
-    // Si viene desde rechargeModal, abrimos Tienda con el paquete ya seleccionado.
-    openModal('storeModal');
-    document.getElementById('paypal-store-wrap').style.display='none';
-    selectCoinsPackage(amount, price);
-  }
-
   const vipBtn = e.target.closest('.vip-plan');
   if(vipBtn){
     const plan  = vipBtn.getAttribute('data-plan');
@@ -612,30 +550,25 @@ async function renderModels(){
         <div class="desc">${sanitize(m.desc||'')}</div>
       </div>
       <div class="actions">
-        <button class="action-btn btn-like" title="Me gusta">
-          <img src="https://qu.ax/hlsxX.png" alt="like"><span>Me gusta</span>
-          <span class="like-badge">${m.likes||0}</span>
-        </button>
-        <a class="action-btn btn-fb" ${m.facebookUrl?`href="${m.facebookUrl}" target="_blank" rel="noopener"`:'style="pointer-events:none;opacity:.5"'} title="Facebook">
-          <img src="${FACEBOOK_ICON_URL}" alt="fb"><span>Facebook</span>
-        </a>
-        <button class="action-btn btn-priv" title="Ver privadas">
-          <img src="${PRIV_ICON_URL}" alt="priv"><span>Privadas</span>
-        </button>
-        <button class="action-btn btn-msg" title="Enviar mensaje">
-          <img src="https://qu.ax/jGSiu.png" alt="mensaje"><span>Mensaje</span>
-        </button>
+        <button class="action-btn btn-like" title="Me gusta">❤️ <span class="like-badge">${m.likes||0}</span></button>
+        <a class="action-btn btn-fb" ${m.facebookUrl?`href="${m.facebookUrl}" target="_blank" rel="noopener"`:'style="pointer-events:none;opacity:.5"'} title="Facebook">📘</a>
+        <button class="action-btn btn-priv" title="Ver privadas">👀</button>
       </div>
     `;
 
-    // Eventos de acciones
+    // Click en toda la tarjeta -> Interstitial antes del chat
+    card.addEventListener('click', (ev)=>{
+      // Evitar que los botones dentro disparen el card click
+      if(ev.target.closest('.action-btn')) return;
+      showInterstitialBeforeChat(m, pub, priv);
+    });
+
+    // Acciones
     card.querySelector('.btn-like').onclick=(ev)=>{
       ev.stopPropagation();
       const badge=card.querySelector('.like-badge');
       badge.textContent = Number(badge.textContent||0)+1;
     };
-
-    card.querySelector('.btn-msg').onclick=()=> showInterstitialBeforeChat(m);
 
     card.querySelector('.btn-priv').onclick=(e)=>{
       e.stopPropagation();
@@ -644,12 +577,10 @@ async function renderModels(){
       (priv.length?priv:pub).forEach(src=> w.document.write(`<img src="${src}" style="width:100%;margin-bottom:8px">`));
     };
 
-    // Agregar card + slideshow
     chatList.appendChild(card);
     startSlideshow(slideId);
   });
 }
-
 function startSlideshow(id){
   const box=document.getElementById(id); if(!box) return;
   const imgs=[...box.querySelectorAll('img')]; if(imgs.length<=1) return;
@@ -662,10 +593,11 @@ function startSlideshow(id){
   }, 2800);
 }
 
-/* ================= INTERSTITIAL ================= */
+/* ================= INTERSTITIAL + POPUP + CHAT ================= */
 const interstitial = document.getElementById('interstitialOverlay');
 const closeInterstitial = document.getElementById('closeInterstitial');
 const interCounter = document.getElementById('interCounter');
+const welcomePopup = document.getElementById('welcomePopup');
 let nextModel = null;
 let interTimer = null;
 let interOpen = false;
@@ -676,7 +608,7 @@ function showInterstitialBeforeChat(m){
   nextModel = m;
   interstitial.classList.add('show');
   closeInterstitial.style.display='none';
-  let sec=4;
+  let sec=5;
   interCounter.textContent = `Cierra disponible en ${sec}s`;
   clearInterval(interTimer);
   interTimer = setInterval(()=>{
@@ -693,8 +625,13 @@ function showInterstitialBeforeChat(m){
 closeInterstitial.onclick=()=>{
   interstitial.classList.remove('show');
   interOpen = false;
-  if(nextModel) openChatWith(nextModel);
-  nextModel=null;
+  // Pop breve
+  welcomePopup.classList.add('show');
+  setTimeout(()=>{
+    welcomePopup.classList.remove('show');
+    if(nextModel) openChatWith(nextModel);
+    nextModel=null;
+  }, 1600);
 };
 
 /* ================= CHAT ================= */
@@ -718,7 +655,6 @@ function go(v){
   document.getElementById('view-chat').classList.toggle('active', v==='chat');
   document.getElementById('view-conversation').classList.toggle('active', v==='conversation');
 }
-
 document.getElementById('btnBack').onclick=()=> go('chat');
 
 document.getElementById('btnSend').onclick=sendMsg;
@@ -730,7 +666,11 @@ function sendMsg(){
   const val=(input.value||'').trim(); if(!val) return;
 
   if(!isVIP()){
-    if((session.coins||0) < COIN_PER_MSG){ openModal('rechargeModal'); return; }
+    if((session.coins||0) < COIN_PER_MSG){
+      // Ya no se abre Tienda. En su lugar, invitamos a VIP.
+      openModal('vipModal');
+      return;
+    }
     updateCoins(-COIN_PER_MSG);
   }
 
@@ -744,6 +684,7 @@ function sendMsg(){
     autoReply(val);
   },1600);
 }
+function typing(on){ typingHint.classList.toggle('on', !!on); chatStatus.textContent = on?'En línea · escribiendo…':'En línea'; }
 
 /* ================= BOT RESPUESTAS ================ */
 function autoReply(userText){
@@ -769,9 +710,8 @@ function autoReply(userText){
   messages.innerHTML+=`<div class="msg them">${reply}<div class="meta">${new Date().toLocaleTimeString()}</div></div>`;
 }
 
-/* INIT */
+/* ================= INIT ================= */
 renderModels();
   </script>
 </body>
 </html>
-
