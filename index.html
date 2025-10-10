@@ -28,11 +28,12 @@
     .header{position:sticky;top:0;z-index:50;background:rgba(10,18,32,.85);backdrop-filter:blur(6px);border-bottom:1px solid #132338}
     .header-inner{display:flex;justify-content:space-between;align-items:center;padding:12px 16px}
     .brand{display:flex;align-items:center;gap:10px;font-weight:700}
-    .btn{border:0;padding:8px 12px;border-radius:10px;font-weight:600;cursor:pointer;transition:.15s;font-size:14px}
+    .btn{border:0;padding:8px 12px;border-radius:10px;font-weight:600;cursor:pointer;transition:.15s;font-size:14px;display:inline-flex;align-items:center;gap:8px}
     .btn:active{transform:translateY(1px)}
     .btn-primary{background:var(--brand);color:#fff}
     .btn-ghost{background:transparent;color:#cfe7ff;border:1px solid #244362}
     .btn-warning{background:var(--warn);color:#1b1407}
+    .btn img{width:18px;height:18px;display:block;object-fit:contain}
     .input{width:100%;background:#0e192a;color:#d9eeff;border:1px solid #1f3550;border-radius:12px;padding:10px 12px}
     .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 10px 32px rgba(0,0,0,.35)}
     .small{color:var(--sub);font-size:12px}
@@ -162,9 +163,12 @@
       </div>
 
       <nav style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-        <button class="btn btn-ghost" id="btnMissions">🗓️ Misiones</button>
-        <!-- Eliminado: <button class="btn btn-primary" id="btnStore">💳 Tienda</button> -->
-        <button class="btn btn-ghost" id="btnVIP">💎 VIP</button>
+        <button class="btn btn-ghost" id="btnMissions" title="Misiones">
+          <img src="https://qu.ax/RmqWq.png" alt="Misiones"> <span class="small">Misiones</span>
+        </button>
+        <button class="btn btn-ghost" id="btnVIP" title="VIP">
+          <img src="https://qu.ax/VXfcY.png" alt="VIP"> <span class="small">VIP</span>
+        </button>
 
         <!-- Monedas -->
         <div id="coinsBox" class="coins-badge" title="Tus moneditas">
@@ -174,7 +178,6 @@
       </nav>
     </div>
   </header>
-
   <main class="container">
     <!-- BANNER VIDEO -->
     <div class="banner-wrap" id="bannerWrap">
@@ -215,7 +218,9 @@
             <button class="btn btn-ghost" data-emoji="🔥">🔥</button>
             <button class="btn btn-ghost" data-emoji="💎">💎</button>
           </div>
-          <button class="btn btn-primary" id="btnSend">Enviar</button>
+          <button class="btn btn-primary" id="btnSend">
+            <img src="https://qu.ax/EJoHQ.png" alt="Enviar"> Enviar
+          </button>
         </div>
       </div>
     </section>
@@ -228,14 +233,22 @@
     </div>
   </div>
 
-  <!-- ========== MODALES ========== -->
-
-  <!-- (Eliminado Store/Tienda) -->
+  <!-- CONFIRMAR SALIDA DEL CHAT -->
+  <div id="exitConfirm" class="modal">
+    <div class="content" style="text-align:center">
+      <h3 style="margin:0 0 8px">¿Seguro que deseas salir del chat?</h3>
+      <p class="small" style="margin:0 0 12px">Perderás el hilo actual.</p>
+      <div class="grid-buttons" style="justify-content:center">
+        <button class="btn btn-primary" id="btnExitYes">Sí, salir</button>
+        <button class="btn btn-ghost" id="btnExitNo">Cancelar</button>
+      </div>
+    </div>
+  </div>
 
   <!-- VIP (solo PLANES) -->
   <div id="vipModal" class="modal">
     <div class="content">
-      <div class="vip-hero">💎 Hazte VIP y desbloquea todo</div>
+      <div class="vip-hero"><img src="https://qu.ax/VXfcY.png" alt="vip"> Hazte VIP y desbloquea todo</div>
       <p class="small" style="margin:0 0 10px">
         ✅ Chat ilimitado · 📸 Fotos privadas · ✨ Emojis exclusivos
       </p>
@@ -260,7 +273,10 @@
   <!-- MISIONES DIARIAS -->
   <div id="missionsModal" class="modal">
     <div class="content">
-      <h3 style="margin:0 0 6px">Misiones diarias</h3>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <img src="https://qu.ax/RmqWq.png" alt="mis" style="width:20px;height:20px"> 
+        <h3 style="margin:0">Misiones diarias</h3>
+      </div>
 
       <div class="card">
         <b>1) Seguir estas cuentas de Facebook (+20)</b>
@@ -298,7 +314,6 @@
   <!-- INTERSTITIAL OVERLAY (previa al chat) -->
   <div id="interstitialOverlay" class="interstitial">
     <div class="inner">
-      <!-- Aquí puedes integrar tu script de interstitial de ads si deseas -->
       <video autoplay muted loop playsinline style="width:100%;border-radius:10px">
         <source src="https://qu.ax/dMvpz.mp4" type="video/mp4">
       </video>
@@ -313,29 +328,28 @@
 
   <!-- TOASTS -->
   <div class="toast-wrap" id="toasts"></div>
-
   <script type="module">
 /* =======================
    CONFIG RÁPIDA
 ========================*/
 const PAYPAL_CLIENT_ID = 'TU_CLIENT_ID_PAYPAL_LIVE'; // <-- Reemplaza por tu Client ID real
-const BANNER_POP_URL = 'https://attacheatableoverlabor.com/2061965'; // <-- Pon aquí tu URL de POP (queda vacío para que tú lo pongas)
+const BANNER_POP_URL = ''; // <-- Pon aquí tu URL de POP (tú la colocas)
 
 /* Íconos/URLs */
-const COIN_ICON_URL = 'https://qu.ax/drFow.png';
-const VIP_ICON_URL  = 'https://qu.ax/VXfcY.png';
-const FACEBOOK_ICON_URL = 'https://qu.ax/VrGgJ.png';
-const PRIV_ICON_URL = 'https://qu.ax/EJoHQ.png';
+const COIN_ICON_URL = 'https://i.imgur.com/5o8w7oS.png';
+const VIP_ICON_URL  = 'https://i.imgur.com/1F2r0yN.png'; // usado para monedas si VIP
+const FACEBOOK_ICON_URL = 'https://i.imgur.com/6c1mQw6.png';
+const PRIV_ICON_URL = 'https://i.imgur.com/Q8oQH0x.png';
 
 /* Banner config */
-const BANNER_LINK  = 'https://attacheatableoverlabor.com/2061965'; // el video es correcto; el POP lo pones tú
+const BANNER_LINK  = 'https://tu-enlace-del-banner.com'; // solo referencia visual; POP lo maneja BANNER_POP_URL
 const BANNER_VIDEO = 'https://qu.ax/dMvpz.mp4';
 
 /* Misiones: logos y enlaces */
 const FB_MISSIONS = [
-  { logo: FACEBOOK_ICON_URL, url: 'https://www.facebook.com/profile.php?id=61581239074372&locale=es_LA', posts: 'https://www.facebook.com/share/r/175tUe5vtQ/' },
-  { logo: FACEBOOK_ICON_URL, url: 'https://www.facebook.com/profile.php?id=61579869052650', posts: 'https://www.facebook.com/share/r/1H9FSoBUsj/' },
-  { logo: FACEBOOK_ICON_URL, url: 'https://facebook.com/pagina3', posts: 'https://www.facebook.com/share/r/17UQD8RJqj/' }
+  { logo: FACEBOOK_ICON_URL, url: 'https://facebook.com/pagina1', posts: 'https://facebook.com/pagina1/posts' },
+  { logo: FACEBOOK_ICON_URL, url: 'https://facebook.com/pagina2', posts: 'https://facebook.com/pagina2/posts' },
+  { logo: FACEBOOK_ICON_URL, url: 'https://facebook.com/pagina3', posts: 'https://facebook.com/pagina3/posts' }
 ];
 
 /* ================= FIREBASE (solo lectura modelos) ================= */
@@ -393,7 +407,7 @@ updateCoins(0); paintVIP();
 
 /* ================= Banner ================= */
 document.getElementById('bannerVideoSrc').src = BANNER_VIDEO;
-// POP al clic en el banner (tú pones la URL en BANNER_POP_URL)
+// POP al clic en el banner
 document.getElementById('bannerWrap').onclick = ()=>{
   if(!BANNER_POP_URL){
     toast('POP sin URL','Edita BANNER_POP_URL en el código.','warn');
@@ -552,15 +566,14 @@ async function renderModels(){
       <div class="actions">
         <button class="action-btn btn-like" title="Me gusta">❤️ <span class="like-badge">${m.likes||0}</span></button>
         <a class="action-btn btn-fb" ${m.facebookUrl?`href="${m.facebookUrl}" target="_blank" rel="noopener"`:'style="pointer-events:none;opacity:.5"'} title="Facebook">📘</a>
-        <button class="action-btn btn-priv" title="Ver privadas">👀</button>
+        <button class="action-btn btn-priv" title="Ver privadas"><span>Fotos privadas</span></button>
       </div>
     `;
 
     // Click en toda la tarjeta -> Interstitial antes del chat
     card.addEventListener('click', (ev)=>{
-      // Evitar que los botones dentro disparen el card click
-      if(ev.target.closest('.action-btn')) return;
-      showInterstitialBeforeChat(m, pub, priv);
+      if(ev.target.closest('.action-btn')) return; // no abrir chat al pulsar botones
+      showInterstitialBeforeChat(m);
     });
 
     // Acciones
@@ -573,8 +586,9 @@ async function renderModels(){
     card.querySelector('.btn-priv').onclick=(e)=>{
       e.stopPropagation();
       if(!isVIP()){ toast('Activa VIP','Para ver las privadas 😏','warn'); return; }
+      const pics = (priv.length?priv:pub);
       const w = window.open('','_blank','width=800,height=600');
-      (priv.length?priv:pub).forEach(src=> w.document.write(`<img src="${src}" style="width:100%;margin-bottom:8px">`));
+      pics.forEach(src=> w.document.write(`<img src="${src}" style="width:100%;margin-bottom:8px">`));
     };
 
     chatList.appendChild(card);
@@ -655,7 +669,19 @@ function go(v){
   document.getElementById('view-chat').classList.toggle('active', v==='chat');
   document.getElementById('view-conversation').classList.toggle('active', v==='conversation');
 }
-document.getElementById('btnBack').onclick=()=> go('chat');
+
+/* Confirmación SIEMPRE al presionar Volver */
+document.getElementById('btnBack').onclick=()=>{
+  openModal('exitConfirm');
+};
+document.getElementById('btnExitYes').onclick=()=>{
+  closeModal('exitConfirm');
+  go('chat');
+  currentModel=null;
+};
+document.getElementById('btnExitNo').onclick=()=>{
+  closeModal('exitConfirm');
+};
 
 document.getElementById('btnSend').onclick=sendMsg;
 document.getElementById('msgText').addEventListener('keydown',e=>{ if(e.key==='Enter'){e.preventDefault();sendMsg();} });
@@ -667,8 +693,7 @@ function sendMsg(){
 
   if(!isVIP()){
     if((session.coins||0) < COIN_PER_MSG){
-      // Ya no se abre Tienda. En su lugar, invitamos a VIP.
-      openModal('vipModal');
+      openModal('vipModal'); // sin tienda: sugerimos VIP
       return;
     }
     updateCoins(-COIN_PER_MSG);
