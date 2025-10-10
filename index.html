@@ -7,6 +7,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
   <style>
+    /* Animación para el popup de salida */
+#exitConfirm .content {
+  animation: modalIn .25s ease;
+}
+#exitConfirm.show {
+  backdrop-filter: blur(4px);
+}
+
     :root{
       --brand:#ff2e6a;
       --bg:#0b1220;
@@ -233,17 +241,18 @@
     </div>
   </div>
 
-  <!-- CONFIRMAR SALIDA DEL CHAT -->
-  <div id="exitConfirm" class="modal">
-    <div class="content" style="text-align:center">
-      <h3 style="margin:0 0 8px">¿Seguro que deseas salir del chat?</h3>
-      <p class="small" style="margin:0 0 12px">Perderás el hilo actual.</p>
-      <div class="grid-buttons" style="justify-content:center">
-        <button class="btn btn-primary" id="btnExitYes">Sí, salir</button>
-        <button class="btn btn-ghost" id="btnExitNo">Cancelar</button>
-      </div>
+<!-- CONFIRMAR SALIDA DEL CHAT -->
+<div id="exitConfirm" class="modal">
+  <div class="content" style="text-align:center">
+    <h3 style="margin:0 0 8px">¿Seguro que deseas salir del chat?</h3>
+    <p class="small" style="margin:0 0 12px">Perderás el hilo actual.</p>
+    <div class="grid-buttons" style="justify-content:center">
+      <button class="btn btn-primary" id="btnExitYes">Sí, salir</button>
+      <button class="btn btn-ghost" id="btnExitNo">Cancelar</button>
     </div>
   </div>
+</div>
+
 
   <!-- VIP (solo PLANES) -->
   <div id="vipModal" class="modal">
