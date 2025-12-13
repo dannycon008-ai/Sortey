@@ -2,501 +2,817 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Generador de Cookies — Proyecto</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mini Mercado — Demo</title>
   <style>
     :root{
-      --bg:#0f1724;
-      --card:#0b1220;
-      --muted:#94a3b8;
-      --accent:#60a5fa;
-      --success:#22c55e;
-      --danger:#ef4444;
-      --glass: rgba(255,255,255,0.03);
-      --radius:12px;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      --yellow:#ffe600;
+      --yellow-2:#fff3a6;
+      --ink:#111;
+      --muted:#6b7280;
+      --bg:#f5f5f5;
+      --card:#ffffff;
+      --line:#e6e6e6;
+      --blue:#3483fa;
+      --blue-2:#1f6feb;
+      --green:#00a650;
+      --shadow: 0 10px 25px rgba(0,0,0,.08);
+      --radius: 14px;
     }
-    html,body{height:100%}
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
     body{
       margin:0;
-      background: linear-gradient(180deg,#061025 0%, #071028 60%);
-      color:#e6eef8;
-      -webkit-font-smoothing:antialiased;
-      padding:32px;
-      box-sizing:border-box;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--ink);
+      background:var(--bg);
     }
-    .container{
+
+    /* Top bar */
+    .topbar{
+      background:var(--yellow);
+      border-bottom:1px solid rgba(0,0,0,.08);
+      position:sticky;
+      top:0;
+      z-index:50;
+    }
+    .topbar__inner{
       max-width:1100px;
       margin:0 auto;
-      display:grid;
-      grid-template-columns: 420px 1fr;
-      gap:24px;
-      align-items:start;
-    }
-    header{
-      grid-column: 1 / -1;
+      padding:14px 16px;
       display:flex;
-      justify-content:space-between;
       align-items:center;
-      margin-bottom:6px;
+      gap:14px;
     }
-    h1{font-size:20px;margin:0}
-    p.lead{margin:6px 0 0;color:var(--muted);font-size:14px}
-    .card{
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border-radius:var(--radius);
-      padding:18px;
-      box-shadow: 0 6px 18px rgba(2,6,23,0.6);
-      border:1px solid rgba(255,255,255,0.03);
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:900;
+      letter-spacing:.2px;
     }
-    form label{display:block;font-size:13px;color:var(--muted);margin-top:12px}
-    input[type="text"], input[type="number"], input[type="datetime-local"], select, textarea{
-      width:100%;
-      background:var(--glass);
-      border:1px solid rgba(255,255,255,0.04);
-      padding:10px;
-      border-radius:8px;
-      color:inherit;
-      margin-top:6px;
-      box-sizing:border-box;
-      font-size:14px;
-    }
-    .row{display:flex;gap:8px}
-    .row > *{flex:1}
-    .actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
-    button{
-      background:var(--accent);
-      border:none;
-      color:#04263a;
-      font-weight:600;
-      padding:10px 12px;
+    .brand__logo{
+      width:34px;height:34px;
       border-radius:10px;
-      cursor:pointer;
-      box-shadow: 0 6px 12px rgba(96,165,250,0.12);
+      background:linear-gradient(135deg, #111 0%, #444 100%);
+      display:grid;place-items:center;
+      color:#fff;
+      font-size:14px;
+      box-shadow: 0 6px 14px rgba(0,0,0,.18);
     }
-    button.secondary{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.04);}
-    button.danger{background:var(--danger);color:white;box-shadow:none}
-    small.note{display:block;color:var(--muted);margin-top:8px;font-size:12px}
-    .controls{display:flex;gap:8px;align-items:center;margin-top:10px}
-    .cookie-list{overflow:auto;max-height:520px;padding-top:6px}
-    table{width:100%;border-collapse:collapse;font-size:13px}
-    th,td{padding:8px 10px;text-align:left;border-bottom:1px dashed rgba(255,255,255,0.02)}
-    th{color:var(--muted);font-weight:600;font-size:12px}
-    tr:hover td{background:rgba(255,255,255,0.01)}
-    .pill{display:inline-block;padding:4px 8px;border-radius:999px;font-size:12px;background:rgba(255,255,255,0.03);color:var(--muted)}
-    .right{text-align:right}
-    .muted{color:var(--muted)}
-    .small{font-size:12px}
-    .topbar{
+    .brand small{ font-weight:700; opacity:.7; }
+
+    .search{
+      flex:1;
       display:flex;
       gap:10px;
       align-items:center;
-      margin-bottom:10px;
-      justify-content:space-between;
     }
-    .file-input{display:none}
-    .flex{display:flex;gap:8px;align-items:center}
-    .toast{
-      position:fixed;right:18px;bottom:18px;background:rgba(2,6,23,0.9);padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);
-      color:#dff6ff;box-shadow:0 8px 30px rgba(2,6,23,0.6)
+    .search input{
+      width:100%;
+      padding:12px 14px;
+      border:1px solid rgba(0,0,0,.12);
+      border-radius:12px;
+      outline:none;
+      font-size:14px;
+      background:#fff;
+      box-shadow: 0 8px 16px rgba(0,0,0,.06);
+    }
+    .search input:focus{
+      border-color: rgba(52,131,250,.55);
+      box-shadow: 0 10px 20px rgba(52,131,250,.12);
     }
 
-    /* responsive */
-    @media (max-width:900px){
-      .container{grid-template-columns:1fr; padding:16px}
+    .btn{
+      border:0;
+      cursor:pointer;
+      border-radius:12px;
+      padding:10px 12px;
+      font-weight:700;
+      font-size:14px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      user-select:none;
+    }
+    .btn--primary{
+      background:var(--blue);
+      color:#fff;
+    }
+    .btn--primary:hover{ background:var(--blue-2); }
+    .btn--ghost{
+      background:rgba(255,255,255,.65);
+      border:1px solid rgba(0,0,0,.12);
+    }
+    .btn--ghost:hover{ background:#fff; }
+
+    .badge{
+      min-width:20px;
+      height:20px;
+      padding:0 6px;
+      border-radius:999px;
+      background:#111;
+      color:#fff;
+      display:inline-grid;
+      place-items:center;
+      font-size:12px;
+      line-height:1;
+    }
+
+    /* Layout */
+    .wrap{
+      max-width:1100px;
+      margin:18px auto 40px;
+      padding:0 16px;
+      display:grid;
+      grid-template-columns: 280px 1fr;
+      gap:18px;
+    }
+
+    /* Sidebar */
+    .panel{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .panel__hd{
+      padding:14px 14px 10px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .panel__hd h3{
+      margin:0;
+      font-size:14px;
+      letter-spacing:.2px;
+    }
+    .panel__bd{ padding:14px; }
+
+    .field{ display:flex; flex-direction:column; gap:8px; margin-bottom:14px; }
+    .label{ font-size:12px; color:var(--muted); font-weight:700; }
+    select, .chipbar button{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(0,0,0,.12);
+      background:#fff;
+      font-size:14px;
+      outline:none;
+    }
+
+    .chipbar{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .chipbar button{
+      cursor:pointer;
+      font-weight:700;
+      background: #fff;
+    }
+    .chipbar button[aria-pressed="true"]{
+      border-color: rgba(52,131,250,.55);
+      background: rgba(52,131,250,.10);
+    }
+
+    .hint{
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.4;
+      margin:0;
+    }
+
+    /* Main */
+    .hero{
+      background: linear-gradient(135deg, #ffffff 0%, var(--yellow-2) 100%);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:14px 14px;
+      box-shadow: var(--shadow);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+    }
+    .hero h2{ margin:0; font-size:16px; }
+    .hero p{ margin:4px 0 0; color:var(--muted); font-size:13px; }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap:14px;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      overflow:hidden;
+      box-shadow: var(--shadow);
+      display:flex;
+      flex-direction:column;
+      min-height: 330px;
+    }
+    .thumb{
+      height:150px;
+      background: linear-gradient(135deg, rgba(52,131,250,.18), rgba(0,166,80,.18));
+      display:grid;
+      place-items:center;
+      position:relative;
+    }
+    .thumb span{
+      font-weight:900;
+      color:#111;
+      background:rgba(255,255,255,.8);
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(0,0,0,.10);
+      font-size:12px;
+    }
+    .tag{
+      position:absolute;
+      top:10px; left:10px;
+      background: rgba(0,0,0,.86);
+      color:#fff;
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+    }
+
+    .card__body{
+      padding:12px 12px 10px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      flex:1;
+    }
+    .title{
+      font-size:14px;
+      margin:0;
+      line-height:1.25;
+      min-height: 36px;
+    }
+    .price{
+      display:flex;
+      align-items:baseline;
+      gap:8px;
+      margin:0;
+    }
+    .price b{ font-size:18px; }
+    .price s{ color:var(--muted); font-size:13px; }
+    .meta{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      color:var(--muted);
+      font-size:12px;
+      gap:10px;
+    }
+    .ship{
+      color:var(--green);
+      font-weight:800;
+    }
+
+    .card__actions{
+      padding:12px;
+      border-top:1px solid var(--line);
+      display:flex;
+      gap:10px;
+    }
+    .btn--block{ flex:1; justify-content:center; }
+
+    /* Empty state */
+    .empty{
+      background:#fff;
+      border:1px dashed rgba(0,0,0,.22);
+      border-radius:var(--radius);
+      padding:18px;
+      color:var(--muted);
+      text-align:center;
+    }
+
+    /* Modal */
+    .modal{
+      position:fixed;
+      inset:0;
+      display:none;
+      place-items:center;
+      background: rgba(0,0,0,.45);
+      z-index:100;
+      padding:16px;
+    }
+    .modal[open]{ display:grid; }
+    .modal__card{
+      width:min(720px, 100%);
+      background:#fff;
+      border-radius:18px;
+      box-shadow: 0 30px 80px rgba(0,0,0,.30);
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.25);
+    }
+    .modal__hd{
+      padding:14px 14px 10px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .modal__hd h3{ margin:0; font-size:14px; }
+    .modal__bd{ padding:14px; }
+    .cartlist{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .cartrow{
+      display:grid;
+      grid-template-columns: 1fr auto auto;
+      gap:10px;
+      align-items:center;
+      padding:10px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+    }
+    .cartrow small{ color:var(--muted); display:block; margin-top:2px; }
+    .qty{
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
+    .qty button{
+      width:34px; height:34px;
+      border-radius:10px;
+      border:1px solid rgba(0,0,0,.12);
+      background:#fff;
+      cursor:pointer;
+      font-weight:900;
+    }
+    .qty button:hover{ background:#f7f7f7; }
+    .totals{
+      margin-top:12px;
+      padding-top:12px;
+      border-top:1px solid var(--line);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+    }
+    .totals b{ font-size:18px; }
+
+    /* Responsive */
+    @media (max-width: 980px){
+      .wrap{ grid-template-columns: 1fr; }
+      .grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 560px){
+      .topbar__inner{ flex-wrap:wrap; }
+      .grid{ grid-template-columns: 1fr; }
+      .brand small{ display:none; }
     }
   </style>
 </head>
+
 <body>
-  <div class="container" role="main">
-    <header>
-      <div>
-        <h1>Generador de Cookies</h1>
-        <p class="lead">Crea, lista y administra cookies desde el cliente — ideal para pruebas y demos.</p>
+  <header class="topbar">
+    <div class="topbar__inner">
+      <div class="brand" aria-label="Marca">
+        <div class="brand__logo">MM</div>
+        <div>
+          Mini Mercado<br/>
+          <small>demo</small>
+        </div>
       </div>
-      <div class="muted small">
-        Proyecto — Universidad · <span id="hostInfo"></span>
+
+      <div class="search">
+        <input id="q" type="search" placeholder="Buscar productos, marcas y más…" autocomplete="off" />
       </div>
-    </header>
 
-    <!-- Panel izquierdo: formulario -->
-    <section class="card" aria-labelledby="formTitle">
-      <h2 id="formTitle" style="margin:0 0 8px 0">Crear / editar cookie</h2>
-      <form id="cookieForm" onsubmit="return false;">
-        <label>Nombre <span class="muted small">(* obligatorio)</span>
-          <input id="cName" type="text" placeholder="p. ej. sessionId" autocomplete="off" />
-        </label>
+      <button class="btn btn--ghost" id="btnCart" aria-label="Abrir carrito">
+        🛒 Carrito <span class="badge" id="cartCount">0</span>
+      </button>
+      <button class="btn btn--primary" id="btnHelp" aria-label="Ayuda">
+        ✨ Ayuda
+      </button>
+    </div>
+  </header>
 
-        <label>Valor
-          <textarea id="cValue" rows="3" placeholder='p. ej. {"user": "ana"} o cualquier texto'></textarea>
-        </label>
+  <main class="wrap">
+    <aside class="panel" aria-label="Filtros">
+      <div class="panel__hd">
+        <h3>Filtros</h3>
+        <button class="btn btn--ghost" id="btnReset" title="Limpiar filtros">Limpiar</button>
+      </div>
+      <div class="panel__bd">
+        <div class="field">
+          <div class="label">Categoría</div>
+          <select id="category">
+            <option value="all">Todas</option>
+          </select>
+        </div>
 
-        <div class="row">
-          <div>
-            <label>Expires (fecha y hora)
-              <input id="cExpires" type="datetime-local" />
-            </label>
+        <div class="field">
+          <div class="label">Ordenar</div>
+          <select id="sort">
+            <option value="relevance">Relevancia</option>
+            <option value="price_asc">Precio: menor a mayor</option>
+            <option value="price_desc">Precio: mayor a menor</option>
+            <option value="rating_desc">Mejor calificados</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <div class="label">Envío</div>
+          <div class="chipbar" role="group" aria-label="Tipo de envío">
+            <button type="button" class="chip" data-ship="all" aria-pressed="true">Todos</button>
+            <button type="button" class="chip" data-ship="free" aria-pressed="false">Envío gratis</button>
+            <button type="button" class="chip" data-ship="paid" aria-pressed="false">Envío pago</button>
           </div>
-          <div>
-            <label>Max-Age (segundos)
-              <input id="cMaxAge" type="number" placeholder="ej. 3600" min="0" />
-            </label>
-          </div>
         </div>
 
-        <div class="row">
-          <div>
-            <label>Path
-              <input id="cPath" type="text" placeholder="/" />
-            </label>
-          </div>
-          <div>
-            <label>Domain
-              <input id="cDomain" type="text" placeholder="ej. ejemplo.com (opcional)" />
-            </label>
-          </div>
+        <p class="hint">
+          Demo educativa: datos falsos, sin pagos reales. Ideal como base para tu propio catálogo.
+        </p>
+      </div>
+    </aside>
+
+    <section aria-label="Listado">
+      <div class="hero">
+        <div>
+          <h2 id="resultsTitle">Productos destacados</h2>
+          <p id="resultsMeta">Explora, filtra y añade al carrito.</p>
         </div>
-
-        <div class="row" style="margin-top:8px">
-          <label style="flex:1"><input id="cSecure" type="checkbox" /> Secure</label>
-          <label style="flex:1"><input id="cSameSite" type="checkbox" /> SameSite=Lax</label>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <button class="btn btn--ghost" id="btnRandom">🎲 Sorpréndeme</button>
+          <button class="btn btn--primary" id="btnCheckout">💳 Finalizar</button>
         </div>
+      </div>
 
-        <div class="actions">
-          <button id="btnSet">Establecer cookie</button>
-          <button id="btnSetJson" class="secondary">Establecer valor como JSON</button>
-          <button id="btnGen" class="secondary">Generar valor aleatorio</button>
-          <button id="btnClearForm" class="secondary">Limpiar</button>
-        </div>
-
-        <small class="note">Nota: <strong>HttpOnly</strong> no puede establecerse desde JavaScript (solo desde el servidor).</small>
-        <small class="note">Si ambos campos <em>Expires</em> y <em>Max-Age</em> están vacíos, la cookie será de sesión.</small>
-      </form>
-
-      <hr style="margin:14px 0;border:none;border-top:1px solid rgba(255,255,255,0.02)">
-
-      <div>
-        <button id="btnList" class="secondary">Actualizar lista</button>
-        <button id="btnClearAll" class="danger">Borrar todas las cookies (locales)</button>
-        <div style="margin-top:8px">
-          <button id="btnExport" class="secondary">Exportar (JSON)</button>
-          <label class="secondary" style="cursor:pointer;padding:10px;border-radius:10px;">
-            Importar <input id="fileInput" class="file-input" type="file" accept=".json" />
-          </label>
-        </div>
+      <div id="grid" class="grid" aria-live="polite"></div>
+      <div id="empty" class="empty" style="display:none;">
+        No encontré productos con esos filtros. Prueba con otra búsqueda.
       </div>
     </section>
+  </main>
 
-    <!-- Panel derecho: lista y detalles -->
-    <section class="card" aria-labelledby="listTitle">
-      <div class="topbar">
-        <h2 id="listTitle" style="margin:0">Cookies actuales</h2>
-        <div class="flex">
-          <span class="muted small">Visualiza cookies accesibles por JS</span>
+  <!-- Modal Carrito -->
+  <dialog class="modal" id="cartModal" aria-label="Carrito">
+    <div class="modal__card">
+      <div class="modal__hd">
+        <h3>Tu carrito</h3>
+        <button class="btn btn--ghost" id="btnCloseCart">Cerrar</button>
+      </div>
+      <div class="modal__bd">
+        <div id="cartList" class="cartlist"></div>
+
+        <div class="totals">
+          <div>
+            <div style="font-size:12px; color:var(--muted); font-weight:700;">Total</div>
+            <b id="cartTotal">$0</b>
+          </div>
+          <button class="btn btn--primary" id="btnPay">Pagar</button>
         </div>
-      </div>
 
-      <div class="cookie-list">
-        <table id="tblCookies" aria-live="polite">
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Valor</th>
-              <th class="muted">Extras</th>
-              <th class="right">Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="tblBody">
-            <!-- filas generadas por JS -->
-          </tbody>
-        </table>
+        <p class="hint" style="margin-top:10px;">
+          “Pagar” solo muestra un resumen (no procesa pagos).
+        </p>
       </div>
-      <div id="noCookies" class="muted small" style="margin-top:12px;display:none">No hay cookies visibles para este dominio/path.</div>
-    </section>
-  </div>
-
-  <div id="toast" class="toast" style="display:none"></div>
+    </div>
+  </dialog>
 
   <script>
-    // ---------------------------
-    // Utilidades y funcionalidades
-    // ---------------------------
-    const $ = id => document.getElementById(id);
+    // ---- Datos demo (puedes reemplazar por API / BD) ----
+    const PRODUCTS = [
+      { id: 1, title: "Audífonos inalámbricos Bluetooth", price: 19.99, oldPrice: 29.99, rating: 4.6, category: "Electrónica", freeShipping: true },
+      { id: 2, title: "Teclado mecánico compacto RGB", price: 49.90, oldPrice: 69.90, rating: 4.7, category: "Electrónica", freeShipping: false },
+      { id: 3, title: "Zapatillas running livianas", price: 34.50, oldPrice: 44.50, rating: 4.3, category: "Moda", freeShipping: true },
+      { id: 4, title: "Camisa casual de lino", price: 22.00, oldPrice: 0, rating: 4.2, category: "Moda", freeShipping: false },
+      { id: 5, title: "Licuadora 2 velocidades 1.5L", price: 39.00, oldPrice: 55.00, rating: 4.4, category: "Hogar", freeShipping: true },
+      { id: 6, title: "Juego de destornilladores 24 en 1", price: 11.75, oldPrice: 15.00, rating: 4.8, category: "Herramientas", freeShipping: true },
+      { id: 7, title: "Smartwatch deportivo (básico)", price: 26.90, oldPrice: 36.90, rating: 4.1, category: "Electrónica", freeShipping: false },
+      { id: 8, title: "Silla ergonómica ajustable", price: 129.00, oldPrice: 159.00, rating: 4.5, category: "Hogar", freeShipping: false },
+      { id: 9, title: "Mochila urbana impermeable", price: 18.40, oldPrice: 24.40, rating: 4.4, category: "Moda", freeShipping: true },
+      { id: 10, title: "Kit de luces LED para habitación", price: 14.99, oldPrice: 21.99, rating: 4.0, category: "Hogar", freeShipping: true },
+      { id: 11, title: "Taladro inalámbrico 12V (demo)", price: 58.00, oldPrice: 79.00, rating: 4.6, category: "Herramientas", freeShipping: false },
+      { id: 12, title: "Set de organizadores para closet", price: 16.30, oldPrice: 0, rating: 4.2, category: "Hogar", freeShipping: true },
+    ];
 
-    function showToast(msg, timeout = 3000) {
-      const t = $('toast');
-      t.textContent = msg;
-      t.style.display = 'block';
-      clearTimeout(t._timer);
-      t._timer = setTimeout(()=> t.style.display = 'none', timeout);
-    }
+    // ---- Estado ----
+    const state = {
+      q: "",
+      category: "all",
+      sort: "relevance",
+      ship: "all", // all | free | paid
+      cart: new Map(), // id -> qty
+    };
 
-    // Host info
-    $('hostInfo').textContent = location.hostname + (location.port ? ':' + location.port : '') + ' · ' + new Date().toLocaleDateString();
+    // ---- Utilidades ----
+    const $ = (sel) => document.querySelector(sel);
+    const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+    const money = (n) => "$" + n.toFixed(2);
 
-    // parse cookies into array of {name, value}
-    function parseCookies() {
-      const raw = document.cookie || "";
-      if (!raw) return [];
-      return raw.split('; ').filter(Boolean).map(pair => {
-        const idx = pair.indexOf('=');
-        const name = idx > -1 ? pair.slice(0, idx) : pair;
-        const value = idx > -1 ? pair.slice(idx + 1) : "";
-        return { name: decodeURIComponent(name), value: decodeURIComponent(value) };
+    function getFilteredProducts() {
+      const q = state.q.trim().toLowerCase();
+
+      let items = PRODUCTS.filter(p => {
+        const matchesQ = !q || p.title.toLowerCase().includes(q);
+        const matchesCat = state.category === "all" || p.category === state.category;
+        const matchesShip =
+          state.ship === "all" ||
+          (state.ship === "free" && p.freeShipping) ||
+          (state.ship === "paid" && !p.freeShipping);
+
+        return matchesQ && matchesCat && matchesShip;
       });
+
+      // Orden
+      switch (state.sort) {
+        case "price_asc":
+          items.sort((a,b) => a.price - b.price);
+          break;
+        case "price_desc":
+          items.sort((a,b) => b.price - a.price);
+          break;
+        case "rating_desc":
+          items.sort((a,b) => b.rating - a.rating);
+          break;
+        default:
+          // "relevance": simple (rating + descuento)
+          items.sort((a,b) => score(b) - score(a));
+      }
+
+      return items;
+
+      function score(p){
+        const discount = p.oldPrice > 0 ? (p.oldPrice - p.price) / p.oldPrice : 0;
+        return (p.rating * 10) + (discount * 10) + (p.freeShipping ? 1 : 0);
+      }
     }
 
-    // Render cookie table
-    function renderTable() {
-      const list = parseCookies();
-      const body = $('tblBody');
-      body.innerHTML = '';
-      if (list.length === 0) {
-        $('noCookies').style.display = 'block';
+    function render() {
+      const grid = $("#grid");
+      const empty = $("#empty");
+      const items = getFilteredProducts();
+
+      // Header
+      const title = state.q ? `Resultados para "${state.q}"` : "Productos destacados";
+      $("#resultsTitle").textContent = title;
+      $("#resultsMeta").textContent = `${items.length} producto(s) · filtros activos`;
+
+      // Grid
+      grid.innerHTML = "";
+      empty.style.display = items.length ? "none" : "block";
+
+      for (const p of items) {
+        const discountPct = p.oldPrice > 0 ? Math.round((1 - p.price / p.oldPrice) * 100) : 0;
+
+        const card = document.createElement("article");
+        card.className = "card";
+        card.innerHTML = `
+          <div class="thumb">
+            <div class="tag">${escapeHtml(p.category)}</div>
+            <span>#${p.id} · ${escapeHtml(p.title.split(" ")[0])}</span>
+          </div>
+          <div class="card__body">
+            <h4 class="title">${escapeHtml(p.title)}</h4>
+            <p class="price">
+              <b>${money(p.price)}</b>
+              ${p.oldPrice > 0 ? `<s>${money(p.oldPrice)}</s>` : ""}
+              ${discountPct > 0 ? `<span style="color:var(--green); font-weight:900; font-size:13px;">${discountPct}% OFF</span>` : ""}
+            </p>
+            <div class="meta">
+              <span>⭐ ${p.rating.toFixed(1)}</span>
+              <span class="ship">${p.freeShipping ? "Envío gratis" : "Envío pago"}</span>
+            </div>
+          </div>
+          <div class="card__actions">
+            <button class="btn btn--ghost btn--block" data-action="details" data-id="${p.id}">Ver</button>
+            <button class="btn btn--primary btn--block" data-action="add" data-id="${p.id}">Añadir</button>
+          </div>
+        `;
+        grid.appendChild(card);
+      }
+
+      renderCartBadge();
+    }
+
+    function renderCartBadge(){
+      let count = 0;
+      for (const qty of state.cart.values()) count += qty;
+      $("#cartCount").textContent = String(count);
+    }
+
+    function openCart(){
+      renderCartModal();
+      $("#cartModal").setAttribute("open", "");
+    }
+    function closeCart(){
+      $("#cartModal").removeAttribute("open");
+    }
+
+    function renderCartModal(){
+      const list = $("#cartList");
+      list.innerHTML = "";
+
+      const entries = Array.from(state.cart.entries());
+      if (!entries.length) {
+        list.innerHTML = `<div class="empty">Tu carrito está vacío. Añade algo 👀</div>`;
+        $("#cartTotal").textContent = money(0);
+        renderCartBadge();
         return;
-      } else {
-        $('noCookies').style.display = 'none';
       }
 
-      list.forEach(cookie => {
-        const tr = document.createElement('tr');
-        const extras = document.createElement('td');
-        extras.innerHTML = '<span class="pill">visible desde JS</span>';
-        const actionsTd = document.createElement('td');
-        actionsTd.className = 'right small';
+      let total = 0;
 
-        const nameTd = document.createElement('td');
-        nameTd.textContent = cookie.name;
+      for (const [id, qty] of entries) {
+        const p = PRODUCTS.find(x => x.id === id);
+        if (!p) continue;
+        total += p.price * qty;
 
-        const valueTd = document.createElement('td');
-        // reduce displayed value length
-        const short = cookie.value.length > 80 ? cookie.value.slice(0,80) + '…' : cookie.value;
-        valueTd.textContent = short;
-        valueTd.title = cookie.value;
+        const row = document.createElement("div");
+        row.className = "cartrow";
+        row.innerHTML = `
+          <div>
+            <b>${escapeHtml(p.title)}</b>
+            <small>${escapeHtml(p.category)} · ${p.freeShipping ? "Envío gratis" : "Envío pago"}</small>
+          </div>
+          <div class="qty" aria-label="Cantidad">
+            <button data-cart="dec" data-id="${id}" title="Quitar uno">−</button>
+            <b style="min-width:22px; text-align:center;">${qty}</b>
+            <button data-cart="inc" data-id="${id}" title="Agregar uno">+</button>
+          </div>
+          <div style="text-align:right;">
+            <b>${money(p.price * qty)}</b>
+            <div style="margin-top:6px;">
+              <button class="btn btn--ghost" data-cart="remove" data-id="${id}" style="padding:8px 10px; border-radius:10px;">Eliminar</button>
+            </div>
+          </div>
+        `;
+        list.appendChild(row);
+      }
 
-        const btnEdit = document.createElement('button');
-        btnEdit.className = 'secondary';
-        btnEdit.textContent = 'Editar';
-        btnEdit.onclick = () => {
-          $('cName').value = cookie.name;
-          $('cValue').value = cookie.value;
-          showToast('Rellena extras si quieres cambiar path/domain/expires antes de "Establecer"');
-        };
+      $("#cartTotal").textContent = money(total);
+      renderCartBadge();
+    }
 
-        const btnCopy = document.createElement('button');
-        btnCopy.textContent = 'Copiar';
-        btnCopy.onclick = () => {
-          navigator.clipboard?.writeText(cookie.value).then(()=> showToast('Valor copiado.'));
-        };
+    function addToCart(id){
+      const prev = state.cart.get(id) || 0;
+      state.cart.set(id, prev + 1);
+      renderCartBadge();
+    }
 
-        const btnDelete = document.createElement('button');
-        btnDelete.className = 'danger';
-        btnDelete.textContent = 'Eliminar';
-        btnDelete.onclick = () => {
-          deleteCookie(cookie.name);
-          renderTable();
-        };
+    function removeFromCart(id){
+      state.cart.delete(id);
+      renderCartBadge();
+    }
 
-        actionsTd.appendChild(btnEdit);
-        actionsTd.appendChild(btnCopy);
-        actionsTd.appendChild(btnDelete);
+    function changeQty(id, delta){
+      const prev = state.cart.get(id) || 0;
+      const next = prev + delta;
+      if (next <= 0) state.cart.delete(id);
+      else state.cart.set(id, next);
+      renderCartBadge();
+    }
 
-        tr.appendChild(nameTd);
-        tr.appendChild(valueTd);
-        tr.appendChild(extras);
-        tr.appendChild(actionsTd);
-        body.appendChild(tr);
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    // ---- Inicialización UI ----
+    function init(){
+      // Categorías
+      const cats = Array.from(new Set(PRODUCTS.map(p => p.category))).sort();
+      const sel = $("#category");
+      for (const c of cats){
+        const opt = document.createElement("option");
+        opt.value = c;
+        opt.textContent = c;
+        sel.appendChild(opt);
+      }
+
+      // Listeners
+      $("#q").addEventListener("input", (e) => {
+        state.q = e.target.value;
+        render();
       });
-    }
 
-    // Set cookie with options
-    function setCookie(opts) {
-      // opts: {name, value, expires, maxAge, path, domain, secure, sameSite}
-      if (!opts.name) { showToast('El nombre es obligatorio'); return false; }
+      $("#category").addEventListener("change", (e) => {
+        state.category = e.target.value;
+        render();
+      });
 
-      const parts = [];
-      parts.push(encodeURIComponent(opts.name) + '=' + encodeURIComponent(opts.value ?? ''));
+      $("#sort").addEventListener("change", (e) => {
+        state.sort = e.target.value;
+        render();
+      });
 
-      if (opts.maxAge !== undefined && opts.maxAge !== null && opts.maxAge !== '') {
-        const ma = parseInt(opts.maxAge, 10);
-        if (!Number.isNaN(ma)) parts.push('Max-Age=' + ma);
-      } else if (opts.expires) {
-        // expects ISO date or Date object
-        const d = new Date(opts.expires);
-        if (!isNaN(d.getTime())) parts.push('Expires=' + d.toUTCString());
-      }
+      $$(".chip").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const ship = btn.dataset.ship;
+          state.ship = ship;
 
-      if (opts.path) parts.push('Path=' + opts.path);
-      if (opts.domain) parts.push('Domain=' + opts.domain);
-      if (opts.secure) parts.push('Secure');
-      if (opts.sameSite) parts.push('SameSite=Lax');
+          $$(".chip").forEach(x => x.setAttribute("aria-pressed", String(x === btn)));
+          render();
+        });
+      });
 
-      // IMPORTANT: HttpOnly cannot be set via JS. Mentioned in UI.
-      const cookieString = parts.join('; ');
-      document.cookie = cookieString;
+      $("#btnReset").addEventListener("click", () => {
+        state.q = "";
+        state.category = "all";
+        state.sort = "relevance";
+        state.ship = "all";
+        state.cart.clear();
 
-      // quick verify: some cookies may be blocked by browser (cross-domain, insecure, etc)
-      setTimeout(()=> {
-        const found = parseCookies().some(c => c.name === opts.name);
-        if (found) {
-          showToast('Cookie establecida correctamente.');
-        } else {
-          showToast('Intenta: cookie no visible o bloqueada por el navegador/ dominio/secure.');
+        $("#q").value = "";
+        $("#category").value = "all";
+        $("#sort").value = "relevance";
+        const firstChip = $$(".chip")[0];
+        $$(".chip").forEach(x => x.setAttribute("aria-pressed", String(x === firstChip)));
+
+        render();
+      });
+
+      // Delegación para botones dentro de cards
+      $("#grid").addEventListener("click", (e) => {
+        const btn = e.target.closest("button");
+        if (!btn) return;
+
+        const id = Number(btn.dataset.id);
+        const action = btn.dataset.action;
+
+        if (action === "add") {
+          addToCart(id);
+        } else if (action === "details") {
+          const p = PRODUCTS.find(x => x.id === id);
+          alert(`📦 ${p.title}\n\nPrecio: ${money(p.price)}\nRating: ${p.rating}\nEnvío: ${p.freeShipping ? "Gratis" : "Pago"}\n\n(Esto es demo, aquí podrías abrir una página de producto.)`);
         }
-        renderTable();
-      }, 150);
-      return true;
+      });
+
+      $("#btnCart").addEventListener("click", openCart);
+      $("#btnCloseCart").addEventListener("click", closeCart);
+
+      $("#cartModal").addEventListener("click", (e) => {
+        // click fuera de la tarjeta cierra
+        const card = e.target.closest(".modal__card");
+        if (!card) closeCart();
+      });
+
+      $("#cartList").addEventListener("click", (e) => {
+        const btn = e.target.closest("button");
+        if (!btn) return;
+        const id = Number(btn.dataset.id);
+        const act = btn.dataset.cart;
+
+        if (act === "inc") changeQty(id, +1);
+        if (act === "dec") changeQty(id, -1);
+        if (act === "remove") removeFromCart(id);
+
+        renderCartModal();
+      });
+
+      $("#btnPay").addEventListener("click", () => {
+        const entries = Array.from(state.cart.entries());
+        if (!entries.length) return alert("Tu carrito está vacío 🙂");
+        const lines = entries.map(([id,qty]) => {
+          const p = PRODUCTS.find(x => x.id === id);
+          return `• ${qty} × ${p.title} = ${money(p.price * qty)}`;
+        });
+        const total = lines.length ? $("#cartTotal").textContent : money(0);
+        alert(`✅ Resumen (demo)\n\n${lines.join("\n")}\n\nTotal: ${total}\n\nAquí integrarías tu pasarela de pago.`);
+      });
+
+      $("#btnCheckout").addEventListener("click", () => openCart());
+
+      $("#btnRandom").addEventListener("click", () => {
+        const items = getFilteredProducts();
+        if (!items.length) return;
+        const p = items[Math.floor(Math.random() * items.length)];
+        addToCart(p.id);
+        alert(`🎉 Agregué al carrito: ${p.title}`);
+        render();
+      });
+
+      $("#btnHelp").addEventListener("click", () => {
+        alert("Demo mini-market:\n- Busca en la barra\n- Filtra por categoría y envío\n- Ordena por precio o rating\n- Añade al carrito y ajusta cantidades\n\n¿Quieres que lo conecte a una API real (Django/Node) y tenga páginas de producto?");
+      });
+
+      render();
     }
 
-    function deleteCookie(name, path = '/', domain = '') {
-      // Delete by setting expires to past and Max-Age=0
-      let str = encodeURIComponent(name) + '=; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=' + path;
-      if (domain) str += '; Domain=' + domain;
-      document.cookie = str;
-      showToast('Se intentó eliminar: ' + name);
-      // update UI
-      setTimeout(renderTable, 120);
-    }
-
-    function clearAllCookies() {
-      const list = parseCookies();
-      list.forEach(c => deleteCookie(c.name));
-      showToast('Intentando eliminar ' + list.length + ' cookies');
-    }
-
-    // Helpers
-    function getFormData() {
-      return {
-        name: $('cName').value.trim(),
-        value: $('cValue').value,
-        expires: $('cExpires').value ? new Date($('cExpires').value) : null,
-        maxAge: $('cMaxAge').value ? $('cMaxAge').value : '',
-        path: $('cPath').value || '/',
-        domain: $('cDomain').value || '',
-        secure: $('cSecure').checked,
-        sameSite: $('cSameSite').checked
-      };
-    }
-
-    function clearForm() {
-      $('cName').value = '';
-      $('cValue').value = '';
-      $('cExpires').value = '';
-      $('cMaxAge').value = '';
-      $('cPath').value = '/';
-      $('cDomain').value = '';
-      $('cSecure').checked = false;
-      $('cSameSite').checked = false;
-    }
-
-    function generateRandom(length = 24) {
-      const arr = new Uint8Array(length);
-      crypto.getRandomValues(arr);
-      return Array.from(arr).map(b => b.toString(16).padStart(2,'0')).join('');
-    }
-
-    // Export/Import
-    function exportCookies() {
-      const list = parseCookies();
-      const data = JSON.stringify(list, null, 2);
-      const blob = new Blob([data], {type:'application/json'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'cookies-export.json';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-      showToast('Exportado ' + list.length + ' cookies');
-    }
-
-    function importCookiesFromJSON(file) {
-      const reader = new FileReader();
-      reader.onload = e => {
-        try {
-          const arr = JSON.parse(e.target.result);
-          if (!Array.isArray(arr)) throw new Error('Formato inválido');
-          let count = 0;
-          arr.forEach(item => {
-            if (item.name) {
-              setCookie({
-                name: item.name,
-                value: item.value ?? '',
-                path: item.path ?? '/',
-                domain: item.domain ?? '',
-                secure: !!item.secure,
-                sameSite: !!item.sameSite,
-                maxAge: item.maxAge ?? ''
-              });
-              count++;
-            }
-          });
-          showToast('Importadas ~' + count + ' cookies (intento)');
-        } catch (err) {
-          showToast('Error importando: ' + err.message);
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    // Event bindings
-    $('btnSet').addEventListener('click', () => {
-      const d = getFormData();
-      if (!d.name) { showToast('Debes indicar un nombre'); return; }
-      setCookie(d);
-    });
-
-    $('btnSetJson').addEventListener('click', () => {
-      const v = $('cValue').value;
-      try {
-        const obj = v ? JSON.parse(v) : {};
-        // set pretty JSON as value
-        $('cValue').value = JSON.stringify(obj);
-      } catch (e) {
-        // if not JSON, try to create a sample
-        const sample = { createdAt: new Date().toISOString(), note: 'ejemplo' };
-        $('cValue').value = JSON.stringify(sample);
-        showToast('El valor no era JSON; se ha insertado un ejemplo.');
-      }
-    });
-
-    $('btnGen').addEventListener('click', () => {
-      $('cValue').value = generateRandom(16);
-      showToast('Valor aleatorio generado');
-    });
-
-    $('btnClearForm').addEventListener('click', () => {
-      clearForm();
-      showToast('Formulario limpio');
-    });
-
-    $('btnList').addEventListener('click', renderTable);
-
-    $('btnClearAll').addEventListener('click', () => {
-      if (confirm('¿Seguro que quieres intentar eliminar todas las cookies visibles?')) {
-        clearAllCookies();
-      }
-    });
-
-    $('btnExport').addEventListener('click', exportCookies);
-
-    $('fileInput').addEventListener('change', (ev) => {
-      const f = ev.target.files && ev.target.files[0];
-      if (f) importCookiesFromJSON(f);
-      ev.target.value = '';
-    });
-
-    // on load
-    document.addEventListener('DOMContentLoaded', () => {
-      // sensible defaults
-      if (!$('cPath').value) $('cPath').value = '/';
-      renderTable();
-    });
-
-    // Extra: prevent accidental form submit on Enter
-    document.getElementById('cookieForm').addEventListener('submit', (e)=> e.preventDefault());
+    init();
   </script>
 </body>
 </html>
+
 
