@@ -3,7 +3,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Donaciones | PayPal • USDT TRC20</title>
+  <title>Donaciones</title>
+
+  <!-- Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
     :root{
@@ -18,16 +23,20 @@
 
       --accent:#1677ff;
       --accent2:#22c55e;
-      --warn:#b45309;
 
       --glass: rgba(255,255,255,.55);
+
+      --noteBg: rgba(255, 193, 7, .20);
+      --noteBorder: rgba(255, 193, 7, .55);
+      --noteText: rgba(120, 60, 0, .95);
     }
 
     *{ box-sizing:border-box; }
+    html{ scroll-behavior:smooth; }
 
     body{
       margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      font-family: "Poppins", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
       color: var(--text);
       background: linear-gradient(135deg, var(--bg1), var(--bg2));
       min-height:100vh;
@@ -51,8 +60,9 @@
 
     .brand{
       display:flex; align-items:center; gap:12px;
-      font-weight: 950;
+      font-weight: 900;
       letter-spacing:.2px;
+      min-width: 0;
     }
 
     /* Logo redondo que sobresale + zoom zoom */
@@ -66,10 +76,9 @@
       display:grid;
       place-items:center;
       overflow:hidden;
-
-      /* sobresale un poco */
       transform: translateY(10px);
       position: relative;
+      flex: 0 0 auto;
     }
     .brand-logo{
       width: 100%;
@@ -90,16 +99,40 @@
       flex-direction:column;
       gap: 2px;
       line-height: 1.05;
+      min-width:0;
     }
     .brand-title .t{
       font-size: 16px;
-      font-weight: 1000;
+      font-weight: 900;
       letter-spacing: .2px;
     }
-    .brand-title .s{
-      font-size: 12px;
-      font-weight: 850;
-      color: rgba(11,18,32,.60);
+
+    .nav-actions{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      flex: 0 0 auto;
+    }
+
+    .tg-btn{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(11,18,32,.10);
+      background: rgba(255,255,255,.70);
+      box-shadow: 0 12px 32px rgba(0,0,0,.10);
+      font-weight: 800;
+      color: rgba(11,18,32,.88);
+      text-decoration:none;
+      transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .tg-btn:hover{ transform: translateY(-1px); box-shadow: 0 16px 40px rgba(0,0,0,.14); }
+    .tg-ico{
+      width: 18px; height: 18px; object-fit: contain;
     }
 
     main{ padding: 22px 0 44px; position:relative; z-index: 1; }
@@ -185,7 +218,7 @@
     .total-box .k{
       position: relative;
       z-index: 1;
-      font-weight: 950;
+      font-weight: 800;
       font-size: 12px;
       color: rgba(11,18,32,.70);
       letter-spacing: .2px;
@@ -194,7 +227,7 @@
       position: relative;
       z-index: 1;
       margin-top: 6px;
-      font-weight: 1100;
+      font-weight: 900;
       font-size: 26px;
       letter-spacing: -.4px;
     }
@@ -203,7 +236,7 @@
       z-index: 1;
       margin-top: 4px;
       font-size: 12px;
-      font-weight: 850;
+      font-weight: 700;
       color: rgba(11,18,32,.62);
     }
 
@@ -225,62 +258,96 @@
 
     /* Section titles */
     .section-title{
-      display:flex; align-items:flex-end; justify-content:space-between;
+      display:flex; align-items:center; justify-content:space-between;
       gap: 12px; flex-wrap:wrap;
       margin-bottom: 12px;
     }
     .section-title h2{
       margin:0;
-      font-size: 18px;
       letter-spacing:-.2px;
-      font-weight: 1000;
+      font-weight: 900;
     }
+
+    /* 👇 tamaños solicitados */
+    .title-donation{ font-size: 20px; }
+    .title-method{ font-size: 20px; }
+
+    .method-title-inline{
+      display:flex; align-items:center; gap:10px;
+    }
+    .method-title-inline img{
+      width: 26px; height: 26px;
+      object-fit: contain;
+      border-radius: 10px;
+      padding: 5px;
+      background: rgba(255,255,255,.70);
+      border: 1px solid rgba(11,18,32,.10);
+      box-shadow: 0 10px 25px rgba(0,0,0,.08);
+    }
+
     .section-title p{
       margin:0;
       color: var(--muted);
       font-size: 13px;
-      font-weight: 750;
+      font-weight: 700;
     }
 
-    /* FORM - modern floating */
+    /* ===== Floating form ===== */
     .form{
       display:grid;
       grid-template-columns: repeat(12, 1fr);
       gap: 12px;
       margin-top: 10px;
     }
-    .field{ grid-column: span 6; display:flex; flex-direction:column; gap: 8px; }
+    .field{ grid-column: span 6; }
     .field.full{ grid-column: span 12; }
 
-    label{
-      font-weight: 950;
-      font-size: 13px;
-      color: rgba(11,18,32,.88);
+    @media (max-width: 620px){
+      .field{ grid-column: span 12; }
     }
 
-    input, select, textarea{
+    .float{
+      position:relative;
+    }
+    .float input, .float select, .float textarea{
       width:100%;
       border-radius: 16px;
       border: 1px solid rgba(11,18,32,.10);
-      background: rgba(255,255,255,.72);
+      background: rgba(255,255,255,.80);
       color: rgba(11,18,32,.92);
-      padding: 12px 13px;
+      padding: 18px 13px 12px;
       outline:none;
       font-size: 14px;
       transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
       box-shadow: 0 10px 30px rgba(0,0,0,.06);
+      appearance: none;
     }
 
-    input:hover, select:hover, textarea:hover{
-      transform: translateY(-1px);
-      box-shadow: 0 16px 40px rgba(0,0,0,.10);
+    .float textarea{ min-height: 92px; resize: vertical; padding-top: 20px; }
+
+    .float label{
+      position:absolute;
+      left: 12px;
+      top: 11px;
+      font-weight: 800;
+      font-size: 12px;
+      color: rgba(11,18,32,.62);
+      padding: 0 8px;
+      background: rgba(255,255,255,.75);
+      border-radius: 999px;
+      border: 1px solid rgba(11,18,32,.08);
+      pointer-events:none;
+      transition: .18s ease;
     }
-    input:focus, select:focus, textarea:focus{
+
+    .float input:focus, .float select:focus, .float textarea:focus{
       border-color: rgba(22,119,255,.40);
       box-shadow: 0 0 0 5px rgba(22,119,255,.12), 0 16px 40px rgba(0,0,0,.10);
       transform: translateY(-1px);
     }
-    textarea{ min-height: 92px; resize: vertical; }
+
+    .float input::placeholder{ color: transparent; }
+    .float textarea::placeholder{ color: rgba(11,18,32,.35); }
 
     .divider{
       height:1px;
@@ -296,16 +363,17 @@
       border: 1px solid rgba(11,18,32,.10);
       background: rgba(255,255,255,.60);
       font-size: 12px;
-      font-weight: 1000;
+      font-weight: 900;
       color: rgba(11,18,32,.82);
       gap: 8px;
       align-items:center;
       width: fit-content;
       box-shadow: 0 10px 25px rgba(0,0,0,.08);
       user-select:none;
+      cursor:pointer;
+      transition: transform .18s ease, box-shadow .18s ease;
     }
-    .badge:hover{ transform: translateY(-1px); }
-    .badge{ cursor:pointer; }
+    .badge:hover{ transform: translateY(-1px); box-shadow: 0 16px 40px rgba(0,0,0,.10); }
 
     /* Tabs */
     .tabs{
@@ -320,7 +388,7 @@
       padding: 10px 12px;
       border: 1px solid rgba(11,18,32,.10);
       background: rgba(255,255,255,.60);
-      font-weight: 1000;
+      font-weight: 900;
       font-size: 13px;
       transition:.18s ease;
       user-select:none;
@@ -345,11 +413,13 @@
       padding: 14px;
       background: rgba(255,255,255,.60);
       box-shadow: 0 14px 40px rgba(0,0,0,.10);
-      animation: fadeUp .22s ease;
+      animation: fadeFloat .28s ease;
     }
-    .method-box.active{ display:block; }
-    @keyframes fadeUp{
-      from{ transform: translateY(8px); opacity: .0; }
+    .method-box.active{
+      display:block;
+    }
+    @keyframes fadeFloat{
+      from{ transform: translateY(10px); opacity: .0; }
       to{ transform: translateY(0); opacity: 1; }
     }
 
@@ -360,7 +430,7 @@
     }
     .method-title{
       display:flex; align-items:center; gap: 10px;
-      font-weight: 1000;
+      font-weight: 900;
     }
     .method-title img{
       width: 34px; height: 34px; object-fit: contain;
@@ -381,7 +451,7 @@
       border:none;
       border-radius: 16px;
       padding: 12px 14px;
-      font-weight: 1000;
+      font-weight: 900;
       font-size: 14px;
       display:inline-flex; align-items:center; gap: 9px;
       transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
@@ -404,12 +474,17 @@
     }
     .btn-ghost:hover{ transform: translateY(-1px); }
 
+    .copy-btn img{
+      width: 18px; height: 18px; object-fit: contain;
+      border-radius: 6px;
+    }
+
     .hint{
       color: rgba(11,18,32,.72);
       font-size: 13px;
       line-height: 1.45;
       margin-top: 10px;
-      font-weight: 750;
+      font-weight: 700;
     }
 
     /* Pay details block */
@@ -420,17 +495,24 @@
       background: rgba(255,255,255,.65);
     }
     .pay-email{
-      font-weight: 1000;
+      font-weight: 900;
       font-size: 15px;
       letter-spacing:.2px;
       color: rgba(11,18,32,.92);
       margin: 0;
     }
+
+    /* NOTA resaltada */
     .pay-note{
-      margin: 8px 0 0;
-      font-size: 12.5px;
-      color: rgba(180,83,9,.95);
-      font-weight: 950;
+      margin: 10px 0 0;
+      font-size: 13px;
+      font-weight: 900;
+      color: var(--noteText);
+      background: var(--noteBg);
+      border: 1px solid var(--noteBorder);
+      padding: 10px 12px;
+      border-radius: 14px;
+      box-shadow: 0 10px 25px rgba(0,0,0,.08);
     }
 
     /* USDT */
@@ -460,6 +542,11 @@
       background: rgba(255,255,255,.65);
     }
 
+    @media (max-width: 620px){
+      .qr{ grid-template-columns: 1fr; }
+      canvas{ width: 160px; height: 160px; }
+    }
+
     /* Right column */
     .small{
       font-size: 12.5px;
@@ -468,7 +555,7 @@
       white-space: pre-wrap;
     }
 
-    /* Top donors list */
+    /* Top donors list + animaciones */
     .donor-list{
       display:grid;
       gap: 10px;
@@ -484,11 +571,24 @@
       border: 1px solid rgba(11,18,32,.10);
       box-shadow: 0 12px 32px rgba(0,0,0,.08);
       transition: transform .18s ease, box-shadow .18s ease;
+      animation: donorFloat 3.2s ease-in-out infinite;
     }
+    .donor:nth-child(2){ animation-delay: .2s; }
+    .donor:nth-child(3){ animation-delay: .4s; }
+    .donor:nth-child(4){ animation-delay: .6s; }
+    .donor:nth-child(5){ animation-delay: .8s; }
+
+    @keyframes donorFloat{
+      0%{ transform: translateY(0); }
+      50%{ transform: translateY(-4px); }
+      100%{ transform: translateY(0); }
+    }
+
     .donor:hover{
-      transform: translateY(-1px);
+      transform: translateY(-2px);
       box-shadow: 0 16px 40px rgba(0,0,0,.12);
     }
+
     .avatar{
       width: 40px;
       height: 40px;
@@ -505,7 +605,7 @@
       gap: 2px;
     }
     .donor .name{
-      font-weight: 1000;
+      font-weight: 900;
       font-size: 13.5px;
       color: rgba(11,18,32,.92);
       white-space: nowrap;
@@ -514,13 +614,13 @@
       max-width: 210px;
     }
     .donor .amt{
-      font-weight: 1000;
+      font-weight: 900;
       font-size: 12.5px;
       color: rgba(11,18,32,.70);
     }
     .donor .rank{
       margin-left:auto;
-      font-weight: 1100;
+      font-weight: 900;
       font-size: 12px;
       padding: 6px 10px;
       border-radius: 999px;
@@ -543,7 +643,7 @@
       margin: 0 0 8px;
       font-size: 14px;
       letter-spacing: -.2px;
-      font-weight: 1000;
+      font-weight: 900;
     }
     .receipt pre{
       margin:0;
@@ -577,12 +677,12 @@
     .ticon{
       width:32px; height:32px; border-radius: 12px;
       display:grid; place-items:center;
-      font-weight: 1000;
+      font-weight: 900;
       border: 1px solid rgba(11,18,32,.10);
       background: rgba(255,255,255,.75);
       flex: 0 0 auto;
     }
-    .ttitle{ font-weight: 1000; margin:0; font-size: 14px; }
+    .ttitle{ font-weight: 900; margin:0; font-size: 14px; }
     .tmsg{ margin:2px 0 0; color: rgba(11,18,32,.70); font-size: 13px; line-height: 1.4; }
     .tclose{
       margin-left:auto;
@@ -592,13 +692,6 @@
       font-size: 16px;
       cursor:pointer;
       padding: 2px 6px;
-    }
-
-    @media (max-width: 620px){
-      .field{ grid-column: span 12; }
-      .qr{ grid-template-columns: 1fr; }
-      canvas{ width: 160px; height: 160px; }
-      .donor .name{ max-width: 170px; }
     }
   </style>
 </head>
@@ -615,8 +708,14 @@
 
         <div class="brand-title">
           <div class="t">Donaciones</div>
-          <div class="s">PayPal • USDT TRC20</div>
         </div>
+      </div>
+
+      <div class="nav-actions">
+        <a class="tg-btn" id="telegramBtn" href="#" target="_blank" rel="noopener">
+          <img class="tg-ico" id="telegramIcon" alt="Telegram" />
+          Telegram
+        </a>
       </div>
     </div>
   </header>
@@ -628,7 +727,7 @@
           <div>
             <h1>Haz tu donación en 1 minuto</h1>
             <p>
-              Completa el formulario y elige PayPal o USDT TRC20. Esta plantilla no procesa pagos reales;
+              Completa el formulario y elige el método de pago. Esta plantilla no procesa pagos reales;
               muestra datos para pagar y luego enviar el comprobante.
             </p>
           </div>
@@ -636,7 +735,7 @@
           <div class="total-box" aria-label="Cantidad donada">
             <div class="k">Cantidad donada</div>
             <div class="v" id="totalDonated">$0</div>
-            <div class="mini" id="totalDonatedMini">Total local (según moneda seleccionada)</div>
+            <div class="mini" id="totalDonatedMini">Total informativo (puedes conectarlo a backend luego)</div>
           </div>
         </div>
       </div>
@@ -647,23 +746,38 @@
       <div class="card panel">
         <div class="section-title">
           <div>
-            <h2>Tu donación</h2>
+            <h2 class="title-donation">Tu donación</h2>
             <p>Completa los datos y selecciona el método.</p>
           </div>
         </div>
 
         <form id="donForm">
           <div class="form">
-            <div class="field">
+            <!-- Nombre -->
+            <div class="field float">
               <label for="name">Nombre</label>
-              <input id="name" autocomplete="name" placeholder="Ej: Santiago Grauss" required />
-            </div>
-            <div class="field">
-              <label for="email">Correo (opcional)</label>
-              <input id="email" type="email" autocomplete="email" placeholder="Ej: correo@dominio.com" />
+              <input id="name" autocomplete="name" placeholder="Nombre" required />
             </div>
 
-            <div class="field">
+            <!-- País -->
+            <div class="field float">
+              <label for="country">País</label>
+              <select id="country" required>
+                <option value="" disabled selected>Selecciona tu país</option>
+                <option>Venezuela</option>
+                <option>Colombia</option>
+                <option>México</option>
+                <option>Perú</option>
+                <option>Chile</option>
+                <option>Argentina</option>
+                <option>España</option>
+                <option>Estados Unidos</option>
+                <option>Otro</option>
+              </select>
+            </div>
+
+            <!-- Moneda -->
+            <div class="field float">
               <label for="currency">Moneda</label>
               <select id="currency" required>
                 <option value="USD" selected>USD ($)</option>
@@ -671,9 +785,10 @@
               </select>
             </div>
 
-            <div class="field">
+            <!-- Monto -->
+            <div class="field float">
               <label for="amount">Monto</label>
-              <input id="amount" type="number" min="1" step="1" placeholder="Ej: 25" required />
+              <input id="amount" type="number" min="1" step="1" placeholder="Monto" required />
               <div class="hint" style="margin-top:6px;">Atajos:
                 <span class="badge" data-quick="10">10</span>
                 <span class="badge" data-quick="25">25</span>
@@ -682,7 +797,8 @@
               </div>
             </div>
 
-            <div class="field full">
+            <!-- Mensaje opcional -->
+            <div class="field full float">
               <label for="note">Mensaje (opcional)</label>
               <textarea id="note" placeholder="Ej: Donación para alimentos / salud / educación..."></textarea>
             </div>
@@ -692,10 +808,11 @@
 
           <div>
             <div class="section-title">
-              <div>
-                <h2>Método de pago</h2>
-                <p>Selecciona uno para ver instrucciones.</p>
+              <div class="method-title-inline">
+                <img id="methodTitleLogo" alt="Logo método de pago" />
+                <h2 class="title-method">Método de pago</h2>
               </div>
+              <p>Selecciona uno para ver instrucciones.</p>
             </div>
 
             <div class="tabs" role="tablist" aria-label="Métodos de pago">
@@ -721,11 +838,14 @@
 
               <div class="pay-details">
                 <p class="pay-email" id="paypalEmailText">correo@paypal.com</p>
-                <p class="pay-note" id="paypalWarnText">NOTA: enviar comprobante al @usuario de telegram</p>
+                <div class="pay-note" id="paypalWarnText">NOTA: enviar comprobante al @usuario de telegram</div>
               </div>
 
               <div class="btnrow">
-                <button class="btn btn-ghost" type="button" id="btnCopyPayPal">📋 Copiar correo</button>
+                <button class="btn btn-ghost copy-btn" type="button" id="btnCopyPayPal">
+                  <img id="copyIconPaypal" alt="Copiar" />
+                  Copiar código
+                </button>
               </div>
 
               <p class="hint">
@@ -751,13 +871,16 @@
                   <div class="addr" id="usdtAddressText">TU_DIRECCION_TRC20_AQUI</div>
 
                   <div class="btnrow" style="margin-top:10px;">
-                    <button class="btn btn-ghost" type="button" id="btnCopyAddr">📋 Copiar dirección</button>
+                    <button class="btn btn-ghost copy-btn" type="button" id="btnCopyAddr">
+                      <img id="copyIconUsdt" alt="Copiar" />
+                      Copiar código
+                    </button>
                     <button class="btn btn-primary" type="button" id="btnShowUSDT">🪙 Generar recibo</button>
                   </div>
 
-                  <p class="pay-note" id="usdtWarnText" style="margin-top:10px;">
+                  <div class="pay-note" id="usdtWarnText" style="margin-top:10px;">
                     NOTA: enviar comprobante al @usuario de telegram
-                  </p>
+                  </div>
                 </div>
               </div>
 
@@ -780,22 +903,6 @@
 
       <!-- Columna derecha -->
       <div class="methods">
-        <div class="card">
-          <div class="section-title">
-            <div>
-              <h2>Historial local</h2>
-              <p>Se guarda en tu navegador.</p>
-            </div>
-          </div>
-          <div class="divider"></div>
-          <div class="small" id="historyPreview">Sin donaciones aún.</div>
-          <div class="divider"></div>
-          <div class="btnrow">
-            <button class="btn btn-ghost" type="button" id="btnExport">📄 Exportar JSON</button>
-            <button class="btn btn-ghost" type="button" id="btnClear">🗑️ Borrar</button>
-          </div>
-        </div>
-
         <div class="card">
           <div class="section-title">
             <div>
@@ -826,8 +933,18 @@
     // CONFIG (edita aquí)
     // ==========================
     const CONFIG = {
-      // Logo redondo del título "Donaciones"
+      // Navbar / Branding
       brandLogoUrl: "https://img.freepik.com/vector-premium/logo-donacion_23-2147503731.jpg",
+
+      // Telegram (navbar button)
+      telegramUrl: "https://t.me/tu_canal_o_usuario",
+      telegramIconUrl: "https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg",
+
+      // Título "Método de pago" (logo al lado)
+      methodTitleLogoUrl: "https://cdn-icons-png.flaticon.com/512/1086/1086741.png",
+
+      // Icono para "Copiar código"
+      copyIconUrl: "https://cdn-icons-png.flaticon.com/512/1621/1621635.png",
 
       // PayPal
       paypalEmail: "donate37@gmail.com",
@@ -838,25 +955,20 @@
       usdtAddress: "TU_DIRECCION_TRC20_AQUI",
       usdtLogoUrl: "https://cryptologos.cc/logos/tether-usdt-logo.png?v=032",
 
-      // TOP DONORS (nombre, avatar URL, monto)
-      // Nota: esto es independiente del historial automático (es una lista "manual").
+      // TOP DONORS
       topDonors: [
         { name: "María P.", avatar: "https://i.pinimg.com/736x/84/1d/d1/841dd152f7bfe6e6855880e96d5d3ee5.jpg", amount: 250 },
         { name: "Carlos R.", avatar: "https://i.pinimg.com/1200x/d2/60/9e/d2609e3bc59e31a106fbc9565bcf86d6.jpg", amount: 180 },
-        { name: "Ana G.", avatar: "https://i.pinimg.com/736x/40/92/d1/4092d19668d38e4c4efd23ce73e57810.jpg",  amount: 120 },
+        { name: "Ana G.", avatar: "https://i.pinimg.com/736x/40/92/d1/4092d19668d38e4c4efd23ce73e57810.jpg", amount: 120 },
         { name: "José L.", avatar: "https://i.pinimg.com/1200x/1a/3b/3e/1a3b3efe45eabe945dd54e63044d1483.jpg", amount: 90 },
       ]
     };
-
-    const LS_KEYS = { list: "don_demo_list" };
 
     // ==========================
     // Helpers
     // ==========================
     const $ = (sel, root=document) => root.querySelector(sel);
     const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
-
-    function safeJSONParse(v, fallback){ try { return JSON.parse(v); } catch { return fallback; } }
     function nowISO(){ return new Date().toISOString(); }
 
     function money(amount, currency){
@@ -876,27 +988,9 @@
     }
     $("#tclose").addEventListener("click", () => $("#toast").classList.remove("show"));
 
-    function getHistory(){ return safeJSONParse(localStorage.getItem(LS_KEYS.list), []); }
-    function setHistory(list){
-      localStorage.setItem(LS_KEYS.list, JSON.stringify(list));
-      renderHistoryPreview();
-      renderTotal();
-    }
-
-    function renderTotal(){
-      const list = getHistory();
-      const cur = $("#currency")?.value || "USD";
-      const total = list
-        .filter(x => x.currency === cur)
-        .reduce((acc, x) => acc + Number(x.amount || 0), 0);
-
-      $("#totalDonated").textContent = money(total, cur);
-      $("#totalDonatedMini").textContent = `Total local (moneda: ${cur})`;
-    }
-
     function validateCommon(){
       const name = $("#name").value.trim();
-      const email = $("#email").value.trim();
+      const country = $("#country").value;
       const currency = $("#currency").value;
       const amount = Number($("#amount").value);
       const note = $("#note").value.trim();
@@ -905,18 +999,18 @@
         showToast({ title:"Nombre inválido", msg:"Escribe tu nombre (mín. 2 caracteres).", icon:"⚠️" });
         return null;
       }
-      if($("#email").value && !$("#email").checkValidity()){
-        showToast({ title:"Correo inválido", msg:"Revisa el formato del correo.", icon:"⚠️" });
+      if(!country){
+        showToast({ title:"País requerido", msg:"Selecciona tu país.", icon:"⚠️" });
         return null;
       }
       if(!Number.isFinite(amount) || amount < 1){
         showToast({ title:"Monto inválido", msg:"Ingresa un monto mayor o igual a 1.", icon:"⚠️" });
         return null;
       }
-      return { name, email, currency, amount, note };
+      return { name, country, currency, amount, note };
     }
 
-    function makeReceipt({method, donor, currency, amount, note, extra}){
+    function makeReceipt({method, donor, country, currency, amount, note, extra}){
       return {
         id: Math.random().toString(16).slice(2, 10).toUpperCase(),
         created_at: nowISO(),
@@ -924,6 +1018,7 @@
         currency,
         amount,
         donor,
+        country,
         note: note || null,
         extra: extra || null
       };
@@ -936,7 +1031,8 @@
       lines.push(`Fecha: ${payload.created_at}`);
       lines.push(`Método: ${payload.method}`);
       lines.push(`Monto: ${money(payload.amount, payload.currency)} ${payload.currency}`);
-      lines.push(`Donante: ${payload.donor.name}${payload.donor.email ? " <" + payload.donor.email + ">" : ""}`);
+      lines.push(`Donante: ${payload.donor.name}`);
+      lines.push(`País: ${payload.country}`);
       if(payload.note) lines.push(`Mensaje: ${payload.note}`);
       if(payload.extra){
         lines.push(`---`);
@@ -950,26 +1046,6 @@
       $("#receipt").scrollIntoView({behavior:"smooth"});
     }
 
-    function addToHistory(payload){
-      const list = getHistory();
-      list.push(payload);
-      setHistory(list);
-    }
-
-    function renderHistoryPreview(){
-      const list = getHistory().slice().reverse().slice(0, 6);
-      if(list.length === 0){
-        $("#historyPreview").textContent = "Sin donaciones aún.";
-        return;
-      }
-      const lines = list.map(x => {
-        const date = new Date(x.created_at).toLocaleString("es-ES", { day:"2-digit", month:"short", hour:"2-digit", minute:"2-digit" });
-        const amt = money(x.amount, x.currency) + " " + x.currency;
-        return `• ${date} — ${x.method} — ${amt} — ${x.donor?.name || "Anónimo"} (ID ${x.id})`;
-      });
-      $("#historyPreview").textContent = lines.join("\n");
-    }
-
     // ==========================
     // Top donors (manual list)
     // ==========================
@@ -981,18 +1057,13 @@
       const root = $("#topDonorsList");
       if(!root) return;
 
-      if(list.length === 0){
-        root.innerHTML = `<div class="small">No hay donadores configurados.</div>`;
-        return;
-      }
-
       root.innerHTML = list.map((d, idx) => {
         const safeName = escapeHTML(d.name || "Donador");
         const safeAvatar = escapeAttr(d.avatar || "");
         const amt = Number(d.amount || 0);
 
         return `
-          <div class="donor">
+          <div class="donor" style="animation-delay:${idx*0.12}s">
             <img class="avatar" src="${safeAvatar}" alt="Perfil de ${safeName}" onerror="this.src='https://i.pravatar.cc/80?img=1'">
             <div class="meta">
               <div class="name">${safeName}</div>
@@ -1038,16 +1109,22 @@
       });
     });
 
-    // Recalcular total si cambia moneda
-    $("#currency").addEventListener("change", renderTotal);
-
     // ==========================
-    // PayPal actions (solo copiar)
+    // Copy actions
     // ==========================
     $("#btnCopyPayPal").addEventListener("click", async () => {
       try{
         await navigator.clipboard.writeText(CONFIG.paypalEmail);
-        showToast({ title:"Copiado", msg:"Correo PayPal copiado.", icon:"📋" });
+        showToast({ title:"Copiado", msg:"Código/Correo PayPal copiado.", icon:"📋" });
+      }catch{
+        showToast({ title:"No se pudo copiar", msg:"Tu navegador bloqueó el portapapeles.", icon:"⚠️" });
+      }
+    });
+
+    $("#btnCopyAddr").addEventListener("click", async () => {
+      try{
+        await navigator.clipboard.writeText(CONFIG.usdtAddress);
+        showToast({ title:"Copiado", msg:"Código/Dirección TRC20 copiada.", icon:"📋" });
       }catch{
         showToast({ title:"No se pudo copiar", msg:"Tu navegador bloqueó el portapapeles.", icon:"⚠️" });
       }
@@ -1065,22 +1142,14 @@
       return `tron:${addr}?token=USDT&network=TRC20&amount=${usdtAmount}&memo=${memo}&displayCurrency=${cur}`;
     }
 
-    $("#btnCopyAddr").addEventListener("click", async () => {
-      try{
-        await navigator.clipboard.writeText(CONFIG.usdtAddress);
-        showToast({ title:"Copiado", msg:"Dirección TRC20 copiada.", icon:"📋" });
-      }catch{
-        showToast({ title:"No se pudo copiar", msg:"Tu navegador bloqueó el portapapeles.", icon:"⚠️" });
-      }
-    });
-
     $("#btnShowUSDT").addEventListener("click", () => {
       const data = validateCommon();
       if(!data) return;
 
       const payload = makeReceipt({
         method: "USDT TRC20 (manual)",
-        donor: { name: data.name, email: data.email || null },
+        donor: { name: data.name },
+        country: data.country,
         currency: data.currency,
         amount: data.amount,
         note: data.note,
@@ -1091,17 +1160,12 @@
         }
       });
 
-      addToHistory(payload);
       showReceipt(payload);
       showToast({ title:"Recibo generado", msg:"Envía el comprobante al Telegram indicado.", icon:"🧾" });
     });
 
-    // Redibuja QR si cambia el monto
-    $("#amount").addEventListener("input", () => {
-      if($("#box-usdt").classList.contains("active")){
-        drawPseudoQR(makeUSDTURI());
-      }
-    });
+    // prevent submit
+    $("#donForm").addEventListener("submit", (e) => e.preventDefault());
 
     // ==========================
     // Pseudo-QR
@@ -1204,63 +1268,47 @@
     });
 
     // ==========================
-    // History export / clear
-    // ==========================
-    $("#btnExport").addEventListener("click", () => {
-      const data = { history: getHistory(), exported_at: nowISO() };
-      const json = JSON.stringify(data, null, 2);
-      const blob = new Blob([json], {type:"application/json"});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `donaciones-export-${Date.now()}.json`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-      showToast({ title:"Exportado", msg:"Se descargó el historial en JSON.", icon:"📄" });
-    });
-
-    $("#btnClear").addEventListener("click", () => {
-      localStorage.removeItem(LS_KEYS.list);
-      $("#receipt").style.display = "none";
-      renderHistoryPreview();
-      renderTotal();
-      showToast({ title:"Borrado", msg:"Historial local eliminado.", icon:"🗑️" });
-    });
-
-    // ==========================
     // INIT
     // ==========================
     function init(){
-      // brand logo
+      // branding
       $("#brandLogo").src = CONFIG.brandLogoUrl;
 
-      // Logos
+      // navbar telegram
+      $("#telegramBtn").href = CONFIG.telegramUrl;
+      $("#telegramIcon").src = CONFIG.telegramIconUrl;
+
+      // method title logo
+      $("#methodTitleLogo").src = CONFIG.methodTitleLogoUrl;
+
+      // copy icons
+      $("#copyIconPaypal").src = CONFIG.copyIconUrl;
+      $("#copyIconUsdt").src = CONFIG.copyIconUrl;
+
+      // Logos tabs + headers
       $("#paypalLogo").src = CONFIG.paypalLogoUrl;
       $("#paypalTabLogo").src = CONFIG.paypalLogoUrl;
 
       $("#usdtLogo").src = CONFIG.usdtLogoUrl;
       $("#usdtTabLogo").src = CONFIG.usdtLogoUrl;
 
-      // PayPal text + warning
+      // Texts
       $("#paypalEmailText").textContent = CONFIG.paypalEmail;
+      $("#usdtAddressText").textContent = CONFIG.usdtAddress;
+
       const note = `NOTA: enviar comprobante al ${CONFIG.telegramUser} de telegram`;
       $("#paypalWarnText").textContent = note;
       $("#usdtWarnText").textContent = note;
 
-      // USDT address
-      $("#usdtAddressText").textContent = CONFIG.usdtAddress;
+      // Top donors
+      renderTopDonors();
 
       // Default
-      renderTopDonors();
-      renderHistoryPreview();
-      renderTotal();
       drawPseudoQR(makeUSDTURI());
       setMethod("paypal");
 
-      // prevent submit
-      $("#donForm").addEventListener("submit", (e) => e.preventDefault());
+      // Total informativo (si luego conectas backend, aquí se actualiza)
+      $("#totalDonated").textContent = money(0, $("#currency").value);
     }
 
     init();
