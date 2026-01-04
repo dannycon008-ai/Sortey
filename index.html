@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Corazón que Suma</title>
+  <title>Corazón que Suma s</title>
 
   <!-- Poppins -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -65,7 +65,6 @@
       min-width: 0;
     }
 
-    /* Logo redondo */
     .brand-logo-wrap{
       width: 48px;
       height: 48px;
@@ -175,7 +174,6 @@
       font-size: 15px;
     }
 
-    /* Cantidad donada (solo informativo) */
     .total-box{
       position: relative;
       border-radius: 18px;
@@ -265,7 +263,7 @@
       margin:0;
       letter-spacing:-.2px;
       font-weight: 1000;
-      font-size: 20px; /* pedido */
+      font-size: 20px;
     }
     .section-title p{
       margin:0;
@@ -317,7 +315,7 @@
       transform: translateY(-1px);
     }
 
-    /* Method boxes (flotante y bonito) */
+    /* Method boxes */
     .method-box{
       display:none;
       margin-top: 12px;
@@ -407,7 +405,6 @@
       margin: 0;
     }
 
-    /* NOTA resaltada */
     .pay-note{
       margin: 10px 0 0;
       font-size: 13px;
@@ -452,7 +449,7 @@
       canvas{ width: 160px; height: 160px; }
     }
 
-    /* Top donors + animación */
+    /* Top donors */
     .donor-list{
       display:grid;
       gap: 10px;
@@ -521,7 +518,7 @@
       flex: 0 0 auto;
     }
 
-    /* Receipt (caja bonita) */
+    /* Receipt */
     .receipt{
       margin-top: 12px;
       border: 1px solid rgba(11,18,32,.10);
@@ -584,10 +581,182 @@
       cursor:pointer;
       padding: 2px 6px;
     }
+
+    /* ==========================
+       POPUP INICIAL (MODERNO)
+       ========================== */
+    .overlay{
+      position: fixed;
+      inset: 0;
+      background: rgba(11,18,32,.55);
+      backdrop-filter: blur(10px);
+      display:none;
+      z-index: 9999;
+      padding: 18px;
+    }
+    .overlay.show{ display:grid; place-items:center; }
+
+    .popup{
+      width: min(920px, 94vw);
+      background: rgba(255,255,255,.92);
+      border: 1px solid rgba(11,18,32,.10);
+      border-radius: 22px;
+      box-shadow: 0 30px 90px rgba(0,0,0,.35);
+      overflow:hidden;
+      animation: popIn .22s ease;
+    }
+    @keyframes popIn{
+      from{ transform: translateY(12px) scale(.98); opacity: 0; }
+      to{ transform: translateY(0) scale(1); opacity: 1; }
+    }
+
+    .popup-top{
+      display:grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 0;
+    }
+
+    .popup-media{
+      position: relative;
+      min-height: 240px;
+      background: linear-gradient(135deg, rgba(22,119,255,.18), rgba(34,197,94,.16));
+    }
+    .popup-media img{
+      width:100%;
+      height:100%;
+      object-fit: cover;
+      display:block;
+      filter: saturate(1.05) contrast(1.02);
+    }
+    .popup-media::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: linear-gradient(0deg, rgba(11,18,32,.55), rgba(11,18,32,0));
+      pointer-events:none;
+    }
+
+    .popup-content{
+      padding: 16px 16px 14px;
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+    }
+
+    .help-title{
+      margin:0;
+      font-size: clamp(18px, 2.2vw, 24px);
+      font-weight: 1000;
+      letter-spacing: -.3px;
+      line-height: 1.1;
+    }
+
+    .help-highlight{
+      display:inline-flex;
+      width: fit-content;
+      padding: 10px 12px;
+      border-radius: 999px;
+      font-weight: 1000;
+      background: rgba(22,119,255,.12);
+      border: 1px solid rgba(22,119,255,.25);
+      color: rgba(11,18,32,.92);
+      box-shadow: 0 16px 40px rgba(0,0,0,.10);
+      animation: zoomPulse 1.4s ease-in-out infinite;
+      transform-origin: center;
+    }
+    @keyframes zoomPulse{
+      0%{ transform: scale(1); }
+      50%{ transform: scale(1.08); }
+      100%{ transform: scale(1); }
+    }
+
+    .help-text{
+      margin:0;
+      color: rgba(11,18,32,.72);
+      font-size: 13.5px;
+      line-height: 1.55;
+      max-height: 220px;
+      overflow:auto;
+      padding-right: 6px;
+    }
+
+    .help-text::-webkit-scrollbar{ width: 8px; }
+    .help-text::-webkit-scrollbar-thumb{
+      background: rgba(11,18,32,.18);
+      border-radius: 999px;
+    }
+
+    .popup-actions{
+      display:flex;
+      gap: 10px;
+      flex-wrap:wrap;
+      margin-top: 4px;
+    }
+
+    .btn-close{
+      border: 1px solid rgba(11,18,32,.12);
+      background: rgba(255,255,255,.85);
+      color: rgba(11,18,32,.88);
+    }
+
+    .btn-donate{
+      background: linear-gradient(135deg, rgba(34,197,94,1), rgba(34,197,94,.72));
+      color:#fff;
+    }
+
+    .popup-foot{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      padding: 10px 14px;
+      border-top: 1px solid rgba(11,18,32,.10);
+      background: rgba(255,255,255,.75);
+    }
+
+    .tiny{
+      font-size: 12px;
+      color: rgba(11,18,32,.65);
+      font-weight: 700;
+    }
+
+    @media (max-width: 860px){
+      .popup-top{ grid-template-columns: 1fr; }
+      .popup-media{ min-height: 220px; }
+      .help-text{ max-height: 240px; }
+    }
   </style>
 </head>
 
 <body>
+
+  <!-- POPUP INICIAL -->
+  <div class="overlay" id="overlay">
+    <div class="popup" role="dialog" aria-modal="true" aria-label="Mensaje importante">
+      <div class="popup-top">
+        <div class="popup-media">
+          <img id="popupImage" alt="Imagen de apoyo" />
+        </div>
+
+        <div class="popup-content">
+          <div class="help-highlight" id="helpHighlight">Emmanuel necesita tu ayuda</div>
+          <h2 class="help-title">Una cirugía que podría cambiarle la vida</h2>
+
+          <p class="help-text" id="popupText"></p>
+
+          <div class="popup-actions">
+            <button class="btn btn-close" type="button" id="btnClosePopup">Entendido</button>
+            <button class="btn btn-donate" type="button" id="btnGoDonate">Ir a donar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="popup-foot">
+        <div class="tiny">Tu apoyo puede marcar una gran diferencia.</div>
+        <button class="btn btn-ghost" type="button" id="btnCopyStory">📋 Copiar historia</button>
+      </div>
+    </div>
+  </div>
 
   <!-- NAVBAR -->
   <header>
@@ -598,7 +767,7 @@
         </div>
 
         <div class="brand-title">
-          <div class="t">Corazón que Suma</div>
+          <div class="t">Corazón que Suma </div>
         </div>
       </div>
 
@@ -616,9 +785,9 @@
       <div class="card">
         <div class="hero-top">
           <div>
-            <h1>Salva la vida de Emanuel en 1 minuto</h1>
+            <h1>Salva la vida de Emmanuel en 1 minuto</h1>
             <p>
-              "Transformando pequeñas acciones en grandes cambios. Donde tu generosidad encuentra su propósito. Súmate, aporta y ayudemos juntos. ❤️✨
+             "Transformando pequeñas acciones en grandes cambios. Donde tu generosidad encuentra su propósito. Súmate, aporta y ayudemos juntos. ❤️✨"
             </p>
           </div>
 
@@ -632,8 +801,8 @@
     </section>
 
     <section class="grid">
-      <!-- Panel principal (SIN FORMULARIO) -->
-      <div class="card panel">
+      <!-- Panel principal -->
+      <div class="card panel" id="paySection">
         <div class="section-title">
           <div class="method-title-inline">
             <img id="methodTitleLogo" alt="Logo método de pago" />
@@ -665,7 +834,7 @@
 
           <div class="pay-details">
             <p class="pay-email" id="paypalEmailText">correo@paypal.com</p>
-            <div class="pay-note" id="paypalWarnText">NOTA: enviar comprobante al @usuario en telegram</div>
+            <div class="pay-note" id="paypalWarnText">NOTA: enviar comprobante al usuario @Eradigital_08 en telegram</div>
           </div>
 
           <div class="btnrow">
@@ -692,7 +861,7 @@
               <div class="small" style="margin-bottom:8px; font-weight:900; color: rgba(11,18,32,.80);">
                 Dirección TRC20:
               </div>
-              <div class="addr" id="usdtAddressText">TXJ1HBuYD6XWA2HcUKKp3ynKaWJXhnY3gt</div>
+              <div class="addr" id="usdtAddressText">TU_DIRECCION_TRC20_AQUI</div>
 
               <div class="btnrow" style="margin-top:10px;">
                 <button class="btn btn-ghost" type="button" id="btnCopyAddr">📋 Copiar código</button>
@@ -700,7 +869,7 @@
               </div>
 
               <div class="pay-note" id="usdtWarnText" style="margin-top:10px;">
-                NOTA: enviar comprobante al @Eradigital_08
+                NOTA: enviar comprobante al usuario @Eradigital_08 en telegram
               </div>
             </div>
           </div>
@@ -710,7 +879,7 @@
           </p>
         </div>
 
-        <!-- CAJA DE DATOS (BONITA Y FLOTA) -->
+        <!-- DATOS -->
         <div class="receipt" id="receipt" style="display:none;">
           <h3>🧾 Datos para enviar</h3>
           <pre id="receiptText"></pre>
@@ -727,7 +896,7 @@
           <div class="section-title">
             <div>
               <h2>Top donadores</h2>
-              <p>Gracias..</p>
+              <p>Gracias por tu apoyo...</p>
             </div>
           </div>
           <div style="height:1px;background:rgba(11,18,32,.10);margin:12px 0;"></div>
@@ -753,22 +922,25 @@
     // CONFIG (edita aquí)
     // ==========================
     const CONFIG = {
-      brandLogoUrl: "https://scontent.fbla1-1.fna.fbcdn.net/v/t39.30808-6/611255294_846141981522837_4953943314339210289_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=GXfzY4CcHVYQ7kNvwE-Ov-p&_nc_oc=AdmImLTFlg3N5nBp2N2djGW50kV_XFb5hnOvoGJIPVEOOQKzt9Z8BVBXT9iz0Dyh4HU&_nc_zt=23&_nc_ht=scontent.fbla1-1.fna&_nc_gid=2oNt6MLbZo0jdBcw8d4vDw&oh=00_AfpJPDsQcJH02yUE44kRNVvCGq66RdljvPNtHhhGyfrZGQ&oe=696084AF",
+      brandLogoUrl: "https://img.freepik.com/vector-premium/logo-donacion_23-2147503731.jpg",
 
       // Telegram
-      telegramUrl: "@Eradigital_08",
+      telegramUrl: "https://t.me/tu_canal_o_usuario",
       telegramIconUrl: "https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg",
 
       // Logo al lado del título "Método de pago"
       methodTitleLogoUrl: "https://cdn-icons-png.flaticon.com/512/1086/1086741.png",
 
+      // ✅ AQUÍ COLOCAS LA URL DE LA IMAGEN DEL POPUP
+      heroPopupImageUrl: "https://ichef.bbci.co.uk/ace/ws/800/cpsprodpb/9267/production/_99397473_primera.jpg.webp",
+
       // PayPal
       paypalEmail: "donate37@gmail.com",
-      telegramUser: "@Eradigital_08",
+      telegramUser: "@usuario",
       paypalLogoUrl: "https://cdn.pixabay.com/photo/2018/05/08/21/29/paypal-3384015_640.png",
 
       // USDT TRC20
-      usdtAddress: "TXJ1HBuYD6XWA2HcUKKp3ynKaWJXhnY3gt",
+      usdtAddress: "TU_DIRECCION_TRC20_AQUI",
       usdtLogoUrl: "https://cryptologos.cc/logos/tether-usdt-logo.png?v=032",
 
       // TOP DONORS
@@ -777,7 +949,17 @@
         { name: "Carlos R.", avatar: "https://i.pinimg.com/1200x/d2/60/9e/d2609e3bc59e31a106fbc9565bcf86d6.jpg", amount: 180 },
         { name: "Ana G.", avatar: "https://i.pinimg.com/736x/40/92/d1/4092d19668d38e4c4efd23ce73e57810.jpg",  amount: 120 },
         { name: "José L.", avatar: "https://i.pinimg.com/1200x/1a/3b/3e/1a3b3efe45eabe945dd54e63044d1483.jpg", amount: 90 },
-      ]
+      ],
+
+      // Texto del popup (tu historia)
+      popupStory: `Un equipo de médicos de Florida planea extirpar un tumor de 4,5 kilos del rostro de Emanuel Zayas, un adolescente cubano de 14 años, en una cirugía que podría cambiarle la vida.
+
+Emanuel viajó recientemente a Miami junto a sus padres  gracias a una visa médica, según informó el Miami Herald. La operación será realizada el 12 de enero en el Hospital Infantil Holtz, por el doctor Robert Marx y un equipo especializado del Sistema de Salud de la Universidad de Miami.
+
+Emanuel padece displasia fibrosa poliostótica, una enfermedad poco común que provoca deformidades óseas severas. Según su padre, el tumor comenzó como una pequeña espinilla y creció rápidamente en pocos meses, afectando profundamente su vida diaria.
+
+Esta cirugía representa una esperanza real, pero los costos médicos y de recuperación son elevados. Por ello, hacemos un llamado solidario: cualquier donación o ayuda puede marcar una gran diferencia.
+Con tu apoyo, Emanuel puede recuperar su salud y la oportunidad de un futuro mejor.`
     };
 
     // ==========================
@@ -879,7 +1061,7 @@ Red: TRC20
 Dirección: ${CONFIG.usdtAddress}
 Enviar comprobante a: ${CONFIG.telegramUser}
 
-NOTA: ENVIAR COMPROBANTE CON NOMBRE Y PAIS.`;
+NOTA: Este sitio no confirma pagos reales.`;
 
       $("#receiptText").textContent = text;
       $("#receipt").style.display = "block";
@@ -918,7 +1100,7 @@ NOTA: ENVIAR COMPROBANTE CON NOMBRE Y PAIS.`;
     });
 
     // ==========================
-    // Pseudo-QR (sin monto, solo dirección)
+    // Pseudo-QR (sin monto)
     // ==========================
     function makeUSDTURI(){
       const addr = CONFIG.usdtAddress;
@@ -994,6 +1176,44 @@ NOTA: ENVIAR COMPROBANTE CON NOMBRE Y PAIS.`;
     }
 
     // ==========================
+    // POPUP actions
+    // ==========================
+    function openPopup(){
+      $("#overlay").classList.add("show");
+      document.body.style.overflow = "hidden";
+    }
+    function closePopup(){
+      $("#overlay").classList.remove("show");
+      document.body.style.overflow = "";
+    }
+
+    $("#btnClosePopup").addEventListener("click", closePopup);
+
+    $("#btnGoDonate").addEventListener("click", () => {
+      closePopup();
+      $("#paySection").scrollIntoView({behavior:"smooth"});
+    });
+
+    $("#btnCopyStory").addEventListener("click", async () => {
+      try{
+        await navigator.clipboard.writeText(CONFIG.popupStory);
+        showToast({ title:"Copiado", msg:"Historia copiada al portapapeles.", icon:"📋" });
+      }catch{
+        showToast({ title:"No se pudo copiar", msg:"Tu navegador bloqueó el portapapeles.", icon:"⚠️" });
+      }
+    });
+
+    // Cerrar popup clic fuera
+    $("#overlay").addEventListener("click", (e) => {
+      if(e.target.id === "overlay") closePopup();
+    });
+
+    // Esc para cerrar
+    document.addEventListener("keydown", (e) => {
+      if(e.key === "Escape" && $("#overlay").classList.contains("show")) closePopup();
+    });
+
+    // ==========================
     // INIT
     // ==========================
     function init(){
@@ -1017,13 +1237,19 @@ NOTA: ENVIAR COMPROBANTE CON NOMBRE Y PAIS.`;
       $("#paypalWarnText").textContent = note;
       $("#usdtWarnText").textContent = note;
 
-      // total informativo
       $("#totalDonated").textContent = "$0";
-      $("#totalDonatedMini").textContent = "META 5.000$ ";
+      $("#totalDonatedMini").textContent = "Total informativo (conéctalo a backend luego)";
 
       renderTopDonors();
       drawPseudoQR(makeUSDTURI());
       setMethod("paypal");
+
+      // Popup
+      $("#popupImage").src = CONFIG.heroPopupImageUrl;  // ✅ AQUÍ SE USA LA URL
+      $("#popupText").textContent = CONFIG.popupStory;
+
+      // Abrir al cargar
+      openPopup();
     }
 
     init();
