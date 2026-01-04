@@ -746,66 +746,7 @@
       <div class="card panel">
         <div class="section-title">
           <div>
-            <h2 class="title-donation">Tu donación</h2>
-            <p>Completa los datos y selecciona el método.</p>
-          </div>
-        </div>
-
-        <form id="donForm">
-          <div class="form">
-            <!-- Nombre -->
-            <div class="field float">
-              <label for="name">Nombre</label>
-              <input id="name" autocomplete="name" placeholder="Nombre" required />
-            </div>
-
-            <!-- País -->
-            <div class="field float">
-              <label for="country">País</label>
-              <select id="country" required>
-                <option value="" disabled selected>Selecciona tu país</option>
-                <option>Venezuela</option>
-                <option>Colombia</option>
-                <option>México</option>
-                <option>Perú</option>
-                <option>Chile</option>
-                <option>Argentina</option>
-                <option>España</option>
-                <option>Estados Unidos</option>
-                <option>Otro</option>
-              </select>
-            </div>
-
-            <!-- Moneda -->
-            <div class="field float">
-              <label for="currency">Moneda</label>
-              <select id="currency" required>
-                <option value="USD" selected>USD ($)</option>
-                <option value="EUR">EUR (€)</option>
-              </select>
-            </div>
-
-            <!-- Monto -->
-            <div class="field float">
-              <label for="amount">Monto</label>
-              <input id="amount" type="number" min="1" step="1" placeholder="Monto" required />
-              <div class="hint" style="margin-top:6px;">Atajos:
-                <span class="badge" data-quick="10">10</span>
-                <span class="badge" data-quick="25">25</span>
-                <span class="badge" data-quick="50">50</span>
-                <span class="badge" data-quick="100">100</span>
-              </div>
-            </div>
-
-            <!-- Mensaje opcional -->
-            <div class="field full float">
-              <label for="note">Mensaje (opcional)</label>
-              <textarea id="note" placeholder="Ej: Donación para alimentos / salud / educación..."></textarea>
-            </div>
-          </div>
-
-          <div class="divider"></div>
-
+            
           <div>
             <div class="section-title">
               <div class="method-title-inline">
@@ -988,7 +929,6 @@
     }
     $("#tclose").addEventListener("click", () => $("#toast").classList.remove("show"));
 
-    function validateCommon(){
       const name = $("#name").value.trim();
       const country = $("#country").value;
       const currency = $("#currency").value;
@@ -1163,9 +1103,6 @@
       showReceipt(payload);
       showToast({ title:"Recibo generado", msg:"Envía el comprobante al Telegram indicado.", icon:"🧾" });
     });
-
-    // prevent submit
-    $("#donForm").addEventListener("submit", (e) => e.preventDefault());
 
     // ==========================
     // Pseudo-QR
