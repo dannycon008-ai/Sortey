@@ -3,684 +3,837 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Mini Mercado — Demo</title>
+  <title>Manos Solidarias | Ayuda Social</title>
   <style>
     :root{
-      --yellow:#ffe600;
-      --yellow-2:#fff3a6;
-      --ink:#111;
-      --muted:#6b7280;
-      --bg:#f5f5f5;
-      --card:#ffffff;
-      --line:#e6e6e6;
-      --blue:#3483fa;
-      --blue-2:#1f6feb;
-      --green:#00a650;
-      --shadow: 0 10px 25px rgba(0,0,0,.08);
-      --radius: 14px;
+      --bg:#0b1220;
+      --card:#101a31;
+      --muted:#9fb0d0;
+      --text:#eaf0ff;
+      --accent:#4da3ff;
+      --accent2:#22c55e;
+      --warn:#f59e0b;
+      --danger:#ef4444;
+      --border: rgba(255,255,255,.10);
+      --shadow: 0 14px 40px rgba(0,0,0,.35);
+      --radius: 18px;
     }
 
     *{ box-sizing:border-box; }
-    html,body{ height:100%; }
     body{
       margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color:var(--ink);
-      background:var(--bg);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(900px 400px at 20% 5%, rgba(77,163,255,.20), transparent 55%),
+        radial-gradient(900px 500px at 85% 20%, rgba(34,197,94,.14), transparent 55%),
+        radial-gradient(900px 500px at 50% 100%, rgba(245,158,11,.10), transparent 55%),
+        var(--bg);
+      min-height:100vh;
     }
+
+    a{ color:inherit; text-decoration:none; }
+    .container{ width:min(1100px, 92vw); margin:0 auto; }
 
     /* Top bar */
     .topbar{
-      background:var(--yellow);
-      border-bottom:1px solid rgba(0,0,0,.08);
-      position:sticky;
-      top:0;
-      z-index:50;
+      position:sticky; top:0; z-index:50;
+      backdrop-filter: blur(12px);
+      background: rgba(11,18,32,.70);
+      border-bottom: 1px solid var(--border);
     }
-    .topbar__inner{
-      max-width:1100px;
-      margin:0 auto;
-      padding:14px 16px;
-      display:flex;
-      align-items:center;
+    .topbar-inner{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:14px 0;
       gap:14px;
     }
     .brand{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      font-weight:900;
-      letter-spacing:.2px;
+      display:flex; align-items:center; gap:10px;
+      font-weight:800; letter-spacing:.2px;
     }
-    .brand__logo{
-      width:34px;height:34px;
-      border-radius:10px;
-      background:linear-gradient(135deg, #111 0%, #444 100%);
-      display:grid;place-items:center;
-      color:#fff;
-      font-size:14px;
-      box-shadow: 0 6px 14px rgba(0,0,0,.18);
-    }
-    .brand small{ font-weight:700; opacity:.7; }
-
-    .search{
-      flex:1;
-      display:flex;
-      gap:10px;
-      align-items:center;
-    }
-    .search input{
-      width:100%;
-      padding:12px 14px;
-      border:1px solid rgba(0,0,0,.12);
-      border-radius:12px;
-      outline:none;
-      font-size:14px;
-      background:#fff;
-      box-shadow: 0 8px 16px rgba(0,0,0,.06);
-    }
-    .search input:focus{
-      border-color: rgba(52,131,250,.55);
-      box-shadow: 0 10px 20px rgba(52,131,250,.12);
-    }
-
-    .btn{
-      border:0;
-      cursor:pointer;
-      border-radius:12px;
-      padding:10px 12px;
-      font-weight:700;
-      font-size:14px;
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
+    .logo{
+      width:38px; height:38px; border-radius:12px;
+      display:grid; place-items:center;
+      background: linear-gradient(135deg, rgba(77,163,255,.95), rgba(34,197,94,.75));
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,.15);
       user-select:none;
     }
-    .btn--primary{
-      background:var(--blue);
-      color:#fff;
+    nav{
+      display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;
     }
-    .btn--primary:hover{ background:var(--blue-2); }
-    .btn--ghost{
-      background:rgba(255,255,255,.65);
-      border:1px solid rgba(0,0,0,.12);
-    }
-    .btn--ghost:hover{ background:#fff; }
-
-    .badge{
-      min-width:20px;
-      height:20px;
-      padding:0 6px;
-      border-radius:999px;
-      background:#111;
-      color:#fff;
-      display:inline-grid;
-      place-items:center;
-      font-size:12px;
-      line-height:1;
-    }
-
-    /* Layout */
-    .wrap{
-      max-width:1100px;
-      margin:18px auto 40px;
-      padding:0 16px;
-      display:grid;
-      grid-template-columns: 280px 1fr;
-      gap:18px;
-    }
-
-    /* Sidebar */
-    .panel{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-    }
-    .panel__hd{
-      padding:14px 14px 10px;
-      border-bottom:1px solid var(--line);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-    }
-    .panel__hd h3{
-      margin:0;
-      font-size:14px;
-      letter-spacing:.2px;
-    }
-    .panel__bd{ padding:14px; }
-
-    .field{ display:flex; flex-direction:column; gap:8px; margin-bottom:14px; }
-    .label{ font-size:12px; color:var(--muted); font-weight:700; }
-    select, .chipbar button{
+    .navlink{
       padding:10px 12px;
-      border-radius:12px;
-      border:1px solid rgba(0,0,0,.12);
-      background:#fff;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      color: rgba(234,240,255,.90);
+      transition: .2s ease;
+      font-weight:600;
       font-size:14px;
-      outline:none;
+    }
+    .navlink:hover{
+      border-color: var(--border);
+      background: rgba(255,255,255,.06);
     }
 
-    .chipbar{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-    }
-    .chipbar button{
-      cursor:pointer;
-      font-weight:700;
-      background: #fff;
-    }
-    .chipbar button[aria-pressed="true"]{
-      border-color: rgba(52,131,250,.55);
-      background: rgba(52,131,250,.10);
-    }
 
-    .hint{
-      font-size:12px;
-      color:var(--muted);
-      line-height:1.4;
-      margin:0;
-    }
-
-    /* Main */
+    /* Hero */
     .hero{
-      background: linear-gradient(135deg, #ffffff 0%, var(--yellow-2) 100%);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      padding:14px 14px;
-      box-shadow: var(--shadow);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom:14px;
+      padding:46px 0 22px;
     }
-    .hero h2{ margin:0; font-size:16px; }
-    .hero p{ margin:4px 0 0; color:var(--muted); font-size:13px; }
-
-    .grid{
+    .hero-grid{
       display:grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap:14px;
+      grid-template-columns: 1.35fr .65fr;
+      gap:18px;
+      align-items:stretch;
     }
-
-    .card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
+    .hero-card{
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:22px;
       overflow:hidden;
-      box-shadow: var(--shadow);
-      display:flex;
-      flex-direction:column;
-      min-height: 330px;
-    }
-    .thumb{
-      height:150px;
-      background: linear-gradient(135deg, rgba(52,131,250,.18), rgba(0,166,80,.18));
-      display:grid;
-      place-items:center;
       position:relative;
     }
-    .thumb span{
-      font-weight:900;
-      color:#111;
-      background:rgba(255,255,255,.8);
-      padding:8px 10px;
+    .hero-card:before{
+      content:"";
+      position:absolute; inset:-2px;
+      background:
+        radial-gradient(520px 240px at 20% 10%, rgba(77,163,255,.22), transparent 60%),
+        radial-gradient(520px 240px at 90% 35%, rgba(34,197,94,.16), transparent 60%);
+      pointer-events:none;
+      filter: blur(1px);
+      opacity:.9;
+    }
+    .hero-card > *{ position:relative; }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 12px;
       border-radius:999px;
-      border:1px solid rgba(0,0,0,.10);
-      font-size:12px;
+      background: rgba(77,163,255,.12);
+      border: 1px solid rgba(77,163,255,.25);
+      color: rgba(234,240,255,.92);
+      font-weight:700;
+      font-size:13px;
+      width:fit-content;
+    }
+    .hero h1{
+      margin:14px 0 10px;
+      font-size: clamp(28px, 3.4vw, 42px);
+      line-height:1.05;
+      letter-spacing:-.5px;
+    }
+    .hero p{
+      margin:0 0 18px;
+      color: var(--muted);
+      font-size: 15.5px;
+      line-height:1.6;
+      max-width: 62ch;
+    }
+    .cta-row{
+      display:flex; gap:12px; flex-wrap:wrap;
+      align-items:center;
+      margin-top: 10px;
+    }
+    .btn{
+      cursor:pointer;
+      border:none;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-weight:800;
+      font-size:14px;
+      display:inline-flex; align-items:center; gap:9px;
+      transition:.18s ease;
+      user-select:none;
+      letter-spacing:.2px;
+    }
+    .btn:active{ transform: translateY(1px); }
+    .btn-primary{
+      background: linear-gradient(135deg, rgba(77,163,255,1), rgba(77,163,255,.75));
+      color: #061024;
+      box-shadow: 0 12px 30px rgba(77,163,255,.24);
+    }
+    .btn-primary:hover{ filter: brightness(1.03); }
+    .btn-ghost{
+      background: rgba(255,255,255,.06);
+      color: rgba(234,240,255,.92);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover{ background: rgba(255,255,255,.09); }
+    .btn-green{
+      background: linear-gradient(135deg, rgba(34,197,94,1), rgba(34,197,94,.70));
+      color: #04160c;
+      box-shadow: 0 12px 30px rgba(34,197,94,.22);
+    }
+    .btn-green:hover{ filter: brightness(1.03); }
+
+    .side-stats{
+      display:grid;
+      grid-template-rows: 1fr 1fr;
+      gap:18px;
+    }
+    .stat{
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding:18px;
+      box-shadow: var(--shadow);
+      display:flex; flex-direction:column; justify-content:space-between;
+      min-height: 150px;
+    }
+    .stat .kicker{
+      color: var(--muted);
+      font-weight:700;
+      font-size:13px;
+      letter-spacing:.2px;
+    }
+    .stat .value{
+      font-size: 34px;
+      font-weight:900;
+      margin:10px 0 2px;
+      letter-spacing:-.5px;
+    }
+    .stat .sub{
+      color: rgba(234,240,255,.80);
+      font-size: 13px;
+      line-height:1.4;
     }
     .tag{
-      position:absolute;
-      top:10px; left:10px;
-      background: rgba(0,0,0,.86);
-      color:#fff;
-      font-size:12px;
+      display:inline-flex;
       padding:6px 10px;
       border-radius:999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.05);
+      color: rgba(234,240,255,.86);
+      font-size: 12px;
+      font-weight:700;
+      width:fit-content;
+      margin-top:10px;
     }
 
-    .card__body{
-      padding:12px 12px 10px;
+    /* Sections */
+    section{ padding: 28px 0; }
+    .section-title{
+      display:flex; align-items:flex-end; justify-content:space-between;
+      gap:14px; flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+    .section-title h2{
+      margin:0;
+      font-size: 22px;
+      letter-spacing:-.2px;
+    }
+    .section-title p{
+      margin:0;
+      color: var(--muted);
+      font-size: 14px;
+      max-width: 60ch;
+      line-height:1.5;
+    }
+
+
+    /* Cards */
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:14px;
+    }
+    .card{
+      grid-column: span 4;
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding:16px;
+      box-shadow: var(--shadow);
       display:flex;
       flex-direction:column;
       gap:10px;
+      min-height: 190px;
+    }
+    .card h3{
+      margin:0;
+      font-size: 16px;
+      letter-spacing:-.2px;
+    }
+    .card p{
+      margin:0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height:1.55;
       flex:1;
     }
-    .title{
-      font-size:14px;
-      margin:0;
-      line-height:1.25;
-      min-height: 36px;
-    }
-    .price{
-      display:flex;
-      align-items:baseline;
-      gap:8px;
-      margin:0;
-    }
-    .price b{ font-size:18px; }
-    .price s{ color:var(--muted); font-size:13px; }
     .meta{
-      display:flex;
-      justify-content:space-between;
+      display:flex; flex-wrap:wrap; gap:8px;
       align-items:center;
-      color:var(--muted);
-      font-size:12px;
-      gap:10px;
     }
-    .ship{
-      color:var(--green);
+    .chip{
+      display:inline-flex; align-items:center; gap:7px;
+      padding:6px 10px;
+      border-radius: 999px;
       font-weight:800;
+      font-size: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.05);
+      color: rgba(234,240,255,.88);
     }
+    .chip.accent{ border-color: rgba(77,163,255,.28); background: rgba(77,163,255,.10); }
+    .chip.green{ border-color: rgba(34,197,94,.28); background: rgba(34,197,94,.10); }
+    .chip.warn{ border-color: rgba(245,158,11,.28); background: rgba(245,158,11,.10); }
 
-    .card__actions{
-      padding:12px;
-      border-top:1px solid var(--line);
-      display:flex;
-      gap:10px;
+    /* Form */
+    .panel{
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow);
     }
-    .btn--block{ flex:1; justify-content:center; }
-
-    /* Empty state */
-    .empty{
-      background:#fff;
-      border:1px dashed rgba(0,0,0,.22);
-      border-radius:var(--radius);
-      padding:18px;
-      color:var(--muted);
-      text-align:center;
-    }
-
-    /* Modal */
-    .modal{
-      position:fixed;
-      inset:0;
-      display:none;
-      place-items:center;
-      background: rgba(0,0,0,.45);
-      z-index:100;
-      padding:16px;
-    }
-    .modal[open]{ display:grid; }
-    .modal__card{
-      width:min(720px, 100%);
-      background:#fff;
-      border-radius:18px;
-      box-shadow: 0 30px 80px rgba(0,0,0,.30);
-      overflow:hidden;
-      border:1px solid rgba(255,255,255,.25);
-    }
-    .modal__hd{
-      padding:14px 14px 10px;
-      border-bottom:1px solid var(--line);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-    }
-    .modal__hd h3{ margin:0; font-size:14px; }
-    .modal__bd{ padding:14px; }
-    .cartlist{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-    .cartrow{
+    .form-grid{
       display:grid;
-      grid-template-columns: 1fr auto auto;
-      gap:10px;
-      align-items:center;
-      padding:10px;
-      border:1px solid var(--line);
-      border-radius:14px;
-      background:#fff;
+      grid-template-columns: repeat(12, 1fr);
+      gap:12px;
+      margin-top:10px;
     }
-    .cartrow small{ color:var(--muted); display:block; margin-top:2px; }
-    .qty{
-      display:flex;
-      align-items:center;
-      gap:6px;
+    .field{ grid-column: span 6; display:flex; flex-direction:column; gap:8px; }
+    .field.full{ grid-column: span 12; }
+    label{ font-size: 13px; color: rgba(234,240,255,.90); font-weight:800; }
+    input, select, textarea{
+      width:100%;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(11,18,32,.55);
+      color: var(--text);
+      padding: 11px 12px;
+      outline:none;
+      font-size: 14px;
+      transition: .18s ease;
     }
-    .qty button{
-      width:34px; height:34px;
-      border-radius:10px;
-      border:1px solid rgba(0,0,0,.12);
-      background:#fff;
+    input:focus, select:focus, textarea:focus{
+      border-color: rgba(77,163,255,.55);
+      box-shadow: 0 0 0 4px rgba(77,163,255,.12);
+    }
+    textarea{ min-height: 110px; resize: vertical; }
+    .helper{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px; flex-wrap:wrap;
+      margin-top:12px;
+    }
+    .note{
+      color: var(--muted);
+      font-size: 13px;
+      line-height:1.4;
+    }
+
+    /* Toast */
+    .toast{
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      width: min(380px, 92vw);
+      background: rgba(16,26,49,.92);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px 12px;
+      box-shadow: var(--shadow);
+      display:none;
+      z-index: 100;
+    }
+    .toast.show{ display:block; animation: pop .18s ease; }
+    @keyframes pop{ from{ transform:translateY(8px); opacity:0; } to{ transform:translateY(0); opacity:1; } }
+    .toast .row{ display:flex; align-items:flex-start; gap:10px; }
+    .toast .icon{
+      width:32px; height:32px; border-radius: 12px;
+      display:grid; place-items:center;
+      font-weight:900;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.06);
+      flex: 0 0 auto;
+    }
+    .toast .title{ font-weight:900; margin:0; font-size: 14px; }
+    .toast .msg{ margin:2px 0 0; color: var(--muted); font-size: 13px; line-height:1.4; }
+    .toast .close{
+      margin-left:auto;
+      background:transparent;
+      border:none;
+      color: rgba(234,240,255,.8);
+      font-size: 16px;
       cursor:pointer;
+      padding: 2px 6px;
+    }
+
+
+    /* Inbox */
+    .inbox{
+      margin-top: 10px;
+      display:grid;
+      gap:10px;
+    }
+    .msg-card{
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      border-radius: 16px;
+      padding: 12px;
+    }
+    .msg-card .top{
+      display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+      margin-bottom:6px;
+    }
+    .msg-card .who{
+      font-weight:900;
+      font-size: 13px;
+      color: rgba(234,240,255,.92);
+    }
+    .msg-card .when{
+      color: rgba(234,240,255,.70);
+      font-size: 12px;
+      font-weight:700;
+    }
+    .msg-card .body{
+      margin:0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height:1.55;
+      white-space: pre-wrap;
+    }
+    .msg-actions{
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+      margin-top: 10px;
+    }
+    .btn-small{
+      padding:10px 12px;
+      border-radius: 12px;
+      font-size: 13px;
       font-weight:900;
     }
-    .qty button:hover{ background:#f7f7f7; }
-    .totals{
-      margin-top:12px;
-      padding-top:12px;
-      border-top:1px solid var(--line);
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
+    .btn-danger{
+      background: rgba(239,68,68,.16);
+      color: rgba(255,220,220,.95);
+      border: 1px solid rgba(239,68,68,.28);
     }
-    .totals b{ font-size:18px; }
+    .btn-danger:hover{ background: rgba(239,68,68,.22); }
+
+    /* Footer */
+    footer{
+      padding: 26px 0 40px;
+      color: rgba(234,240,255,.75);
+      border-top: 1px solid var(--border);
+      margin-top: 22px;
+      text-align:center;
+    }
+    footer small{ color: var(--muted); display:block; margin-top:8px; }
 
     /* Responsive */
-    @media (max-width: 980px){
-      .wrap{ grid-template-columns: 1fr; }
-      .grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    @media (max-width: 900px){
+      .hero-grid{ grid-template-columns: 1fr; }
+      .side-stats{ grid-template-rows: auto; grid-template-columns: 1fr 1fr; }
+      .card{ grid-column: span 6; }
     }
-    @media (max-width: 560px){
-      .topbar__inner{ flex-wrap:wrap; }
-      .grid{ grid-template-columns: 1fr; }
-      .brand small{ display:none; }
+    @media (max-width: 620px){
+      .side-stats{ grid-template-columns: 1fr; }
+      .card{ grid-column: span 12; }
+      .field{ grid-column: span 12; }
+      nav{ justify-content:flex-start; }
     }
   </style>
 </head>
 
 <body>
   <header class="topbar">
-    <div class="topbar__inner">
-      <div class="brand" aria-label="Marca">
-        <div class="brand__logo">MM</div>
+    <div class="container topbar-inner">
+      <div class="brand">
+        <div class="logo">🤝</div>
         <div>
-          Mini Mercado<br/>
-          <small>demo</small>
+          <div style="font-size:14px; opacity:.95;">Manos Solidarias</div>
+          <div style="font-size:12px; color:var(--muted); font-weight:700;">Ayuda social comunitaria</div>
         </div>
       </div>
 
-      <div class="search">
-        <input id="q" type="search" placeholder="Buscar productos, marcas y más…" autocomplete="off" />
-      </div>
-
-      <button class="btn btn--ghost" id="btnCart" aria-label="Abrir carrito">
-        🛒 Carrito <span class="badge" id="cartCount">0</span>
-      </button>
-      <button class="btn btn--primary" id="btnHelp" aria-label="Ayuda">
-        ✨ Ayuda
-      </button>
+      <nav>
+        <a class="navlink" href="#inicio">Inicio</a>
+        <a class="navlink" href="#programas">Programas</a>
+        <a class="navlink" href="#solicitar">Solicitar ayuda</a>
+        <a class="navlink" href="#contacto">Contacto</a>
+      </nav>
     </div>
   </header>
 
-  <main class="wrap">
-    <aside class="panel" aria-label="Filtros">
-      <div class="panel__hd">
-        <h3>Filtros</h3>
-        <button class="btn btn--ghost" id="btnReset" title="Limpiar filtros">Limpiar</button>
-      </div>
-      <div class="panel__bd">
-        <div class="field">
-          <div class="label">Categoría</div>
-          <select id="category">
-            <option value="all">Todas</option>
-          </select>
-        </div>
+  <main>
+    <!-- HERO -->
+    <section class="hero" id="inicio">
+      <div class="container hero-grid">
+        <div class="hero-card">
+          <div class="pill">🌍 Comunidad • 🧡 Solidaridad • ✅ Transparencia</div>
+          <h1>Apoyo social simple, rápido y humano.</h1>
+          <p>
+            Este sitio es un ejemplo de plataforma ligera para conectar donantes, voluntarios y
+            personas que necesitan apoyo. Puedes adaptarlo para tu comunidad, ONG o proyecto local.
+          </p>
 
-        <div class="field">
-          <div class="label">Ordenar</div>
-          <select id="sort">
-            <option value="relevance">Relevancia</option>
-            <option value="price_asc">Precio: menor a mayor</option>
-            <option value="price_desc">Precio: mayor a menor</option>
-            <option value="rating_desc">Mejor calificados</option>
-          </select>
-        </div>
+          <div class="cta-row">
+            <button class="btn btn-primary" id="btnIrFormulario" type="button">📝 Solicitar ayuda</button>
+            <button class="btn btn-green" id="btnDonar" type="button">💳 Donar (simulado)</button>
+            <button class="btn btn-ghost" id="btnVerMensajes" type="button">📬 Ver mensajes</button>
+          </div>
 
-        <div class="field">
-          <div class="label">Envío</div>
-          <div class="chipbar" role="group" aria-label="Tipo de envío">
-            <button type="button" class="chip" data-ship="all" aria-pressed="true">Todos</button>
-            <button type="button" class="chip" data-ship="free" aria-pressed="false">Envío gratis</button>
-            <button type="button" class="chip" data-ship="paid" aria-pressed="false">Envío pago</button>
+          <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+            <span class="chip accent">🔒 Datos básicos</span>
+            <span class="chip green">🧾 Registro local</span>
+            <span class="chip warn">⚡️ 1 archivo</span>
           </div>
         </div>
 
-        <p class="hint">
-          Demo educativa: datos falsos, sin pagos reales. Ideal como base para tu propio catálogo.
-        </p>
-      </div>
-    </aside>
+        <div class="side-stats">
+          <div class="stat">
+            <div>
+              <div class="kicker">Donaciones registradas (demo)</div>
+              <div class="value" id="donCount">0</div>
+              <div class="sub">Cada click en “Donar” suma una donación simulada.</div>
+            </div>
+            <div class="tag">💡 Ideal para prototipo</div>
+          </div>
 
-    <section aria-label="Listado">
-      <div class="hero">
-        <div>
-          <h2 id="resultsTitle">Productos destacados</h2>
-          <p id="resultsMeta">Explora, filtra y añade al carrito.</p>
-        </div>
-        <div style="display:flex; gap:10px; align-items:center;">
-          <button class="btn btn--ghost" id="btnRandom">🎲 Sorpréndeme</button>
-          <button class="btn btn--primary" id="btnCheckout">💳 Finalizar</button>
-        </div>
-      </div>
 
-      <div id="grid" class="grid" aria-live="polite"></div>
-      <div id="empty" class="empty" style="display:none;">
-        No encontré productos con esos filtros. Prueba con otra búsqueda.
+          <div class="stat">
+            <div>
+              <div class="kicker">Solicitudes guardadas (local)</div>
+              <div class="value" id="reqCount">0</div>
+              <div class="sub">Se guardan en tu navegador (localStorage). No se envía a internet.</div>
+            </div>
+            <div class="tag">📦 Sin backend</div>
+          </div>
+        </div>
       </div>
     </section>
-  </main>
 
-  <!-- Modal Carrito -->
-  <dialog class="modal" id="cartModal" aria-label="Carrito">
-    <div class="modal__card">
-      <div class="modal__hd">
-        <h3>Tu carrito</h3>
-        <button class="btn btn--ghost" id="btnCloseCart">Cerrar</button>
-      </div>
-      <div class="modal__bd">
-        <div id="cartList" class="cartlist"></div>
-
-        <div class="totals">
+    <!-- PROGRAMAS -->
+    <section id="programas">
+      <div class="container">
+        <div class="section-title">
           <div>
-            <div style="font-size:12px; color:var(--muted); font-weight:700;">Total</div>
-            <b id="cartTotal">$0</b>
+            <h2>Programas de apoyo</h2>
+            <p>Tarjetas simples que puedes editar (texto, íconos, requisitos, etc.).</p>
           </div>
-          <button class="btn btn--primary" id="btnPay">Pagar</button>
         </div>
 
-        <p class="hint" style="margin-top:10px;">
-          “Pagar” solo muestra un resumen (no procesa pagos).
-        </p>
-      </div>
-    </div>
-  </dialog>
-
-  <script>
-    // ---- Datos demo (puedes reemplazar por API / BD) ----
-    const PRODUCTS = [
-      { id: 1, title: "Audífonos inalámbricos Bluetooth", price: 19.99, oldPrice: 29.99, rating: 4.6, category: "Electrónica", freeShipping: true },
-      { id: 2, title: "Teclado mecánico compacto RGB", price: 49.90, oldPrice: 69.90, rating: 4.7, category: "Electrónica", freeShipping: false },
-      { id: 3, title: "Zapatillas running livianas", price: 34.50, oldPrice: 44.50, rating: 4.3, category: "Moda", freeShipping: true },
-      { id: 4, title: "Camisa casual de lino", price: 22.00, oldPrice: 0, rating: 4.2, category: "Moda", freeShipping: false },
-      { id: 5, title: "Licuadora 2 velocidades 1.5L", price: 39.00, oldPrice: 55.00, rating: 4.4, category: "Hogar", freeShipping: true },
-      { id: 6, title: "Juego de destornilladores 24 en 1", price: 11.75, oldPrice: 15.00, rating: 4.8, category: "Herramientas", freeShipping: true },
-      { id: 7, title: "Smartwatch deportivo (básico)", price: 26.90, oldPrice: 36.90, rating: 4.1, category: "Electrónica", freeShipping: false },
-      { id: 8, title: "Silla ergonómica ajustable", price: 129.00, oldPrice: 159.00, rating: 4.5, category: "Hogar", freeShipping: false },
-      { id: 9, title: "Mochila urbana impermeable", price: 18.40, oldPrice: 24.40, rating: 4.4, category: "Moda", freeShipping: true },
-      { id: 10, title: "Kit de luces LED para habitación", price: 14.99, oldPrice: 21.99, rating: 4.0, category: "Hogar", freeShipping: true },
-      { id: 11, title: "Taladro inalámbrico 12V (demo)", price: 58.00, oldPrice: 79.00, rating: 4.6, category: "Herramientas", freeShipping: false },
-      { id: 12, title: "Set de organizadores para closet", price: 16.30, oldPrice: 0, rating: 4.2, category: "Hogar", freeShipping: true },
-    ];
-
-    // ---- Estado ----
-    const state = {
-      q: "",
-      category: "all",
-      sort: "relevance",
-      ship: "all", // all | free | paid
-      cart: new Map(), // id -> qty
-    };
-
-    // ---- Utilidades ----
-    const $ = (sel) => document.querySelector(sel);
-    const $$ = (sel) => Array.from(document.querySelectorAll(sel));
-    const money = (n) => "$" + n.toFixed(2);
-
-    function getFilteredProducts() {
-      const q = state.q.trim().toLowerCase();
-
-      let items = PRODUCTS.filter(p => {
-        const matchesQ = !q || p.title.toLowerCase().includes(q);
-        const matchesCat = state.category === "all" || p.category === state.category;
-        const matchesShip =
-          state.ship === "all" ||
-          (state.ship === "free" && p.freeShipping) ||
-          (state.ship === "paid" && !p.freeShipping);
-
-        return matchesQ && matchesCat && matchesShip;
-      });
-
-      // Orden
-      switch (state.sort) {
-        case "price_asc":
-          items.sort((a,b) => a.price - b.price);
-          break;
-        case "price_desc":
-          items.sort((a,b) => b.price - a.price);
-          break;
-        case "rating_desc":
-          items.sort((a,b) => b.rating - a.rating);
-          break;
-        default:
-          // "relevance": simple (rating + descuento)
-          items.sort((a,b) => score(b) - score(a));
-      }
-
-      return items;
-
-      function score(p){
-        const discount = p.oldPrice > 0 ? (p.oldPrice - p.price) / p.oldPrice : 0;
-        return (p.rating * 10) + (discount * 10) + (p.freeShipping ? 1 : 0);
-      }
-    }
-
-    function render() {
-      const grid = $("#grid");
-      const empty = $("#empty");
-      const items = getFilteredProducts();
-
-      // Header
-      const title = state.q ? `Resultados para "${state.q}"` : "Productos destacados";
-      $("#resultsTitle").textContent = title;
-      $("#resultsMeta").textContent = `${items.length} producto(s) · filtros activos`;
-
-      // Grid
-      grid.innerHTML = "";
-      empty.style.display = items.length ? "none" : "block";
-
-      for (const p of items) {
-        const discountPct = p.oldPrice > 0 ? Math.round((1 - p.price / p.oldPrice) * 100) : 0;
-
-        const card = document.createElement("article");
-        card.className = "card";
-        card.innerHTML = `
-          <div class="thumb">
-            <div class="tag">${escapeHtml(p.category)}</div>
-            <span>#${p.id} · ${escapeHtml(p.title.split(" ")[0])}</span>
-          </div>
-          <div class="card__body">
-            <h4 class="title">${escapeHtml(p.title)}</h4>
-            <p class="price">
-              <b>${money(p.price)}</b>
-              ${p.oldPrice > 0 ? `<s>${money(p.oldPrice)}</s>` : ""}
-              ${discountPct > 0 ? `<span style="color:var(--green); font-weight:900; font-size:13px;">${discountPct}% OFF</span>` : ""}
-            </p>
+        <div class="grid">
+          <article class="card">
             <div class="meta">
-              <span>⭐ ${p.rating.toFixed(1)}</span>
-              <span class="ship">${p.freeShipping ? "Envío gratis" : "Envío pago"}</span>
+              <span class="chip accent">🍱 Alimentación</span>
+              <span class="chip">⏱️ 24–72h</span>
+            </div>
+            <h3>Bolsa solidaria</h3>
+            <p>Apoyo con alimentos básicos para hogares en situación vulnerable, según disponibilidad y prioridad.</p>
+            <div class="meta">
+              <span class="chip">📍 Comunidad</span>
+              <span class="chip">✅ Verificación</span>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="meta">
+              <span class="chip green">💊 Salud</span>
+              <span class="chip">⏱️ 48h</span>
+            </div>
+            <h3>Gestión de medicinas</h3>
+            <p>Orientación y coordinación para conseguir medicamentos mediante donaciones o alianzas locales.</p>
+            <div class="meta">
+              <span class="chip">🤝 Aliados</span>
+              <span class="chip">🧾 Soporte</span>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="meta">
+              <span class="chip warn">🎒 Educación</span>
+              <span class="chip">⏱️ Semanal</span>
+            </div>
+            <h3>Kit escolar</h3>
+            <p>Entrega de útiles y acompañamiento a estudiantes con necesidades económicas demostrables.</p>
+            <div class="meta">
+              <span class="chip">📚 Útiles</span>
+              <span class="chip">🧒 Niñez</span>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="meta">
+              <span class="chip accent">🛠 Empleo</span>
+              <span class="chip">⏱️ Mensual</span>
+            </div>
+            <h3>Orientación laboral</h3>
+            <p>Apoyo para CV, preparación de entrevistas y conexión con oportunidades locales.</p>
+            <div class="meta">
+              <span class="chip">🧑‍💼 Mentoría</span>
+              <span class="chip">📌 Taller</span>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="meta">
+              <span class="chip green">🏠 Hogar</span>
+              <span class="chip">⏱️ 72h</span>
+            </div>
+            <h3>Apoyo de emergencia</h3>
+            <p>Canal de ayuda rápida para situaciones urgentes (servicios, refugio temporal, insumos).</p>
+            <div class="meta">
+              <span class="chip">🚨 Prioridad</span>
+              <span class="chip">📞 Contacto</span>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="meta">
+              <span class="chip warn">🧡 Voluntariado</span>
+              <span class="chip">⏱️ Flexible</span>
+            </div>
+            <h3>Red de voluntarios</h3>
+            <p>Registra disponibilidad para donaciones, logística, visitas, gestión y eventos comunitarios.</p>
+            <div class="meta">
+              <span class="chip">🗓 Turnos</span>
+              <span class="chip">📦 Logística</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- FORMULARIO -->
+    <section id="solicitar">
+      <div class="container">
+        <div class="section-title">
+          <div>
+            <h2>Solicitar ayuda</h2>
+            <p>Formulario con validación básica. Guarda solicitudes en el navegador como demostración.</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <form id="helpForm">
+            <div class="form-grid">
+              <div class="field">
+                <label for="nombre">Nombre y apellido</label>
+                <input id="nombre" name="nombre" placeholder="Ej: María Pérez" autocomplete="name" required />
+              </div>
+
+              <div class="field">
+                <label for="telefono">Teléfono</label>
+                <input id="telefono" name="telefono" placeholder="Ej: +58 412 000 0000" autocomplete="tel" required />
+              </div>
+
+              <div class="field">
+                <label for="tipo">Tipo de ayuda</label>
+                <select id="tipo" name="tipo" required>
+                  <option value="" selected disabled>Selecciona una opción</option>
+                  <option value="Alimentación">🍱 Alimentación</option>
+                  <option value="Salud">💊 Salud</option>
+                  <option value="Educación">🎒 Educación</option>
+                  <option value="Hogar / Emergencia">🏠 Hogar / Emergencia</option>
+                  <option value="Orientación laboral">🛠 Orientación laboral</option>
+                  <option value="Otro">🧾 Otro</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="prioridad">Prioridad</label>
+                <select id="prioridad" name="prioridad" required>
+                  <option value="" selected disabled>Selecciona una prioridad</option>
+                  <option value="Alta">🚨 Alta</option>
+                  <option value="Media">⚠️ Media</option>
+                  <option value="Baja">✅ Baja</option>
+                </select>
+              </div>
+
+              <div class="field full">
+                <label for="detalle">Describe tu situación</label>
+                <textarea id="detalle" name="detalle" placeholder="Cuéntanos qué ocurrió, cuántas personas dependen de ti, qué necesitas y cómo podemos ayudarte." required></textarea>
+              </div>
+
+              <div class="field full">
+                <label>
+                  <input type="checkbox" id="consent" />
+                  Acepto que esta solicitud se use solo con fines de coordinación comunitaria (demo).
+                </label>
+              </div>
+            </div>
+
+            <div class="helper">
+              <div class="note">🔎 Consejo: si luego agregas backend, aquí enviarías la info a una API.</div>
+              <button class="btn btn-primary" type="submit">✅ Enviar solicitud</button>
+            </div>
+          </form>
+
+          <div class="msg-actions">
+            <button class="btn btn-ghost btn-small" type="button" id="btnExportar">📄 Exportar solicitudes (JSON)</button>
+            <button class="btn btn-danger btn-small" type="button" id="btnBorrar">🗑 Borrar datos guardados</button>
+          </div>
+
+          <div class="inbox" id="inbox" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACTO -->
+    <section id="contacto">
+      <div class="container">
+        <div class="section-title">
+          <div>
+            <h2>Contacto</h2>
+            <p>Datos de ejemplo. Cambia por los tuyos o enlaza a WhatsApp / correo.</p>
+          </div>
+        </div>
+
+
+        <div class="panel">
+          <div class="grid">
+            <div class="card" style="grid-column: span 6;">
+              <div class="meta">
+                <span class="chip accent">📧 Correo</span>
+                <span class="chip">Respuesta: 24–48h</span>
+              </div>
+              <h3>Escríbenos</h3>
+              <p>Correo: <strong>contacto@manossolidarias.org</strong><br/>Teléfono: <strong>+00 000 000 0000</strong></p>
+              <button class="btn btn-ghost" type="button" id="btnCopiarCorreo">📋 Copiar correo</button>
+            </div>
+
+            <div class="card" style="grid-column: span 6;">
+              <div class="meta">
+                <span class="chip green">📍 Ubicación</span>
+                <span class="chip">Atención local</span>
+              </div>
+              <h3>Punto comunitario</h3>
+              <p>Dirección: <strong>Tu barrio / tu ciudad</strong><br/>Horario: <strong>L–V 9:00–16:00</strong></p>
+              <button class="btn btn-ghost" type="button" id="btnScrollArriba">⬆️ Volver arriba</button>
             </div>
           </div>
-          <div class="card__actions">
-            <button class="btn btn--ghost btn--block" data-action="details" data-id="${p.id}">Ver</button>
-            <button class="btn btn--primary btn--block" data-action="add" data-id="${p.id}">Añadir</button>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="container">
+        <div style="font-weight:900;">🤝 Manos Solidarias</div>
+        <small>© <span id="year"></span> — Sitio demo en HTML/CSS/JS (sin backend). Ajusta libremente.</small>
+      </div>
+    </footer>
+  </main>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <div class="row">
+      <div class="icon" id="toastIcon">✅</div>
+      <div style="min-width:0;">
+        <p class="title" id="toastTitle">Listo</p>
+        <p class="msg" id="toastMsg">Acción completada.</p>
+      </div>
+      <button class="close" id="toastClose" aria-label="Cerrar">✕</button>
+    </div>
+  </div>
+
+  <script>
+    // ===== Utilidades
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+    const LS_KEYS = {
+      donations: "ms_donations",
+      requests: "ms_requests"
+    };
+
+    function safeJSONParse(value, fallback){
+      try { return JSON.parse(value); } catch { return fallback; }
+    }
+
+    function formatDate(ts){
+      const d = new Date(ts);
+      return d.toLocaleString("es-ES", {
+        year: "numeric", month: "short", day: "2-digit",
+        hour: "2-digit", minute: "2-digit"
+      });
+    }
+
+    // ===== Toast
+    let toastTimer = null;
+    function showToast({title, msg, icon="✅"}){
+      const toast = $("#toast");
+      $("#toastTitle").textContent = title;
+      $("#toastMsg").textContent = msg;
+      $("#toastIcon").textContent = icon;
+
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 3800);
+    }
+    $("#toastClose").addEventListener("click", () => $("#toast").classList.remove("show"));
+
+    // ===== Datos (localStorage)
+    function getDonations(){
+      return Number(localStorage.getItem(LS_KEYS.donations) || "0");
+    }
+    function setDonations(n){
+      localStorage.setItem(LS_KEYS.donations, String(n));
+      renderStats();
+    }
+
+    function getRequests(){
+      return safeJSONParse(localStorage.getItem(LS_KEYS.requests), []);
+    }
+    function setRequests(list){
+      localStorage.setItem(LS_KEYS.requests, JSON.stringify(list));
+      renderStats();
+      renderInbox();
+    }
+
+    // ===== Render
+    function renderStats(){
+      $("#donCount").textContent = getDonations();
+      $("#reqCount").textContent = getRequests().length;
+    }
+
+    function renderInbox(){
+      const inbox = $("#inbox");
+      const list = getRequests();
+
+      if(list.length === 0){
+        inbox.innerHTML = `
+          <div class="msg-card">
+            <div class="top">
+              <div class="who">📬 Buzón vacío</div>
+              <div class="when">—</div>
+            </div>
+            <p class="body">Aún no hay solicitudes guardadas. Envía una solicitud desde el formulario para verla aquí.</p>
           </div>
         `;
-        grid.appendChild(card);
-      }
-
-      renderCartBadge();
-    }
-
-    function renderCartBadge(){
-      let count = 0;
-      for (const qty of state.cart.values()) count += qty;
-      $("#cartCount").textContent = String(count);
-    }
-
-    function openCart(){
-      renderCartModal();
-      $("#cartModal").setAttribute("open", "");
-    }
-    function closeCart(){
-      $("#cartModal").removeAttribute("open");
-    }
-
-    function renderCartModal(){
-      const list = $("#cartList");
-      list.innerHTML = "";
-
-      const entries = Array.from(state.cart.entries());
-      if (!entries.length) {
-        list.innerHTML = `<div class="empty">Tu carrito está vacío. Añade algo 👀</div>`;
-        $("#cartTotal").textContent = money(0);
-        renderCartBadge();
         return;
       }
 
-      let total = 0;
 
-      for (const [id, qty] of entries) {
-        const p = PRODUCTS.find(x => x.id === id);
-        if (!p) continue;
-        total += p.price * qty;
-
-        const row = document.createElement("div");
-        row.className = "cartrow";
-        row.innerHTML = `
-          <div>
-            <b>${escapeHtml(p.title)}</b>
-            <small>${escapeHtml(p.category)} · ${p.freeShipping ? "Envío gratis" : "Envío pago"}</small>
-          </div>
-          <div class="qty" aria-label="Cantidad">
-            <button data-cart="dec" data-id="${id}" title="Quitar uno">−</button>
-            <b style="min-width:22px; text-align:center;">${qty}</b>
-            <button data-cart="inc" data-id="${id}" title="Agregar uno">+</button>
-          </div>
-          <div style="text-align:right;">
-            <b>${money(p.price * qty)}</b>
-            <div style="margin-top:6px;">
-              <button class="btn btn--ghost" data-cart="remove" data-id="${id}" style="padding:8px 10px; border-radius:10px;">Eliminar</button>
+      inbox.innerHTML = list
+        .slice()
+        .reverse()
+        .map(item => `
+          <div class="msg-card">
+            <div class="top">
+              <div class="who">${escapeHTML(item.nombre)} • ${escapeHTML(item.tipo)} • ${badgePriority(item.prioridad)}</div>
+              <div class="when">${formatDate(item.ts)}</div>
+            </div>
+            <p class="body">${escapeHTML(item.detalle)}</p>
+            <div class="meta" style="margin-top:10px;">
+              <span class="chip">📞 ${escapeHTML(item.telefono)}</span>
+              <span class="chip">🧾 ID: ${item.id}</span>
             </div>
           </div>
-        `;
-        list.appendChild(row);
-      }
-
-      $("#cartTotal").textContent = money(total);
-      renderCartBadge();
+        `).join("");
     }
 
-    function addToCart(id){
-      const prev = state.cart.get(id) || 0;
-      state.cart.set(id, prev + 1);
-      renderCartBadge();
+    function badgePriority(p){
+      if(p === "Alta") return "🚨 Alta";
+      if(p === "Media") return "⚠️ Media";
+      return "✅ Baja";
     }
 
-    function removeFromCart(id){
-      state.cart.delete(id);
-      renderCartBadge();
-    }
-
-    function changeQty(id, delta){
-      const prev = state.cart.get(id) || 0;
-      const next = prev + delta;
-      if (next <= 0) state.cart.delete(id);
-      else state.cart.set(id, next);
-      renderCartBadge();
-    }
-
-    function escapeHtml(str){
+    function escapeHTML(str){
       return String(str)
         .replaceAll("&","&amp;")
         .replaceAll("<","&lt;")
@@ -689,130 +842,130 @@
         .replaceAll("'","&#039;");
     }
 
-    // ---- Inicialización UI ----
-    function init(){
-      // Categorías
-      const cats = Array.from(new Set(PRODUCTS.map(p => p.category))).sort();
-      const sel = $("#category");
-      for (const c of cats){
-        const opt = document.createElement("option");
-        opt.value = c;
-        opt.textContent = c;
-        sel.appendChild(opt);
+    // ===== Interacciones
+    $("#btnIrFormulario").addEventListener("click", () => {
+      $("#solicitar").scrollIntoView({behavior:"smooth"});
+      $("#nombre").focus();
+    });
+
+    $("#btnVerMensajes").addEventListener("click", () => {
+      $("#inbox").scrollIntoView({behavior:"smooth"});
+      showToast({ title:"📬 Buzón", msg:"Mostrando solicitudes guardadas en este navegador.", icon:"📬" });
+    });
+
+    $("#btnDonar").addEventListener("click", () => {
+      const next = getDonations() + 1;
+      setDonations(next);
+      showToast({
+        title:"💳 Donación registrada (demo)",
+        msg:"Gracias. En un proyecto real, aquí integrarías PayPal/Stripe u otra pasarela.",
+        icon:"💚"
+      });
+    });
+
+    $("#btnCopiarCorreo").addEventListener("click", async () => {
+      const email = "contacto@manossolidarias.org";
+      try{
+        await navigator.clipboard.writeText(email);
+        showToast({ title:"📋 Copiado", msg:`${email}`, icon:"📧" });
+      }catch{
+        showToast({ title:"No se pudo copiar", msg:"Tu navegador no permitió el portapapeles.", icon:"⚠️" });
+      }
+    });
+
+    $("#btnScrollArriba").addEventListener("click", () => {
+      window.scrollTo({ top:0, behavior:"smooth" });
+    });
+
+    // ===== Formulario
+    $("#helpForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const nombre = $("#nombre").value.trim();
+      const telefono = $("#telefono").value.trim();
+      const tipo = $("#tipo").value;
+      const prioridad = $("#prioridad").value;
+      const detalle = $("#detalle").value.trim();
+      const consent = $("#consent").checked;
+
+      if(!nombre || nombre.length < 3){
+        showToast({ title:"Revisa el nombre", msg:"Ingresa un nombre válido (mínimo 3 caracteres).", icon:"⚠️" });
+        return;
+      }
+      if(!telefono || telefono.length < 7){
+        showToast({ title:"Revisa el teléfono", msg:"Ingresa un teléfono válido (mínimo 7 caracteres).", icon:"⚠️" });
+        return;
+      }
+      if(!tipo){
+        showToast({ title:"Tipo de ayuda", msg:"Selecciona un tipo de ayuda.", icon:"⚠️" });
+        return;
+      }
+      if(!prioridad){
+        showToast({ title:"Prioridad", msg:"Selecciona una prioridad.", icon:"⚠️" });
+        return;
+      }
+      if(!detalle || detalle.length < 20){
+        showToast({ title:"Más detalle", msg:"Describe tu situación con al menos 20 caracteres.", icon:"⚠️" });
+        return;
+      }
+      if(!consent){
+        showToast({ title:"Consentimiento", msg:"Marca la casilla para continuar (demo).", icon:"🔒" });
+        return;
       }
 
-      // Listeners
-      $("#q").addEventListener("input", (e) => {
-        state.q = e.target.value;
-        render();
-      });
+      const req = {
+        id: Math.random().toString(16).slice(2, 8).toUpperCase(),
+        ts: Date.now(),
+        nombre, telefono, tipo, prioridad, detalle
+      };
 
-      $("#category").addEventListener("change", (e) => {
-        state.category = e.target.value;
-        render();
-      });
+      const list = getRequests();
+      list.push(req);
+      setRequests(list);
 
-      $("#sort").addEventListener("change", (e) => {
-        state.sort = e.target.value;
-        render();
-      });
+      e.target.reset();
+      showToast({ title:"✅ Solicitud enviada (local)", msg:"Se guardó en este navegador. En producción, se enviaría a un servidor.", icon:"✅" });
 
-      $$(".chip").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const ship = btn.dataset.ship;
-          state.ship = ship;
 
-          $$(".chip").forEach(x => x.setAttribute("aria-pressed", String(x === btn)));
-          render();
-        });
-      });
+      $("#inbox").scrollIntoView({behavior:"smooth"});
+    });
 
-      $("#btnReset").addEventListener("click", () => {
-        state.q = "";
-        state.category = "all";
-        state.sort = "relevance";
-        state.ship = "all";
-        state.cart.clear();
+    // Exportar JSON
+    $("#btnExportar").addEventListener("click", () => {
+      const data = {
+        donations: getDonations(),
+        requests: getRequests(),
+        exported_at: new Date().toISOString()
+      };
+      const json = JSON.stringify(data, null, 2);
 
-        $("#q").value = "";
-        $("#category").value = "all";
-        $("#sort").value = "relevance";
-        const firstChip = $$(".chip")[0];
-        $$(".chip").forEach(x => x.setAttribute("aria-pressed", String(x === firstChip)));
+      // Descargar archivo
+      const blob = new Blob([json], { type:"application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "manos-solidarias-export.json";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
 
-        render();
-      });
+      showToast({ title:"📄 Exportado", msg:"Se descargó un JSON con donaciones y solicitudes (demo).", icon:"📄" });
+    });
 
-      // Delegación para botones dentro de cards
-      $("#grid").addEventListener("click", (e) => {
-        const btn = e.target.closest("button");
-        if (!btn) return;
+    // Borrar localStorage
+    $("#btnBorrar").addEventListener("click", () => {
+      localStorage.removeItem(LS_KEYS.donations);
+      localStorage.removeItem(LS_KEYS.requests);
+      renderStats();
+      renderInbox();
+      showToast({ title:"🗑 Datos borrados", msg:"Se eliminaron donaciones y solicitudes guardadas localmente.", icon:"🗑" });
+    });
 
-        const id = Number(btn.dataset.id);
-        const action = btn.dataset.action;
-
-        if (action === "add") {
-          addToCart(id);
-        } else if (action === "details") {
-          const p = PRODUCTS.find(x => x.id === id);
-          alert(`📦 ${p.title}\n\nPrecio: ${money(p.price)}\nRating: ${p.rating}\nEnvío: ${p.freeShipping ? "Gratis" : "Pago"}\n\n(Esto es demo, aquí podrías abrir una página de producto.)`);
-        }
-      });
-
-      $("#btnCart").addEventListener("click", openCart);
-      $("#btnCloseCart").addEventListener("click", closeCart);
-
-      $("#cartModal").addEventListener("click", (e) => {
-        // click fuera de la tarjeta cierra
-        const card = e.target.closest(".modal__card");
-        if (!card) closeCart();
-      });
-
-      $("#cartList").addEventListener("click", (e) => {
-        const btn = e.target.closest("button");
-        if (!btn) return;
-        const id = Number(btn.dataset.id);
-        const act = btn.dataset.cart;
-
-        if (act === "inc") changeQty(id, +1);
-        if (act === "dec") changeQty(id, -1);
-        if (act === "remove") removeFromCart(id);
-
-        renderCartModal();
-      });
-
-      $("#btnPay").addEventListener("click", () => {
-        const entries = Array.from(state.cart.entries());
-        if (!entries.length) return alert("Tu carrito está vacío 🙂");
-        const lines = entries.map(([id,qty]) => {
-          const p = PRODUCTS.find(x => x.id === id);
-          return `• ${qty} × ${p.title} = ${money(p.price * qty)}`;
-        });
-        const total = lines.length ? $("#cartTotal").textContent : money(0);
-        alert(`✅ Resumen (demo)\n\n${lines.join("\n")}\n\nTotal: ${total}\n\nAquí integrarías tu pasarela de pago.`);
-      });
-
-      $("#btnCheckout").addEventListener("click", () => openCart());
-
-      $("#btnRandom").addEventListener("click", () => {
-        const items = getFilteredProducts();
-        if (!items.length) return;
-        const p = items[Math.floor(Math.random() * items.length)];
-        addToCart(p.id);
-        alert(`🎉 Agregué al carrito: ${p.title}`);
-        render();
-      });
-
-      $("#btnHelp").addEventListener("click", () => {
-        alert("Demo mini-market:\n- Busca en la barra\n- Filtra por categoría y envío\n- Ordena por precio o rating\n- Añade al carrito y ajusta cantidades\n\n¿Quieres que lo conecte a una API real (Django/Node) y tenga páginas de producto?");
-      });
-
-      render();
-    }
-
-    init();
+    // ===== Init
+    $("#year").textContent = new Date().getFullYear();
+    renderStats();
+    renderInbox();
   </script>
 </body>
 </html>
-
-
