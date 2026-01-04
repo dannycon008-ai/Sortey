@@ -794,7 +794,7 @@
           <div class="total-box" aria-label="Cantidad donada">
             <div class="k">Cantidad donada</div>
             <div class="v" id="totalDonated">$218</div>
-            <div class="mini" id="totalDonatedMini">META 5.000$</div>
+            <div class="mini" id="totalDonatedMini">SE NECESITAN 5.000$ PARA LA OPERACION</div>
           </div>
         </div>
       </div>
@@ -1237,8 +1237,8 @@ NOTA: Este sitio no confirma pagos reales.`;
       $("#paypalWarnText").textContent = note;
       $("#usdtWarnText").textContent = note;
 
-      $("#totalDonated").textContent = "$0";
-      $("#totalDonatedMini").textContent = "Total informativo (conéctalo a backend luego)";
+      $("#totalDonated").textContent = "$218";
+      $("#totalDonatedMini").textContent = "SE NECESITAN 5000$ PARA LA OPERACION";
 
       renderTopDonors();
       drawPseudoQR(makeUSDTURI());
