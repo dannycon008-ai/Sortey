@@ -344,17 +344,28 @@
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5l7 7-1.4 1.4L13 8.8V19h-2V8.8L6.4 13.4 5 12l7-7Z"/></svg>
     </div>
   </div>
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Reproductor">
+  <div class="modalCard">
+    <div class="modalHead">
+      <strong id="modalTitle">Video</strong>
+      <button class="close" id="modalClose">Cerrar ✕</button>
+    </div>
 
-  <!-- Modal de video -->
-  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Reproductor">
-    <div class="modalCard">
-      <div class="modalHead">
-        <strong id="modalTitle">Video</strong>
-        <button class="close" id="modalClose">Cerrar ✕</button>
+    <!-- Poster (misma imagen) -->
+    <div class="player" id="player">
+      <div id="posterLayer" style="position:absolute; inset:0; display:grid; place-items:center;">
+        <img id="posterImg" alt="Poster" style="width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.05) contrast(1.05);" />
+        <button id="playBtn" class="btn"
+          style="position:absolute; display:flex; align-items:center; gap:10px; padding:12px 16px; border-radius:14px;">
+          ▶ Reproducir
+        </button>
       </div>
-      <div class="player" id="player"></div>
+      <!-- aquí se inserta el iframe/video cuando el usuario presiona play -->
+      <div id="mediaLayer" style="position:absolute; inset:0;"></div>
     </div>
   </div>
+</div>
+
 
   <script>
     /**
@@ -564,42 +575,82 @@
     const player = $("#player");
     const modalTitle = $("#modalTitle");
 
-    function openVideo(item){
-      modalTitle.textContent = item.name || "Video";
-      player.innerHTML = "";
+   const modal = document.querySelector("#modal");
+const modalTitle = document.querySelector("#modalTitle");
+const posterImg = document.querySelector("#posterImg");
+const posterLayer = document.querySelector("#posterLayer");
+const mediaLayer = document.querySelector("#mediaLayer");
+const playBtn = document.querySelector("#playBtn");
 
-      // Si es MP4/WEBM -> video tag; si no, iframe (YouTube embed)
-      const url = item.videoUrl || "";
-      const isVideoFile = /\.(mp4|webm|ogg)(\?.*)?$/i.test(url);
+let currentItem = null;
 
-      if(isVideoFile){
-        const v = document.createElement("video");
-        v.src = url;
-        v.controls = true;
-        v.autoplay = true;
-        v.playsInline = true;
-        player.appendChild(v);
-      }else{
-        const iframe = document.createElement("iframe");
-        iframe.src = url;
-        iframe.allow = "autoplay; encrypted-media; picture-in-picture";
-        iframe.allowFullscreen = true;
-        player.appendChild(iframe);
-      }
+function buildMedia(url){
+  const isVideoFile = /\.(mp4|webm|ogg)(\?.*)?$/i.test(url);
+  mediaLayer.innerHTML = "";
 
-      // sumar vista (demo)
-      item.views = (item.views || 0) + 1;
-      applyState();
+  if (isVideoFile){
+    const v = document.createElement("video");
+    v.src = url;
+    v.controls = true;
+    v.autoplay = true;
+    v.playsInline = true;
+    mediaLayer.appendChild(v);
+  } else {
+    const iframe = document.createElement("iframe");
+    iframe.src = url;
+    iframe.allow = "autoplay; encrypted-media; picture-in-picture";
+    iframe.allowFullscreen = true;
+    iframe.style.width = "100%";
+    iframe.style.height = "100%";
+    iframe.style.border = "0";
+    mediaLayer.appendChild(iframe);
+  }
+}
 
-      modal.classList.add("show");
-      document.body.style.overflow = "hidden";
-    }
+function openPosterModal(item){
+  currentItem = item;
 
-    function closeModal(){
-      modal.classList.remove("show");
-      player.innerHTML = ""; // corta reproducción
-      document.body.style.overflow = "";
-    }
+  modalTitle.textContent = item.name || "Video";
+
+  // 1) muestra la MISMA imagen como poster inicial
+  posterImg.src = item.thumbUrl;
+
+  // 2) oculta media (aún no cargar)
+  mediaLayer.innerHTML = "";
+  posterLayer.style.display = "grid";
+
+  // 3) abrir modal
+  modal.classList.add("show");
+  document.body.style.overflow = "hidden";
+}
+
+// cuando el usuario hace click a Play dentro del modal
+playBtn.addEventListener("click", () => {
+  if(!currentItem) return;
+
+  // aquí sí se carga y reproduce/embebe el video
+  buildMedia(currentItem.videoUrl);
+
+  // oculta el poster para que se vea el video
+  posterLayer.style.display = "none";
+
+  // sumar vista si quieres
+  currentItem.views = (currentItem.views || 0) + 1;
+  applyState(); // si tienes tu render/ordenamiento
+});
+
+function closeModal(){
+  modal.classList.remove("show");
+  document.body.style.overflow = "";
+  mediaLayer.innerHTML = "";   // corta reproducción
+  posterLayer.style.display = "grid";
+  currentItem = null;
+}
+
+document.querySelector("#modalClose").addEventListener("click", closeModal);
+modal.addEventListener("click", (e)=>{ if(e.target === modal) closeModal(); });
+document.addEventListener("keydown", (e)=>{ if(e.key === "Escape") closeModal(); });
+
 
     $("#modalClose").addEventListener("click", closeModal);
     modal.addEventListener("click", (e)=>{ if(e.target === modal) closeModal(); });
@@ -652,7 +703,8 @@
       if(!item) return;
 
       if(action === "watch"){
-        openVideo(item);
+       openPosterModal(item);
+
       }
 
       if(action === "copy"){
