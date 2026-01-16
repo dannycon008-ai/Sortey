@@ -3,1012 +3,551 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Corazón que Suma s</title>
-
-  <!-- Poppins -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
-
+  <title>Galería / Catálogo</title>
   <style>
     :root{
-      --bg1:#90EE90;
-      --bg2:#FFFFFF;
-
-      --text:#0b1220;
-      --muted: rgba(11,18,32,.68);
-      --border: rgba(11,18,32,.10);
-      --shadow: 0 18px 60px rgba(0,0,0,.18);
-      --radius: 18px;
-
-      --accent:#1677ff;
-      --accent2:#22c55e;
-
-      --glass: rgba(255,255,255,.55);
-
-      --noteBg: rgba(255, 193, 7, .20);
-      --noteBorder: rgba(255, 193, 7, .55);
-      --noteText: rgba(120, 60, 0, .95);
+      --bg:#0b0d12;
+      --panel:#121522;
+      --panel2:#151a2b;
+      --text:#e9eefc;
+      --muted:#9aa6c6;
+      --accent:#7c5cff;
+      --accent2:#4bd3ff;
+      --border:rgba(255,255,255,.08);
+      --shadow: 0 12px 35px rgba(0,0,0,.35);
+      --radius:18px;
     }
-
-    *{ box-sizing:border-box; }
-    html{ scroll-behavior:smooth; }
-
+    *{box-sizing:border-box}
     body{
       margin:0;
-      font-family: "Poppins", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      color: var(--text);
-      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background:
+        radial-gradient(1200px 500px at 20% -10%, rgba(124,92,255,.20), transparent 60%),
+        radial-gradient(1000px 420px at 90% 10%, rgba(75,211,255,.12), transparent 55%),
+        linear-gradient(180deg, #080a10, var(--bg));
+      color:var(--text);
       min-height:100vh;
-      overflow-x:hidden;
     }
 
-    .container{ width:min(1120px, 92vw); margin:0 auto; }
-
-    /* NAVBAR */
-    header{
-      position: sticky; top: 0; z-index: 50;
-      background: rgba(255,255,255,.55);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(11,18,32,.10);
+    .wrap{max-width:1180px;margin:0 auto;padding:22px 16px 90px}
+    .topbar{
+      display:flex;gap:12px;align-items:center;justify-content:space-between;
+      margin:8px 0 18px;
     }
-    .nav{
-      display:flex; align-items:center; justify-content:space-between;
-      padding: 12px 0;
-      gap: 12px;
-    }
-
     .brand{
-      display:flex; align-items:center; gap:12px;
-      font-weight: 900;
-      letter-spacing:.2px;
-      min-width: 0;
+      display:flex;align-items:center;gap:10px;
+      font-weight:700;letter-spacing:.2px;
     }
+    .logo{
+      width:36px;height:36px;border-radius:12px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: 0 10px 20px rgba(124,92,255,.25);
+    }
+    .brand small{display:block;color:var(--muted);font-weight:500;margin-top:2px}
 
-    .brand-logo-wrap{
-      width: 48px;
-      height: 48px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.72);
-      border: 1px solid rgba(11,18,32,.10);
-      box-shadow: 0 16px 40px rgba(0,0,0,.16);
-      display:grid;
-      place-items:center;
-      overflow:hidden;
-      transform: translateY(10px);
-      position: relative;
-      flex: 0 0 auto;
-    }
-    .brand-logo{
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 999px;
-      animation: zoomZoom 2.6s ease-in-out infinite;
-      transform-origin: center;
-    }
-    @keyframes zoomZoom{
-      0%{ transform: scale(1); }
-      50%{ transform: scale(1.10); }
-      100%{ transform: scale(1); }
-    }
-
-    .brand-title{
-      display:flex;
-      flex-direction:column;
-      gap: 2px;
-      line-height: 1.05;
-      min-width:0;
-    }
-    .brand-title .t{
-      font-size: 16px;
-      font-weight: 900;
-      letter-spacing: .2px;
-    }
-
-    .nav-actions{
-      display:flex;
-      align-items:center;
-      gap: 10px;
-      flex: 0 0 auto;
-    }
-
-    .tg-btn{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      padding: 10px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(11,18,32,.10);
-      background: rgba(255,255,255,.70);
-      box-shadow: 0 12px 32px rgba(0,0,0,.10);
-      font-weight: 800;
-      color: rgba(11,18,32,.88);
-      text-decoration:none;
-      transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
-      user-select:none;
-      white-space:nowrap;
-    }
-    .tg-btn:hover{ transform: translateY(-1px); box-shadow: 0 16px 40px rgba(0,0,0,.14); }
-    .tg-ico{
-      width: 18px; height: 18px; object-fit: contain;
-    }
-
-    main{ padding: 22px 0 44px; position:relative; z-index: 1; }
-
-    /* HERO */
-    .hero{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap: 14px;
-      margin-bottom: 14px;
-    }
-
-    .card{
-      background: var(--glass);
-      border: 1px solid rgba(11,18,32,.10);
+    .toolbar{
+      display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;
+      background: rgba(255,255,255,.03);
+      border:1px solid var(--border);
       border-radius: var(--radius);
+      padding:14px;
       box-shadow: var(--shadow);
-      padding: 18px;
     }
 
-    .hero-top{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap: 14px;
-      flex-wrap: wrap;
+    .search{
+      display:flex;gap:10px;align-items:center;flex:1;min-width:280px;
+      background: rgba(0,0,0,.28);
+      border:1px solid var(--border);
+      border-radius: 14px;
+      padding:10px 12px;
     }
-
-    .hero h1{
-      margin: 6px 0 6px;
-      font-size: clamp(26px, 3.2vw, 40px);
-      line-height: 1.05;
-      letter-spacing: -.7px;
-    }
-    .hero p{
-      margin: 0 0 0;
-      color: var(--muted);
-      line-height: 1.6;
-      max-width: 70ch;
-      font-size: 15px;
-    }
-
-    .total-box{
-      position: relative;
-      border-radius: 18px;
-      border: 1px solid rgba(11,18,32,.10);
-      background: rgba(255,255,255,.68);
-      box-shadow: 0 16px 40px rgba(0,0,0,.12);
-      padding: 12px 14px;
-      min-width: 240px;
-      overflow: hidden;
-      isolation: isolate;
-      animation: floaty 2.8s ease-in-out infinite;
-    }
-    @keyframes floaty{
-      0%{ transform: translateY(0); }
-      50%{ transform: translateY(-4px); }
-      100%{ transform: translateY(0); }
-    }
-
-    .total-box::before{
-      content:"";
-      position:absolute;
-      inset:-40%;
-      background: linear-gradient(120deg,
-        rgba(22,119,255,0) 0%,
-        rgba(22,119,255,.18) 25%,
-        rgba(255,255,255,.65) 50%,
-        rgba(34,197,94,.18) 75%,
-        rgba(22,119,255,0) 100%
-      );
-      transform: rotate(10deg) translateX(-35%);
-      animation: shine 2.4s ease-in-out infinite;
-      z-index: 0;
-    }
-    @keyframes shine{
-      0%{ transform: rotate(10deg) translateX(-45%); opacity: .55; }
-      50%{ transform: rotate(10deg) translateX(20%); opacity: .95; }
-      100%{ transform: rotate(10deg) translateX(55%); opacity: .55; }
-    }
-
-    .total-box .k{
-      position: relative;
-      z-index: 1;
-      font-weight: 800;
-      font-size: 12px;
-      color: rgba(11,18,32,.70);
-      letter-spacing: .2px;
-    }
-    .total-box .v{
-      position: relative;
-      z-index: 1;
-      margin-top: 6px;
-      font-weight: 900;
-      font-size: 26px;
-      letter-spacing: -.4px;
-    }
-    .total-box .mini{
-      position: relative;
-      z-index: 1;
-      margin-top: 4px;
-      font-size: 12px;
-      font-weight: 700;
-      color: rgba(11,18,32,.62);
-    }
-
-    /* GRID */
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 14px;
-      margin-top: 14px;
-    }
-    .panel{ grid-column: span 8; }
-    .methods{ grid-column: span 4; display:grid; gap: 14px; }
-
-    @media (max-width: 980px){
-      .panel{ grid-column: span 12; }
-      .methods{ grid-column: span 12; }
-      .total-box{ min-width: 100%; }
-    }
-
-    .section-title{
-      display:flex; align-items:center; justify-content:space-between;
-      gap: 12px; flex-wrap:wrap;
-      margin-bottom: 12px;
-    }
-    .section-title h2{
-      margin:0;
-      letter-spacing:-.2px;
-      font-weight: 1000;
-      font-size: 20px;
-    }
-    .section-title p{
-      margin:0;
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 750;
-    }
-
-    .method-title-inline{
-      display:flex; align-items:center; gap:10px;
-    }
-    .method-title-inline img{
-      width: 26px; height: 26px;
-      object-fit: contain;
-      border-radius: 10px;
-      padding: 5px;
-      background: rgba(255,255,255,.70);
-      border: 1px solid rgba(11,18,32,.10);
-      box-shadow: 0 10px 25px rgba(0,0,0,.08);
-    }
-
-    /* Tabs */
-    .tabs{
-      display:flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 10px;
-    }
-    .tab{
-      cursor:pointer;
-      border-radius: 999px;
-      padding: 10px 12px;
-      border: 1px solid rgba(11,18,32,.10);
-      background: rgba(255,255,255,.60);
-      font-weight: 1000;
-      font-size: 13px;
-      transition:.18s ease;
-      user-select:none;
-      box-shadow: 0 10px 25px rgba(0,0,0,.08);
-      display:inline-flex; align-items:center; gap:10px;
-    }
-    .tab img{
-      width: 18px; height: 18px; object-fit: contain;
-      filter: saturate(1.05);
-    }
-    .tab[aria-selected="true"]{
-      border-color: rgba(22,119,255,.35);
-      background: rgba(22,119,255,.10);
-      transform: translateY(-1px);
-    }
-
-    /* Method boxes */
-    .method-box{
-      display:none;
-      margin-top: 12px;
-      border: 1px solid rgba(11,18,32,.10);
-      border-radius: 18px;
-      padding: 14px;
-      background: rgba(255,255,255,.60);
-      box-shadow: 0 14px 40px rgba(0,0,0,.10);
-      animation: fadeFloat .28s ease;
-    }
-    .method-box.active{ display:block; }
-    @keyframes fadeFloat{
-      from{ transform: translateY(10px); opacity: .0; }
-      to{ transform: translateY(0); opacity: 1; }
-    }
-
-    .pay-row{
-      display:flex; align-items:center; justify-content:space-between;
-      gap: 12px; flex-wrap:wrap;
-      margin-bottom: 10px;
-    }
-    .method-title{
-      display:flex; align-items:center; gap: 10px;
-      font-weight: 1000;
-    }
-    .method-title img{
-      width: 34px; height: 34px; object-fit: contain;
-      border-radius: 12px;
-      padding: 6px;
-      background: rgba(255,255,255,.75);
-      border: 1px solid rgba(11,18,32,.10);
-      box-shadow: 0 10px 25px rgba(0,0,0,.08);
-    }
-
-    .btnrow{
-      display:flex; gap: 10px; flex-wrap:wrap;
-      align-items:center;
-      margin-top: 12px;
+    .search input{
+      width:100%;
+      background:transparent;border:0;outline:none;
+      color:var(--text);
+      font-size:14px;
     }
     .btn{
-      cursor:pointer;
-      border:none;
-      border-radius: 16px;
-      padding: 12px 14px;
-      font-weight: 1000;
-      font-size: 14px;
-      display:inline-flex; align-items:center; gap: 9px;
-      transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
-      user-select:none;
-      letter-spacing:.2px;
-      box-shadow: 0 16px 40px rgba(0,0,0,.12);
-    }
-    .btn:active{ transform: translateY(1px); }
-
-    .btn-primary{
-      background: linear-gradient(135deg, rgba(22,119,255,1), rgba(22,119,255,.72));
-      color: #ffffff;
-    }
-    .btn-primary:hover{ filter: brightness(1.03); transform: translateY(-1px); }
-
-    .btn-ghost{
-      border: 1px solid rgba(11,18,32,.10);
-      background: rgba(255,255,255,.70);
-      color: rgba(11,18,32,.90);
-    }
-    .btn-ghost:hover{ transform: translateY(-1px); }
-
-    .hint{
-      color: rgba(11,18,32,.72);
-      font-size: 13px;
-      line-height: 1.45;
-      margin-top: 10px;
-      font-weight: 750;
-    }
-
-    .pay-details{
-      border: 1px dashed rgba(11,18,32,.18);
-      border-radius: 16px;
-      padding: 12px;
-      background: rgba(255,255,255,.65);
-    }
-    .pay-email{
-      font-weight: 1000;
-      font-size: 15px;
-      letter-spacing:.2px;
-      color: rgba(11,18,32,.92);
-      margin: 0;
-    }
-
-    .pay-note{
-      margin: 10px 0 0;
-      font-size: 13px;
-      font-weight: 1000;
-      color: var(--noteText);
-      background: var(--noteBg);
-      border: 1px solid var(--noteBorder);
-      padding: 10px 12px;
-      border-radius: 14px;
-      box-shadow: 0 10px 25px rgba(0,0,0,.08);
-    }
-
-    /* USDT */
-    .qr{
-      display:grid;
-      grid-template-columns: 128px 1fr;
-      gap: 12px;
-      align-items:center;
-      margin-top: 10px;
-    }
-    canvas{
-      width: 128px; height: 128px;
-      border-radius: 16px;
-      border: 1px solid rgba(11,18,32,.10);
-      background: rgba(255,255,255,.70);
-      box-shadow: 0 12px 35px rgba(0,0,0,.10);
-    }
-    .addr{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      font-size: 12px;
-      line-height: 1.4;
-      color: rgba(11,18,32,.90);
-      word-break: break-all;
-      padding: 10px;
-      border: 1px dashed rgba(11,18,32,.18);
-      border-radius: 16px;
-      background: rgba(255,255,255,.65);
-    }
-
-    @media (max-width: 620px){
-      .qr{ grid-template-columns: 1fr; }
-      canvas{ width: 160px; height: 160px; }
-    }
-
-    /* Top donors */
-    .donor-list{
-      display:grid;
-      gap: 10px;
-      margin-top: 10px;
-    }
-    .donor{
-      display:flex;
-      align-items:center;
-      gap: 10px;
-      padding: 10px 10px;
-      border-radius: 16px;
-      background: rgba(255,255,255,.62);
-      border: 1px solid rgba(11,18,32,.10);
-      box-shadow: 0 12px 32px rgba(0,0,0,.08);
-      transition: transform .18s ease, box-shadow .18s ease;
-      animation: donorFloat 3.2s ease-in-out infinite;
-    }
-    .donor:nth-child(2){ animation-delay: .2s; }
-    .donor:nth-child(3){ animation-delay: .4s; }
-    .donor:nth-child(4){ animation-delay: .6s; }
-    .donor:nth-child(5){ animation-delay: .8s; }
-    @keyframes donorFloat{
-      0%{ transform: translateY(0); }
-      50%{ transform: translateY(-4px); }
-      100%{ transform: translateY(0); }
-    }
-
-    .avatar{
-      width: 40px;
-      height: 40px;
-      border-radius: 999px;
-      object-fit: cover;
-      border: 2px solid rgba(255,255,255,.75);
-      box-shadow: 0 10px 25px rgba(0,0,0,.12);
-      flex: 0 0 auto;
-    }
-    .donor .meta{
-      min-width: 0;
-      display:flex;
-      flex-direction:column;
-      gap: 2px;
-    }
-    .donor .name{
-      font-weight: 1000;
-      font-size: 13.5px;
-      color: rgba(11,18,32,.92);
-      white-space: nowrap;
-      overflow:hidden;
-      text-overflow: ellipsis;
-      max-width: 210px;
-    }
-    .donor .amt{
-      font-weight: 1000;
-      font-size: 12.5px;
-      color: rgba(11,18,32,.70);
-    }
-    .donor .rank{
-      margin-left:auto;
-      font-weight: 1100;
-      font-size: 12px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(11,18,32,.10);
-      background: rgba(255,255,255,.65);
-      color: rgba(11,18,32,.78);
-      flex: 0 0 auto;
-    }
-
-    /* Receipt */
-    .receipt{
-      margin-top: 12px;
-      border: 1px solid rgba(11,18,32,.10);
-      border-radius: 18px;
-      padding: 14px;
-      background: rgba(255,255,255,.65);
-      box-shadow: 0 16px 40px rgba(0,0,0,.10);
-    }
-    .receipt h3{
-      margin: 0 0 8px;
-      font-size: 14px;
-      letter-spacing: -.2px;
-      font-weight: 1000;
-    }
-    .receipt pre{
-      margin:0;
-      white-space: pre-wrap;
-      word-break: break-word;
-      font-size: 12.5px;
-      color: rgba(11,18,32,.86);
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      line-height: 1.45;
-    }
-
-    /* Toast */
-    .toast{
-      position: fixed;
-      right: 16px;
-      bottom: 16px;
-      width: min(380px, 92vw);
-      background: rgba(255,255,255,.82);
-      border: 1px solid rgba(11,18,32,.10);
-      border-radius: 16px;
-      padding: 12px;
-      box-shadow: var(--shadow);
-      display:none;
-      z-index: 100;
-      backdrop-filter: blur(10px);
-    }
-    .toast.show{ display:block; animation: pop .18s ease; }
-    @keyframes pop{ from{ transform:translateY(8px); opacity:0; } to{ transform:translateY(0); opacity:1; } }
-
-    .trow{ display:flex; align-items:flex-start; gap:10px; }
-    .ticon{
-      width:32px; height:32px; border-radius: 12px;
-      display:grid; place-items:center;
-      font-weight: 1000;
-      border: 1px solid rgba(11,18,32,.10);
-      background: rgba(255,255,255,.75);
-      flex: 0 0 auto;
-    }
-    .ttitle{ font-weight: 1000; margin:0; font-size: 14px; }
-    .tmsg{ margin:2px 0 0; color: rgba(11,18,32,.70); font-size: 13px; line-height: 1.4; }
-    .tclose{
-      margin-left:auto;
-      background:transparent;
-      border:none;
-      color: rgba(11,18,32,.65);
-      font-size: 16px;
-      cursor:pointer;
-      padding: 2px 6px;
-    }
-
-    /* ==========================
-       POPUP INICIAL (MODERNO)
-       ========================== */
-    .overlay{
-      position: fixed;
-      inset: 0;
-      background: rgba(11,18,32,.55);
-      backdrop-filter: blur(10px);
-      display:none;
-      z-index: 9999;
-      padding: 18px;
-    }
-    .overlay.show{ display:grid; place-items:center; }
-
-    .popup{
-      width: min(920px, 94vw);
-      background: rgba(255,255,255,.92);
-      border: 1px solid rgba(11,18,32,.10);
-      border-radius: 22px;
-      box-shadow: 0 30px 90px rgba(0,0,0,.35);
-      overflow:hidden;
-      animation: popIn .22s ease;
-    }
-    @keyframes popIn{
-      from{ transform: translateY(12px) scale(.98); opacity: 0; }
-      to{ transform: translateY(0) scale(1); opacity: 1; }
-    }
-
-    .popup-top{
-      display:grid;
-      grid-template-columns: 1fr 1.2fr;
-      gap: 0;
-    }
-
-    .popup-media{
-      position: relative;
-      min-height: 240px;
-      background: linear-gradient(135deg, rgba(22,119,255,.18), rgba(34,197,94,.16));
-    }
-    .popup-media img{
-      width:100%;
-      height:100%;
-      object-fit: cover;
-      display:block;
-      filter: saturate(1.05) contrast(1.02);
-    }
-    .popup-media::after{
-      content:"";
-      position:absolute;
-      inset:0;
-      background: linear-gradient(0deg, rgba(11,18,32,.55), rgba(11,18,32,0));
-      pointer-events:none;
-    }
-
-    .popup-content{
-      padding: 16px 16px 14px;
-      display:flex;
-      flex-direction:column;
-      gap: 10px;
-    }
-
-    .help-title{
-      margin:0;
-      font-size: clamp(18px, 2.2vw, 24px);
-      font-weight: 1000;
-      letter-spacing: -.3px;
-      line-height: 1.1;
-    }
-
-    .help-highlight{
-      display:inline-flex;
-      width: fit-content;
-      padding: 10px 12px;
-      border-radius: 999px;
-      font-weight: 1000;
-      background: rgba(22,119,255,.12);
-      border: 1px solid rgba(22,119,255,.25);
-      color: rgba(11,18,32,.92);
-      box-shadow: 0 16px 40px rgba(0,0,0,.10);
-      animation: zoomPulse 1.4s ease-in-out infinite;
-      transform-origin: center;
-    }
-    @keyframes zoomPulse{
-      0%{ transform: scale(1); }
-      50%{ transform: scale(1.08); }
-      100%{ transform: scale(1); }
-    }
-
-    .help-text{
-      margin:0;
-      color: rgba(11,18,32,.72);
-      font-size: 13.5px;
-      line-height: 1.55;
-      max-height: 220px;
-      overflow:auto;
-      padding-right: 6px;
-    }
-
-    .help-text::-webkit-scrollbar{ width: 8px; }
-    .help-text::-webkit-scrollbar-thumb{
-      background: rgba(11,18,32,.18);
-      border-radius: 999px;
-    }
-
-    .popup-actions{
-      display:flex;
-      gap: 10px;
-      flex-wrap:wrap;
-      margin-top: 4px;
-    }
-
-    .btn-close{
-      border: 1px solid rgba(11,18,32,.12);
-      background: rgba(255,255,255,.85);
-      color: rgba(11,18,32,.88);
-    }
-
-    .btn-donate{
-      background: linear-gradient(135deg, rgba(34,197,94,1), rgba(34,197,94,.72));
+      border:0;cursor:pointer;
       color:#fff;
+      background: linear-gradient(135deg, var(--accent), #5b44ff);
+      padding:10px 14px;border-radius: 12px;
+      font-weight:650;
+      box-shadow: 0 10px 18px rgba(124,92,255,.25);
+      transition: transform .08s ease, filter .2s ease;
+      white-space:nowrap;
+    }
+    .btn:active{transform: translateY(1px)}
+    .btn.secondary{
+      background: rgba(255,255,255,.06);
+      border:1px solid var(--border);
+      box-shadow:none;
+      color:var(--text);
     }
 
-    .popup-foot{
-      display:flex;
+    .chips{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .chip{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:10px 12px;border-radius: 14px;
+      background: rgba(255,255,255,.04);
+      border:1px solid var(--border);
+      color:var(--text);
+      cursor:pointer;
+      user-select:none;
+      transition: background .2s ease, border-color .2s ease;
+      font-weight:600;
+      font-size:13px;
+    }
+    .chip.active{
+      background: rgba(124,92,255,.18);
+      border-color: rgba(124,92,255,.45);
+    }
+    .chip .dot{
+      width:8px;height:8px;border-radius:99px;background:rgba(255,255,255,.35)
+    }
+    .chip.active .dot{background: var(--accent)}
+
+    .sort{
+      display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+    }
+    .sort label{color:var(--muted);font-size:13px}
+    select{
+      background: rgba(0,0,0,.28);
+      border:1px solid var(--border);
+      color:var(--text);
+      border-radius: 12px;
+      padding:10px 12px;
+      outline:none;
+      cursor:pointer;
+      font-weight:600;
+    }
+
+    .grid{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap:14px;
+    }
+    @media (max-width: 1050px){ .grid{grid-template-columns: repeat(3, 1fr);} }
+    @media (max-width: 780px){ .grid{grid-template-columns: repeat(2, 1fr);} }
+    @media (max-width: 480px){ .grid{grid-template-columns: 1fr;} }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      overflow:hidden;
+      box-shadow: var(--shadow);
+      display:flex;flex-direction:column;
+      min-height: 320px;
+    }
+    .thumb{
+      position:relative;
+      width:100%;
+      aspect-ratio: 16 / 10;
+      background: rgba(255,255,255,.03);
+      overflow:hidden;
+    }
+    .thumb img{
+      width:100%;height:100%;
+      object-fit:cover;
+      display:block;
+      transform: scale(1.02);
+      filter: saturate(1.05) contrast(1.05);
+    }
+    .badge{
+      position:absolute;left:12px;top:12px;
+      background: rgba(20,24,40,.85);
+      border:1px solid rgba(255,255,255,.14);
+      color:#dfffe9;
+      font-weight:800;
+      font-size:12px;
+      padding:6px 10px;border-radius: 999px;
+      letter-spacing:.3px;
+      text-transform: uppercase;
+    }
+    .badge.new{ color:#dfffe9; }
+    .badge.hot{ color:#ffe9c2; }
+    .watermark{
+      position:absolute;right:10px;top:10px;
+      background: rgba(0,0,0,.35);
+      border:1px solid rgba(255,255,255,.12);
+      padding:6px 8px;border-radius:12px;
+      font-size:11px;color:rgba(255,255,255,.85);
+      backdrop-filter: blur(6px);
+    }
+
+    .content{padding:14px 14px 12px;display:flex;flex-direction:column;gap:10px;flex:1}
+    .title{
+      font-weight:800;
+      letter-spacing:.2px;
+      margin:0;
+      font-size:16px;
+    }
+    .meta{
+      display:flex;gap:14px;flex-wrap:wrap;
+      color:var(--muted);
+      font-size:12.5px;
       align-items:center;
-      justify-content:space-between;
-      gap: 10px;
-      padding: 10px 14px;
-      border-top: 1px solid rgba(11,18,32,.10);
-      background: rgba(255,255,255,.75);
+    }
+    .meta span{display:inline-flex;gap:6px;align-items:center}
+
+    .actions{
+      display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:auto;
     }
 
-    .tiny{
-      font-size: 12px;
-      color: rgba(11,18,32,.65);
-      font-weight: 700;
+    .share{
+      display:flex;gap:8px;align-items:center;
+    }
+    .iconBtn{
+      width:38px;height:38px;border-radius: 14px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      display:grid;place-items:center;
+      cursor:pointer;
+      transition: transform .08s ease, background .2s ease;
+    }
+    .iconBtn:hover{background: rgba(255,255,255,.07)}
+    .iconBtn:active{transform: translateY(1px)}
+    .iconBtn svg{width:18px;height:18px;fill: rgba(255,255,255,.88)}
+
+    .empty{
+      margin:22px 0;
+      padding:22px;
+      border:1px dashed rgba(255,255,255,.18);
+      border-radius: var(--radius);
+      color: var(--muted);
+      text-align:center;
     }
 
-    @media (max-width: 860px){
-      .popup-top{ grid-template-columns: 1fr; }
-      .popup-media{ min-height: 220px; }
-      .help-text{ max-height: 240px; }
+    /* Modal */
+    .modal{
+      position:fixed;inset:0;
+      background: rgba(0,0,0,.6);
+      display:none;
+      align-items:center;justify-content:center;
+      padding:18px;
+      z-index: 1000;
     }
+    .modal.show{display:flex}
+    .modalCard{
+      width:min(980px, 100%);
+      background: rgba(16,18,28,.92);
+      border:1px solid rgba(255,255,255,.14);
+      border-radius: 22px;
+      box-shadow: 0 30px 80px rgba(0,0,0,.55);
+      overflow:hidden;
+    }
+    .modalHead{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:14px 14px 10px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      gap:10px;
+    }
+    .modalHead strong{font-size:14px}
+    .close{
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+      color:var(--text);
+      border-radius: 12px;
+      padding:8px 10px;
+      cursor:pointer;
+      font-weight:700;
+    }
+    .player{
+      width:100%;
+      aspect-ratio: 16/9;
+      background:#000;
+      position:relative;
+    }
+    .player iframe, .player video{
+      width:100%;height:100%;
+      display:block;border:0;
+      background:#000;
+    }
+
+    /* Floating share rail (opcional) */
+    .rail{
+      position:fixed;
+      right:14px;
+      top:50%;
+      transform: translateY(-50%);
+      display:flex;flex-direction:column;gap:10px;
+      z-index: 900;
+    }
+    .rail .bubble{
+      width:44px;height:44px;border-radius: 16px;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+      display:grid;place-items:center;
+      box-shadow: 0 14px 26px rgba(0,0,0,.35);
+      cursor:pointer;
+    }
+    .rail .bubble svg{width:20px;height:20px;fill: rgba(255,255,255,.9)}
   </style>
 </head>
-
 <body>
-
-  <!-- POPUP INICIAL -->
-  <div class="overlay" id="overlay">
-    <div class="popup" role="dialog" aria-modal="true" aria-label="Mensaje importante">
-      <div class="popup-top">
-        <div class="popup-media">
-          <img id="popupImage" alt="Imagen de apoyo" />
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          Catálogo
+          <small>Imágenes y videos por URL externa</small>
         </div>
+      </div>
+      <button class="btn secondary" id="btnReset">Restablecer</button>
+    </div>
 
-        <div class="popup-content">
-          <div class="help-highlight" id="helpHighlight">Emmanuel necesita tu ayuda</div>
-          <h2 class="help-title">Una cirugía que podría cambiarle la vida</h2>
+    <div class="toolbar">
+      <div class="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" stroke="rgba(255,255,255,.75)" stroke-width="2"/>
+          <path d="M16.2 16.2 21 21" stroke="rgba(255,255,255,.75)" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input id="q" type="search" placeholder="Buscar modelo o video..." autocomplete="off" />
+        <button class="btn" id="btnSearch">Buscar</button>
+      </div>
 
-          <p class="help-text" id="popupText"></p>
-
-          <div class="popup-actions">
-            <button class="btn btn-close" type="button" id="btnClosePopup">Entendido</button>
-            <button class="btn btn-donate" type="button" id="btnGoDonate">Ir a donar</button>
-          </div>
+      <div class="chips" role="tablist" aria-label="Filtros">
+        <div class="chip active" data-filter="all" role="tab" aria-selected="true">
+          <span class="dot"></span> Todos
+        </div>
+        <div class="chip" data-filter="new" role="tab" aria-selected="false">
+          <span class="dot"></span> Nuevos
+        </div>
+        <div class="chip" data-filter="popular" role="tab" aria-selected="false">
+          <span class="dot"></span> Populares
         </div>
       </div>
 
-      <div class="popup-foot">
-        <div class="tiny">Tu apoyo puede marcar una gran diferencia.</div>
-        <button class="btn btn-ghost" type="button" id="btnCopyStory">📋 Copiar historia</button>
+      <div class="sort">
+        <label for="sort">Ordenar por:</label>
+        <select id="sort">
+          <option value="recent">Más recientes</option>
+          <option value="views">Más vistas</option>
+          <option value="name">Nombre (A–Z)</option>
+        </select>
       </div>
+    </div>
+
+    <div id="grid" class="grid" aria-live="polite"></div>
+    <div id="empty" class="empty" style="display:none;">No hay resultados con esos filtros.</div>
+  </div>
+
+  <!-- Rail opcional, tipo botones laterales -->
+  <div class="rail" aria-label="Accesos rápidos">
+    <div class="bubble" id="railShare" title="Compartir esta página">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7a2.5 2.5 0 0 0 0-1.39l7-4.11A2.99 2.99 0 1 0 14 5a2.9 2.9 0 0 0 .05.54l-7 4.11a3 3 0 1 0 0 4.7l7.12 4.19c-.03.17-.05.34-.05.51a3 3 0 1 0 3-3Z"/></svg>
+    </div>
+    <div class="bubble" id="railTop" title="Ir arriba">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5l7 7-1.4 1.4L13 8.8V19h-2V8.8L6.4 13.4 5 12l7-7Z"/></svg>
     </div>
   </div>
 
-  <!-- NAVBAR -->
-  <header>
-    <div class="container nav">
-      <div class="brand">
-        <div class="brand-logo-wrap" title="Logo">
-          <img class="brand-logo" id="brandLogo" alt="Logo Donaciones" />
-        </div>
-
-        <div class="brand-title">
-          <div class="t">Corazón que Suma </div>
-        </div>
+  <!-- Modal de video -->
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Reproductor">
+    <div class="modalCard">
+      <div class="modalHead">
+        <strong id="modalTitle">Video</strong>
+        <button class="close" id="modalClose">Cerrar ✕</button>
       </div>
-
-      <div class="nav-actions">
-        <a class="tg-btn" id="telegramBtn" href="#" target="_blank" rel="noopener">
-          <img class="tg-ico" id="telegramIcon" alt="Telegram" />
-          Telegram
-        </a>
-      </div>
-    </div>
-  </header>
-
-  <main class="container">
-    <section class="hero">
-      <div class="card">
-        <div class="hero-top">
-          <div>
-            <h1>Salva la vida de Emmanuel en 1 minuto</h1>
-            <p>
-             "Transformando pequeñas acciones en grandes cambios. Donde tu generosidad encuentra su propósito. Súmate, aporta y ayudemos juntos. ❤️✨"
-            </p>
-          </div>
-
-          <div class="total-box" aria-label="Cantidad donada">
-            <div class="k">Cantidad donada</div>
-            <div class="v" id="totalDonated">$218</div>
-            <div class="mini" id="totalDonatedMini">SE NECESITAN 5.000$ PARA LA OPERACION</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="grid">
-      <!-- Panel principal -->
-      <div class="card panel" id="paySection">
-        <div class="section-title">
-          <div class="method-title-inline">
-            <img id="methodTitleLogo" alt="Logo método de pago" />
-            <h2>Método de pago</h2>
-          </div>
-          <p>Selecciona uno para ver instrucciones.</p>
-        </div>
-
-        <div class="tabs" role="tablist" aria-label="Métodos de pago">
-          <button class="tab" type="button" role="tab" aria-selected="true" data-method="paypal">
-            <img id="paypalTabLogo" alt="PayPal" />
-            PayPal
-          </button>
-
-          <button class="tab" type="button" role="tab" aria-selected="false" data-method="usdt">
-            <img id="usdtTabLogo" alt="USDT" />
-            USDT TRC20
-          </button>
-        </div>
-
-        <!-- PAYPAL -->
-        <div class="method-box active" id="box-paypal">
-          <div class="pay-row">
-            <div class="method-title">
-              <img id="paypalLogo" alt="PayPal logo" />
-              <div>PayPal</div>
-            </div>
-          </div>
-
-          <div class="pay-details">
-            <p class="pay-email" id="paypalEmailText">correo@paypal.com</p>
-            <div class="pay-note" id="paypalWarnText">NOTA: enviar comprobante al usuario @Eradigital_08 en telegram</div>
-          </div>
-
-          <div class="btnrow">
-            <button class="btn btn-ghost" type="button" id="btnCopyPayPal">📋 Copiar código</button>
-          </div>
-
-          <p class="hint">
-            Paga con PayPal usando el correo mostrado y luego envía el comprobante al Telegram indicado.
-          </p>
-        </div>
-
-        <!-- USDT -->
-        <div class="method-box" id="box-usdt">
-          <div class="pay-row">
-            <div class="method-title">
-              <img id="usdtLogo" alt="USDT logo" />
-              <div>USDT (TRC20)</div>
-            </div>
-          </div>
-
-          <div class="qr">
-            <canvas id="qrCanvas" width="128" height="128" aria-label="QR de pago USDT"></canvas>
-            <div>
-              <div class="small" style="margin-bottom:8px; font-weight:900; color: rgba(11,18,32,.80);">
-                Dirección TRC20:
-              </div>
-              <div class="addr" id="usdtAddressText">  TF9o6Tvbw97vj4z7eurA5TYG8bi2ib8sNM </div>
-
-              <div class="btnrow" style="margin-top:10px;">
-                <button class="btn btn-ghost" type="button" id="btnCopyAddr">📋 Copiar código</button>
-                <button class="btn btn-primary" type="button" id="btnShowUSDT">🧾 Mostrar datos</button>
-              </div>
-
-              <div class="pay-note" id="usdtWarnText" style="margin-top:10px;">
-                NOTA: enviar comprobante al usuario @Eradigital_08 en telegram
-              </div>
-            </div>
-          </div>
-
-          <p class="hint">
-            Envía USDT por la red TRON (TRC20) a la dirección mostrada y luego envía el comprobante.
-          </p>
-        </div>
-
-        <!-- DATOS -->
-        <div class="receipt" id="receipt" style="display:none;">
-          <h3>🧾 Datos para enviar</h3>
-          <pre id="receiptText"></pre>
-          <div class="btnrow" style="margin-top:10px;">
-            <button class="btn btn-ghost" type="button" id="btnCopyReceipt">📋 Copiar datos</button>
-            <button class="btn btn-ghost" type="button" id="btnDownloadReceipt">⬇️ Descargar .txt</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Columna derecha -->
-      <div class="methods">
-        <div class="card">
-          <div class="section-title">
-            <div>
-              <h2>Top donadores</h2>
-              <p>Gracias por tu apoyo...</p>
-            </div>
-          </div>
-          <div style="height:1px;background:rgba(11,18,32,.10);margin:12px 0;"></div>
-          <div class="donor-list" id="topDonorsList"></div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <div class="toast" id="toast" role="status" aria-live="polite">
-    <div class="trow">
-      <div class="ticon" id="ticon">✅</div>
-      <div style="min-width:0;">
-        <p class="ttitle" id="ttitle">Listo</p>
-        <p class="tmsg" id="tmsg">Acción completada.</p>
-      </div>
-      <button class="tclose" id="tclose" aria-label="Cerrar">✕</button>
+      <div class="player" id="player"></div>
     </div>
   </div>
 
   <script>
-    // ==========================
-    // CONFIG (edita aquí)
-    // ==========================
-    const CONFIG = {
-      brandLogoUrl: "https://img.freepik.com/vector-premium/logo-donacion_23-2147503731.jpg",
+    /**
+     * DATOS (ejemplo)
+     * - thumbUrl: URL externa de imagen (no ocupa hosting)
+     * - videoUrl: YouTube (embed) o mp4 externo
+     * - isNew / views / date
+     */
+    const items = [
+      {
+        id: "m1",
+        name: "Marian Franco",
+        thumbUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=1200&q=70",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        views: 233,
+        date: "2026-01-16",
+        isNew: true,
+      },
+      {
+        id: "m2",
+        name: "Silvana Lee",
+        thumbUrl: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=70",
+        videoUrl: "https://www.youtube.com/embed/aqz-KE-bpKQ",
+        views: 234,
+        date: "2026-01-16",
+        isNew: true,
+      },
+      {
+        id: "m3",
+        name: "Kathrin Carvajal",
+        thumbUrl: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=1200&q=70",
+        videoUrl: "https://www.youtube.com/embed/ScMzIvxBSi4",
+        views: 45,
+        date: "2026-01-16",
+        isNew: true,
+      },
+      {
+        id: "m4",
+        name: "Karmen Karma",
+        thumbUrl: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=70",
+        videoUrl: "https://www.youtube.com/embed/tgbNymZ7vqY",
+        views: 74,
+        date: "2026-01-16",
+        isNew: true,
+      },
+      // Ejemplo “popular” (muchas vistas, no necesariamente nuevo)
+      {
+        id: "m5",
+        name: "Andrea Nova",
+        thumbUrl: "https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?auto=format&fit=crop&w=1200&q=70",
+        videoUrl: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+        views: 1800,
+        date: "2025-12-20",
+        isNew: false,
+      },
+    ];
 
-      // Telegram
-      telegramUrl: "https://t.me/tu_canal_o_usuario",
-      telegramIconUrl: "https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg",
-
-      // Logo al lado del título "Método de pago"
-      methodTitleLogoUrl: "https://cdn-icons-png.flaticon.com/512/1086/1086741.png",
-
-      // ✅ AQUÍ COLOCAS LA URL DE LA IMAGEN DEL POPUP
-      heroPopupImageUrl: "https://tn.com.ar/resizer/v2/nena-de-dos-anos-apenas-puede-caminar-o-estar-parada-por-un-tumor-en-el-brazo-54LYNGF7LCO4IDX3T57OJXJGVE.jpg?auth=e9fd269aed6442a5c4b29b7c1e4ba5da02b404a0f5fbd025c8ef75c929f7f0aa&width=767",
-
-      // PayPal
-      paypalEmail: "donate37@gmail.com",
-      telegramUser: "@Eradigital_08",
-      paypalLogoUrl: "https://cdn.pixabay.com/photo/2018/05/08/21/29/paypal-3384015_640.png",
-
-      // USDT TRC20
-      usdtAddress: "TF9o6Tvbw97vj4z7eurA5TYG8bi2ib8sNM",
-      usdtLogoUrl: "https://cryptologos.cc/logos/tether-usdt-logo.png?v=032",
-
-      // TOP DONORS
-      topDonors: [
-        { name: "María P.", avatar: "https://i.pinimg.com/736x/84/1d/d1/841dd152f7bfe6e6855880e96d5d3ee5.jpg", amount: 100 },
-        { name: "Carlos R.", avatar: "https://i.pinimg.com/1200x/d2/60/9e/d2609e3bc59e31a106fbc9565bcf86d6.jpg", amount: 62 },
-        { name: "Ana G.", avatar: "https://i.pinimg.com/736x/40/92/d1/4092d19668d38e4c4efd23ce73e57810.jpg",  amount: 37 },
-        { name: "José L.", avatar: "https://i.pinimg.com/1200x/1a/3b/3e/1a3b3efe45eabe945dd54e63044d1483.jpg", amount: 19},
-      ],
-
-      // Texto del popup (tu historia)
-      popupStory: `Un equipo de médicos de Florida planea extirpar un tumor de 4,5 kilos del rostro de Emanuel Zayas, un adolescente cubano de 14 años, en una cirugía que podría cambiarle la vida.
-
-Emanuel viajó recientemente a Miami junto a sus padres  gracias a una visa médica, según informó el Miami Herald. La operación será realizada el 12 de enero en el Hospital Infantil Holtz, por el doctor Robert Marx y un equipo especializado del Sistema de Salud de la Universidad de Miami.
-
-Emanuel padece displasia fibrosa poliostótica, una enfermedad poco común que provoca deformidades óseas severas. Según su padre, el tumor comenzó como una pequeña espinilla y creció rápidamente en pocos meses, afectando profundamente su vida diaria.
-
-Esta cirugía representa una esperanza real, pero los costos médicos y de recuperación son elevados. Por ello, hacemos un llamado solidario: cualquier donación o ayuda puede marcar una gran diferencia.
-Con tu apoyo, Emanuel puede recuperar su salud y la oportunidad de un futuro mejor.`
+    // Estado UI
+    let state = {
+      query: "",
+      filter: "all", // all | new | popular
+      sort: "recent", // recent | views | name
     };
 
-    // ==========================
     // Helpers
-    // ==========================
-    const $ = (sel, root=document) => root.querySelector(sel);
-    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+    const $ = (sel) => document.querySelector(sel);
+    const grid = $("#grid");
+    const empty = $("#empty");
 
-    function money(amount, currency="USD"){
-      const n = Number(amount);
-      const symbol = currency === "EUR" ? "€" : "$";
-      return `${symbol}${isFinite(n) ? n.toFixed(0) : "0"}`;
+    function fmtDate(iso){
+      // iso: YYYY-MM-DD
+      const [y,m,d] = iso.split("-").map(Number);
+      return `${String(d).padStart(2,"0")}/${String(m).padStart(2,"0")}/${y}`;
     }
 
-    function showToast({title, msg, icon="✅"}){
-      $("#ttitle").textContent = title;
-      $("#tmsg").textContent = msg;
-      $("#ticon").textContent = icon;
-      const t = $("#toast");
-      t.classList.add("show");
-      clearTimeout(showToast._t);
-      showToast._t = setTimeout(()=> t.classList.remove("show"), 4200);
+    function badgeFor(item){
+      // Ajusta lógica a tu gusto
+      const popularThreshold = 500;
+      if(item.isNew) return { text:"Nuevo", cls:"new" };
+      if(item.views >= popularThreshold) return { text:"Popular", cls:"hot" };
+      return null;
     }
-    $("#tclose").addEventListener("click", () => $("#toast").classList.remove("show"));
 
-    // ==========================
-    // Top donors
-    // ==========================
-    function renderTopDonors(){
-      const list = (CONFIG.topDonors || []).slice()
-        .sort((a,b) => Number(b.amount||0) - Number(a.amount||0))
-        .slice(0, 8);
+    function applyState(){
+      const q = state.query.trim().toLowerCase();
 
-      const root = $("#topDonorsList");
-      if(!root) return;
+      let list = items.slice();
 
-      root.innerHTML = list.map((d, idx) => `
-        <div class="donor" style="animation-delay:${idx*0.12}s">
-          <img class="avatar" src="${escapeAttr(d.avatar || "")}" alt="Perfil" onerror="this.src='https://i.pravatar.cc/80?img=1'">
-          <div class="meta">
-            <div class="name">${escapeHTML(d.name || "Donador")}</div>
-            <div class="amt">Monto donado: ${money(d.amount, "USD")} USD</div>
+      // search
+      if(q){
+        list = list.filter(x =>
+          x.name.toLowerCase().includes(q)
+          || (x.id && x.id.toLowerCase().includes(q))
+        );
+      }
+
+      // filter chips
+      if(state.filter === "new"){
+        list = list.filter(x => x.isNew);
+      } else if(state.filter === "popular"){
+        list = list
+          .slice()
+          .sort((a,b)=> b.views - a.views)
+          .slice(0, 50); // ejemplo: top N
+      }
+
+      // sorting
+      if(state.sort === "recent"){
+        list.sort((a,b)=> (b.date || "").localeCompare(a.date || ""));
+      } else if(state.sort === "views"){
+        list.sort((a,b)=> (b.views || 0) - (a.views || 0));
+      } else if(state.sort === "name"){
+        list.sort((a,b)=> (a.name || "").localeCompare(b.name || ""));
+      }
+
+      render(list);
+    }
+
+    function render(list){
+      grid.innerHTML = "";
+      empty.style.display = list.length ? "none" : "block";
+
+      const frag = document.createDocumentFragment();
+
+      for(const item of list){
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const b = badgeFor(item);
+
+        card.innerHTML = `
+          <div class="thumb">
+            <img loading="lazy" src="${escapeAttr(item.thumbUrl)}" alt="${escapeAttr(item.name)}">
+            ${b ? `<div class="badge ${b.cls}">${b.text}</div>` : ""}
+            <div class="watermark">Catálogo</div>
           </div>
-          <div class="rank">#${idx+1}</div>
-        </div>
-      `).join("");
+
+          <div class="content">
+            <h3 class="title">${escapeHtml(item.name)}</h3>
+
+            <div class="meta">
+              <span title="Vistas">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" stroke="rgba(255,255,255,.65)" stroke-width="2"/>
+                  <circle cx="12" cy="12" r="3" stroke="rgba(255,255,255,.65)" stroke-width="2"/>
+                </svg>
+                ${Number(item.views||0).toLocaleString("es-ES")} vistas
+              </span>
+
+              <span title="Fecha">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M7 3v2M17 3v2" stroke="rgba(255,255,255,.65)" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M4 7h16" stroke="rgba(255,255,255,.65)" stroke-width="2"/>
+                  <path d="M6 5h12a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" stroke="rgba(255,255,255,.65)" stroke-width="2"/>
+                </svg>
+                ${fmtDate(item.date || "2026-01-01")}
+              </span>
+            </div>
+
+            <div class="actions">
+              <button class="btn secondary" data-action="watch" data-id="${escapeAttr(item.id)}">Ver video</button>
+
+              <div class="share">
+                <button class="iconBtn" title="Compartir" data-action="share" data-id="${escapeAttr(item.id)}">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7a2.5 2.5 0 0 0 0-1.39l7-4.11A2.99 2.99 0 1 0 14 5a2.9 2.9 0 0 0 .05.54l-7 4.11a3 3 0 1 0 0 4.7l7.12 4.19c-.03.17-.05.34-.05.51a3 3 0 1 0 3-3Z"/></svg>
+                </button>
+                <button class="iconBtn" title="Copiar enlace" data-action="copy" data-id="${escapeAttr(item.id)}">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a5 5 0 0 1 0-7l1-1a5 5 0 0 1 7 7l-1 1" /><path d="M14 10a5 5 0 0 1 0 7l-1 1a5 5 0 0 1-7-7l1-1" /></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+        // arreglar icon "link" stroke (simple)
+        card.querySelectorAll('svg path').forEach(p=>{
+          if(!p.getAttribute("stroke") && p.getAttribute("d")?.includes("M10 14")) {
+            p.setAttribute("fill","none");
+            p.setAttribute("stroke","rgba(255,255,255,.88)");
+            p.setAttribute("stroke-width","2");
+            p.setAttribute("stroke-linecap","round");
+            p.setAttribute("stroke-linejoin","round");
+          }
+        });
+
+        frag.appendChild(card);
+      }
+
+      grid.appendChild(frag);
     }
-    function escapeHTML(str){
-      return String(str)
+
+    // Seguridad básica para HTML
+    function escapeHtml(str){
+      return String(str ?? "")
         .replaceAll("&","&amp;")
         .replaceAll("<","&lt;")
         .replaceAll(">","&gt;")
@@ -1016,243 +555,182 @@ Con tu apoyo, Emanuel puede recuperar su salud y la oportunidad de un futuro mej
         .replaceAll("'","&#039;");
     }
     function escapeAttr(str){
-      return String(str).replaceAll('"',"&quot;");
+      // para atributos, mismo escape
+      return escapeHtml(str);
     }
 
-    // ==========================
-    // Tabs (PayPal / USDT)
-    // ==========================
-    function setMethod(method){
-      $$(".tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.method === method)));
-      $("#box-paypal").classList.toggle("active", method === "paypal");
-      $("#box-usdt").classList.toggle("active", method === "usdt");
-      if(method === "usdt") drawPseudoQR(makeUSDTURI());
-    }
-    $$(".tab").forEach(btn => btn.addEventListener("click", () => setMethod(btn.dataset.method)));
+    // Modal player
+    const modal = $("#modal");
+    const player = $("#player");
+    const modalTitle = $("#modalTitle");
 
-    // ==========================
-    // Copy buttons
-    // ==========================
-    $("#btnCopyPayPal").addEventListener("click", async () => {
-      try{
-        await navigator.clipboard.writeText(CONFIG.paypalEmail);
-        showToast({ title:"Copiado", msg:"Correo PayPal copiado.", icon:"📋" });
-      }catch{
-        showToast({ title:"No se pudo copiar", msg:"Tu navegador bloqueó el portapapeles.", icon:"⚠️" });
-      }
-    });
+    function openVideo(item){
+      modalTitle.textContent = item.name || "Video";
+      player.innerHTML = "";
 
-    $("#btnCopyAddr").addEventListener("click", async () => {
-      try{
-        await navigator.clipboard.writeText(CONFIG.usdtAddress);
-        showToast({ title:"Copiado", msg:"Dirección TRC20 copiada.", icon:"📋" });
-      }catch{
-        showToast({ title:"No se pudo copiar", msg:"Tu navegador bloqueó el portapapeles.", icon:"⚠️" });
-      }
-    });
+      // Si es MP4/WEBM -> video tag; si no, iframe (YouTube embed)
+      const url = item.videoUrl || "";
+      const isVideoFile = /\.(mp4|webm|ogg)(\?.*)?$/i.test(url);
 
-    // ==========================
-    // Mostrar datos bonito (USDT)
-    // ==========================
-    $("#btnShowUSDT").addEventListener("click", () => {
-      const text =
-`DATOS DE PAGO (USDT TRC20)
-Red: TRC20
-Dirección: ${CONFIG.usdtAddress}
-Enviar comprobante a: ${CONFIG.telegramUser}
-
-NOTA: Este sitio no confirma pagos reales.`;
-
-      $("#receiptText").textContent = text;
-      $("#receipt").style.display = "block";
-      $("#receipt").scrollIntoView({behavior:"smooth"});
-      showToast({ title:"Datos listos", msg:"Copia y envía el comprobante al Telegram.", icon:"🪙" });
-    });
-
-    // ==========================
-    // Receipt actions
-    // ==========================
-    $("#btnCopyReceipt").addEventListener("click", async () => {
-      try{
-        await navigator.clipboard.writeText($("#receiptText").textContent || "");
-        showToast({ title:"Copiado", msg:"Datos copiados.", icon:"📋" });
-      }catch{
-        showToast({ title:"No se pudo copiar", msg:"Tu navegador bloqueó el portapapeles.", icon:"⚠️" });
-      }
-    });
-
-    $("#btnDownloadReceipt").addEventListener("click", () => {
-      const txt = $("#receiptText").textContent || "";
-      if(!txt.trim()){
-        showToast({ title:"Sin datos", msg:"Primero pulsa “Mostrar datos”.", icon:"⚠️" });
-        return;
-      }
-      const blob = new Blob([txt], {type:"text/plain;charset=utf-8"});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `datos-donacion-${Date.now()}.txt`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-      showToast({ title:"Descargado", msg:"Archivo .txt descargado.", icon:"⬇️" });
-    });
-
-    // ==========================
-    // Pseudo-QR (sin monto)
-    // ==========================
-    function makeUSDTURI(){
-      const addr = CONFIG.usdtAddress;
-      const memo = encodeURIComponent("Donación USDT TRC20");
-      return `tron:${addr}?token=USDT&network=TRC20&memo=${memo}`;
-    }
-
-    function drawPseudoQR(text){
-      const c = $("#qrCanvas");
-      const ctx = c.getContext("2d");
-      const size = c.width;
-
-      ctx.clearRect(0,0,size,size);
-      ctx.fillStyle = "rgba(255,255,255,0.85)";
-      ctx.fillRect(0,0,size,size);
-
-      const hash = fnv1a(text);
-      const bits = prngBits(hash, 29*29);
-      const n = 29;
-      const pad = 6;
-      const cell = Math.floor((size - pad*2)/n);
-
-      drawFinder(ctx, pad, pad, cell);
-      drawFinder(ctx, pad + (n-7)*cell, pad, cell);
-      drawFinder(ctx, pad, pad + (n-7)*cell, cell);
-
-      for(let y=0; y<n; y++){
-        for(let x=0; x<n; x++){
-          const inTL = x<7 && y<7;
-          const inTR = x>=n-7 && y<7;
-          const inBL = x<7 && y>=n-7;
-          if(inTL || inTR || inBL) continue;
-
-          const i = y*n + x;
-          if(bits[i]){
-            ctx.fillStyle = "rgba(11,18,32,0.92)";
-            ctx.fillRect(pad + x*cell, pad + y*cell, cell, cell);
-          }
-        }
+      if(isVideoFile){
+        const v = document.createElement("video");
+        v.src = url;
+        v.controls = true;
+        v.autoplay = true;
+        v.playsInline = true;
+        player.appendChild(v);
+      }else{
+        const iframe = document.createElement("iframe");
+        iframe.src = url;
+        iframe.allow = "autoplay; encrypted-media; picture-in-picture";
+        iframe.allowFullscreen = true;
+        player.appendChild(iframe);
       }
 
-      ctx.fillStyle = "rgba(11,18,32,0.55)";
-      ctx.font = "10px ui-monospace, Menlo, Consolas, monospace";
-      ctx.fillText("USDT TRC20", 10, size - 10);
-    }
+      // sumar vista (demo)
+      item.views = (item.views || 0) + 1;
+      applyState();
 
-    function drawFinder(ctx, x, y, cell){
-      ctx.fillStyle = "rgba(11,18,32,0.92)";
-      ctx.fillRect(x, y, cell*7, cell*7);
-      ctx.clearRect(x+cell, y+cell, cell*5, cell*5);
-      ctx.fillRect(x+cell*2, y+cell*2, cell*3, cell*3);
-    }
-
-    function fnv1a(str){
-      let h = 0x811c9dc5;
-      for(let i=0;i<str.length;i++){
-        h ^= str.charCodeAt(i);
-        h = Math.imul(h, 0x01000193);
-      }
-      return h >>> 0;
-    }
-
-    function prngBits(seed, count){
-      let x = seed >>> 0;
-      const out = new Array(count);
-      for(let i=0;i<count;i++){
-        x ^= x << 13; x >>>= 0;
-        x ^= x >> 17; x >>>= 0;
-        x ^= x << 5;  x >>>= 0;
-        out[i] = (x & 1) === 1;
-      }
-      return out;
-    }
-
-    // ==========================
-    // POPUP actions
-    // ==========================
-    function openPopup(){
-      $("#overlay").classList.add("show");
+      modal.classList.add("show");
       document.body.style.overflow = "hidden";
     }
-    function closePopup(){
-      $("#overlay").classList.remove("show");
+
+    function closeModal(){
+      modal.classList.remove("show");
+      player.innerHTML = ""; // corta reproducción
       document.body.style.overflow = "";
     }
 
-    $("#btnClosePopup").addEventListener("click", closePopup);
+    $("#modalClose").addEventListener("click", closeModal);
+    modal.addEventListener("click", (e)=>{ if(e.target === modal) closeModal(); });
+    document.addEventListener("keydown", (e)=>{ if(e.key === "Escape") closeModal(); });
 
-    $("#btnGoDonate").addEventListener("click", () => {
-      closePopup();
-      $("#paySection").scrollIntoView({behavior:"smooth"});
+    // Acciones de UI
+    $("#btnSearch").addEventListener("click", ()=>{
+      state.query = $("#q").value;
+      applyState();
     });
-
-    $("#btnCopyStory").addEventListener("click", async () => {
-      try{
-        await navigator.clipboard.writeText(CONFIG.popupStory);
-        showToast({ title:"Copiado", msg:"Historia copiada al portapapeles.", icon:"📋" });
-      }catch{
-        showToast({ title:"No se pudo copiar", msg:"Tu navegador bloqueó el portapapeles.", icon:"⚠️" });
+    $("#q").addEventListener("keydown", (e)=>{
+      if(e.key === "Enter"){
+        state.query = $("#q").value;
+        applyState();
       }
     });
 
-    // Cerrar popup clic fuera
-    $("#overlay").addEventListener("click", (e) => {
-      if(e.target.id === "overlay") closePopup();
+    $("#sort").addEventListener("change", (e)=>{
+      state.sort = e.target.value;
+      applyState();
     });
 
-    // Esc para cerrar
-    document.addEventListener("keydown", (e) => {
-      if(e.key === "Escape" && $("#overlay").classList.contains("show")) closePopup();
+    // Chips
+    document.querySelectorAll(".chip").forEach(chip=>{
+      chip.addEventListener("click", ()=>{
+        document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
+        chip.classList.add("active");
+        state.filter = chip.dataset.filter;
+        applyState();
+      });
     });
 
-    // ==========================
-    // INIT
-    // ==========================
-    function init(){
-      $("#brandLogo").src = CONFIG.brandLogoUrl;
+    // Reset
+    $("#btnReset").addEventListener("click", ()=>{
+      state = { query:"", filter:"all", sort:"recent" };
+      $("#q").value = "";
+      $("#sort").value = "recent";
+      document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
+      document.querySelector('.chip[data-filter="all"]').classList.add("active");
+      applyState();
+    });
 
-      $("#telegramBtn").href = CONFIG.telegramUrl;
-      $("#telegramIcon").src = CONFIG.telegramIconUrl;
+    // Delegación de eventos: ver video / compartir / copiar
+    grid.addEventListener("click", async (e)=>{
+      const btn = e.target.closest("[data-action]");
+      if(!btn) return;
+      const action = btn.dataset.action;
+      const id = btn.dataset.id;
+      const item = items.find(x => x.id === id);
+      if(!item) return;
 
-      $("#methodTitleLogo").src = CONFIG.methodTitleLogoUrl;
+      if(action === "watch"){
+        openVideo(item);
+      }
 
-      $("#paypalLogo").src = CONFIG.paypalLogoUrl;
-      $("#paypalTabLogo").src = CONFIG.paypalLogoUrl;
+      if(action === "copy"){
+        const link = makeItemLink(item);
+        await navigator.clipboard.writeText(link);
+        toast("Enlace copiado ✅");
+      }
 
-      $("#usdtLogo").src = CONFIG.usdtLogoUrl;
-      $("#usdtTabLogo").src = CONFIG.usdtLogoUrl;
+      if(action === "share"){
+        const data = {
+          title: item.name,
+          text: `Mira: ${item.name}`,
+          url: makeItemLink(item),
+        };
+        if(navigator.share){
+          try { await navigator.share(data); } catch {}
+        } else {
+          await navigator.clipboard.writeText(data.url);
+          toast("No hay compartir nativo. Enlace copiado ✅");
+        }
+      }
+    });
 
-      $("#paypalEmailText").textContent = CONFIG.paypalEmail;
-      $("#usdtAddressText").textContent = CONFIG.usdtAddress;
+    // Rail
+    $("#railTop").addEventListener("click", ()=> window.scrollTo({top:0, behavior:"smooth"}));
+    $("#railShare").addEventListener("click", async ()=>{
+      const url = location.href;
+      if(navigator.share){
+        try { await navigator.share({title: document.title, url}); } catch {}
+      } else {
+        await navigator.clipboard.writeText(url);
+        toast("Enlace copiado ✅");
+      }
+    });
 
-      const note = `NOTA: enviar comprobante al ${CONFIG.telegramUser} de telegram`;
-      $("#paypalWarnText").textContent = note;
-      $("#usdtWarnText").textContent = note;
-
-      $("#totalDonated").textContent = "$218";
-      $("#totalDonatedMini").textContent = "SE NECESITAN 5000$ PARA LA OPERACION";
-
-      renderTopDonors();
-      drawPseudoQR(makeUSDTURI());
-      setMethod("paypal");
-
-      // Popup
-      $("#popupImage").src = CONFIG.heroPopupImageUrl;  // ✅ AQUÍ SE USA LA URL
-      $("#popupText").textContent = CONFIG.popupStory;
-
-      // Abrir al cargar
-      openPopup();
+    // Deep link opcional por hash: #m3
+    function makeItemLink(item){
+      const base = location.href.split("#")[0];
+      return `${base}#${encodeURIComponent(item.id)}`;
     }
 
-    init();
+    function handleHash(){
+      const id = decodeURIComponent((location.hash||"").replace("#",""));
+      if(!id) return;
+      const item = items.find(x => x.id === id);
+      if(item) openVideo(item);
+    }
+    window.addEventListener("hashchange", handleHash);
+
+    // Toast simple
+    let toastTimer;
+    function toast(msg){
+      let el = document.getElementById("toast");
+      if(!el){
+        el = document.createElement("div");
+        el.id = "toast";
+        el.style.position = "fixed";
+        el.style.left = "50%";
+        el.style.bottom = "18px";
+        el.style.transform = "translateX(-50%)";
+        el.style.padding = "12px 14px";
+        el.style.borderRadius = "14px";
+        el.style.background = "rgba(15,18,28,.92)";
+        el.style.border = "1px solid rgba(255,255,255,.14)";
+        el.style.color = "rgba(255,255,255,.92)";
+        el.style.boxShadow = "0 16px 40px rgba(0,0,0,.45)";
+        el.style.zIndex = "2000";
+        document.body.appendChild(el);
+      }
+      el.textContent = msg;
+      el.style.display = "block";
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(()=>{ el.style.display="none"; }, 1800);
+    }
+
+    // Init
+    applyState();
+    handleHash();
   </script>
 </body>
 </html>
