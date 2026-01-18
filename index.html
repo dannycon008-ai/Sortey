@@ -266,24 +266,42 @@
       background:#000;
     }
 
-    /* Floating share rail (opcional) */
-    .rail{
-      position:fixed;
-      right:14px;
-      top:50%;
+    /* === Botones flotantes derecha (como tu imagen) === */
+    .floatSocial{
+      position: fixed;
+      right: 14px;
+      top: 50%;
       transform: translateY(-50%);
-      display:flex;flex-direction:column;gap:10px;
-      z-index: 900;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 1200;
     }
-    .rail .bubble{
-      width:44px;height:44px;border-radius: 16px;
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.12);
-      display:grid;place-items:center;
+    .fab{
+      width: 54px;
+      height: 54px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.08);
+      display: grid;
+      place-items: center;
       box-shadow: 0 14px 26px rgba(0,0,0,.35);
-      cursor:pointer;
+      cursor: pointer;
+      transition: transform .08s ease, filter .2s ease;
+      backdrop-filter: blur(8px);
     }
-    .rail .bubble svg{width:20px;height:20px;fill: rgba(255,255,255,.9)}
+    .fab:active{ transform: translateY(1px); }
+    .fab svg{ width: 22px; height: 22px; fill: rgba(255,255,255,.95); }
+
+    .fab-share{ background: rgba(124,92,255,.85); }
+    .fab-telegram{ background: rgba(0,136,204,.85); }
+    .fab-whatsapp{ background: rgba(37,211,102,.85); }
+    .fab-facebook{ background: rgba(24,119,242,.85); }
+
+    @media (max-width: 520px){
+      .fab{ width: 48px; height: 48px; }
+      .fab svg{ width: 20px; height: 20px; }
+    }
   </style>
 </head>
 <body>
@@ -335,16 +353,6 @@
     <div id="empty" class="empty" style="display:none;">No hay resultados con esos filtros.</div>
   </div>
 
-  <!-- Rail opcional, tipo botones laterales -->
-  <div class="rail" aria-label="Accesos rápidos">
-    <div class="bubble" id="railShare" title="Compartir esta página">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7a2.5 2.5 0 0 0 0-1.39l7-4.11A2.99 2.99 0 1 0 14 5a2.9 2.9 0 0 0 .05.54l-7 4.11a3 3 0 1 0 0 4.7l7.12 4.19c-.03.17-.05.34-.05.51a3 3 0 1 0 3-3Z"/></svg>
-    </div>
-    <div class="bubble" id="railTop" title="Ir arriba">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5l7 7-1.4 1.4L13 8.8V19h-2V8.8L6.4 13.4 5 12l7-7Z"/></svg>
-    </div>
-  </div>
-
   <!-- Modal -->
   <div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Reproductor">
     <div class="modalCard">
@@ -353,7 +361,6 @@
         <button class="close" id="modalClose">Cerrar ✕</button>
       </div>
 
-      <!-- Poster (misma imagen) -->
       <div class="player" id="player">
         <div id="posterLayer" style="position:absolute; inset:0; display:grid; place-items:center;">
           <img id="posterImg" alt="Poster" style="width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.05) contrast(1.05);" />
@@ -362,21 +369,41 @@
             ▶ Reproducir
           </button>
         </div>
-        <!-- aquí se inserta el iframe/video cuando el usuario presiona play -->
         <div id="mediaLayer" style="position:absolute; inset:0;"></div>
       </div>
     </div>
   </div>
 
-  <!-- YouTube Iframe API (para detectar FIN y pasar al siguiente) -->
-  <script src="https://www.youtube.com/iframe_api"></script>
+  <!-- ✅ Botones flotantes derecha (como tu captura) -->
+  <div class="floatSocial" aria-label="Accesos rápidos">
+    <button class="fab fab-share" id="fabShare" title="Compartir">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7a2.5 2.5 0 0 0 0-1.39l7-4.11A2.99 2.99 0 1 0 14 5a2.9 2.9 0 0 0 .05.54l-7 4.11a3 3 0 1 0 0 4.7l7.12 4.19c-.03.17-.05.34-.05.51a3 3 0 1 0 3-3Z"/>
+      </svg>
+    </button>
+
+    <button class="fab fab-telegram" id="fabTelegram" title="Telegram">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M21.8 3.3 2.9 10.6c-1.3.5-1.3 1.2-.2 1.5l4.9 1.5 11.3-7.1c.5-.3 1-.1.6.2l-9.2 8.4-.3 4.5c.4 0 .6-.2.9-.5l2.2-2.1 4.6 3.4c.9.5 1.5.2 1.7-.8l3-14.1c.3-1.2-.4-1.7-1.5-1.3Z"/>
+      </svg>
+    </button>
+
+    <button class="fab fab-whatsapp" id="fabWhatsApp" title="WhatsApp">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M20.5 3.5A11 11 0 0 0 2.9 16.8L2 22l5.4-1.4A11 11 0 0 0 20.5 3.5Zm-8.5 18a9 9 0 0 1-4.6-1.2l-.3-.2-3.2.8.9-3.1-.2-.3A9 9 0 1 1 12 21.5Zm5.2-6.8c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-1 .9-.2.1-.4.1-.7-.1-.3-.1-1.3-.5-2.5-1.6-.9-.8-1.6-1.9-1.8-2.2-.2-.3 0-.5.1-.6l.5-.6c.2-.2.2-.4.3-.6.1-.2 0-.4 0-.6 0-.1-.7-1.7-.9-2.3-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.7s1.2 3.1 1.4 3.3c.2.2 2.4 3.7 5.9 5.2.8.3 1.4.5 1.9.6.8.2 1.5.2 2.1.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.3.1-1.4 0-.1-.3-.2-.6-.3Z"/>
+      </svg>
+    </button>
+
+    <button class="fab fab-facebook" id="fabFacebook" title="Facebook">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M22 12a10 10 0 1 0-11.6 9.9v-7H8.1V12h2.3V9.8c0-2.3 1.4-3.6 3.5-3.6 1 0 2 .2 2 .2v2.2h-1.1c-1.1 0-1.4.7-1.4 1.4V12h2.5l-.4 2.9h-2.1v7A10 10 0 0 0 22 12Z"/>
+      </svg>
+    </button>
+  </div>
 
   <script>
     /**
      * DATOS (ejemplo)
-     * - thumbUrl: URL externa de imagen (no ocupa hosting)
-     * - videoUrl: YouTube (embed) o mp4 externo
-     * - isNew / views / date
      */
     const items = [
       {
@@ -415,7 +442,6 @@
         date: "2026-01-16",
         isNew: true,
       },
-      // Ejemplo “popular” (muchas vistas, no necesariamente nuevo)
       {
         id: "m5",
         name: "Andrea Nova",
@@ -427,12 +453,16 @@
       },
     ];
 
-    // Estado UI
-    let state = {
-      query: "",
-      filter: "all", // all | new | popular
-      sort: "recent", // recent | views | name
+    // ✅ CONFIGURA TUS ENLACES AQUÍ
+    const SOCIAL = {
+      telegram: "https://t.me/tu_canal_o_usuario",
+      facebookPage: "https://www.facebook.com/tu_pagina_o_perfil",
+      whatsappNumber: "584125160806", // sin +, sin espacios
+      whatsappText: "Hola, vengo del catálogo. Quiero más info."
     };
+
+    // Estado UI
+    let state = { query: "", filter: "all", sort: "recent" };
 
     // Helpers
     const $ = (sel) => document.querySelector(sel);
@@ -451,14 +481,10 @@
       return null;
     }
 
-    // Mantener lista “visible” actual (respeta búsqueda/filtro/orden)
-    let renderedList = [];
-
     function applyState(){
       const q = state.query.trim().toLowerCase();
       let list = items.slice();
 
-      // search
       if(q){
         list = list.filter(x =>
           x.name.toLowerCase().includes(q)
@@ -466,14 +492,12 @@
         );
       }
 
-      // filter chips
       if(state.filter === "new"){
         list = list.filter(x => x.isNew);
       } else if(state.filter === "popular"){
         list = list.slice().sort((a,b)=> b.views - a.views).slice(0, 50);
       }
 
-      // sorting
       if(state.sort === "recent"){
         list.sort((a,b)=> (b.date || "").localeCompare(a.date || ""));
       } else if(state.sort === "views"){
@@ -482,7 +506,6 @@
         list.sort((a,b)=> (a.name || "").localeCompare(b.name || ""));
       }
 
-      renderedList = list;
       render(list);
     }
 
@@ -495,7 +518,6 @@
       for(const item of list){
         const card = document.createElement("div");
         card.className = "card";
-
         const b = badgeFor(item);
 
         card.innerHTML = `
@@ -545,7 +567,6 @@
           </div>
         `;
 
-        // Arreglar icono "link" (stroke)
         card.querySelectorAll('svg path').forEach(p=>{
           if(!p.getAttribute("stroke") && p.getAttribute("d")?.includes("M10 14")) {
             p.setAttribute("fill","none");
@@ -562,7 +583,6 @@
       grid.appendChild(frag);
     }
 
-    // Seguridad básica para HTML
     function escapeHtml(str){
       return String(str ?? "")
         .replaceAll("&","&amp;")
@@ -573,7 +593,7 @@
     }
     function escapeAttr(str){ return escapeHtml(str); }
 
-    // Modal player + AUTOPLAY SIGUIENTE
+    // Modal player
     const modal = $("#modal");
     const modalTitle = $("#modalTitle");
     const posterImg = $("#posterImg");
@@ -582,134 +602,48 @@
     const playBtn = $("#playBtn");
 
     let currentItem = null;
-    let ytPlayer = null;
-
-    function isVideoFile(url){
-      return /\.(mp4|webm|ogg)(\?.*)?$/i.test(url || "");
-    }
-
-    function getNextItemFromRendered(current){
-      const idx = renderedList.findIndex(x => x.id === current?.id);
-      if(idx === -1) return null;
-      return renderedList[idx + 1] || null;
-    }
-
-    function autoplayNext(){
-      const next = getNextItemFromRendered(currentItem);
-      if(next){
-        openPosterModal(next);
-        // auto-play inmediato del siguiente
-        setTimeout(() => {
-          buildMedia(next.videoUrl);
-          posterLayer.style.display = "none";
-        }, 200);
-      } else {
-        closeModal();
-      }
-    }
-
-    function destroyYT(){
-      try{
-        if(ytPlayer && typeof ytPlayer.destroy === "function") ytPlayer.destroy();
-      } catch {}
-      ytPlayer = null;
-    }
 
     function buildMedia(url){
-      destroyYT();
+      const isVideoFile = /\.(mp4|webm|ogg)(\?.*)?$/i.test(url);
       mediaLayer.innerHTML = "";
 
-      if (isVideoFile(url)){
+      if (isVideoFile){
         const v = document.createElement("video");
         v.src = url;
         v.controls = true;
         v.autoplay = true;
         v.playsInline = true;
-
-        // ✅ cuando termina, pasa al siguiente
-        v.addEventListener("ended", autoplayNext);
-
         mediaLayer.appendChild(v);
-        return;
-      }
-
-      // ✅ YouTube (con API para detectar FIN y pasar al siguiente)
-      // Soporta URLs tipo https://www.youtube.com/embed/VIDEOID
-      let videoId = "";
-      try{
-        const u = new URL(url);
-        const parts = u.pathname.split("/").filter(Boolean);
-        videoId = parts[parts.length - 1] || "";
-      } catch {
-        // fallback: si llega algo raro, intenta extraer al final
-        videoId = (url || "").split("/").pop().split("?")[0];
-      }
-
-      // Crear contenedor para YT.Player (necesita un elemento)
-      const holder = document.createElement("div");
-      const playerId = "yt_player_" + Math.random().toString(16).slice(2);
-      holder.id = playerId;
-      holder.style.width = "100%";
-      holder.style.height = "100%";
-      mediaLayer.appendChild(holder);
-
-      // Si API aún no está lista, fallback a iframe normal (sin evento ended)
-      if(!(window.YT && window.YT.Player)){
+      } else {
         const iframe = document.createElement("iframe");
-        iframe.src = url + (url.includes("?") ? "&" : "?") + "autoplay=1";
+        iframe.src = url;
         iframe.allow = "autoplay; encrypted-media; picture-in-picture";
         iframe.allowFullscreen = true;
         iframe.style.width = "100%";
         iframe.style.height = "100%";
         iframe.style.border = "0";
-        mediaLayer.innerHTML = "";
         mediaLayer.appendChild(iframe);
-        return;
       }
-
-      ytPlayer = new YT.Player(playerId, {
-        videoId,
-        playerVars: {
-          autoplay: 1,
-          rel: 0,
-          modestbranding: 1
-        },
-        events: {
-          onStateChange: (e) => {
-            // 0 = ended
-            if(e.data === 0){
-              autoplayNext();
-            }
-          }
-        }
-      });
     }
 
     function openPosterModal(item){
       currentItem = item;
       modalTitle.textContent = item.name || "Video";
-
-      // 1) muestra la MISMA imagen como poster inicial
       posterImg.src = item.thumbUrl;
 
-      // 2) oculta media (aún no cargar)
-      destroyYT();
       mediaLayer.innerHTML = "";
       posterLayer.style.display = "grid";
 
-      // 3) abrir modal
       modal.classList.add("show");
       document.body.style.overflow = "hidden";
     }
 
-    // Play dentro del modal: aquí sí carga el video + reproduce
     playBtn.addEventListener("click", () => {
       if(!currentItem) return;
 
       buildMedia(currentItem.videoUrl);
       posterLayer.style.display = "none";
 
-      // sumar vista
       currentItem.views = (currentItem.views || 0) + 1;
       applyState();
     });
@@ -717,8 +651,7 @@
     function closeModal(){
       modal.classList.remove("show");
       document.body.style.overflow = "";
-      destroyYT();
-      mediaLayer.innerHTML = "";   // corta reproducción
+      mediaLayer.innerHTML = "";
       posterLayer.style.display = "grid";
       currentItem = null;
     }
@@ -727,7 +660,7 @@
     modal.addEventListener("click", (e)=>{ if(e.target === modal) closeModal(); });
     document.addEventListener("keydown", (e)=>{ if(e.key === "Escape") closeModal(); });
 
-    // Acciones de UI
+    // UI search/sort/chips/reset
     $("#btnSearch").addEventListener("click", ()=>{
       state.query = $("#q").value;
       applyState();
@@ -738,13 +671,10 @@
         applyState();
       }
     });
-
     $("#sort").addEventListener("change", (e)=>{
       state.sort = e.target.value;
       applyState();
     });
-
-    // Chips
     document.querySelectorAll(".chip").forEach(chip=>{
       chip.addEventListener("click", ()=>{
         document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
@@ -753,8 +683,6 @@
         applyState();
       });
     });
-
-    // Reset
     $("#btnReset").addEventListener("click", ()=>{
       state = { query:"", filter:"all", sort:"recent" };
       $("#q").value = "";
@@ -764,7 +692,7 @@
       applyState();
     });
 
-    // Delegación de eventos: ver video / compartir / copiar
+    // Delegación: ver / share / copy
     grid.addEventListener("click", async (e)=>{
       const btn = e.target.closest("[data-action]");
       if(!btn) return;
@@ -784,11 +712,7 @@
       }
 
       if(action === "share"){
-        const data = {
-          title: item.name,
-          text: `Mira: ${item.name}`,
-          url: makeItemLink(item),
-        };
+        const data = { title: item.name, text: `Mira: ${item.name}`, url: makeItemLink(item) };
         if(navigator.share){
           try { await navigator.share(data); } catch {}
         } else {
@@ -798,22 +722,13 @@
       }
     });
 
-    // Rail
-    $("#railTop").addEventListener("click", ()=> window.scrollTo({top:0, behavior:"smooth"}));
-    $("#railShare").addEventListener("click", async ()=>{
-      const url = location.href;
-      if(navigator.share){
-        try { await navigator.share({title: document.title, url}); } catch {}
-      } else {
-        await navigator.clipboard.writeText(url);
-        toast("Enlace copiado ✅");
-      }
-    });
-
-    // Deep link opcional por hash: #m3
+    // ✅ Deep link
     function makeItemLink(item){
       const base = location.href.split("#")[0];
       return `${base}#${encodeURIComponent(item.id)}`;
+    }
+    function getCurrentShareLink(){
+      return currentItem ? makeItemLink(currentItem) : location.href.split("#")[0];
     }
 
     function handleHash(){
@@ -824,7 +739,7 @@
     }
     window.addEventListener("hashchange", handleHash);
 
-    // Toast simple
+    // Toast
     let toastTimer;
     function toast(msg){
       let el = document.getElementById("toast");
@@ -850,13 +765,42 @@
       toastTimer = setTimeout(()=>{ el.style.display="none"; }, 1800);
     }
 
+    // ✅ Botones flotantes: comparten item abierto si existe
+    document.getElementById("fabShare").addEventListener("click", async ()=>{
+      const url = getCurrentShareLink();
+      if(navigator.share){
+        try { await navigator.share({ title: document.title, url }); } catch {}
+      } else {
+        await navigator.clipboard.writeText(url);
+        toast("Enlace copiado ✅");
+      }
+    });
+
+    document.getElementById("fabTelegram").addEventListener("click", ()=>{
+      // Abre tu canal/usuario y también puedes enviar el link en el mensaje si quieres (opcional)
+      window.open(SOCIAL.telegram, "_blank", "noopener,noreferrer");
+    });
+
+    document.getElementById("fabWhatsApp").addEventListener("click", ()=>{
+      const url = getCurrentShareLink();
+      const text = encodeURIComponent(`${SOCIAL.whatsappText}\n\n${url}`);
+      const wa = `https://wa.me/${SOCIAL.whatsappNumber}?text=${text}`;
+      window.open(wa, "_blank", "noopener,noreferrer");
+    });
+
+    document.getElementById("fabFacebook").addEventListener("click", ()=>{
+      // Si quieres compartir el link exacto del item abierto, usa el sharer:
+      const url = encodeURIComponent(getCurrentShareLink());
+      const fbShare = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+      window.open(fbShare, "_blank", "noopener,noreferrer");
+
+      // Si prefieres abrir tu página directamente, comenta lo de arriba y usa:
+      // window.open(SOCIAL.facebookPage, "_blank", "noopener,noreferrer");
+    });
+
     // Init
     applyState();
     handleHash();
-
-    // YouTube API callback (opcional). Aquí no necesitas hacer nada, pero evita warnings.
-    function onYouTubeIframeAPIReady(){ /* listo */ }
-    window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
   </script>
 </body>
 </html>
