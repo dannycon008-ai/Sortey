@@ -721,54 +721,64 @@
   modal.addEventListener("click", (e)=>{ if(e.target === modal) closeModal(); });
   document.addEventListener("keydown", (e)=>{ if(e.key === "Escape" && modal.classList.contains("show")) closeModal(); });
 
-  async function buildMedia(url){
-    url = normalizeUrl(url);
-    teardownMedia();
-    posterLayer.style.display = "grid";
+ async function buildMedia(url){
+  url = normalizeUrl(url);
+  teardownMedia();
+  posterLayer.style.display = "grid";
 
-    if(!url){
-      toast("Video URL vacía ❌");
-      return;
-    }
-    if(!isVideoFile(url)){
-      toast("Solo videos directos (.mp4/.mov/.m4v/...) ❌");
-      return;
-    }
+  // UI del botón (loading)
+  const oldText = playBtn.textContent;
+  playBtn.textContent = "⏳ Cargando…";
+  playBtn.disabled = true;
+  playBtn.style.filter = "grayscale(0.2)";
+  playBtn.style.opacity = "0.85";
+
+  try{
+    if(!url) throw new Error("Video URL vacía");
+    if(!isVideoFile(url)) throw new Error("Formato no soportado (solo video directo)");
 
     const v = document.createElement("video");
     v.controls = true;
     v.playsInline = true;
     v.preload = "metadata";
-    v.muted = true;
     v.autoplay = false;
+    v.muted = false; // como hay click del usuario, ya puedes sonido
 
+    // Cuando realmente hay data para mostrar:
     v.addEventListener("loadeddata", () => {
       posterLayer.style.display = "none";
     });
 
     v.addEventListener("error", () => {
-      console.error("VIDEO ERROR:", v.error, url);
-      toast("No se pudo reproducir (codec/CDN/CORS) ❌");
-      teardownMedia();
-      posterLayer.style.display = "grid";
+      console.error("VIDEO ERROR:", { code: v.error?.code, message: v.error?.message, url });
+      throw new Error("No se pudo reproducir (codec/CDN/CORS)");
     });
 
     v.src = url;
     mediaLayer.appendChild(v);
     activeVideo = v;
 
-    try{
-      v.load();
-      const p = v.play();
-      if(p && typeof p.then === "function") await p;
-      posterLayer.style.display = "none";
-    }catch(err){
-      // si autoplay se bloquea, igual mostramos el player
-      console.info("Autoplay bloqueado:", err);
-      posterLayer.style.display = "none";
-      v.muted = false;
-    }
+    v.load();
+
+    // Intentar play (debería funcionar por el click del usuario)
+    await v.play();
+
+    // Si todo bien, ocultamos poster
+    posterLayer.style.display = "none";
+  }catch(err){
+    console.error(err);
+    toast(err.message.includes("Formato") ? "Solo videos directos (.mp4/.mov/.m4v/...) ❌" : "No se pudo reproducir (codec/CDN/CORS) ❌");
+    teardownMedia();
+    posterLayer.style.display = "grid";
+  }finally{
+    // Restaurar botón
+    playBtn.textContent = oldText || "▶ Reproducir";
+    playBtn.disabled = false;
+    playBtn.style.filter = "";
+    playBtn.style.opacity = "";
   }
+}
+
 
   // backup botón play del modal
   playBtn.addEventListener("click", () => {
@@ -822,11 +832,10 @@
     if(!item) return;
 
     if(action === "watch"){
-      openPosterModal(item);
-      if(item.videoUrl) buildMedia(item.videoUrl); // ✅ carga directo
-      else toast("Esta entrada no tiene video ❌");
-      return;
-    }
+  openPosterModal(item); // SOLO POSTER
+  return;
+}
+
 
     if(action === "open"){
       window.open(item.link, "_blank", "noopener,noreferrer");
