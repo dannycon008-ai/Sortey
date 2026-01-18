@@ -401,406 +401,473 @@
     </button>
   </div>
 
-  <script>
-    /**
-     * DATOS (ejemplo)
-     */
-    const items = [
-      {
-        id: "m1",
-        name: "Marian Franco",
-        thumbUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=1200&q=70",
-        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        views: 233,
-        date: "2026-01-16",
-        isNew: true,
-      },
-      {
-        id: "m2",
-        name: "Silvana Lee",
-        thumbUrl: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=70",
-        videoUrl: "https://www.youtube.com/embed/aqz-KE-bpKQ",
-        views: 234,
-        date: "2026-01-16",
-        isNew: true,
-      },
-      {
-        id: "m3",
-        name: "Kathrin Carvajal",
-        thumbUrl: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=1200&q=70",
-        videoUrl: "https://www.youtube.com/embed/ScMzIvxBSi4",
-        views: 45,
-        date: "2026-01-16",
-        isNew: true,
-      },
-      {
-        id: "m4",
-        name: "Karmen Karma",
-        thumbUrl: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=70",
-        videoUrl: "https://www.youtube.com/embed/tgbNymZ7vqY",
-        views: 74,
-        date: "2026-01-16",
-        isNew: true,
-      },
-      {
-        id: "m5",
-        name: "Andrea Nova",
-        thumbUrl: "https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?auto=format&fit=crop&w=1200&q=70",
-        videoUrl: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
-        views: 1800,
-        date: "2025-12-20",
-        isNew: false,
-      },
-    ];
+<script>
+  /***********************
+   * CONFIG WORDPRESS
+   ***********************/
+  const WP = {
+    base: "https://uncorazon.store", // <-- tu dominio WordPress
+    type: "posts",                  // posts o tu CPT (ej: "modelos")
+    perPage: 50
+  };
 
-    // ✅ CONFIGURA TUS ENLACES AQUÍ
-    const SOCIAL = {
-      telegram: "https://t.me/tu_canal_o_usuario",
-      facebookPage: "https://www.facebook.com/tu_pagina_o_perfil",
-      whatsappNumber: "584125160806", // sin +, sin espacios
-      whatsappText: "Hola, vengo del catálogo. Quiero más info."
-    };
+  /***********************
+   * DATA
+   ***********************/
+  let items = []; // se llena desde WordPress
 
-    // Estado UI
-    let state = { query: "", filter: "all", sort: "recent" };
+  /***********************
+   * ESTADO UI
+   ***********************/
+  let state = {
+    query: "",
+    filter: "all",   // all | new | popular
+    sort: "recent"   // recent | views | name
+  };
 
-    // Helpers
-    const $ = (sel) => document.querySelector(sel);
-    const grid = $("#grid");
-    const empty = $("#empty");
+  // Helpers DOM
+  const $ = (sel) => document.querySelector(sel);
+  const grid = $("#grid");
+  const empty = $("#empty");
 
-    function fmtDate(iso){
-      const [y,m,d] = iso.split("-").map(Number);
-      return `${String(d).padStart(2,"0")}/${String(m).padStart(2,"0")}/${y}`;
-    }
+  /***********************
+   * UTILIDADES
+   ***********************/
+  function escapeHtml(str){
+    return String(str ?? "")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+  function escapeAttr(str){ return escapeHtml(str); }
 
-    function badgeFor(item){
-      const popularThreshold = 500;
-      if(item.isNew) return { text:"Nuevo", cls:"new" };
-      if(item.views >= popularThreshold) return { text:"Popular", cls:"hot" };
-      return null;
-    }
+  function stripHtml(html){
+    const div = document.createElement("div");
+    div.innerHTML = html || "";
+    return div.textContent || div.innerText || "";
+  }
 
-    function applyState(){
-      const q = state.query.trim().toLowerCase();
-      let list = items.slice();
+  function fmtDate(iso){
+    if(!iso) return "—";
+    const [y,m,d] = iso.split("-").map(Number);
+    if(!y || !m || !d) return iso;
+    return `${String(d).padStart(2,"0")}/${String(m).padStart(2,"0")}/${y}`;
+  }
 
-      if(q){
-        list = list.filter(x =>
-          x.name.toLowerCase().includes(q)
-          || (x.id && x.id.toLowerCase().includes(q))
-        );
-      }
+  function isRecent(dateStr){
+    const d = new Date(dateStr);
+    if(isNaN(d)) return false;
+    const diff = Date.now() - d.getTime();
+    return diff <= 7 * 24 * 60 * 60 * 1000; // 7 días
+  }
 
-      if(state.filter === "new"){
-        list = list.filter(x => x.isNew);
-      } else if(state.filter === "popular"){
-        list = list.slice().sort((a,b)=> b.views - a.views).slice(0, 50);
-      }
+  // Extrae mp4/webm/ogg del contenido HTML del post
+  function extractVideoUrl(html){
+    if(!html) return "";
 
-      if(state.sort === "recent"){
-        list.sort((a,b)=> (b.date || "").localeCompare(a.date || ""));
-      } else if(state.sort === "views"){
-        list.sort((a,b)=> (b.views || 0) - (a.views || 0));
-      } else if(state.sort === "name"){
-        list.sort((a,b)=> (a.name || "").localeCompare(b.name || ""));
-      }
+    // 1) <video ... src="...">
+    let m = html.match(/<video[^>]+src=["']([^"']+)["']/i);
+    if(m?.[1]) return m[1];
 
-      render(list);
-    }
+    // 2) <source src="...">
+    m = html.match(/<source[^>]+src=["']([^"']+)["']/i);
+    if(m?.[1]) return m[1];
 
-    function render(list){
-      grid.innerHTML = "";
-      empty.style.display = list.length ? "none" : "block";
+    // 3) Por si viene URL suelta en el contenido (último recurso)
+    m = html.match(/https?:\/\/[^\s"']+\.(mp4|webm|ogg)(\?[^\s"']*)?/i);
+    if(m?.[0]) return m[0];
 
-      const frag = document.createDocumentFragment();
+    return "";
+  }
 
-      for(const item of list){
-        const card = document.createElement("div");
-        card.className = "card";
-        const b = badgeFor(item);
+  function badgeFor(item){
+    const popularThreshold = 500;
+    if(item.isNew) return { text:"Nuevo", cls:"new" };
+    if((item.views || 0) >= popularThreshold) return { text:"Popular", cls:"hot" };
+    return null;
+  }
 
-        card.innerHTML = `
-          <div class="thumb">
-            <img loading="lazy" src="${escapeAttr(item.thumbUrl)}" alt="${escapeAttr(item.name)}">
-            ${b ? `<div class="badge ${b.cls}">${b.text}</div>` : ""}
-            <div class="watermark">Catálogo</div>
-          </div>
+  /***********************
+   * CARGA DESDE WORDPRESS
+   ***********************/
+  async function fetchWPPosts(){
+    const url = `${WP.base}/wp-json/wp/v2/${WP.type}?per_page=${WP.perPage}&_embed`;
+    const res = await fetch(url, { cache: "no-store" });
+    if(!res.ok) throw new Error(`WP API error: ${res.status}`);
 
-          <div class="content">
-            <h3 class="title">${escapeHtml(item.name)}</h3>
+    const posts = await res.json();
 
-            <div class="meta">
-              <span title="Vistas">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" stroke="rgba(255,255,255,.65)" stroke-width="2"/>
-                  <circle cx="12" cy="12" r="3" stroke="rgba(255,255,255,.65)" stroke-width="2"/>
-                </svg>
-                ${Number(item.views||0).toLocaleString("es-ES")} vistas
-              </span>
+    items = posts.map(p => {
+      const title = stripHtml(p.title?.rendered || "Sin título");
+      const link = p.link || "#";
+      const dateISO = (p.date || "").slice(0,10);
 
-              <span title="Fecha">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M7 3v2M17 3v2" stroke="rgba(255,255,255,.65)" stroke-width="2" stroke-linecap="round"/>
-                  <path d="M4 7h16" stroke="rgba(255,255,255,.65)" stroke-width="2"/>
-                  <path d="M6 5h12a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" stroke="rgba(255,255,255,.65)" stroke-width="2"/>
-                </svg>
-                ${fmtDate(item.date || "2026-01-01")}
-              </span>
-            </div>
+      // Imagen destacada (featured media) desde _embed
+      const featured = p._embedded?.["wp:featuredmedia"]?.[0];
+      const thumbUrl =
+        featured?.media_details?.sizes?.large?.source_url ||
+        featured?.media_details?.sizes?.medium_large?.source_url ||
+        featured?.source_url ||
+        "https://via.placeholder.com/1200x750?text=Sin+Imagen";
 
-            <div class="actions">
-              <button class="btn secondary" data-action="watch" data-id="${escapeAttr(item.id)}">Ver video</button>
+      // Video desde el contenido
+      const html = p.content?.rendered || "";
+      const videoUrl = extractVideoUrl(html);
 
-              <div class="share">
-                <button class="iconBtn" title="Compartir" data-action="share" data-id="${escapeAttr(item.id)}">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7a2.5 2.5 0 0 0 0-1.39l7-4.11A2.99 2.99 0 1 0 14 5a2.9 2.9 0 0 0 .05.54l-7 4.11a3 3 0 1 0 0 4.7l7.12 4.19c-.03.17-.05.34-.05.51a3 3 0 1 0 3-3Z"/></svg>
-                </button>
-                <button class="iconBtn" title="Copiar enlace" data-action="copy" data-id="${escapeAttr(item.id)}">
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M10 14a5 5 0 0 1 0-7l1-1a5 5 0 0 1 7 7l-1 1" />
-                    <path d="M14 10a5 5 0 0 1 0 7l-1 1a5 5 0 0 1-7-7l1-1" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-        `;
-
-        card.querySelectorAll('svg path').forEach(p=>{
-          if(!p.getAttribute("stroke") && p.getAttribute("d")?.includes("M10 14")) {
-            p.setAttribute("fill","none");
-            p.setAttribute("stroke","rgba(255,255,255,.88)");
-            p.setAttribute("stroke-width","2");
-            p.setAttribute("stroke-linecap","round");
-            p.setAttribute("stroke-linejoin","round");
-          }
-        });
-
-        frag.appendChild(card);
-      }
-
-      grid.appendChild(frag);
-    }
-
-    function escapeHtml(str){
-      return String(str ?? "")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-    }
-    function escapeAttr(str){ return escapeHtml(str); }
-
-    // Modal player
-    const modal = $("#modal");
-    const modalTitle = $("#modalTitle");
-    const posterImg = $("#posterImg");
-    const posterLayer = $("#posterLayer");
-    const mediaLayer = $("#mediaLayer");
-    const playBtn = $("#playBtn");
-
-    let currentItem = null;
-
-    function buildMedia(url){
-      const isVideoFile = /\.(mp4|webm|ogg)(\?.*)?$/i.test(url);
-      mediaLayer.innerHTML = "";
-
-      if (isVideoFile){
-        const v = document.createElement("video");
-        v.src = url;
-        v.controls = true;
-        v.autoplay = true;
-        v.playsInline = true;
-        mediaLayer.appendChild(v);
-      } else {
-        const iframe = document.createElement("iframe");
-        iframe.src = url;
-        iframe.allow = "autoplay; encrypted-media; picture-in-picture";
-        iframe.allowFullscreen = true;
-        iframe.style.width = "100%";
-        iframe.style.height = "100%";
-        iframe.style.border = "0";
-        mediaLayer.appendChild(iframe);
-      }
-    }
-
-    function openPosterModal(item){
-      currentItem = item;
-      modalTitle.textContent = item.name || "Video";
-      posterImg.src = item.thumbUrl;
-
-      mediaLayer.innerHTML = "";
-      posterLayer.style.display = "grid";
-
-      modal.classList.add("show");
-      document.body.style.overflow = "hidden";
-    }
-
-    playBtn.addEventListener("click", () => {
-      if(!currentItem) return;
-
-      buildMedia(currentItem.videoUrl);
-      posterLayer.style.display = "none";
-
-      currentItem.views = (currentItem.views || 0) + 1;
-      applyState();
+      return {
+        id: String(p.id),
+        name: title,
+        thumbUrl,
+        videoUrl,    // si no hay video en el post, queda ""
+        link,
+        views: 0,    // si quieres persistencia real, se hace con backend o localStorage
+        date: dateISO || "2026-01-01",
+        isNew: isRecent(p.date_gmt || p.date)
+      };
     });
 
-    function closeModal(){
-      modal.classList.remove("show");
-      document.body.style.overflow = "";
-      mediaLayer.innerHTML = "";
-      posterLayer.style.display = "grid";
-      currentItem = null;
+    applyState();
+  }
+
+  /***********************
+   * FILTROS / ORDEN / RENDER
+   ***********************/
+  function applyState(){
+    const q = state.query.trim().toLowerCase();
+    let list = items.slice();
+
+    if(q){
+      list = list.filter(x =>
+        (x.name || "").toLowerCase().includes(q) ||
+        (x.id || "").toLowerCase().includes(q)
+      );
     }
 
-    $("#modalClose").addEventListener("click", closeModal);
-    modal.addEventListener("click", (e)=>{ if(e.target === modal) closeModal(); });
-    document.addEventListener("keydown", (e)=>{ if(e.key === "Escape") closeModal(); });
+    if(state.filter === "new"){
+      list = list.filter(x => x.isNew);
+    } else if(state.filter === "popular"){
+      list = list.slice().sort((a,b)=> (b.views||0) - (a.views||0)).slice(0, 50);
+    }
 
-    // UI search/sort/chips/reset
-    $("#btnSearch").addEventListener("click", ()=>{
+    if(state.sort === "recent"){
+      list.sort((a,b)=> (b.date || "").localeCompare(a.date || ""));
+    } else if(state.sort === "views"){
+      list.sort((a,b)=> (b.views||0) - (a.views||0));
+    } else if(state.sort === "name"){
+      list.sort((a,b)=> (a.name||"").localeCompare(b.name||""));
+    }
+
+    render(list);
+  }
+
+  function render(list){
+    grid.innerHTML = "";
+    empty.style.display = list.length ? "none" : "block";
+
+    const frag = document.createDocumentFragment();
+
+    for(const item of list){
+      const card = document.createElement("div");
+      card.className = "card";
+
+      const b = badgeFor(item);
+      const hasVideo = !!item.videoUrl;
+
+      card.innerHTML = `
+        <div class="thumb">
+          <img loading="lazy" src="${escapeAttr(item.thumbUrl)}" alt="${escapeAttr(item.name)}">
+          ${b ? `<div class="badge ${b.cls}">${b.text}</div>` : ""}
+          <div class="watermark">Catálogo</div>
+        </div>
+
+        <div class="content">
+          <h3 class="title">${escapeHtml(item.name)}</h3>
+
+          <div class="meta">
+            <span title="Vistas">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" stroke="rgba(255,255,255,.65)" stroke-width="2"/>
+                <circle cx="12" cy="12" r="3" stroke="rgba(255,255,255,.65)" stroke-width="2"/>
+              </svg>
+              ${Number(item.views||0).toLocaleString("es-ES")} vistas
+            </span>
+
+            <span title="Fecha">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M7 3v2M17 3v2" stroke="rgba(255,255,255,.65)" stroke-width="2" stroke-linecap="round"/>
+                <path d="M4 7h16" stroke="rgba(255,255,255,.65)" stroke-width="2"/>
+                <path d="M6 5h12a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" stroke="rgba(255,255,255,.65)" stroke-width="2"/>
+              </svg>
+              ${fmtDate(item.date)}
+            </span>
+          </div>
+
+          <div class="actions">
+            ${
+              hasVideo
+              ? `<button class="btn secondary" data-action="watch" data-id="${escapeAttr(item.id)}">Ver video</button>`
+              : `<button class="btn secondary" data-action="open" data-id="${escapeAttr(item.id)}">Abrir entrada</button>`
+            }
+
+            <div class="share">
+              <button class="iconBtn" title="Compartir" data-action="share" data-id="${escapeAttr(item.id)}">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7a2.5 2.5 0 0 0 0-1.39l7-4.11A2.99 2.99 0 1 0 14 5a2.9 2.9 0 0 0 .05.54l-7 4.11a3 3 0 1 0 0 4.7l7.12 4.19c-.03.17-.05.34-.05.51a3 3 0 1 0 3-3Z"/></svg>
+              </button>
+              <button class="iconBtn" title="Copiar enlace" data-action="copy" data-id="${escapeAttr(item.id)}">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M10 14a5 5 0 0 1 0-7l1-1a5 5 0 0 1 7 7l-1 1" />
+                  <path d="M14 10a5 5 0 0 1 0 7l-1 1a5 5 0 0 1-7-7l1-1" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // stroke para icono “link”
+      card.querySelectorAll('svg path').forEach(p=>{
+        if(!p.getAttribute("stroke") && p.getAttribute("d")?.includes("M10 14")) {
+          p.setAttribute("fill","none");
+          p.setAttribute("stroke","rgba(255,255,255,.88)");
+          p.setAttribute("stroke-width","2");
+          p.setAttribute("stroke-linecap","round");
+          p.setAttribute("stroke-linejoin","round");
+        }
+      });
+
+      frag.appendChild(card);
+    }
+
+    grid.appendChild(frag);
+  }
+
+  /***********************
+   * MODAL REPRODUCTOR
+   ***********************/
+  const modal = $("#modal");
+  const modalTitle = $("#modalTitle");
+  const posterImg = $("#posterImg");
+  const posterLayer = $("#posterLayer");
+  const mediaLayer = $("#mediaLayer");
+  const playBtn = $("#playBtn");
+  let currentItem = null;
+
+  function buildMedia(url){
+    const isVideoFile = /\.(mp4|webm|ogg)(\?.*)?$/i.test(url || "");
+    mediaLayer.innerHTML = "";
+
+    if(isVideoFile){
+      const v = document.createElement("video");
+      v.src = url;
+      v.controls = true;
+      v.autoplay = true;
+      v.playsInline = true;
+      mediaLayer.appendChild(v);
+      return;
+    }
+
+    const iframe = document.createElement("iframe");
+    const join = url.includes("?") ? "&" : "?";
+    iframe.src = url + join + "autoplay=1";
+    iframe.allow = "autoplay; encrypted-media; picture-in-picture";
+    iframe.allowFullscreen = true;
+    iframe.style.width = "100%";
+    iframe.style.height = "100%";
+    iframe.style.border = "0";
+    mediaLayer.appendChild(iframe);
+  }
+
+  function openPosterModal(item){
+    currentItem = item;
+    modalTitle.textContent = item.name || "Video";
+    posterImg.src = item.thumbUrl;
+
+    mediaLayer.innerHTML = "";
+    posterLayer.style.display = "grid";
+
+    modal.classList.add("show");
+    document.body.style.overflow = "hidden";
+  }
+
+  playBtn.addEventListener("click", () => {
+    if(!currentItem) return;
+    buildMedia(currentItem.videoUrl);
+    posterLayer.style.display = "none";
+    currentItem.views = (currentItem.views || 0) + 1;
+    applyState();
+  });
+
+  function closeModal(){
+    modal.classList.remove("show");
+    document.body.style.overflow = "";
+    mediaLayer.innerHTML = "";   // corta reproducción
+    posterLayer.style.display = "grid";
+    currentItem = null;
+  }
+
+  $("#modalClose").addEventListener("click", closeModal);
+  modal.addEventListener("click", (e)=>{ if(e.target === modal) closeModal(); });
+  document.addEventListener("keydown", (e)=>{ if(e.key === "Escape") closeModal(); });
+
+  /***********************
+   * EVENTOS UI
+   ***********************/
+  $("#btnSearch").addEventListener("click", ()=>{
+    state.query = $("#q").value;
+    applyState();
+  });
+
+  $("#q").addEventListener("keydown", (e)=>{
+    if(e.key === "Enter"){
       state.query = $("#q").value;
       applyState();
-    });
-    $("#q").addEventListener("keydown", (e)=>{
-      if(e.key === "Enter"){
-        state.query = $("#q").value;
-        applyState();
-      }
-    });
-    $("#sort").addEventListener("change", (e)=>{
-      state.sort = e.target.value;
-      applyState();
-    });
-    document.querySelectorAll(".chip").forEach(chip=>{
-      chip.addEventListener("click", ()=>{
-        document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
-        chip.classList.add("active");
-        state.filter = chip.dataset.filter;
-        applyState();
-      });
-    });
-    $("#btnReset").addEventListener("click", ()=>{
-      state = { query:"", filter:"all", sort:"recent" };
-      $("#q").value = "";
-      $("#sort").value = "recent";
-      document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
-      document.querySelector('.chip[data-filter="all"]').classList.add("active");
-      applyState();
-    });
-
-    // Delegación: ver / share / copy
-    grid.addEventListener("click", async (e)=>{
-      const btn = e.target.closest("[data-action]");
-      if(!btn) return;
-      const action = btn.dataset.action;
-      const id = btn.dataset.id;
-      const item = items.find(x => x.id === id);
-      if(!item) return;
-
-      if(action === "watch"){
-        openPosterModal(item);
-      }
-
-      if(action === "copy"){
-        const link = makeItemLink(item);
-        await navigator.clipboard.writeText(link);
-        toast("Enlace copiado ✅");
-      }
-
-      if(action === "share"){
-        const data = { title: item.name, text: `Mira: ${item.name}`, url: makeItemLink(item) };
-        if(navigator.share){
-          try { await navigator.share(data); } catch {}
-        } else {
-          await navigator.clipboard.writeText(data.url);
-          toast("No hay compartir nativo. Enlace copiado ✅");
-        }
-      }
-    });
-
-    // ✅ Deep link
-    function makeItemLink(item){
-      const base = location.href.split("#")[0];
-      return `${base}#${encodeURIComponent(item.id)}`;
     }
-    function getCurrentShareLink(){
-      return currentItem ? makeItemLink(currentItem) : location.href.split("#")[0];
-    }
+  });
 
-    function handleHash(){
-      const id = decodeURIComponent((location.hash||"").replace("#",""));
-      if(!id) return;
-      const item = items.find(x => x.id === id);
-      if(item) openPosterModal(item);
-    }
-    window.addEventListener("hashchange", handleHash);
-
-    // Toast
-    let toastTimer;
-    function toast(msg){
-      let el = document.getElementById("toast");
-      if(!el){
-        el = document.createElement("div");
-        el.id = "toast";
-        el.style.position = "fixed";
-        el.style.left = "50%";
-        el.style.bottom = "18px";
-        el.style.transform = "translateX(-50%)";
-        el.style.padding = "12px 14px";
-        el.style.borderRadius = "14px";
-        el.style.background = "rgba(15,18,28,.92)";
-        el.style.border = "1px solid rgba(255,255,255,.14)";
-        el.style.color = "rgba(255,255,255,.92)";
-        el.style.boxShadow = "0 16px 40px rgba(0,0,0,.45)";
-        el.style.zIndex = "2000";
-        document.body.appendChild(el);
-      }
-      el.textContent = msg;
-      el.style.display = "block";
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(()=>{ el.style.display="none"; }, 1800);
-    }
-
-    // ✅ Botones flotantes: comparten item abierto si existe
-    document.getElementById("fabShare").addEventListener("click", async ()=>{
-      const url = getCurrentShareLink();
-      if(navigator.share){
-        try { await navigator.share({ title: document.title, url }); } catch {}
-      } else {
-        await navigator.clipboard.writeText(url);
-        toast("Enlace copiado ✅");
-      }
-    });
-
-    document.getElementById("fabTelegram").addEventListener("click", ()=>{
-      // Abre tu canal/usuario y también puedes enviar el link en el mensaje si quieres (opcional)
-      window.open(SOCIAL.telegram, "_blank", "noopener,noreferrer");
-    });
-
-    document.getElementById("fabWhatsApp").addEventListener("click", ()=>{
-      const url = getCurrentShareLink();
-      const text = encodeURIComponent(`${SOCIAL.whatsappText}\n\n${url}`);
-      const wa = `https://wa.me/${SOCIAL.whatsappNumber}?text=${text}`;
-      window.open(wa, "_blank", "noopener,noreferrer");
-    });
-
-    document.getElementById("fabFacebook").addEventListener("click", ()=>{
-      // Si quieres compartir el link exacto del item abierto, usa el sharer:
-      const url = encodeURIComponent(getCurrentShareLink());
-      const fbShare = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
-      window.open(fbShare, "_blank", "noopener,noreferrer");
-
-      // Si prefieres abrir tu página directamente, comenta lo de arriba y usa:
-      // window.open(SOCIAL.facebookPage, "_blank", "noopener,noreferrer");
-    });
-
-    // Init
+  $("#sort").addEventListener("change", (e)=>{
+    state.sort = e.target.value;
     applyState();
-    handleHash();
-  </script>
+  });
+
+  document.querySelectorAll(".chip").forEach(chip=>{
+    chip.addEventListener("click", ()=>{
+      document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
+      chip.classList.add("active");
+      state.filter = chip.dataset.filter;
+      applyState();
+    });
+  });
+
+  $("#btnReset").addEventListener("click", ()=>{
+    state = { query:"", filter:"all", sort:"recent" };
+    $("#q").value = "";
+    $("#sort").value = "recent";
+    document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
+    document.querySelector('.chip[data-filter="all"]').classList.add("active");
+    applyState();
+  });
+
+  // Delegación de eventos: ver video / abrir post / compartir / copiar
+  grid.addEventListener("click", async (e)=>{
+    const btn = e.target.closest("[data-action]");
+    if(!btn) return;
+
+    const action = btn.dataset.action;
+    const id = btn.dataset.id;
+    const item = items.find(x => x.id === id);
+    if(!item) return;
+
+    if(action === "watch"){
+      openPosterModal(item);
+    }
+
+    if(action === "open"){
+      window.open(item.link, "_blank", "noopener,noreferrer");
+    }
+
+    if(action === "copy"){
+      const link = makeItemLink(item);
+      await navigator.clipboard.writeText(link);
+      toast("Enlace copiado ✅");
+    }
+
+    if(action === "share"){
+      const data = {
+        title: item.name,
+        text: `Mira: ${item.name}`,
+        url: makeItemLink(item),
+      };
+      if(navigator.share){
+        try { await navigator.share(data); } catch {}
+      } else {
+        await navigator.clipboard.writeText(data.url);
+        toast("No hay compartir nativo. Enlace copiado ✅");
+      }
+    }
+  });
+
+  // Rail (si lo tienes en HTML)
+  const railTop = $("#railTop");
+  const railShare = $("#railShare");
+
+  if(railTop) railTop.addEventListener("click", ()=> window.scrollTo({top:0, behavior:"smooth"}));
+  if(railShare) railShare.addEventListener("click", async ()=>{
+    const url = location.href;
+    if(navigator.share){
+      try { await navigator.share({title: document.title, url}); } catch {}
+    } else {
+      await navigator.clipboard.writeText(url);
+      toast("Enlace copiado ✅");
+    }
+  });
+
+  // Deep link opcional por hash: #ID
+  function makeItemLink(item){
+    const base = location.href.split("#")[0];
+    return `${base}#${encodeURIComponent(item.id)}`;
+  }
+
+  function handleHash(){
+    const id = decodeURIComponent((location.hash||"").replace("#",""));
+    if(!id) return;
+    const item = items.find(x => x.id === id);
+    if(!item) return;
+
+    if(item.videoUrl){
+      openPosterModal(item);
+    } else {
+      window.open(item.link, "_blank", "noopener,noreferrer");
+    }
+  }
+  window.addEventListener("hashchange", handleHash);
+
+  /***********************
+   * TOAST
+   ***********************/
+  let toastTimer;
+  function toast(msg){
+    let el = document.getElementById("toast");
+    if(!el){
+      el = document.createElement("div");
+      el.id = "toast";
+      el.style.position = "fixed";
+      el.style.left = "50%";
+      el.style.bottom = "18px";
+      el.style.transform = "translateX(-50%)";
+      el.style.padding = "12px 14px";
+      el.style.borderRadius = "14px";
+      el.style.background = "rgba(15,18,28,.92)";
+      el.style.border = "1px solid rgba(255,255,255,.14)";
+      el.style.color = "rgba(255,255,255,.92)";
+      el.style.boxShadow = "0 16px 40px rgba(0,0,0,.45)";
+      el.style.zIndex = "2000";
+      document.body.appendChild(el);
+    }
+    el.textContent = msg;
+    el.style.display = "block";
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=>{ el.style.display="none"; }, 1800);
+  }
+
+  /***********************
+   * INIT
+   ***********************/
+  (async function init(){
+    try{
+      toast("Conectando WordPress…");
+      await fetchWPPosts();
+      toast("Sincronizado ✅");
+      handleHash();
+    } catch (err){
+      console.error(err);
+      toast("Error conectando WordPress ❌");
+      empty.style.display = "block";
+      empty.textContent = "No se pudo sincronizar con WordPress. Revisa consola / CORS / URL.";
+    }
+  })();
+</script>
+
 </body>
 </html>
