@@ -344,28 +344,32 @@
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5l7 7-1.4 1.4L13 8.8V19h-2V8.8L6.4 13.4 5 12l7-7Z"/></svg>
     </div>
   </div>
-<div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Reproductor">
-  <div class="modalCard">
-    <div class="modalHead">
-      <strong id="modalTitle">Video</strong>
-      <button class="close" id="modalClose">Cerrar ✕</button>
-    </div>
 
-    <!-- Poster (misma imagen) -->
-    <div class="player" id="player">
-      <div id="posterLayer" style="position:absolute; inset:0; display:grid; place-items:center;">
-        <img id="posterImg" alt="Poster" style="width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.05) contrast(1.05);" />
-        <button id="playBtn" class="btn"
-          style="position:absolute; display:flex; align-items:center; gap:10px; padding:12px 16px; border-radius:14px;">
-          ▶ Reproducir
-        </button>
+  <!-- Modal -->
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Reproductor">
+    <div class="modalCard">
+      <div class="modalHead">
+        <strong id="modalTitle">Video</strong>
+        <button class="close" id="modalClose">Cerrar ✕</button>
       </div>
-      <!-- aquí se inserta el iframe/video cuando el usuario presiona play -->
-      <div id="mediaLayer" style="position:absolute; inset:0;"></div>
+
+      <!-- Poster (misma imagen) -->
+      <div class="player" id="player">
+        <div id="posterLayer" style="position:absolute; inset:0; display:grid; place-items:center;">
+          <img id="posterImg" alt="Poster" style="width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.05) contrast(1.05);" />
+          <button id="playBtn" class="btn"
+            style="position:absolute; display:flex; align-items:center; gap:10px; padding:12px 16px; border-radius:14px;">
+            ▶ Reproducir
+          </button>
+        </div>
+        <!-- aquí se inserta el iframe/video cuando el usuario presiona play -->
+        <div id="mediaLayer" style="position:absolute; inset:0;"></div>
+      </div>
     </div>
   </div>
-</div>
 
+  <!-- YouTube Iframe API (para detectar FIN y pasar al siguiente) -->
+  <script src="https://www.youtube.com/iframe_api"></script>
 
   <script>
     /**
@@ -436,22 +440,22 @@
     const empty = $("#empty");
 
     function fmtDate(iso){
-      // iso: YYYY-MM-DD
       const [y,m,d] = iso.split("-").map(Number);
       return `${String(d).padStart(2,"0")}/${String(m).padStart(2,"0")}/${y}`;
     }
 
     function badgeFor(item){
-      // Ajusta lógica a tu gusto
       const popularThreshold = 500;
       if(item.isNew) return { text:"Nuevo", cls:"new" };
       if(item.views >= popularThreshold) return { text:"Popular", cls:"hot" };
       return null;
     }
 
+    // Mantener lista “visible” actual (respeta búsqueda/filtro/orden)
+    let renderedList = [];
+
     function applyState(){
       const q = state.query.trim().toLowerCase();
-
       let list = items.slice();
 
       // search
@@ -466,10 +470,7 @@
       if(state.filter === "new"){
         list = list.filter(x => x.isNew);
       } else if(state.filter === "popular"){
-        list = list
-          .slice()
-          .sort((a,b)=> b.views - a.views)
-          .slice(0, 50); // ejemplo: top N
+        list = list.slice().sort((a,b)=> b.views - a.views).slice(0, 50);
       }
 
       // sorting
@@ -481,6 +482,7 @@
         list.sort((a,b)=> (a.name || "").localeCompare(b.name || ""));
       }
 
+      renderedList = list;
       render(list);
     }
 
@@ -533,13 +535,17 @@
                   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7a2.5 2.5 0 0 0 0-1.39l7-4.11A2.99 2.99 0 1 0 14 5a2.9 2.9 0 0 0 .05.54l-7 4.11a3 3 0 1 0 0 4.7l7.12 4.19c-.03.17-.05.34-.05.51a3 3 0 1 0 3-3Z"/></svg>
                 </button>
                 <button class="iconBtn" title="Copiar enlace" data-action="copy" data-id="${escapeAttr(item.id)}">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a5 5 0 0 1 0-7l1-1a5 5 0 0 1 7 7l-1 1" /><path d="M14 10a5 5 0 0 1 0 7l-1 1a5 5 0 0 1-7-7l1-1" /></svg>
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M10 14a5 5 0 0 1 0-7l1-1a5 5 0 0 1 7 7l-1 1" />
+                    <path d="M14 10a5 5 0 0 1 0 7l-1 1a5 5 0 0 1-7-7l1-1" />
+                  </svg>
                 </button>
               </div>
             </div>
           </div>
         `;
-        // arreglar icon "link" stroke (simple)
+
+        // Arreglar icono "link" (stroke)
         card.querySelectorAll('svg path').forEach(p=>{
           if(!p.getAttribute("stroke") && p.getAttribute("d")?.includes("M10 14")) {
             p.setAttribute("fill","none");
@@ -565,90 +571,157 @@
         .replaceAll('"',"&quot;")
         .replaceAll("'","&#039;");
     }
-    function escapeAttr(str){
-      // para atributos, mismo escape
-      return escapeHtml(str);
+    function escapeAttr(str){ return escapeHtml(str); }
+
+    // Modal player + AUTOPLAY SIGUIENTE
+    const modal = $("#modal");
+    const modalTitle = $("#modalTitle");
+    const posterImg = $("#posterImg");
+    const posterLayer = $("#posterLayer");
+    const mediaLayer = $("#mediaLayer");
+    const playBtn = $("#playBtn");
+
+    let currentItem = null;
+    let ytPlayer = null;
+
+    function isVideoFile(url){
+      return /\.(mp4|webm|ogg)(\?.*)?$/i.test(url || "");
     }
 
-    // Modal player
-    const modal = $("#modal");
+    function getNextItemFromRendered(current){
+      const idx = renderedList.findIndex(x => x.id === current?.id);
+      if(idx === -1) return null;
+      return renderedList[idx + 1] || null;
+    }
 
-   const modal = document.querySelector("#modal");
-const modalTitle = document.querySelector("#modalTitle");
-const posterImg = document.querySelector("#posterImg");
-const posterLayer = document.querySelector("#posterLayer");
-const mediaLayer = document.querySelector("#mediaLayer");
-const playBtn = document.querySelector("#playBtn");
+    function autoplayNext(){
+      const next = getNextItemFromRendered(currentItem);
+      if(next){
+        openPosterModal(next);
+        // auto-play inmediato del siguiente
+        setTimeout(() => {
+          buildMedia(next.videoUrl);
+          posterLayer.style.display = "none";
+        }, 200);
+      } else {
+        closeModal();
+      }
+    }
 
-let currentItem = null;
+    function destroyYT(){
+      try{
+        if(ytPlayer && typeof ytPlayer.destroy === "function") ytPlayer.destroy();
+      } catch {}
+      ytPlayer = null;
+    }
 
-function buildMedia(url){
-  const isVideoFile = /\.(mp4|webm|ogg)(\?.*)?$/i.test(url);
-  mediaLayer.innerHTML = "";
+    function buildMedia(url){
+      destroyYT();
+      mediaLayer.innerHTML = "";
 
-  if (isVideoFile){
-    const v = document.createElement("video");
-    v.src = url;
-    v.controls = true;
-    v.autoplay = true;
-    v.playsInline = true;
-    mediaLayer.appendChild(v);
-  } else {
-    const iframe = document.createElement("iframe");
-    iframe.src = url;
-    iframe.allow = "autoplay; encrypted-media; picture-in-picture";
-    iframe.allowFullscreen = true;
-    iframe.style.width = "100%";
-    iframe.style.height = "100%";
-    iframe.style.border = "0";
-    mediaLayer.appendChild(iframe);
-  }
-}
+      if (isVideoFile(url)){
+        const v = document.createElement("video");
+        v.src = url;
+        v.controls = true;
+        v.autoplay = true;
+        v.playsInline = true;
 
-function openPosterModal(item){
-  currentItem = item;
+        // ✅ cuando termina, pasa al siguiente
+        v.addEventListener("ended", autoplayNext);
 
-  modalTitle.textContent = item.name || "Video";
+        mediaLayer.appendChild(v);
+        return;
+      }
 
-  // 1) muestra la MISMA imagen como poster inicial
-  posterImg.src = item.thumbUrl;
+      // ✅ YouTube (con API para detectar FIN y pasar al siguiente)
+      // Soporta URLs tipo https://www.youtube.com/embed/VIDEOID
+      let videoId = "";
+      try{
+        const u = new URL(url);
+        const parts = u.pathname.split("/").filter(Boolean);
+        videoId = parts[parts.length - 1] || "";
+      } catch {
+        // fallback: si llega algo raro, intenta extraer al final
+        videoId = (url || "").split("/").pop().split("?")[0];
+      }
 
-  // 2) oculta media (aún no cargar)
-  mediaLayer.innerHTML = "";
-  posterLayer.style.display = "grid";
+      // Crear contenedor para YT.Player (necesita un elemento)
+      const holder = document.createElement("div");
+      const playerId = "yt_player_" + Math.random().toString(16).slice(2);
+      holder.id = playerId;
+      holder.style.width = "100%";
+      holder.style.height = "100%";
+      mediaLayer.appendChild(holder);
 
-  // 3) abrir modal
-  modal.classList.add("show");
-  document.body.style.overflow = "hidden";
-}
+      // Si API aún no está lista, fallback a iframe normal (sin evento ended)
+      if(!(window.YT && window.YT.Player)){
+        const iframe = document.createElement("iframe");
+        iframe.src = url + (url.includes("?") ? "&" : "?") + "autoplay=1";
+        iframe.allow = "autoplay; encrypted-media; picture-in-picture";
+        iframe.allowFullscreen = true;
+        iframe.style.width = "100%";
+        iframe.style.height = "100%";
+        iframe.style.border = "0";
+        mediaLayer.innerHTML = "";
+        mediaLayer.appendChild(iframe);
+        return;
+      }
 
-// cuando el usuario hace click a Play dentro del modal
-playBtn.addEventListener("click", () => {
-  if(!currentItem) return;
+      ytPlayer = new YT.Player(playerId, {
+        videoId,
+        playerVars: {
+          autoplay: 1,
+          rel: 0,
+          modestbranding: 1
+        },
+        events: {
+          onStateChange: (e) => {
+            // 0 = ended
+            if(e.data === 0){
+              autoplayNext();
+            }
+          }
+        }
+      });
+    }
 
-  // aquí sí se carga y reproduce/embebe el video
-  buildMedia(currentItem.videoUrl);
+    function openPosterModal(item){
+      currentItem = item;
+      modalTitle.textContent = item.name || "Video";
 
-  // oculta el poster para que se vea el video
-  posterLayer.style.display = "none";
+      // 1) muestra la MISMA imagen como poster inicial
+      posterImg.src = item.thumbUrl;
 
-  // sumar vista si quieres
-  currentItem.views = (currentItem.views || 0) + 1;
-  applyState(); // si tienes tu render/ordenamiento
-});
+      // 2) oculta media (aún no cargar)
+      destroyYT();
+      mediaLayer.innerHTML = "";
+      posterLayer.style.display = "grid";
 
-function closeModal(){
-  modal.classList.remove("show");
-  document.body.style.overflow = "";
-  mediaLayer.innerHTML = "";   // corta reproducción
-  posterLayer.style.display = "grid";
-  currentItem = null;
-}
+      // 3) abrir modal
+      modal.classList.add("show");
+      document.body.style.overflow = "hidden";
+    }
 
-document.querySelector("#modalClose").addEventListener("click", closeModal);
-modal.addEventListener("click", (e)=>{ if(e.target === modal) closeModal(); });
-document.addEventListener("keydown", (e)=>{ if(e.key === "Escape") closeModal(); });
+    // Play dentro del modal: aquí sí carga el video + reproduce
+    playBtn.addEventListener("click", () => {
+      if(!currentItem) return;
 
+      buildMedia(currentItem.videoUrl);
+      posterLayer.style.display = "none";
+
+      // sumar vista
+      currentItem.views = (currentItem.views || 0) + 1;
+      applyState();
+    });
+
+    function closeModal(){
+      modal.classList.remove("show");
+      document.body.style.overflow = "";
+      destroyYT();
+      mediaLayer.innerHTML = "";   // corta reproducción
+      posterLayer.style.display = "grid";
+      currentItem = null;
+    }
 
     $("#modalClose").addEventListener("click", closeModal);
     modal.addEventListener("click", (e)=>{ if(e.target === modal) closeModal(); });
@@ -701,8 +774,7 @@ document.addEventListener("keydown", (e)=>{ if(e.key === "Escape") closeModal();
       if(!item) return;
 
       if(action === "watch"){
-       openPosterModal(item);
-
+        openPosterModal(item);
       }
 
       if(action === "copy"){
@@ -748,7 +820,7 @@ document.addEventListener("keydown", (e)=>{ if(e.key === "Escape") closeModal();
       const id = decodeURIComponent((location.hash||"").replace("#",""));
       if(!id) return;
       const item = items.find(x => x.id === id);
-      if(item)openPosterModal(item);
+      if(item) openPosterModal(item);
     }
     window.addEventListener("hashchange", handleHash);
 
@@ -781,6 +853,10 @@ document.addEventListener("keydown", (e)=>{ if(e.key === "Escape") closeModal();
     // Init
     applyState();
     handleHash();
+
+    // YouTube API callback (opcional). Aquí no necesitas hacer nada, pero evita warnings.
+    function onYouTubeIframeAPIReady(){ /* listo */ }
+    window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
   </script>
 </body>
 </html>
