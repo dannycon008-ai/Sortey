@@ -717,7 +717,7 @@
   }
 
  /***********************
- * MODAL (FIXED / ESTABLE)
+ * MODAL (UNICO / ESTABLE / SOLO VIDEO DIRECTO)
  ***********************/
 const modal = $("#modal");
 const modalTitle = $("#modalTitle");
@@ -727,79 +727,31 @@ const mediaLayer = $("#mediaLayer");
 const playBtn = $("#playBtn");
 let currentItem = null;
 
-let activeNode = null;     // <video> o <iframe>
-let lastFocus = null;
+let activeNode = null;
 
 function isVideoFile(url){
-  return /\.(mp4|webm|ogg)(\?.*)?$/i.test(url || "");
-}
-
-function detectYouTubeId(url){
-  try{
-    const u = new URL(url, location.href);
-    // youtu.be/ID
-    if(u.hostname.includes("youtu.be")){
-      const id = u.pathname.replace("/", "").trim();
-      return id || "";
-    }
-    // youtube.com/watch?v=ID
-    if(u.hostname.includes("youtube.com")){
-      const v = u.searchParams.get("v");
-      if(v) return v.trim();
-      // /embed/ID
-      const parts = u.pathname.split("/").filter(Boolean);
-      const i = parts.indexOf("embed");
-      if(i >= 0 && parts[i+1]) return parts[i+1].trim();
-      // /shorts/ID
-      const j = parts.indexOf("shorts");
-      if(j >= 0 && parts[j+1]) return parts[j+1].trim();
-    }
-  }catch{}
-  return "";
-}
-
-function normalizeYouTubeUrl(url){
-  const id = detectYouTubeId(url);
-  if(!id) return "";
-  return `https://www.youtube.com/embed/${id}`;
+  return /\.(mp4|webm|ogg|mov|m4v)(\?.*)?$/i.test(url || "");
 }
 
 function teardownMedia(){
-  if(!activeNode){
-    mediaLayer.innerHTML = "";
-    return;
-  }
-
-  // Detener video de forma fuerte (corta red + libera buffer)
-  if(activeNode.tagName === "VIDEO"){
+  if(activeNode && activeNode.tagName === "VIDEO"){
     try{
       activeNode.pause();
       activeNode.removeAttribute("src");
       activeNode.load();
     }catch{}
   }
-
-  try{ activeNode.remove(); }catch{}
+  try{ activeNode?.remove?.(); }catch{}
   activeNode = null;
   mediaLayer.innerHTML = "";
 }
 
-function showPoster(){
-  posterLayer.style.display = "grid";
-}
-function hidePoster(){
-  posterLayer.style.display = "none";
-}
+function showPoster(){ posterLayer.style.display = "grid"; }
+function hidePoster(){ posterLayer.style.display = "none"; }
 
-/**
- * Crea y monta el reproductor.
- * - MP4: usa preload=metadata, muted=true para permitir autoplay estable.
- * - YouTube: embebe con autoplay=1&mute=1 (mute ayuda a autoplay).
- */
 async function buildMedia(url){
   url = normalizeUrl(url);
 
-  // Limpieza previa SIEMPRE
   teardownMedia();
   showPoster();
 
@@ -808,89 +760,47 @@ async function buildMedia(url){
     return;
   }
 
-  // Si es un enlace de YouTube en formato watch/youtu.be, lo normalizamos
-  const ytEmbed = normalizeYouTubeUrl(url);
-  const looksLikeYouTube = !!ytEmbed || /youtube\.com|youtu\.be/i.test(url);
-
-  // --- MP4 / WEBM / OGG ---
-  if(isVideoFile(url) && !looksLikeYouTube){
-    const v = document.createElement("video");
-
-    // Atributos “estables”
-    v.controls = true;
-    v.playsInline = true;
-    v.preload = "metadata";   // mejor para CDN
-    v.muted = true;           // clave para autoplay estable
-    v.autoplay = false;       // controlado por JS
-
-    // Si quieres poster real (además de tu capa), podrías:
-    // v.poster = currentItem?.thumbUrl || "";
-
-    // Logs de depuración útiles
-    v.addEventListener("error", () => {
-      console.error("❌ VIDEO ERROR:", v.error, "URL:", url);
-      toast("No se pudo reproducir el MP4 (CORS / CDN / formato) ❌");
-      teardownMedia();
-      showPoster();
-    });
-
-    // Cuando ya hay data mínima, ocultamos poster
-    // (loadeddata suele ser más consistente que canplay)
-    v.addEventListener("loadeddata", () => hidePoster());
-
-    // Montar
-    v.src = url;
-    mediaLayer.appendChild(v);
-    activeNode = v;
-
-    // Intento de reproducción controlado (autoplay)
-    try{
-      v.load();
-      const p = v.play();
-      if(p && typeof p.then === "function") await p;
-      // Si play() funciona, quitamos poster
-      hidePoster();
-    }catch(err){
-      // Autoplay bloqueado: dejamos controles y el usuario le da play
-      console.info("Autoplay bloqueado o falló:", err);
-      // Dejamos el poster visible hasta interacción del usuario
-      // pero si prefieres mostrar el video con controles aunque no reproduzca:
-      hidePoster();
-      // y si quieres permitir sonido al tocar play manual:
-      v.muted = false;
-    }
-
+  if(!isVideoFile(url)){
+    console.warn("URL NO SOPORTADA (solo video directo):", url);
+    toast("Solo se admiten videos directos (.mp4/.mov/.m4v/.webm/.ogg) ❌");
     return;
   }
 
-  // --- IFRAME (YouTube u otros embeds) ---
-  const iframe = document.createElement("iframe");
+  const v = document.createElement("video");
+  v.controls = true;
+  v.playsInline = true;
+  v.preload = "metadata";
+  v.muted = true;      // autoplay más compatible
+  v.autoplay = false;  // controlado por JS
 
-  // Si es YouTube, forzamos embed limpio y autoplay con mute
-  let src = url;
-  if(looksLikeYouTube){
-    src = ytEmbed || url;
-    const join = src.includes("?") ? "&" : "?";
-    src = src + join + "autoplay=1&mute=1&rel=0&modestbranding=1";
-    iframe.allow =
-      "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
-  }else{
-    const join = src.includes("?") ? "&" : "?";
-    src = src + join + "autoplay=1";
-    iframe.allow = "autoplay; encrypted-media; picture-in-picture";
+  v.addEventListener("loadeddata", () => hidePoster());
+
+  v.addEventListener("error", () => {
+    console.error("❌ VIDEO ERROR:", {
+      code: v.error?.code,
+      message: v.error?.message,
+      url
+    });
+    toast("No se pudo reproducir (CDN/CORS/codec/archivo) ❌");
+    teardownMedia();
+    showPoster();
+  });
+
+  v.src = url;
+  mediaLayer.appendChild(v);
+  activeNode = v;
+
+  try{
+    v.load();
+    const p = v.play();
+    if(p && typeof p.then === "function") await p;
+    hidePoster();
+  }catch(err){
+    // Autoplay bloqueado: mostramos controles igualmente
+    console.info("Autoplay bloqueado:", err);
+    hidePoster();
+    v.muted = false; // opcional: permitir sonido al usuario
   }
-
-  iframe.src = src;
-  iframe.allowFullscreen = true;
-  iframe.style.width = "100%";
-  iframe.style.height = "100%";
-  iframe.style.border = "0";
-
-  mediaLayer.appendChild(iframe);
-  activeNode = iframe;
-
-  // iframe: ocultamos poster de una vez
-  hidePoster();
 }
 
 function openPosterModal(item){
@@ -901,8 +811,6 @@ function openPosterModal(item){
   teardownMedia();
   showPoster();
 
-  lastFocus = document.activeElement;
-
   modal.classList.add("show");
   document.body.style.overflow = "hidden";
 
@@ -912,31 +820,25 @@ function openPosterModal(item){
 function closeModal(){
   modal.classList.remove("show");
   document.body.style.overflow = "";
-
   teardownMedia();
   showPoster();
-
   currentItem = null;
-
-  // devuelve foco
-  try{ lastFocus?.focus?.(); }catch{}
 }
 
 $("#modalClose").addEventListener("click", closeModal);
 modal.addEventListener("click", (e)=>{ if(e.target === modal) closeModal(); });
 document.addEventListener("keydown", (e)=>{ if(e.key === "Escape" && modal.classList.contains("show")) closeModal(); });
 
-// Botón “Reproducir” (interacción del usuario => autoplay ya no molesta)
+// Botón ▶ como backup (si decides mantenerlo)
 playBtn.addEventListener("click", async () => {
   if(!currentItem) return;
-
   if(!currentItem.videoUrl){
     toast("Esta entrada no tiene video detectado ❌");
     return;
   }
-
-  console.log("▶ PLAY:", currentItem.videoUrl);
   await buildMedia(currentItem.videoUrl);
+});
+
 
   currentItem.views = (currentItem.views || 0) + 1;
   applyState();
@@ -991,9 +893,16 @@ playBtn.addEventListener("click", async () => {
     const item = items.find(x => x.id === id);
     if(!item) return;
 
-    if(action === "watch"){
-      openPosterModal(item);
-    }
+   if(action === "watch"){
+  openPosterModal(item);
+  if(item.videoUrl){
+    buildMedia(item.videoUrl); // ✅ carga inmediatamente
+  } else {
+    toast("Esta entrada no tiene video detectado ❌");
+  }
+  return;
+}
+
 
     if(action === "open"){
       window.open(item.link, "_blank", "noopener,noreferrer");
