@@ -441,6 +441,23 @@
       .replaceAll('"',"&quot;")
       .replaceAll("'","&#039;");
   }
+function normalizeUrl(url){
+  if(!url) return "";
+
+  // Quita espacios y comillas raras
+  url = String(url).trim().replace(/^["']|["']$/g, "");
+
+  // Convierte escapes JSON (por si alguna vez te llegan)
+  url = url.replaceAll("\\/", "/");
+
+  // Si por algún motivo viene "https:cdn..." sin //
+  if(/^https?:[^/]/i.test(url)){
+    url = url.replace(/^https?:/i, (m)=> m + "//");
+  }
+
+  return url;
+}
+  
   function escapeAttr(str){ return escapeHtml(str); }
 
   function stripHtml(html){
@@ -463,27 +480,28 @@
     return diff <= 7 * 24 * 60 * 60 * 1000; // 7 días
   }
 
-  function extractVideoUrl(html){
+ function extractVideoUrl(html){
   if(!html) return "";
 
-  // 1) <video src="...mp4">
-  let m = html.match(/<video[^>]+src=["']([^"']+)["']/i);
+  // 1) <video ... src="...">
+  let m = html.match(/<video[^>]+src=["'](https?:\/\/[^"']+)["']/i);
   if(m?.[1]) return m[1];
 
-  // 2) <source src="...mp4">
-  m = html.match(/<source[^>]+src=["']([^"']+)["']/i);
+  // 2) <source src="...">
+  m = html.match(/<source[^>]+src=["'](https?:\/\/[^"']+)["']/i);
   if(m?.[1]) return m[1];
 
   // 3) <a href="...mp4">
-  m = html.match(/<a[^>]+href=["']([^"']+\.(mp4|webm|ogg)(\?[^"']*)?)["']/i);
+  m = html.match(/<a[^>]+href=["'](https?:\/\/[^"']+\.(mp4|webm|ogg)(\?[^"']*)?)["']/i);
   if(m?.[1]) return m[1];
 
-  // 4) URL suelta en el texto ...mp4
+  // 4) URL suelta (directa) en el texto
   m = html.match(/https?:\/\/[^\s"'<>]+\.(mp4|webm|ogg)(\?[^\s"'<>]*)?/i);
   if(m?.[0]) return m[0];
 
   return "";
 }
+
 
 
   function badgeFor(item){
@@ -518,8 +536,8 @@
 
       // Video desde el contenido
       const html = p.content?.rendered || "";
-      const videoUrl = extractVideoUrl(html);
-
+      const videoUrl = normalizeUrl(extractVideoUrl(html));
+;
       return {
         id: String(p.id),
         name: title,
