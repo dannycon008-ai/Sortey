@@ -700,102 +700,231 @@
     grid.appendChild(frag);
   }
 
-  /***********************
-   * MODAL
-   ***********************/
-  const modal = $("#modal");
-  const modalTitle = $("#modalTitle");
-  const posterImg = $("#posterImg");
-  const posterLayer = $("#posterLayer");
-  const mediaLayer = $("#mediaLayer");
-  const playBtn = $("#playBtn");
-  let currentItem = null;
+ /***********************
+ * MODAL (FIXED / ESTABLE)
+ ***********************/
+const modal = $("#modal");
+const modalTitle = $("#modalTitle");
+const posterImg = $("#posterImg");
+const posterLayer = $("#posterLayer");
+const mediaLayer = $("#mediaLayer");
+const playBtn = $("#playBtn");
+let currentItem = null;
 
-  function buildMedia(url){
-    url = normalizeUrl(url);
-    const isVideoFile = /\.(mp4|webm|ogg)(\?.*)?$/i.test(url || "");
+let activeNode = null;     // <video> o <iframe>
+let lastFocus = null;
+
+function isVideoFile(url){
+  return /\.(mp4|webm|ogg)(\?.*)?$/i.test(url || "");
+}
+
+function detectYouTubeId(url){
+  try{
+    const u = new URL(url, location.href);
+    // youtu.be/ID
+    if(u.hostname.includes("youtu.be")){
+      const id = u.pathname.replace("/", "").trim();
+      return id || "";
+    }
+    // youtube.com/watch?v=ID
+    if(u.hostname.includes("youtube.com")){
+      const v = u.searchParams.get("v");
+      if(v) return v.trim();
+      // /embed/ID
+      const parts = u.pathname.split("/").filter(Boolean);
+      const i = parts.indexOf("embed");
+      if(i >= 0 && parts[i+1]) return parts[i+1].trim();
+      // /shorts/ID
+      const j = parts.indexOf("shorts");
+      if(j >= 0 && parts[j+1]) return parts[j+1].trim();
+    }
+  }catch{}
+  return "";
+}
+
+function normalizeYouTubeUrl(url){
+  const id = detectYouTubeId(url);
+  if(!id) return "";
+  return `https://www.youtube.com/embed/${id}`;
+}
+
+function teardownMedia(){
+  if(!activeNode){
     mediaLayer.innerHTML = "";
+    return;
+  }
 
-    if(isVideoFile){
-      const v = document.createElement("video");
-      v.src = url;
-      v.controls = true;
-      v.autoplay = true;
-      v.playsInline = true;
-      v.preload = "auto";
+  // Detener video de forma fuerte (corta red + libera buffer)
+  if(activeNode.tagName === "VIDEO"){
+    try{
+      activeNode.pause();
+      activeNode.removeAttribute("src");
+      activeNode.load();
+    }catch{}
+  }
+
+  try{ activeNode.remove(); }catch{}
+  activeNode = null;
+  mediaLayer.innerHTML = "";
+}
+
+function showPoster(){
+  posterLayer.style.display = "grid";
+}
+function hidePoster(){
+  posterLayer.style.display = "none";
+}
+
+/**
+ * Crea y monta el reproductor.
+ * - MP4: usa preload=metadata, muted=true para permitir autoplay estable.
+ * - YouTube: embebe con autoplay=1&mute=1 (mute ayuda a autoplay).
+ */
+async function buildMedia(url){
+  url = normalizeUrl(url);
+
+  // Limpieza previa SIEMPRE
+  teardownMedia();
+  showPoster();
+
+  if(!url){
+    toast("Video URL vacía ❌");
+    return;
+  }
+
+  // Si es un enlace de YouTube en formato watch/youtu.be, lo normalizamos
+  const ytEmbed = normalizeYouTubeUrl(url);
+  const looksLikeYouTube = !!ytEmbed || /youtube\.com|youtu\.be/i.test(url);
+
+  // --- MP4 / WEBM / OGG ---
+  if(isVideoFile(url) && !looksLikeYouTube){
+    const v = document.createElement("video");
+
+    // Atributos “estables”
+    v.controls = true;
+    v.playsInline = true;
+    v.preload = "metadata";   // mejor para CDN
+    v.muted = true;           // clave para autoplay estable
+    v.autoplay = false;       // controlado por JS
+
+    // Si quieres poster real (además de tu capa), podrías:
+    // v.poster = currentItem?.thumbUrl || "";
+
+    // Logs de depuración útiles
+    v.addEventListener("error", () => {
+      console.error("❌ VIDEO ERROR:", v.error, "URL:", url);
+      toast("No se pudo reproducir el MP4 (CORS / CDN / formato) ❌");
+      teardownMedia();
+      showPoster();
+    });
+
+    // Cuando ya hay data mínima, ocultamos poster
+    // (loadeddata suele ser más consistente que canplay)
+    v.addEventListener("loadeddata", () => hidePoster());
+
+    // Montar
+    v.src = url;
+    mediaLayer.appendChild(v);
+    activeNode = v;
+
+    // Intento de reproducción controlado (autoplay)
+    try{
+      v.load();
+      const p = v.play();
+      if(p && typeof p.then === "function") await p;
+      // Si play() funciona, quitamos poster
+      hidePoster();
+    }catch(err){
+      // Autoplay bloqueado: dejamos controles y el usuario le da play
+      console.info("Autoplay bloqueado o falló:", err);
+      // Dejamos el poster visible hasta interacción del usuario
+      // pero si prefieres mostrar el video con controles aunque no reproduzca:
+      hidePoster();
+      // y si quieres permitir sonido al tocar play manual:
       v.muted = false;
-
-      // Solo ocultar poster cuando el video puede reproducir
-      v.addEventListener("canplay", () => {
-        posterLayer.style.display = "none";
-      });
-
-      // Si falla (CDN bloquea / 403 / CORS), avisar
-      v.addEventListener("error", () => {
-        console.error("❌ VIDEO ERROR:", v.error, "URL:", url);
-        toast("No se pudo reproducir el MP4 (CDN bloqueado o enlace inválido) ❌");
-        mediaLayer.innerHTML = "";
-        posterLayer.style.display = "grid";
-      });
-
-      mediaLayer.appendChild(v);
-      return;
     }
 
-    // iframe embed (YouTube/Vimeo/etc.)
-    const iframe = document.createElement("iframe");
-    const join = url.includes("?") ? "&" : "?";
-    iframe.src = url + join + "autoplay=1";
+    return;
+  }
+
+  // --- IFRAME (YouTube u otros embeds) ---
+  const iframe = document.createElement("iframe");
+
+  // Si es YouTube, forzamos embed limpio y autoplay con mute
+  let src = url;
+  if(looksLikeYouTube){
+    src = ytEmbed || url;
+    const join = src.includes("?") ? "&" : "?";
+    src = src + join + "autoplay=1&mute=1&rel=0&modestbranding=1";
+    iframe.allow =
+      "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+  }else{
+    const join = src.includes("?") ? "&" : "?";
+    src = src + join + "autoplay=1";
     iframe.allow = "autoplay; encrypted-media; picture-in-picture";
-    iframe.allowFullscreen = true;
-    iframe.style.width = "100%";
-    iframe.style.height = "100%";
-    iframe.style.border = "0";
-    mediaLayer.appendChild(iframe);
-    posterLayer.style.display = "none";
   }
 
-  function openPosterModal(item){
-    currentItem = item;
-    modalTitle.textContent = item.name || "Video";
-    posterImg.src = item.thumbUrl;
+  iframe.src = src;
+  iframe.allowFullscreen = true;
+  iframe.style.width = "100%";
+  iframe.style.height = "100%";
+  iframe.style.border = "0";
 
-    mediaLayer.innerHTML = "";
-    posterLayer.style.display = "grid";
+  mediaLayer.appendChild(iframe);
+  activeNode = iframe;
 
-    modal.classList.add("show");
-    document.body.style.overflow = "hidden";
+  // iframe: ocultamos poster de una vez
+  hidePoster();
+}
 
-    // Debug útil
-    console.log("🎬 OPEN MODAL:", { id: item.id, videoUrl: item.videoUrl, link: item.link });
+function openPosterModal(item){
+  currentItem = item;
+  modalTitle.textContent = item.name || "Video";
+  posterImg.src = item.thumbUrl;
+
+  teardownMedia();
+  showPoster();
+
+  lastFocus = document.activeElement;
+
+  modal.classList.add("show");
+  document.body.style.overflow = "hidden";
+
+  console.log("🎬 OPEN MODAL:", { id: item.id, videoUrl: item.videoUrl, link: item.link });
+}
+
+function closeModal(){
+  modal.classList.remove("show");
+  document.body.style.overflow = "";
+
+  teardownMedia();
+  showPoster();
+
+  currentItem = null;
+
+  // devuelve foco
+  try{ lastFocus?.focus?.(); }catch{}
+}
+
+$("#modalClose").addEventListener("click", closeModal);
+modal.addEventListener("click", (e)=>{ if(e.target === modal) closeModal(); });
+document.addEventListener("keydown", (e)=>{ if(e.key === "Escape" && modal.classList.contains("show")) closeModal(); });
+
+// Botón “Reproducir” (interacción del usuario => autoplay ya no molesta)
+playBtn.addEventListener("click", async () => {
+  if(!currentItem) return;
+
+  if(!currentItem.videoUrl){
+    toast("Esta entrada no tiene video detectado ❌");
+    return;
   }
 
-  function closeModal(){
-    modal.classList.remove("show");
-    document.body.style.overflow = "";
-    mediaLayer.innerHTML = "";
-    posterLayer.style.display = "grid";
-    currentItem = null;
-  }
+  console.log("▶ PLAY:", currentItem.videoUrl);
+  await buildMedia(currentItem.videoUrl);
 
-  $("#modalClose").addEventListener("click", closeModal);
-  modal.addEventListener("click", (e)=>{ if(e.target === modal) closeModal(); });
-  document.addEventListener("keydown", (e)=>{ if(e.key === "Escape") closeModal(); });
-
-  playBtn.addEventListener("click", () => {
-    if(!currentItem) return;
-
-    if(!currentItem.videoUrl){
-      toast("Esta entrada no tiene video detectado ❌");
-      return;
-    }
-
-    console.log("▶ PLAY:", currentItem.videoUrl);
-    buildMedia(currentItem.videoUrl);
-
-    currentItem.views = (currentItem.views || 0) + 1;
-    applyState();
-  });
+  currentItem.views = (currentItem.views || 0) + 1;
+  applyState();
+});
 
   /***********************
    * EVENTOS UI
