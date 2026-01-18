@@ -403,9 +403,6 @@
 
 <script>
 (() => {
-  /***********************
-   * CONFIG WORDPRESS
-   ***********************/
   const WP = {
     base: "https://uncorazon.store",
     type: "posts",
@@ -413,14 +410,20 @@
   };
 
   let items = [];
-
   let state = { query:"", filter:"all", sort:"recent" };
 
   const $ = (sel) => document.querySelector(sel);
   const grid = $("#grid");
   const empty = $("#empty");
 
-  // --- Utilidades
+  // --- DEBUG: si algo revienta, lo mostramos en pantalla
+  window.addEventListener("error", (e) => {
+    console.error("JS ERROR:", e.error || e.message);
+    empty.style.display = "block";
+    empty.textContent = "Error JS: " + (e.message || "Revisa la consola");
+  });
+
+  // --- Utils
   function escapeHtml(str){
     return String(str ?? "")
       .replaceAll("&","&amp;")
@@ -460,7 +463,6 @@
     return url;
   }
 
-  // Detecta mp4 + iframes + youtube links
   function extractVideoUrl(html){
     if(!html) return "";
 
@@ -472,24 +474,13 @@
     m = html.match(/<source[^>]+src=["']([^"']+)["']/i);
     if(m?.[1]) return m[1];
 
-    // iframe src (youtube/vimeo/etc.)
-    m = html.match(/<iframe[^>]+src=["']([^"']+)["']/i);
+    // link a video en <a href="">
+    m = html.match(/<a[^>]+href=["']([^"']+\.(mp4|webm|ogg|mov|m4v)(\?[^"']*)?)["']/i);
     if(m?.[1]) return m[1];
 
-    // link a mp4 en <a href="">
-    m = html.match(/<a[^>]+href=["']([^"']+\.(mp4|webm|ogg)(\?[^"']*)?)["']/i);
-    if(m?.[1]) return m[1];
-
-    // URL suelta mp4
-    m = html.match(/https?:\/\/[^\s"'<>]+\.(mp4|webm|ogg)(\?[^\s"'<>]*)?/i);
+    // URL suelta video
+    m = html.match(/https?:\/\/[^\s"'<>]+\.(mp4|webm|ogg|mov|m4v)(\?[^\s"'<>]*)?/i);
     if(m?.[0]) return m[0];
-
-    // youtube watch / youtu.be -> embed
-    m = html.match(/https?:\/\/(www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]{6,})/i);
-    if(m?.[2]) return `https://www.youtube.com/embed/${m[2]}`;
-
-    m = html.match(/https?:\/\/youtu\.be\/([a-zA-Z0-9_-]{6,})/i);
-    if(m?.[1]) return `https://www.youtube.com/embed/${m[1]}`;
 
     return "";
   }
@@ -499,6 +490,25 @@
     return m?.[1] || "";
   }
 
+  function placeholderThumb(){
+    const svg = encodeURIComponent(`
+      <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="750">
+        <defs>
+          <linearGradient id="g" x1="0" x2="1">
+            <stop offset="0" stop-color="#141a2b"/>
+            <stop offset="1" stop-color="#0b0d12"/>
+          </linearGradient>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#g)"/>
+        <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+              fill="rgba(255,255,255,.75)" font-family="Arial" font-size="48">
+          Sin imagen
+        </text>
+      </svg>
+    `);
+    return `data:image/svg+xml;charset=utf-8,${svg}`;
+  }
+
   function badgeFor(item){
     const popularThreshold = 500;
     if(item.isNew) return { text:"Nuevo", cls:"new" };
@@ -506,9 +516,7 @@
     return null;
   }
 
-  /***********************
-   * TOAST
-   ***********************/
+  // --- Toast
   let toastTimer;
   function toast(msg){
     let el = document.getElementById("toast");
@@ -534,9 +542,7 @@
     toastTimer = setTimeout(()=>{ el.style.display="none"; }, 1800);
   }
 
-  /***********************
-   * CARGA DESDE WORDPRESS
-   ***********************/
+  // --- Fetch WP
   async function fetchWPPosts(){
     const url = `${WP.base}/wp-json/wp/v2/${WP.type}?per_page=${WP.perPage}&_embed`;
     const res = await fetch(url, { cache: "no-store" });
@@ -545,16 +551,11 @@
     const posts = await res.json();
 
     items = posts.map(p => {
-      const titleRaw = p.title?.rendered || "";
-      const titleClean = stripHtml(titleRaw);
-      const title = titleClean ? titleClean : `Post #${p.id}`;
-
+      const title = stripHtml(p.title?.rendered || "") || `Post #${p.id}`;
       const link = p.link || "#";
       const dateISO = (p.date || "").slice(0,10);
-
       const html = p.content?.rendered || "";
 
-      // featured image
       const featured = p._embedded?.["wp:featuredmedia"]?.[0];
       let thumbUrl =
         featured?.media_details?.sizes?.large?.source_url ||
@@ -562,30 +563,8 @@
         featured?.source_url ||
         "";
 
-      // fallback: primera imagen del contenido
-      if(!thumbUrl){
-        thumbUrl = extractFirstImageUrl(html);
-      }
-
-    if(!thumbUrl){
-  const svg = encodeURIComponent(`
-    <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="750">
-      <defs>
-        <linearGradient id="g" x1="0" x2="1">
-          <stop offset="0" stop-color="#141a2b"/>
-          <stop offset="1" stop-color="#0b0d12"/>
-        </linearGradient>
-      </defs>
-      <rect width="100%" height="100%" fill="url(#g)"/>
-      <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
-            fill="rgba(255,255,255,.75)" font-family="Arial" font-size="48">
-        Sin imagen
-      </text>
-    </svg>
-  `);
-  thumbUrl = `data:image/svg+xml;charset=utf-8,${svg}`;
-}
-
+      if(!thumbUrl) thumbUrl = extractFirstImageUrl(html);
+      if(!thumbUrl) thumbUrl = placeholderThumb();
 
       const videoUrl = normalizeUrl(extractVideoUrl(html));
 
@@ -593,7 +572,7 @@
         id: String(p.id),
         name: title,
         thumbUrl,
-        videoUrl,     // puede ser mp4 o iframe/embed
+        videoUrl,
         link,
         views: 0,
         date: dateISO || "2026-01-01",
@@ -604,9 +583,7 @@
     applyState();
   }
 
-  /***********************
-   * FILTROS / ORDEN / RENDER
-   ***********************/
+  // --- Render
   function applyState(){
     const q = state.query.trim().toLowerCase();
     let list = items.slice();
@@ -638,6 +615,7 @@
   function render(list){
     grid.innerHTML = "";
     empty.style.display = list.length ? "none" : "block";
+    if(!list.length) return;
 
     const frag = document.createDocumentFragment();
 
@@ -659,22 +637,7 @@
           <h3 class="title">${escapeHtml(item.name)}</h3>
 
           <div class="meta">
-            <span title="Vistas">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" stroke="rgba(255,255,255,.65)" stroke-width="2"/>
-                <circle cx="12" cy="12" r="3" stroke="rgba(255,255,255,.65)" stroke-width="2"/>
-              </svg>
-              ${Number(item.views||0).toLocaleString("es-ES")} vistas
-            </span>
-
-            <span title="Fecha">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M7 3v2M17 3v2" stroke="rgba(255,255,255,.65)" stroke-width="2" stroke-linecap="round"/>
-                <path d="M4 7h16" stroke="rgba(255,255,255,.65)" stroke-width="2"/>
-                <path d="M6 5h12a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" stroke="rgba(255,255,255,.65)" stroke-width="2"/>
-              </svg>
-              ${fmtDate(item.date)}
-            </span>
+            <span title="Fecha">${fmtDate(item.date)}</span>
           </div>
 
           <div class="actions">
@@ -685,9 +648,6 @@
             }
 
             <div class="share">
-              <button class="iconBtn" title="Compartir" data-action="share" data-id="${escapeAttr(item.id)}">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7a2.5 2.5 0 0 0 0-1.39l7-4.11A2.99 2.99 0 1 0 14 5a2.9 2.9 0 0 0 .05.54l-7 4.11a3 3 0 1 0 0 4.7l7.12 4.19c-.03.17-.05.34-.05.51a3 3 0 1 0 3-3Z"/></svg>
-              </button>
               <button class="iconBtn" title="Copiar enlace" data-action="copy" data-id="${escapeAttr(item.id)}">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M10 14a5 5 0 0 1 0-7l1-1a5 5 0 0 1 7 7l-1 1" />
@@ -699,15 +659,13 @@
         </div>
       `;
 
-      // stroke icon link
+      // arregla stroke del icono copiar
       card.querySelectorAll('svg path').forEach(p=>{
-        if(!p.getAttribute("stroke") && p.getAttribute("d")?.includes("M10 14")) {
-          p.setAttribute("fill","none");
-          p.setAttribute("stroke","rgba(255,255,255,.88)");
-          p.setAttribute("stroke-width","2");
-          p.setAttribute("stroke-linecap","round");
-          p.setAttribute("stroke-linejoin","round");
-        }
+        p.setAttribute("fill","none");
+        p.setAttribute("stroke","rgba(255,255,255,.88)");
+        p.setAttribute("stroke-width","2");
+        p.setAttribute("stroke-linecap","round");
+        p.setAttribute("stroke-linejoin","round");
       });
 
       frag.appendChild(card);
@@ -716,137 +674,109 @@
     grid.appendChild(frag);
   }
 
- /***********************
- * MODAL (UNICO / ESTABLE / SOLO VIDEO DIRECTO)
- ***********************/
-const modal = $("#modal");
-const modalTitle = $("#modalTitle");
-const posterImg = $("#posterImg");
-const posterLayer = $("#posterLayer");
-const mediaLayer = $("#mediaLayer");
-const playBtn = $("#playBtn");
-let currentItem = null;
+  // --- Modal (único)
+  const modal = $("#modal");
+  const modalTitle = $("#modalTitle");
+  const posterImg = $("#posterImg");
+  const posterLayer = $("#posterLayer");
+  const mediaLayer = $("#mediaLayer");
+  const playBtn = $("#playBtn");
+  let currentItem = null;
+  let activeVideo = null;
 
-let activeNode = null;
-
-function isVideoFile(url){
-  return /\.(mp4|webm|ogg|mov|m4v)(\?.*)?$/i.test(url || "");
-}
-
-function teardownMedia(){
-  if(activeNode && activeNode.tagName === "VIDEO"){
-    try{
-      activeNode.pause();
-      activeNode.removeAttribute("src");
-      activeNode.load();
-    }catch{}
-  }
-  try{ activeNode?.remove?.(); }catch{}
-  activeNode = null;
-  mediaLayer.innerHTML = "";
-}
-
-function showPoster(){ posterLayer.style.display = "grid"; }
-function hidePoster(){ posterLayer.style.display = "none"; }
-
-async function buildMedia(url){
-  url = normalizeUrl(url);
-
-  teardownMedia();
-  showPoster();
-
-  if(!url){
-    toast("Video URL vacía ❌");
-    return;
+  function isVideoFile(url){
+    return /\.(mp4|webm|ogg|mov|m4v)(\?.*)?$/i.test(url || "");
   }
 
-  if(!isVideoFile(url)){
-    console.warn("URL NO SOPORTADA (solo video directo):", url);
-    toast("Solo se admiten videos directos (.mp4/.mov/.m4v/.webm/.ogg) ❌");
-    return;
+  function teardownMedia(){
+    if(activeVideo){
+      try{ activeVideo.pause(); }catch{}
+      try{ activeVideo.removeAttribute("src"); activeVideo.load(); }catch{}
+    }
+    activeVideo = null;
+    mediaLayer.innerHTML = "";
   }
 
-  const v = document.createElement("video");
-  v.controls = true;
-  v.playsInline = true;
-  v.preload = "metadata";
-  v.muted = true;      // autoplay más compatible
-  v.autoplay = false;  // controlado por JS
-
-  v.addEventListener("loadeddata", () => hidePoster());
-
-  v.addEventListener("error", () => {
-    console.error("❌ VIDEO ERROR:", {
-      code: v.error?.code,
-      message: v.error?.message,
-      url
-    });
-    toast("No se pudo reproducir (CDN/CORS/codec/archivo) ❌");
+  function openPosterModal(item){
+    currentItem = item;
+    modalTitle.textContent = item.name || "Video";
+    posterImg.src = item.thumbUrl;
+    posterLayer.style.display = "grid";
     teardownMedia();
-    showPoster();
+
+    modal.classList.add("show");
+    document.body.style.overflow = "hidden";
+    console.log("🎬 OPEN MODAL:", item.videoUrl);
+  }
+
+  function closeModal(){
+    modal.classList.remove("show");
+    document.body.style.overflow = "";
+    teardownMedia();
+    posterLayer.style.display = "grid";
+    currentItem = null;
+  }
+
+  $("#modalClose").addEventListener("click", closeModal);
+  modal.addEventListener("click", (e)=>{ if(e.target === modal) closeModal(); });
+  document.addEventListener("keydown", (e)=>{ if(e.key === "Escape" && modal.classList.contains("show")) closeModal(); });
+
+  async function buildMedia(url){
+    url = normalizeUrl(url);
+    teardownMedia();
+    posterLayer.style.display = "grid";
+
+    if(!url){
+      toast("Video URL vacía ❌");
+      return;
+    }
+    if(!isVideoFile(url)){
+      toast("Solo videos directos (.mp4/.mov/.m4v/...) ❌");
+      return;
+    }
+
+    const v = document.createElement("video");
+    v.controls = true;
+    v.playsInline = true;
+    v.preload = "metadata";
+    v.muted = true;
+    v.autoplay = false;
+
+    v.addEventListener("loadeddata", () => {
+      posterLayer.style.display = "none";
+    });
+
+    v.addEventListener("error", () => {
+      console.error("VIDEO ERROR:", v.error, url);
+      toast("No se pudo reproducir (codec/CDN/CORS) ❌");
+      teardownMedia();
+      posterLayer.style.display = "grid";
+    });
+
+    v.src = url;
+    mediaLayer.appendChild(v);
+    activeVideo = v;
+
+    try{
+      v.load();
+      const p = v.play();
+      if(p && typeof p.then === "function") await p;
+      posterLayer.style.display = "none";
+    }catch(err){
+      // si autoplay se bloquea, igual mostramos el player
+      console.info("Autoplay bloqueado:", err);
+      posterLayer.style.display = "none";
+      v.muted = false;
+    }
+  }
+
+  // backup botón play del modal
+  playBtn.addEventListener("click", () => {
+    if(!currentItem?.videoUrl) return toast("Sin video ❌");
+    buildMedia(currentItem.videoUrl);
   });
 
-  v.src = url;
-  mediaLayer.appendChild(v);
-  activeNode = v;
-
-  try{
-    v.load();
-    const p = v.play();
-    if(p && typeof p.then === "function") await p;
-    hidePoster();
-  }catch(err){
-    // Autoplay bloqueado: mostramos controles igualmente
-    console.info("Autoplay bloqueado:", err);
-    hidePoster();
-    v.muted = false; // opcional: permitir sonido al usuario
-  }
-}
-
-function openPosterModal(item){
-  currentItem = item;
-  modalTitle.textContent = item.name || "Video";
-  posterImg.src = item.thumbUrl;
-
-  teardownMedia();
-  showPoster();
-
-  modal.classList.add("show");
-  document.body.style.overflow = "hidden";
-
-  console.log("🎬 OPEN MODAL:", { id: item.id, videoUrl: item.videoUrl, link: item.link });
-}
-
-function closeModal(){
-  modal.classList.remove("show");
-  document.body.style.overflow = "";
-  teardownMedia();
-  showPoster();
-  currentItem = null;
-}
-
-$("#modalClose").addEventListener("click", closeModal);
-modal.addEventListener("click", (e)=>{ if(e.target === modal) closeModal(); });
-document.addEventListener("keydown", (e)=>{ if(e.key === "Escape" && modal.classList.contains("show")) closeModal(); });
-
-// Botón ▶ como backup (si decides mantenerlo)
-playBtn.addEventListener("click", async () => {
-  if(!currentItem) return;
-  if(!currentItem.videoUrl){
-    toast("Esta entrada no tiene video detectado ❌");
-    return;
-  }
-  await buildMedia(currentItem.videoUrl);
-});
-
-
-  currentItem.views = (currentItem.views || 0) + 1;
-  applyState();
-});
-
-  /***********************
-   * EVENTOS UI
-   ***********************/
+  // --- Eventos UI
   $("#btnSearch").addEventListener("click", ()=>{
     state.query = $("#q").value;
     applyState();
@@ -882,121 +812,42 @@ playBtn.addEventListener("click", async () => {
     applyState();
   });
 
-  // Clicks en cards
   grid.addEventListener("click", async (e)=>{
     const btn = e.target.closest("[data-action]");
     if(!btn) return;
 
     const action = btn.dataset.action;
     const id = btn.dataset.id;
-
     const item = items.find(x => x.id === id);
     if(!item) return;
 
-   if(action === "watch"){
-  openPosterModal(item);
-  if(item.videoUrl){
-    buildMedia(item.videoUrl); // ✅ carga inmediatamente
-  } else {
-    toast("Esta entrada no tiene video detectado ❌");
-  }
-  return;
-}
-
+    if(action === "watch"){
+      openPosterModal(item);
+      if(item.videoUrl) buildMedia(item.videoUrl); // ✅ carga directo
+      else toast("Esta entrada no tiene video ❌");
+      return;
+    }
 
     if(action === "open"){
       window.open(item.link, "_blank", "noopener,noreferrer");
+      return;
     }
 
     if(action === "copy"){
-      const link = makeItemLink(item);
+      const base = location.href.split("#")[0];
+      const link = `${base}#${encodeURIComponent(item.id)}`;
       await navigator.clipboard.writeText(link);
       toast("Enlace copiado ✅");
-    }
-
-    if(action === "share"){
-      const data = { title: item.name, text: `Mira: ${item.name}`, url: makeItemLink(item) };
-      if(navigator.share){
-        try { await navigator.share(data); } catch {}
-      } else {
-        await navigator.clipboard.writeText(data.url);
-        toast("No hay compartir nativo. Enlace copiado ✅");
-      }
+      return;
     }
   });
 
-  function makeItemLink(item){
-    const base = location.href.split("#")[0];
-    return `${base}#${encodeURIComponent(item.id)}`;
-  }
-
-  function handleHash(){
-    const id = decodeURIComponent((location.hash||"").replace("#",""));
-    if(!id) return;
-    const item = items.find(x => x.id === id);
-    if(!item) return;
-    if(item.videoUrl){
-      openPosterModal(item);
-    } else {
-      window.open(item.link, "_blank", "noopener,noreferrer");
-    }
-  }
-  window.addEventListener("hashchange", handleHash);
-
-  /***********************
-   * BOTONES FLOTANTES
-   ***********************/
-  const fabShare = $("#fabShare");
-  const fabTelegram = $("#fabTelegram");
-  const fabWhatsApp = $("#fabWhatsApp");
-  const fabFacebook = $("#fabFacebook");
-
-  if(fabShare){
-    fabShare.addEventListener("click", async ()=>{
-      const url = location.href;
-      if(navigator.share){
-        try { await navigator.share({ title: document.title, url }); } catch {}
-      } else {
-        await navigator.clipboard.writeText(url);
-        toast("Enlace copiado ✅");
-      }
-    });
-  }
-
-  if(fabTelegram){
-    fabTelegram.addEventListener("click", ()=>{
-      // Cambia TU usuario o link de canal
-      const tg = "https://t.me/";
-      window.open(tg, "_blank", "noopener,noreferrer");
-    });
-  }
-
-  if(fabWhatsApp){
-    fabWhatsApp.addEventListener("click", ()=>{
-      // Cambia TU número con prefijo (ej: 584125160806)
-      const phone = "584125160806";
-      const msg = encodeURIComponent("Hola, quiero información ✅");
-      window.open(`https://wa.me/${phone}?text=${msg}`, "_blank", "noopener,noreferrer");
-    });
-  }
-
-  if(fabFacebook){
-    fabFacebook.addEventListener("click", ()=>{
-      // Cambia TU página
-      const fb = "https://facebook.com/";
-      window.open(fb, "_blank", "noopener,noreferrer");
-    });
-  }
-
-  /***********************
-   * INIT
-   ***********************/
+  // --- Init
   (async function init(){
     try{
       toast("Conectando WordPress…");
       await fetchWPPosts();
       toast("Sincronizado ✅");
-      handleHash();
     } catch (err){
       console.error(err);
       toast("Error conectando WordPress ❌");
