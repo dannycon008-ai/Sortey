@@ -288,91 +288,12 @@
 </head>
 <body>
   <div class="wrap">
-    <div class="topbar">
-      <div class="brand">
-        <div class="logo"></div>
-        <div>
-          Catálogo
-          <small>Imágenes y videos por URL externa</small>
-        </div>
-      </div>
-      <button class="btn secondary" id="btnReset">Restablecer</button>
-    </div>
-
-    <div class="toolbar">
-      <div class="search">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" stroke="rgba(255,255,255,.75)" stroke-width="2"/>
-          <path d="M16.2 16.2 21 21" stroke="rgba(255,255,255,.75)" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-        <input id="q" type="search" placeholder="Buscar modelo o video..." autocomplete="off" />
-        <button class="btn" id="btnSearch">Buscar</button>
-      </div>
-
-      <div class="chips" role="tablist" aria-label="Filtros">
-        <div class="chip active" data-filter="all" role="tab" aria-selected="true">
-          <span class="dot"></span> Todos
-        </div>
-        <div class="chip" data-filter="new" role="tab" aria-selected="false">
-          <span class="dot"></span> Nuevos
-        </div>
-        <div class="chip" data-filter="popular" role="tab" aria-selected="false">
-          <span class="dot"></span> Populares
-        </div>
-      </div>
-
-      <div class="sort">
-        <label for="sort">Ordenar por:</label>
-        <select id="sort">
-          <option value="recent">Más recientes</option>
-          <option value="views">Más vistas</option>
-          <option value="name">Nombre (A–Z)</option>
-        </select>
-      </div>
-    </div>
-
-    <div id="grid" class="grid" aria-live="polite"></div>
-    <div id="empty" class="empty" style="display:none;">No hay resultados con esos filtros.</div>
+    <!-- TODO: Aquí va tu contenido original del Catálogo -->
   </div>
-
-  <!-- Rail opcional, tipo botones laterales -->
-  <div class="rail" aria-label="Accesos rápidos">
-    <div class="bubble" id="railShare" title="Compartir esta página">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7a2.5 2.5 0 0 0 0-1.39l7-4.11A2.99 2.99 0 1 0 14 5a2.9 2.9 0 0 0 .05.54l-7 4.11a3 3 0 1 0 0 4.7l7.12 4.19c-.03.17-.05.34-.05.51a3 3 0 1 0 3-3Z"/></svg>
-    </div>
-    <div class="bubble" id="railTop" title="Ir arriba">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5l7 7-1.4 1.4L13 8.8V19h-2V8.8L6.4 13.4 5 12l7-7Z"/></svg>
-    </div>
-  </div>
-<div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Reproductor">
-  <div class="modalCard">
-    <div class="modalHead">
-      <strong id="modalTitle">Video</strong>
-      <button class="close" id="modalClose">Cerrar ✕</button>
-    </div>
-
-    <!-- Poster (misma imagen) -->
-    <div class="player" id="player">
-      <div id="posterLayer" style="position:absolute; inset:0; display:grid; place-items:center;">
-        <img id="posterImg" alt="Poster" style="width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.05) contrast(1.05);" />
-        <button id="playBtn" class="btn"
-          style="position:absolute; display:flex; align-items:center; gap:10px; padding:12px 16px; border-radius:14px;">
-          ▶ Reproducir
-        </button>
-      </div>
-      <!-- aquí se inserta el iframe/video cuando el usuario presiona play -->
-      <div id="mediaLayer" style="position:absolute; inset:0;"></div>
-    </div>
-  </div>
-</div>
-
 
   <script>
     /**
-     * DATOS (ejemplo)
-     * - thumbUrl: URL externa de imagen (no ocupa hosting)
-     * - videoUrl: YouTube (embed) o mp4 externo
-     * - isNew / views / date
+     * Datos
      */
     const items = [
       {
@@ -384,43 +305,7 @@
         date: "2026-01-16",
         isNew: true,
       },
-      {
-        id: "m2",
-        name: "Silvana Lee",
-        thumbUrl: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=70",
-        videoUrl: "https://www.youtube.com/embed/aqz-KE-bpKQ",
-        views: 234,
-        date: "2026-01-16",
-        isNew: true,
-      },
-      {
-        id: "m3",
-        name: "Kathrin Carvajal",
-        thumbUrl: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=1200&q=70",
-        videoUrl: "https://www.youtube.com/embed/ScMzIvxBSi4",
-        views: 45,
-        date: "2026-01-16",
-        isNew: true,
-      },
-      {
-        id: "m4",
-        name: "Karmen Karma",
-        thumbUrl: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=70",
-        videoUrl: "https://www.youtube.com/embed/tgbNymZ7vqY",
-        views: 74,
-        date: "2026-01-16",
-        isNew: true,
-      },
-      // Ejemplo “popular” (muchas vistas, no necesariamente nuevo)
-      {
-        id: "m5",
-        name: "Andrea Nova",
-        thumbUrl: "https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?auto=format&fit=crop&w=1200&q=70",
-        videoUrl: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
-        views: 1800,
-        date: "2025-12-20",
-        isNew: false,
-      },
+      // Más datos aquí...
     ];
 
     // Estado UI
@@ -430,242 +315,91 @@
       sort: "recent", // recent | views | name
     };
 
-    // Helpers
     const $ = (sel) => document.querySelector(sel);
     const grid = $("#grid");
     const empty = $("#empty");
 
-    function fmtDate(iso){
-      // iso: YYYY-MM-DD
-      const [y,m,d] = iso.split("-").map(Number);
-      return `${String(d).padStart(2,"0")}/${String(m).padStart(2,"0")}/${y}`;
-    }
+    const modal = $("#modal");
+    const modalTitle = document.querySelector("#modalTitle");
+    const posterImg = document.querySelector("#posterImg");
+    const posterLayer = document.querySelector("#posterLayer");
+    const mediaLayer = document.querySelector("#mediaLayer");
+    const playBtn = document.querySelector("#playBtn");
 
-    function badgeFor(item){
-      // Ajusta lógica a tu gusto
-      const popularThreshold = 500;
-      if(item.isNew) return { text:"Nuevo", cls:"new" };
-      if(item.views >= popularThreshold) return { text:"Popular", cls:"hot" };
-      return null;
-    }
+    let currentItem = null;
 
-    function applyState(){
-      const q = state.query.trim().toLowerCase();
+    // Construir video (reproducción)
+    function buildMedia(url){
+      const isVideoFile = /\.(mp4|webm|ogg)(\?.*)?$/i.test(url);
+      mediaLayer.innerHTML = "";
 
-      let list = items.slice();
+      if (isVideoFile){
+        const v = document.createElement("video");
+        v.src = url;
+        v.controls = true;
+        v.autoplay = true;
+        v.playsInline = true;
 
-      // search
-      if(q){
-        list = list.filter(x =>
-          x.name.toLowerCase().includes(q)
-          || (x.id && x.id.toLowerCase().includes(q))
-        );
-      }
-
-      // filter chips
-      if(state.filter === "new"){
-        list = list.filter(x => x.isNew);
-      } else if(state.filter === "popular"){
-        list = list
-          .slice()
-          .sort((a,b)=> b.views - a.views)
-          .slice(0, 50); // ejemplo: top N
-      }
-
-      // sorting
-      if(state.sort === "recent"){
-        list.sort((a,b)=> (b.date || "").localeCompare(a.date || ""));
-      } else if(state.sort === "views"){
-        list.sort((a,b)=> (b.views || 0) - (a.views || 0));
-      } else if(state.sort === "name"){
-        list.sort((a,b)=> (a.name || "").localeCompare(b.name || ""));
-      }
-
-      render(list);
-    }
-
-    function render(list){
-      grid.innerHTML = "";
-      empty.style.display = list.length ? "none" : "block";
-
-      const frag = document.createDocumentFragment();
-
-      for(const item of list){
-        const card = document.createElement("div");
-        card.className = "card";
-
-        const b = badgeFor(item);
-
-        card.innerHTML = `
-          <div class="thumb">
-            <img loading="lazy" src="${escapeAttr(item.thumbUrl)}" alt="${escapeAttr(item.name)}">
-            ${b ? `<div class="badge ${b.cls}">${b.text}</div>` : ""}
-            <div class="watermark">Catálogo</div>
-          </div>
-
-          <div class="content">
-            <h3 class="title">${escapeHtml(item.name)}</h3>
-
-            <div class="meta">
-              <span title="Vistas">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" stroke="rgba(255,255,255,.65)" stroke-width="2"/>
-                  <circle cx="12" cy="12" r="3" stroke="rgba(255,255,255,.65)" stroke-width="2"/>
-                </svg>
-                ${Number(item.views||0).toLocaleString("es-ES")} vistas
-              </span>
-
-              <span title="Fecha">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M7 3v2M17 3v2" stroke="rgba(255,255,255,.65)" stroke-width="2" stroke-linecap="round"/>
-                  <path d="M4 7h16" stroke="rgba(255,255,255,.65)" stroke-width="2"/>
-                  <path d="M6 5h12a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" stroke="rgba(255,255,255,.65)" stroke-width="2"/>
-                </svg>
-                ${fmtDate(item.date || "2026-01-01")}
-              </span>
-            </div>
-
-            <div class="actions">
-              <button class="btn secondary" data-action="watch" data-id="${escapeAttr(item.id)}">Ver video</button>
-
-              <div class="share">
-                <button class="iconBtn" title="Compartir" data-action="share" data-id="${escapeAttr(item.id)}">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7a2.5 2.5 0 0 0 0-1.39l7-4.11A2.99 2.99 0 1 0 14 5a2.9 2.9 0 0 0 .05.54l-7 4.11a3 3 0 1 0 0 4.7l7.12 4.19c-.03.17-.05.34-.05.51a3 3 0 1 0 3-3Z"/></svg>
-                </button>
-                <button class="iconBtn" title="Copiar enlace" data-action="copy" data-id="${escapeAttr(item.id)}">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a5 5 0 0 1 0-7l1-1a5 5 0 0 1 7 7l-1 1" /><path d="M14 10a5 5 0 0 1 0 7l-1 1a5 5 0 0 1-7-7l1-1" /></svg>
-                </button>
-              </div>
-            </div>
-          </div>
-        `;
-        // arreglar icon "link" stroke (simple)
-        card.querySelectorAll('svg path').forEach(p=>{
-          if(!p.getAttribute("stroke") && p.getAttribute("d")?.includes("M10 14")) {
-            p.setAttribute("fill","none");
-            p.setAttribute("stroke","rgba(255,255,255,.88)");
-            p.setAttribute("stroke-width","2");
-            p.setAttribute("stroke-linecap","round");
-            p.setAttribute("stroke-linejoin","round");
+        // Autoplay siguiente video al terminar
+        v.addEventListener('ended', () => {
+          const idx = items.findIndex(x => x.id === currentItem.id);
+          const next = items[idx + 1];  // Siguiente video
+          if (next) {
+            openPosterModal(next);  // Mostrar siguiente
+            buildMedia(next.videoUrl); // Reproducir siguiente
           }
         });
 
-        frag.appendChild(card);
+        mediaLayer.appendChild(v);
+      } else {
+        const iframe = document.createElement("iframe");
+        iframe.src = url;
+        iframe.allow = "autoplay; encrypted-media; picture-in-picture";
+        iframe.allowFullscreen = true;
+        iframe.style.width = "100%";
+        iframe.style.height = "100%";
+        iframe.style.border = "0";
+        mediaLayer.appendChild(iframe);
       }
-
-      grid.appendChild(frag);
     }
 
-    // Seguridad básica para HTML
-    function escapeHtml(str){
-      return String(str ?? "")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-    }
-    function escapeAttr(str){
-      // para atributos, mismo escape
-      return escapeHtml(str);
+    function openPosterModal(item){
+      currentItem = item;
+      modalTitle.textContent = item.name || "Video";
+      posterImg.src = item.thumbUrl;
+
+      mediaLayer.innerHTML = "";
+      posterLayer.style.display = "grid";
+
+      modal.classList.add("show");
+      document.body.style.overflow = "hidden";
     }
 
-    // Modal player
-    const modal = $("#modal");
-    const player = $("#player");
-    const modalTitle = $("#modalTitle");
+    // Reproducir video
+    playBtn.addEventListener("click", () => {
+      if(!currentItem) return;
+      buildMedia(currentItem.videoUrl);
+      posterLayer.style.display = "none";
+      currentItem.views = (currentItem.views || 0) + 1;
+      applyState();
+    });
 
-   const modal = document.querySelector("#modal");
-const modalTitle = document.querySelector("#modalTitle");
-const posterImg = document.querySelector("#posterImg");
-const posterLayer = document.querySelector("#posterLayer");
-const mediaLayer = document.querySelector("#mediaLayer");
-const playBtn = document.querySelector("#playBtn");
+    function closeModal(){
+      modal.classList.remove("show");
+      document.body.style.overflow = "";
+      mediaLayer.innerHTML = "";
+      posterLayer.style.display = "grid";
+      currentItem = null;
+    }
 
-let currentItem = null;
-
-function buildMedia(url){
-  const isVideoFile = /\.(mp4|webm|ogg)(\?.*)?$/i.test(url);
-  mediaLayer.innerHTML = "";
-
-  if (isVideoFile){
-    const v = document.createElement("video");
-    v.src = url;
-    v.controls = true;
-    v.autoplay = true;
-    v.playsInline = true;
-    mediaLayer.appendChild(v);
-  } else {
-    const iframe = document.createElement("iframe");
-    iframe.src = url;
-    iframe.allow = "autoplay; encrypted-media; picture-in-picture";
-    iframe.allowFullscreen = true;
-    iframe.style.width = "100%";
-    iframe.style.height = "100%";
-    iframe.style.border = "0";
-    mediaLayer.appendChild(iframe);
-  }
-}
-
-function openPosterModal(item){
-  currentItem = item;
-
-  modalTitle.textContent = item.name || "Video";
-
-  // 1) muestra la MISMA imagen como poster inicial
-  posterImg.src = item.thumbUrl;
-
-  // 2) oculta media (aún no cargar)
-  mediaLayer.innerHTML = "";
-  posterLayer.style.display = "grid";
-
-  // 3) abrir modal
-  modal.classList.add("show");
-  document.body.style.overflow = "hidden";
-}
-
-// cuando el usuario hace click a Play dentro del modal
-playBtn.addEventListener("click", () => {
-  if(!currentItem) return;
-
-  // aquí sí se carga y reproduce/embebe el video
-  buildMedia(currentItem.videoUrl);
-
-  // oculta el poster para que se vea el video
-  posterLayer.style.display = "none";
-
-  // sumar vista si quieres
-  currentItem.views = (currentItem.views || 0) + 1;
-  applyState(); // si tienes tu render/ordenamiento
-});
-
-function closeModal(){
-  modal.classList.remove("show");
-  document.body.style.overflow = "";
-  mediaLayer.innerHTML = "";   // corta reproducción
-  posterLayer.style.display = "grid";
-  currentItem = null;
-}
-
-document.querySelector("#modalClose").addEventListener("click", closeModal);
-modal.addEventListener("click", (e)=>{ if(e.target === modal) closeModal(); });
-document.addEventListener("keydown", (e)=>{ if(e.key === "Escape") closeModal(); });
-
-
-    $("#modalClose").addEventListener("click", closeModal);
+    document.querySelector("#modalClose").addEventListener("click", closeModal);
     modal.addEventListener("click", (e)=>{ if(e.target === modal) closeModal(); });
     document.addEventListener("keydown", (e)=>{ if(e.key === "Escape") closeModal(); });
 
-    // Acciones de UI
+    // Lógica de filtros, búsqueda, y orden
     $("#btnSearch").addEventListener("click", ()=>{
       state.query = $("#q").value;
       applyState();
-    });
-    $("#q").addEventListener("keydown", (e)=>{
-      if(e.key === "Enter"){
-        state.query = $("#q").value;
-        applyState();
-      }
     });
 
     $("#sort").addEventListener("change", (e)=>{
@@ -673,17 +407,7 @@ document.addEventListener("keydown", (e)=>{ if(e.key === "Escape") closeModal();
       applyState();
     });
 
-    // Chips
-    document.querySelectorAll(".chip").forEach(chip=>{
-      chip.addEventListener("click", ()=>{
-        document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
-        chip.classList.add("active");
-        state.filter = chip.dataset.filter;
-        applyState();
-      });
-    });
-
-    // Reset
+    // Resetear filtros
     $("#btnReset").addEventListener("click", ()=>{
       state = { query:"", filter:"all", sort:"recent" };
       $("#q").value = "";
@@ -704,7 +428,6 @@ document.addEventListener("keydown", (e)=>{ if(e.key === "Escape") closeModal();
 
       if(action === "watch"){
        openPosterModal(item);
-
       }
 
       if(action === "copy"){
@@ -728,61 +451,8 @@ document.addEventListener("keydown", (e)=>{ if(e.key === "Escape") closeModal();
       }
     });
 
-    // Rail
-    $("#railTop").addEventListener("click", ()=> window.scrollTo({top:0, behavior:"smooth"}));
-    $("#railShare").addEventListener("click", async ()=>{
-      const url = location.href;
-      if(navigator.share){
-        try { await navigator.share({title: document.title, url}); } catch {}
-      } else {
-        await navigator.clipboard.writeText(url);
-        toast("Enlace copiado ✅");
-      }
-    });
-
-    // Deep link opcional por hash: #m3
-    function makeItemLink(item){
-      const base = location.href.split("#")[0];
-      return `${base}#${encodeURIComponent(item.id)}`;
-    }
-
-    function handleHash(){
-      const id = decodeURIComponent((location.hash||"").replace("#",""));
-      if(!id) return;
-      const item = items.find(x => x.id === id);
-      if(item) openVideo(item);
-    }
-    window.addEventListener("hashchange", handleHash);
-
-    // Toast simple
-    let toastTimer;
-    function toast(msg){
-      let el = document.getElementById("toast");
-      if(!el){
-        el = document.createElement("div");
-        el.id = "toast";
-        el.style.position = "fixed";
-        el.style.left = "50%";
-        el.style.bottom = "18px";
-        el.style.transform = "translateX(-50%)";
-        el.style.padding = "12px 14px";
-        el.style.borderRadius = "14px";
-        el.style.background = "rgba(15,18,28,.92)";
-        el.style.border = "1px solid rgba(255,255,255,.14)";
-        el.style.color = "rgba(255,255,255,.92)";
-        el.style.boxShadow = "0 16px 40px rgba(0,0,0,.45)";
-        el.style.zIndex = "2000";
-        document.body.appendChild(el);
-      }
-      el.textContent = msg;
-      el.style.display = "block";
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(()=>{ el.style.display="none"; }, 1800);
-    }
-
-    // Init
+    // Inicialización de estado
     applyState();
-    handleHash();
   </script>
 </body>
 </html>
