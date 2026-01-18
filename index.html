@@ -463,24 +463,28 @@
     return diff <= 7 * 24 * 60 * 60 * 1000; // 7 días
   }
 
-  // Extrae mp4/webm/ogg del contenido HTML del post
   function extractVideoUrl(html){
-    if(!html) return "";
+  if(!html) return "";
 
-    // 1) <video ... src="...">
-    let m = html.match(/<video[^>]+src=["']([^"']+)["']/i);
-    if(m?.[1]) return m[1];
+  // 1) <video src="...mp4">
+  let m = html.match(/<video[^>]+src=["']([^"']+)["']/i);
+  if(m?.[1]) return m[1];
 
-    // 2) <source src="...">
-    m = html.match(/<source[^>]+src=["']([^"']+)["']/i);
-    if(m?.[1]) return m[1];
+  // 2) <source src="...mp4">
+  m = html.match(/<source[^>]+src=["']([^"']+)["']/i);
+  if(m?.[1]) return m[1];
 
-    // 3) Por si viene URL suelta en el contenido (último recurso)
-    m = html.match(/https?:\/\/[^\s"']+\.(mp4|webm|ogg)(\?[^\s"']*)?/i);
-    if(m?.[0]) return m[0];
+  // 3) <a href="...mp4">
+  m = html.match(/<a[^>]+href=["']([^"']+\.(mp4|webm|ogg)(\?[^"']*)?)["']/i);
+  if(m?.[1]) return m[1];
 
-    return "";
-  }
+  // 4) URL suelta en el texto ...mp4
+  m = html.match(/https?:\/\/[^\s"'<>]+\.(mp4|webm|ogg)(\?[^\s"'<>]*)?/i);
+  if(m?.[0]) return m[0];
+
+  return "";
+}
+
 
   function badgeFor(item){
     const popularThreshold = 500;
